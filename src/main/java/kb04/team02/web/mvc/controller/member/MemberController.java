@@ -1,8 +1,8 @@
 package kb04.team02.web.mvc.controller.member;
 
-import kb04.team02.web.mvc.dto.UserLoginDto;
-import kb04.team02.web.mvc.dto.UserRegisterDto;
-import kb04.team02.web.mvc.dto.UserSession;
+import kb04.team02.web.mvc.dto.MemberLoginDto;
+import kb04.team02.web.mvc.dto.MemberRegisterDto;
+import kb04.team02.web.mvc.dto.LoginMemberDto;
 import kb04.team02.web.mvc.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -22,12 +22,14 @@ public class MemberController {
      * 로그인
      */
     @PostMapping("/login")
-    public String login(@RequestBody UserLoginDto user, Model model) {
-        UserSession findUser = memberService.login(user);
+    public String login(@RequestBody MemberLoginDto memberLoginDto, HttpSession session) {
+        LoginMemberDto loginMember = memberService.login(memberLoginDto);
 
-        if (findUser == null) {
+        if (loginMember == null) {
             return "index";
         }
+
+        session.setAttribute("member", loginMember);
         return "forward:/";
     }
 
@@ -54,9 +56,9 @@ public class MemberController {
      * @return
      */
     @PostMapping("/register")
-    public String register(@RequestBody UserRegisterDto userRegisterDto) {
+    public String register(@RequestBody MemberRegisterDto memberRegisterDto) {
 
-        memberService.register(userRegisterDto);
+        memberService.register(memberRegisterDto);
 
         return "redirect:/";
     }

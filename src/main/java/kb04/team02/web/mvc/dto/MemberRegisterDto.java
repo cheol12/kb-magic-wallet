@@ -4,7 +4,7 @@ package kb04.team02.web.mvc.dto;
 /**
  * 회원가입 시 입력해야 하는 정보
  */
-public class UserRegisterDto {
+public class MemberRegisterDto {
     private String id;
     private String password;
     private String name;
