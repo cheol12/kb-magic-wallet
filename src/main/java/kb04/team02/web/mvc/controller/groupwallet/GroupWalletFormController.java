@@ -50,5 +50,17 @@ public class GroupWalletFormController {
     public void groupwalletDepositForm(@PathVariable String id) {
     }
 
+    /**
+     * @author:hyun
+     * 회비 규칙 만들기 폼으로 이동 or 폼에서 입력받음?
+     * 폼으로 이동이면 @GetMapping, 폼에서 입력받으면 @PostMapping
+     * API 명세서에 없음
+     * @param id 회비 규칙을 만들 모임지갑 id
+     */
+    @GetMapping("/{id}/rule/form")
+    public void groupWalletRuleForm(@PathVariable String id) {
+
+    }
+
 
 }

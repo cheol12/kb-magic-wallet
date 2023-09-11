@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface GroupWalletForeignCurrencyBalanceRepository extends JpaRepository<GroupWalletForeignCurrencyBalance, Long> {
+
     List<GroupWalletForeignCurrencyBalance> findByGroupWalletAndGroupWallet_BalanceGreaterThan(GroupWallet groupWallet, Long groupWallet_balance);
 }
