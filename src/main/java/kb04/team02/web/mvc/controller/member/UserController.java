@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpSession;
 
+@SessionAttributes("member")
 @Controller
 @RequiredArgsConstructor
 public class UserController {
@@ -18,7 +20,17 @@ public class UserController {
      * 로그인
      * */
     @RequestMapping("/login")
-    public void login() {}
+    public String login(/*UserDto user,Model model*/) {
+//        UserDto findUser = userService.getUser(user);
+//
+//        if(findUser!=null && findUser.getPassword().equals(user.getPassword())) {
+//            model.addAttribute("member",findUser);
+//            return "forward:/";
+//        }
+//        else {
+            return "index";
+//        }
+    }
 
     /**
      * 로그아웃
@@ -35,7 +47,9 @@ public class UserController {
      */
     @RequestMapping("/register")
     @ResponseBody
-    public void register() {}
+    public void register() {
+
+    }
 
 
 }

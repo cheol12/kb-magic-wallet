@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.controller.saving;
 
+import kb04.team02.web.mvc.domain.saving.Saving;
 import kb04.team02.web.mvc.service.saving.SavingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/saving")
@@ -20,7 +22,11 @@ public class SavingController {
      * API 명세서 ROWNUM:37
      */
     @GetMapping("/")
-    public void savingIndex() {
+    public ModelAndView savingIndex() {
+        //List<SavingDto> savingList = savingService.selectSavingList();
+        //return new ModelAndView("saving", "savingList", savingList);
+        return new ModelAndView("saving");
+
     }
 
     /**
@@ -31,16 +37,19 @@ public class SavingController {
      */
     @GetMapping("/{id}")
     public void savingDetail(@PathVariable String id) {
+        //    Saving saving = savingService.saving();
+//        return new ModelAndView("savingDetail", "saving", saving);
     }
 
     /**
      * 적금 상품 가입 폼
      * API 명세서 ROWNUM:39
-     * 
+     *
      * @param id 가입 할 적금 상품 id
      */
     @GetMapping("/{id}/form")
     public void savingJoinForm(@PathVariable String id) {
+
     }
 
     /**
@@ -50,6 +59,8 @@ public class SavingController {
      * @param id 가입 할 적금 상품 id
      */
     @PostMapping("/{id}/form")
-    public void savingJoin(@PathVariable String id) {
+    public String savingJoin(@PathVariable String id) {
+
+        return "redirect:/saving";
     }
 }

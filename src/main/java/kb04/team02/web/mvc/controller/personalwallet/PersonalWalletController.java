@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/personal-wallet")
@@ -19,7 +20,10 @@ public class PersonalWalletController {
      * API 명세서 ROWNUM:5
      */
     @GetMapping("/")
-    public void personalwalletIndex() {
+    public ModelAndView personalwalletIndex() {
+    //    PersonalWalletDto personalwallet = userService.personalWallet();
+     //   return new ModelAndView("personal-wallet", "personalWallet", personalWallet);
+        return new ModelAndView("personal-wallet");
     }
 
     /**
@@ -35,7 +39,10 @@ public class PersonalWalletController {
      * API 명세서 ROWNUM:7
      */
     @PostMapping("/deposit")
-    public void personalwalletDeposit() {
+    public String personalwalletDeposit() {
+        //userService.depositPersonalWallet();
+
+        return "personal-wallet";
     }
 
     /**
@@ -51,6 +58,8 @@ public class PersonalWalletController {
      * API 명세서 ROWNUM:9
      */
     @PostMapping("/withdraw")
-    public void personalwalletWithdraw() {
+    public String personalwalletWithdraw() {
+        //userService.cancleWithDraw();
+        return "personal-wallet";
     }
 }
