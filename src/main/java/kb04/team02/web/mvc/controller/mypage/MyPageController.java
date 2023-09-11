@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("mypage")
 @RequiredArgsConstructor
@@ -36,7 +38,8 @@ public class MyPageController {
      * API 명세서 ROWNUM:51
      */
     @PostMapping("/card")
-    public void cardCreate() {
+    public String cardCreate(HttpSession session) {
+        return null;
     }
 
     /**
@@ -44,7 +47,8 @@ public class MyPageController {
      * API 명세서 ROWNUM:52
      */
     @DeleteMapping("/card")
-    public void cardInvalidate() {
+    public String cardInvalidate(HttpSession session) {
+        return null;
     }
 
     /**
@@ -60,6 +64,7 @@ public class MyPageController {
      * API 명세서 ROWNUM:54
      */
     @PostMapping("/bank")
-    public void bankLink() {
+    public String bankLink(HttpSession session) {
+        return null;
     }
 }

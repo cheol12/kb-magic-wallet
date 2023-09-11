@@ -3,7 +3,11 @@ package kb04.team02.web.mvc.controller.exchange;
 import kb04.team02.web.mvc.service.exchange.ExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/exchange")
@@ -25,7 +29,8 @@ public class ExchangeController {
      * API 명세서 ROWNUM:42
      */
     @GetMapping("/offline")
-    public void exchangeOfflineIndex() {
+    public String exchangeOfflineIndex(HttpSession session, Model model) {
+        return null;
     }
 
     /**
@@ -41,7 +46,8 @@ public class ExchangeController {
      * API 명세서 ROWNUM:44
      */
     @PostMapping("/offline/form")
-    public void exchangeOffline() {
+    public String exchangeOffline() {
+        return "redirect:/offline";
     }
 
     /**
@@ -50,7 +56,8 @@ public class ExchangeController {
      */
     @ResponseBody
     @DeleteMapping("/offline/form")
-    public void exchangeOfflineCancel() {
+    public List<Class> exchangeOfflineCancel(Long exchange_id) {
+        return null;
     }
 
     /**
@@ -70,11 +77,12 @@ public class ExchangeController {
     }
 
     /**
-     * 오프라인 환전 요청
+     * 온라인 환전 요청
      * API 명세서 ROWNUM:48
      */
     @PostMapping("/online/form")
-    public void exchangeOnline() {
+    public String exchangeOnline() {
+        return null;
     }
 
 }
