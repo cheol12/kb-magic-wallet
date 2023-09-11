@@ -1,17 +1,55 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
+import kb04.team02.web.mvc.domain.wallet.group.GroupWalletTransfer;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 @Repository
-public interface GroupWalletTransferRepository extends JpaRepository <GroupWalletTransfer, Long>{
+public interface GroupWalletTransferRepository extends JpaRepository<GroupWalletTransfer, Long> {
+
+
     /**
-     * 모임지갑 이체내역
-     * ROWNUM 35?
-     * 
+     * ROWNUM 30, 32, 34 함께 사용
+     *
      * SQL
-     * INSERT INTO GROUP_WALLET_TRANSFER
-     * (INSERT_DATE, TYPE, FROM_TYPE, FROM, TO, TO_TYPE, AMOUNT, BALANCE, GROUP_WALLET_ID, CURRENCY_CODE)
-     * VALUES
-     * (SYSDATE, TYPE, FROM_TYPE, FROM, TO, TO_TYPE, AMOUNT, BALANCE, GROUP_WALLET_ID, CURRENCY_CODE);
-     * 
-     * JPA: GroupWalletTransferRepository.save(GroupWalletTransfer, groupWalletTransfer);
-     */    
+     *
+     * (모임지갑 꺼내기 시 모임지갑의 출금으로 사용)
+     * insert into
+     * group_wallet_transfer(transfer_seq, insert_date, type, from, to, amount, balance, group_wallet_id)
+     * values(transfer_seq.nextval, sysdate, “출금”, “현재모임지갑”, “내내 개지갑”, “입력값”, balance, “현재모임지갑”);
+     * (balance=이체 후 잔액은 컨트롤러에서 처리하기)
+     *
+     * JPA : GroupWalletTransferRepository.save(GroupWalletTransfer groupWalletTransfer);
+     * */
+
+
+
+    /**
+     * ROWNUM 32
+     *
+     * SQL
+     *
+     * (모임지갑 정산 시 모임지갑의 출금으로 사용)
+     * insert into group_wallet_transfer
+     * (transfer_seq, insert_date, type, from, to, amount, balance, group_wallet_id)
+     * values
+     * (transfer_seq.nextval, sysdate, “출금정산”, “모임지갑”, “각자 개인지갑”, 정산금/N, balance, “현재 모임지갑 식별번호”)
+     *
+     * JPA : GroupWalletTransferRepository.save(GroupWalletTransfer groupWalletTransfer);
+     * */
+
+    /**
+     * ROWNUM 34
+     *
+     * SQL
+     *
+     * (모임지갑 입금 시 입금으로 사용)
+     * insert into group_wallet_transfer
+     * (transfer_seq, insert_date, type, from, to, amount, balance, group_wallet_id)
+     * values
+     * (transfer_seq.nextval, sysdate, “입금”, “모임지갑”, “회비 낸 사람 지갑”, 회비, balance + 회비, “현재 모임지갑 식별번호”)
+     *
+     * JPA : GroupWalletTransferRepository.save(GroupWalletTransfer groupWalletTransfer);
+     * */
+
 }
