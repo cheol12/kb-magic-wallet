@@ -1,6 +1,6 @@
 package kb04.team02.web.mvc.controller.member;
 
-import kb04.team02.web.mvc.service.user.UserService;
+import kb04.team02.web.mvc.service.user.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,16 +12,16 @@ import javax.servlet.http.HttpSession;
 @SessionAttributes("member")
 @Controller
 @RequiredArgsConstructor
-public class UserController {
+public class MemberController {
 
-    private final UserService userService;
+    private final MemberService memberService;
 
     /**
      * 로그인
      * */
     @RequestMapping("/login")
     public String login(/*UserDto user,Model model*/) {
-//        UserDto findUser = userService.getUser(user);
+//        UserDto findUser = memberService.getUser(user);
 //
 //        if(findUser!=null && findUser.getPassword().equals(user.getPassword())) {
 //            model.addAttribute("member",findUser);
