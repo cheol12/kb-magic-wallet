@@ -98,7 +98,7 @@ public class GroupWalletController {
     @DeleteMapping("/{id}/out")
     public String groupWalletMemberOut(@PathVariable String id, HttpSession session) {
 	Integer memberId = (Integer) session.getAttribute("member_id");
-//	groupWalletService.groupWalletOut(id, memberId);
+//	groupWalletService.groupWalletMemberOut(id, memberId);
 	return "redirect:/group-wallet";
     }
 
