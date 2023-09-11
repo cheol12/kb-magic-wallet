@@ -1,11 +1,13 @@
 package kb04.team02.web.mvc.controller.member;
 
-import kb04.team02.web.mvc.service.user.MemberService;
+import kb04.team02.web.mvc.dto.UserLoginDto;
+import kb04.team02.web.mvc.dto.UserRegisterDto;
+import kb04.team02.web.mvc.dto.UserSession;
+import kb04.team02.web.mvc.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -18,23 +20,20 @@ public class MemberController {
 
     /**
      * 로그인
-     * */
-    @RequestMapping("/login")
-    public String login(/*UserDto user,Model model*/) {
-//        UserDto findUser = memberService.getUser(user);
-//
-//        if(findUser!=null && findUser.getPassword().equals(user.getPassword())) {
-//            model.addAttribute("member",findUser);
-//            return "forward:/";
-//        }
-//        else {
+     */
+    @PostMapping("/login")
+    public String login(@RequestBody UserLoginDto user, Model model) {
+        UserSession findUser = memberService.login(user);
+
+        if (findUser == null) {
             return "index";
-//        }
+        }
+        return "forward:/";
     }
 
     /**
      * 로그아웃
-     * */
+     */
     @RequestMapping("/logout")
     public String logout(HttpSession session) {
         //모든 세션의 정보를 삭제한다.
@@ -43,13 +42,22 @@ public class MemberController {
     }
 
     /**
-     * 회원가입
+     * 회원가입 폼
      */
-    @RequestMapping("/register")
-    @ResponseBody
-    public void register() {
-
+    @GetMapping("/register")
+    public void registerForm() {
     }
 
+    /**
+     * 회원가입
+     *
+     * @return
+     */
+    @PostMapping("/register")
+    public String register(@RequestBody UserRegisterDto userRegisterDto) {
 
+        memberService.register(userRegisterDto);
+
+        return "redirect:/";
+    }
 }
