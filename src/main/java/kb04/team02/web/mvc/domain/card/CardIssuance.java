@@ -3,6 +3,7 @@ package kb04.team02.web.mvc.domain.card;
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Builder
 public class CardIssuance {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_issuance_seq")
