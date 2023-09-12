@@ -1,12 +1,14 @@
 package kb04.team02.web.mvc.domain.wallet.common;
 
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
+import lombok.Getter;
 
 import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
+@Getter
 public abstract class ForeignCurrencyBalance {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wallet_foreign_balance_seq")
