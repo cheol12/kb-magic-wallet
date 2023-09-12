@@ -3,6 +3,7 @@ package kb04.team02.web.mvc.service.exchange;
 import kb04.team02.web.mvc.domain.bank.Bank;
 import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
 import kb04.team02.web.mvc.dto.BankDto;
+import kb04.team02.web.mvc.dto.ExchangeDto;
 import kb04.team02.web.mvc.dto.OfflineReceiptDto;
 import kb04.team02.web.mvc.dto.WalletDto;
 
@@ -67,8 +68,14 @@ public interface ExchangeService {
      * ROWNUM: 44
      *
      * @return 1 OK, 0 FAIL
+     *
+     * - 수령일시
+     * - 통화
+     * - 금액
+     * - 은행 식별번호
+     * - 개인지갑 식별번호 or 모임지갑 식별변호
      */
-    int requestOfflineReceipt();
+    int requestOfflineReceipt(OfflineReceiptDto offlineReceiptDto);
 
     /**
      * 오프라인 환전 취소
@@ -78,4 +85,22 @@ public interface ExchangeService {
      * OfflineReceiptDto 리스트 반환
      */
     List<OfflineReceiptDto> cancelOfflineReceipt();
+
+    /**
+     * 온라인 환전 신청
+     * ROWNUM: 48
+     *
+     * @return 1: OK, 0: FAIL
+     *
+     * ExchangeDto
+     * - 매도 통화 코드
+     * - 매도 금액
+     * - 매도 후 잔액
+     * - 매수 통화 코드
+     * - 매수 금액
+     * - 매수 후 잔액
+     * - 환율
+     * - 개인지갑 / 모임지갑..?
+     */
+    int requestExchangeOnline(ExchangeDto exchangeDto);
 }

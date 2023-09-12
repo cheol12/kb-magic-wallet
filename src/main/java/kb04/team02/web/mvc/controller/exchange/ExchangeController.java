@@ -2,7 +2,9 @@ package kb04.team02.web.mvc.controller.exchange;
 
 import kb04.team02.web.mvc.domain.bank.Bank;
 import kb04.team02.web.mvc.dto.BankDto;
+import kb04.team02.web.mvc.dto.ExchangeDto;
 import kb04.team02.web.mvc.dto.OfflineReceiptDto;
+import kb04.team02.web.mvc.dto.WalletDto;
 import kb04.team02.web.mvc.service.exchange.ExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -44,6 +46,9 @@ public class ExchangeController {
     @GetMapping("/offline/form")
     public String exchangeOfflineForm(Model model) {
         List<BankDto> bankList = exchangeService.bankList();
+        List<WalletDto> chairManWalletList = exchangeService.chairManWalletList();
+        // chairManWalletList 권한 걸러주고 개인지갑 추가해서 view로 넘겨줘야 함
+
         model.addAttribute("bankList", bankList);
         return "exchange/offline/form";
     }
@@ -53,8 +58,8 @@ public class ExchangeController {
      * API 명세서 ROWNUM:44
      */
     @PostMapping("/offline/form")
-    public String exchangeOffline() {
-        int result = exchangeService.requestOfflineReceipt();
+    public String exchangeOffline(OfflineReceiptDto offlineReceiptDto) {
+        int result = exchangeService.requestOfflineReceipt(offlineReceiptDto);
         return "redirect:/offline";
     }
 
@@ -82,6 +87,8 @@ public class ExchangeController {
      */
     @GetMapping("/online/form")
     public void exchangeOnlineForm() {
+        List<WalletDto> chairManWalletList = exchangeService.chairManWalletList();
+        // chairManWalletList 권한 걸러주고 개인지갑 추가해서 view로 넘겨줘야 함
     }
 
     /**
@@ -89,7 +96,8 @@ public class ExchangeController {
      * API 명세서 ROWNUM:48
      */
     @PostMapping("/online/form")
-    public String exchangeOnline() {
+    public String exchangeOnline(ExchangeDto exchangeDto) {
+        exchangeService.requestExchangeOnline(exchangeDto);
         return null;
     }
 

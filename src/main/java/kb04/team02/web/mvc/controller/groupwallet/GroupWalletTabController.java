@@ -3,6 +3,7 @@ package kb04.team02.web.mvc.controller.groupwallet;
 import kb04.team02.web.mvc.domain.card.CardIssuance;
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.saving.Saving;
+import kb04.team02.web.mvc.dto.*;
 import kb04.team02.web.mvc.service.groupwallet.GroupWalletTabService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Controller
@@ -48,7 +51,7 @@ public class GroupWalletTabController {
     public void groupWalletMemberList(@PathVariable String id, Model model, @RequestParam(defaultValue = "1") int nowPage) {
         // 페이징 처리, 회원 이름순, Member.java에 이름 필드를 어떻게 저장했는지 확인 필요
         Pageable page = PageRequest.of((nowPage-1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
-        Page<Member> memberPageList = (Page<Member>) groupWalletTabService.getMembersByGroupId(id, page);
+        Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
 
         int temp = (nowPage-1)%BLOCK_SIZE;
         int startPage=nowPage-temp;
@@ -70,7 +73,7 @@ public class GroupWalletTabController {
     @ResponseBody
     @DeleteMapping("/{id}/{member}")
     public String groupWalletMemberKick(@PathVariable String id, @PathVariable String member) {
-        boolean isMemberDeleted = groupWalletTabService.deleteMember(id, member);
+        boolean isMemberDeleted = groupWalletTabService.deleteMember(Long.parseLong(id), Long.parseLong(member));
 
         // 멤버가 성공적으로 삭제되었을 경우 멤버 조회로 이동
         if (isMemberDeleted) {
@@ -92,7 +95,7 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/{member}/auth")
     public String groupWalletAuthRequest(@PathVariable String id, @PathVariable String member) {
-        boolean isAuthGranted = groupWalletTabService.GrantMemberAuth(id, member);
+        boolean isAuthGranted = groupWalletTabService.GrantMemberAuth(Long.parseLong(id), Long.parseLong(member));
         
         // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
         if (isAuthGranted) {
@@ -103,7 +106,6 @@ public class GroupWalletTabController {
         }
     }
 
-    //public void groupwalletAuthRequest(@PathVariable String id, @PathVariable String member) {}
 
     /**
      * 모임지갑 권한 박탈 요청
@@ -116,7 +118,7 @@ public class GroupWalletTabController {
     @ResponseBody
     @DeleteMapping("/{id}/{member}/revoke")
     public String groupwalletAuthRevoke(@PathVariable String id, @PathVariable String member) {
-        boolean isAuthRevoked = groupWalletTabService.RevokeMemberAuth(id, member);
+        boolean isAuthRevoked = groupWalletTabService.RevokeMemberAuth(Long.parseLong(id), Long.parseLong(member));
         
         // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
         if (isAuthRevoked) {
@@ -127,7 +129,6 @@ public class GroupWalletTabController {
         }
     }
 
-    //public void groupwalletAuthRevoke(@PathVariable String id, @PathVariable String member) {}
 
     //== 모임원 조회 탭 END ==//
 
@@ -142,16 +143,15 @@ public class GroupWalletTabController {
     @GetMapping("/{id}/rule")
     // 회비 테이블과 객체 필요해 보임, 회비 객체를 Rule.java로 가정함
     public String groupWalletRule(@PathVariable String id) {
-        Rule rule = groupWalletTabService.getRuleById(id);
+        RuleDto ruleDto = groupWalletTabService.getRuleById(Long.parseLong(id));
 
-        if (rule != null) {
+        if (ruleDto != null) {
             return "redirect:/group-wallet/{id}/rule";
         } else {
             return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
 
-    //public void groupwalletRule(@PathVariable String id) {}
 
     /**
      * 모임지갑 회비 규칙 생성 요청
@@ -160,8 +160,8 @@ public class GroupWalletTabController {
      * @param id 회비 규칙을 생성할 모임지갑 id
      */
     @PostMapping("{id}/rule")
-    public String groupWalletCreateRule(@PathVariable String id) {
-        boolean isRuleCreated = groupWalletTabService.createRule(id);
+    public String groupWalletCreateRule(@PathVariable String id, RuleDto ruleDto) {
+        boolean isRuleCreated = groupWalletTabService.createRule(Long.parseLong(id), ruleDto);
 
         if (isRuleCreated) {
             return "redirect:/group-wallet/{id}/rule";
@@ -173,7 +173,6 @@ public class GroupWalletTabController {
         // 규칙 만들기 폼으로 이동하는 api 만들어줘야 할듯 GroupWalletFormController.java에 추가
     }
 
-    //public void groupWalletCreateRule(@PathVariable String id) {}
 
     /**
      * 모임지갑 회비 납부 요청
@@ -184,7 +183,7 @@ public class GroupWalletTabController {
      */
     @GetMapping("/{id}/rule/{member}")
     public String groupWalletRuleAlert(@PathVariable String id, @PathVariable String member) {
-        boolean isMemberAlerted = groupWalletTabService.alertMember(id, member);
+        boolean isMemberAlerted = groupWalletTabService.alertMember(Long.parseLong(id), Long.parseLong(member));
 
         if (isMemberAlerted) {
             return "redirect:/group-wallet/{id}/rule";
@@ -193,7 +192,6 @@ public class GroupWalletTabController {
         }
     }
 
-    //public void groupwalletRuleAlert(@PathVariable String id, @PathVariable String member) {}
 
     /**
      * 모임지갑 회비 규칙 삭제 요청
@@ -204,7 +202,7 @@ public class GroupWalletTabController {
     
     @DeleteMapping("/{id}/rule")
     public String groupWalletDeleteRule(@PathVariable String id) {
-        boolean isRuleDeleted = groupWalletTabService.deleteRule(id);
+        boolean isRuleDeleted = groupWalletTabService.deleteRule(Long.parseLong(id));
 
         if (isRuleDeleted) {
             return "redirect:/group-wallet/{id}/rule";
@@ -213,7 +211,6 @@ public class GroupWalletTabController {
         }
     }
 
-    //public void groupwalletDeleteRule(@PathVariable String id) {}
     //== 규칙 탭 END ==//
 
     //== 적금 탭 START ==//
@@ -227,9 +224,9 @@ public class GroupWalletTabController {
     @GetMapping("/{id}/saving")
     // Saving 테이블과 대응되는 객체를 Saving.java라고 가정한 코드
     public String groupWalletSavingInfo(@PathVariable String id) {
-        Saving saving = groupWalletTabService.getSavingById(id);
+        SavingDto Savingdto = groupWalletTabService.getSavingById(Long.parseLong(id));
 
-        if (saving != null) {
+        if (Savingdto != null) {
             return "redirect:/group-wallet/{id}/saving";
         } else {
             return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
@@ -238,7 +235,6 @@ public class GroupWalletTabController {
 
 
 
-    //public void groupwalletSavingInfo(@PathVariable String id) {}
 
     /**
      * 모임지갑 가입 적금상품 해지
@@ -248,7 +244,7 @@ public class GroupWalletTabController {
      */
     @DeleteMapping("/{id}/saving")
     public String groupWalletCancelSaving(@PathVariable String id) {
-        boolean isSavingCanceled = groupWalletTabService.cancelSaving(id);
+        boolean isSavingCanceled = groupWalletTabService.cancelSaving(Long.parseLong(id));
 
         if (isSavingCanceled) {
             return "redirect:/group-wallet/{id}/saving";
@@ -257,7 +253,6 @@ public class GroupWalletTabController {
         }
     }
 
-    //public void groupwalletCancelSaving(@PathVariable String id) {}
     //== 적금 탭 END ==//
 
     //== 카드 탭 START ==//
@@ -271,16 +266,15 @@ public class GroupWalletTabController {
     @GetMapping("/{id}/card/list")
     // Card_issuance 테이블과 대응되는 객체를 Card.java라고 가정한 코드
     public String groupWalletCardList(@PathVariable String id) {
-        CardIssuance cardIssuance = groupWalletTabService.getCard(id);
+        List<CardIssuanceDto> cardIssuanceDtoList = groupWalletTabService.getCard(Long.parseLong(id));
 
-        if (cardIssuance != null) {
+        if (cardIssuanceDtoList != null) {
             return "redirect:/group-wallet/{id}/card/list";
         } else {
             return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
 
-    //public void groupwalletCardList(@PathVariable String id) {}
 
     /**
      * 모임지갑 카드 연결 요청
@@ -291,7 +285,7 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/card")
     public String groupWalletCardLink(@PathVariable String id) {
-        boolean isCardLinked = groupWalletTabService.linkCard(id);
+        boolean isCardLinked = groupWalletTabService.linkCard(Long.parseLong(id));
 
         if (isCardLinked) {
             return "redirect:/group-wallet/{id}/card/list";
@@ -300,7 +294,6 @@ public class GroupWalletTabController {
         }
     }
 
-    //public void groupwalletCardLink(@PathVariable String id) {}
     //== 카드 탭 END ==//
 
     //== 내역 탭 START ==//
@@ -329,7 +322,7 @@ public class GroupWalletTabController {
         // 페이징 처리, 내역 날짜순, History.java에 날짜 필드를 어떻게 저장했는지 확인 필요
         Pageable page = PageRequest.of((nowPage-1), PAGE_SIZE, Sort.by(Sort.Order.asc("date")));
         // GroupWallet에서 쓸 정보들만 가져와서 History
-        Page<History> historyPageList = groupWalletTabService.getHistoryByGroupId(id, page);
+        Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
 
         int temp = (nowPage-1)%BLOCK_SIZE;
         int startPage=nowPage-temp;
@@ -341,7 +334,6 @@ public class GroupWalletTabController {
 
     }    
 
-   // public void groupwalletHistoryList(@PathVariable String id) {}
 
     /**
      * 모임지갑 상세 내역 조회
@@ -355,7 +347,7 @@ public class GroupWalletTabController {
     // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미? 
     // 3개 다 합친 것? 대응되는 개념?
     public String groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid) {
-        HistoryDetail historyDetail = groupWalletTabService.getHistory(id);
+        WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id));
 
         if (historyDetail != null) {
             return "redirect:/group-wallet/{id}/history";
@@ -364,6 +356,5 @@ public class GroupWalletTabController {
         }
     }
 
-    //public void groupwalletHistoryDetail(@PathVariable String id, @PathVariable String historyid) {}
     //== 내역 탭 END ==//
 }
