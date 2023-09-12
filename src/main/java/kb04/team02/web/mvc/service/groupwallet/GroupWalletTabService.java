@@ -28,7 +28,7 @@ public interface GroupWalletTabService {
     boolean deleteMember(Long id, Long member);
 
     /**
-     * 모임지갑 권한 부여
+     * 모임지갑 공동모임장 권한 부여
      * @param id
      * @param member
      * @return
@@ -36,7 +36,7 @@ public interface GroupWalletTabService {
     boolean GrantMemberAuth(Long id, Long member);
 
     /**
-     * 모임지갑 권한 박탈
+     * 모임지갑 공동모임장 권한 박탈
      * @param id
      * @param member
      * @return
