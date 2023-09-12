@@ -1,0 +1,30 @@
+.mainBanner{
+  padding: 5em;
+  width: auto ;
+  height: auto;
+  border: 1px solid black;
+}
+
+#mainPageTab{
+  padding-top: 20px;
+
+}
+
+
+.mainTabButton{
+  background: none;
+  border: black 1px solid;
+  width: 15%;
+  height: 200px;
+  margin-right: 10%;
+}
+.mainTabButton:first-child{
+  margin-left: 5%;
+}
+.mainTabButton:last-child{
+  margin-right: 0;
+}
+
+.mainTabButton:hover{
+  background: rgb(228, 228, 228);
+}
