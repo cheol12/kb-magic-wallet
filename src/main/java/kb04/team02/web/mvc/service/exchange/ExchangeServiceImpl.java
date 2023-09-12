@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.service.exchange;
 
 import kb04.team02.web.mvc.dto.BankDto;
+import kb04.team02.web.mvc.dto.ExchangeDto;
 import kb04.team02.web.mvc.dto.OfflineReceiptDto;
 import kb04.team02.web.mvc.dto.WalletDto;
 import kb04.team02.web.mvc.repository.bank.BankRepository;
@@ -41,12 +42,17 @@ public class ExchangeServiceImpl implements ExchangeService{
     }
 
     @Override
-    public int requestOfflineReceipt() {
+    public int requestOfflineReceipt(OfflineReceiptDto offlineReceiptDto) {
         return 0;
     }
-
+    
     @Override
     public List<OfflineReceiptDto> cancelOfflineReceipt() {
         return null;
+    }
+
+    @Override
+    public int requestExchangeOnline(ExchangeDto exchangeDto) {
+        return 0;
     }
 }
