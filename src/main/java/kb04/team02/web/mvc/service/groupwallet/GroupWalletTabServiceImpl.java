@@ -1,7 +1,9 @@
 package kb04.team02.web.mvc.service.groupwallet;
 
+import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.Participation;
+import kb04.team02.web.mvc.domain.wallet.group.ParticipationState;
 import kb04.team02.web.mvc.dto.*;
 import kb04.team02.web.mvc.repository.member.MemberRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletRespository;
@@ -20,15 +22,19 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
 
     private final GroupWalletRespository groupWalletRespository;
     private final ParticipationRepository participationRepository;
+    private final MemberRepository memberRepository;
     @Override
 
     public List<GroupMemberDto> getMembersByGroupId(Long id, Pageable pageable) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).get();
-        List<Participation> list = participationRepository.findByParticipationStateIsTrue(groupWallet.getGroupWalletId());
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElse(null);
+        List<Participation> list = participationRepository.findByGroupWalletAndParticipationState(groupWallet, ParticipationState.PARTICIPATED);
+        List<GroupMemberDto> dtoList = new ArrayList<>();
         for (Participation participation : list) {
-            participation.
+            Member member = memberRepository.findById(participation.getMemberId()).orElse(null);
+            dtoList.add(GroupMemberDto.builder()
+                    .build());
         }
-//        return GroupMemberRepository.findall();
+        return dtoList;
     }
 
 

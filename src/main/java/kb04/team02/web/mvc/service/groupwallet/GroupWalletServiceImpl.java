@@ -19,8 +19,7 @@ import java.util.List;
 @Transactional
 public class GroupWalletServiceImpl implements GroupWalletService {
 
-    @Autowired
-    private GroupWalletRespository groupWalletRep;
+    private final GroupWalletRespository groupWalletRep;
 
     @Override
     public List<WalletDto> selectAllMyGroupWallet(Long memberId) {

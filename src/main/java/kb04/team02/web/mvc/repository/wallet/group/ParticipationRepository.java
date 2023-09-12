@@ -1,8 +1,6 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
-import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
-import kb04.team02.web.mvc.domain.wallet.group.GroupWalletForeignCurrencyBalance;
-import kb04.team02.web.mvc.domain.wallet.group.Participation;
+import kb04.team02.web.mvc.domain.wallet.group.*;
 import kb04.team02.web.mvc.domain.wallet.group.Participation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -20,7 +18,9 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
      * on m.member_id = p.member_id where p.group_wallet_id = “현재세션모임지갑”
      **/
     // -> join하는거 보류.
-    List<Participation> findByParticipationStateIsTrue(Long groupWalletId);
+//    List<Participation> findByParticipationStateIsTrue(Long groupWalletId);
+
+    List<Participation> findByGroupWalletAndParticipationState(GroupWallet groupWallet, ParticipationState state);
 
     /**
      * ROWNUM 17

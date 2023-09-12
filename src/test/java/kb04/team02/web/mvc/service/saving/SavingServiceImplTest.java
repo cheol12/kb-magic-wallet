@@ -3,6 +3,7 @@ package kb04.team02.web.mvc.service.saving;
 import kb04.team02.web.mvc.domain.saving.Saving;
 import kb04.team02.web.mvc.dto.SavingDto;
 import kb04.team02.web.mvc.repository.saving.SavingRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ class SavingServiceImplTest {
 
     @Autowired
     private SavingRepository savingRepository;
+
+    @AfterEach
+    public void afterEach() {
+        savingRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("selectSavings")

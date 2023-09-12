@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -47,6 +48,7 @@ public class GroupWallet {
     //== 연관관계 설정 START==//
     @ManyToOne
     @JoinColumn(name = "member_id")
+
     private Member member;
 
     @OneToMany(mappedBy = "groupWallet")

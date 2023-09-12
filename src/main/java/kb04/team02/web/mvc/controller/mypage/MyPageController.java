@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class MyPageController {
 
-    private final MyPageService myPageService;
+//    private final MyPageService myPageService;
 
     /**
      * 마이 페이지
