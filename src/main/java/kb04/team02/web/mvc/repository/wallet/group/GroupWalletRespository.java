@@ -1,6 +1,11 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
+import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
+import kb04.team02.web.mvc.domain.wallet.group.Participation;
+import kb04.team02.web.mvc.dto.GroupWalletDto;
+import kb04.team02.web.mvc.dto.WalletDto;
+import kb04.team02.web.mvc.dto.WalletHistoryDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -32,7 +37,7 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      * 모임지갑 메인화면
      * 나의 모임지갑 전부 검색
      * */
-    List<GroupWallet> findAllByOrderByGroupWalletId(Long memberId);
+    List<WalletDto> findAllByMemberOrderByGroupWalletId(Long memberId);
 
 
     /**
@@ -40,8 +45,10 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      * 모임지갑 상세화면
      * 선택한 나의 모임지갑의 모든 거래내역(외화내역, 이체내역, 환전내역)
      */
-//    List<GroupWallet>
+    List<WalletHistoryDto> findAllByGroupWalletIdOrderByInsertDate(Long groupWalletId);
 //    여러 종류의 거래내역을 오버라이딩해서 한 번에 불러오는 게 헷갈림다
+
+    //
 
 
     /**
@@ -49,7 +56,7 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      * 모임지갑 삭제
      * 선택한 나의 모임지갑을 삭제한다. (모임장만 가능)
      * */
-    GroupWallet deleteGroupWalletByGroupWalletId(Long groupWalletId);
+    int deleteGroupWalletByGroupWalletId(Long groupWalletId);
 
 
     // ROWNUM 15번 : 나의 모임지갑에 새로운 모임원 초대링크 보내기 (모임장만 가능) = ? : 모르겠슴다
@@ -64,12 +71,12 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      *
      * SQL
      *
-     * update participation
-     * set state = ‘참여안함’
-     * where member_id = ‘선택한 모임원 id’
-     *
+     * 그냥 해당 모임원을 삭제하기
+     * delete from participation
+     * where group_wallet_id = ? and member_id = ?;
      * JPA : ParticipationRepository.save(int memberId);
      * */
+    int deleteByGroupWalletIdAndMember(Long groupWalletId, Long memberId);
 
     /**
      * ROWNUM 19
@@ -89,7 +96,12 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      * */
 
 
-    // ROWNUM 21 : 나의 모임지갑에 회비 납부 메시지를 보내기 = ? : 모르겠슴다
+    /**
+     * ROWNUM 21
+     * 내 모임지갑에 회비 납부 메시지 보내기
+     *
+     * 미완성????
+     * */
 
 
     /**
@@ -102,4 +114,22 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      *
      * JPA : GroupWalletRepository.save(GroupWallet groupWallet);
      * */
+
+    /**
+     * ROWNUM 16
+     * 내 모임지갑의 모임원 리스트 불러오기
+     *
+     * select m.name, p.authority from member m
+     * left outer join participation p
+     * on m.member_id = p.member_id where p.group_wallet_id = “현재세션모임지갑”
+     **/
+    // -> join하는거 보류.
+    List<Participation> findByParticipationStateIsTrue(Long groupWalletId);
+
+    /**
+     * ROWNUM 4
+     * 내가 모임장인 모임지갑 리스트
+     */
+    List<GroupWallet> findByMember(Member member);
+
 }
