@@ -1,9 +1,7 @@
 package kb04.team02.web.mvc.service.personalwallet;
 
-import kb04.team02.web.mvc.domain.member.Member;
-import kb04.team02.web.mvc.dto.PersonalWalletDto;
+import kb04.team02.web.mvc.domain.member.Member;;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
-import org.springframework.stereotype.Service;
 
 public interface PersonalWalletService {
 

@@ -4,6 +4,7 @@ import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.personal.*;
 import kb04.team02.web.mvc.dto.PersonalWalletDto;
+import kb04.team02.web.mvc.dto.WalletDetailDto;
 import kb04.team02.web.mvc.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.repository.wallet.personal.*;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,8 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
     private final PersonalWalletForeignCurrencyBalanceRepository personalWalletForeignCurrencyBalanceRepository;
 
     @Override
-    public PersonalWalletDto personalWallet(Member member) {
-        PersonalWalletDto dto = new PersonalWalletDto();
+    public WalletDetailDto personalWallet(Member member) {
+        WalletDetailDto dto = new WalletDetailDto();
 
         PersonalWallet personalWallet = personalWalletRepository.findByMember(member);
         List<PersonalWalletForeignCurrencyBalance> personalWalletForeignCurrencyBalances
@@ -49,32 +50,32 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
 //        }
 
         //== 미완성
-        for (PersonalWalletTransfer transfer : personalWalletTransfers) {
-            dto.getList().add(new WalletHistoryDto(transfer.getInsertDate(),
-                    transfer.getDest(),
-                    transfer.getToType().name(),
-                    transfer.getCurrencyCode().name(),
-                    transfer.getAmount(),
-                    transfer.getAfterBalance()));
-        }
-
-        for (PersonalWalletExchange exchange : personalWalletExchanges) {
-            dto.getList().add(new WalletHistoryDto(exchange.getInsertDate(),
-                    exchange.getSellCurrencyCode().name(),
-                    "환전",
-                    exchange.getBuyCurrencyCode().name(),
-                    exchange.getBuyAmount(),
-                    exchange.getAfterBuyBalance()));
-        }
-
-        for (PersonalWalletTransfer transfer : personalWalletTransfers) {
-            dto.getList().add(new WalletHistoryDto(transfer.getInsertDate(),
-                    transfer.getDest(),
-                    transfer.getToType().name(),
-                    transfer.getCurrencyCode().name(),
-                    transfer.getAmount(),
-                    transfer.getAfterBalance()));
-        }
+//        for (PersonalWalletTransfer transfer : personalWalletTransfers) {
+//            dto.getList().add(new WalletHistoryDto(transfer.getInsertDate(),
+//                    transfer.getDest(),
+//                    transfer.getToType().name(),
+//                    transfer.getCurrencyCode().name(),
+//                    transfer.getAmount(),
+//                    transfer.getAfterBalance()));
+//        }
+//
+//        for (PersonalWalletExchange exchange : personalWalletExchanges) {
+//            dto.getList().add(new WalletHistoryDto(exchange.getInsertDate(),
+//                    exchange.getSellCurrencyCode().name(),
+//                    "환전",
+//                    exchange.getBuyCurrencyCode().name(),
+//                    exchange.getBuyAmount(),
+//                    exchange.getAfterBuyBalance()));
+//        }
+//
+//        for (PersonalWalletTransfer transfer : personalWalletTransfers) {
+//            dto.getList().add(new WalletHistoryDto(transfer.getInsertDate(),
+//                    transfer.getDest(),
+//                    transfer.getToType().name(),
+//                    transfer.getCurrencyCode().name(),
+//                    transfer.getAmount(),
+//                    transfer.getAfterBalance()));
+//        }
         return dto;
     }
 
