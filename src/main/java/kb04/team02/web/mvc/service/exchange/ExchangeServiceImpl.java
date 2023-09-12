@@ -1,14 +1,23 @@
 package kb04.team02.web.mvc.service.exchange;
 
+import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
+import kb04.team02.web.mvc.domain.member.Role;
+import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
+import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
 import kb04.team02.web.mvc.dto.BankDto;
 import kb04.team02.web.mvc.dto.ExchangeDto;
 import kb04.team02.web.mvc.dto.OfflineReceiptDto;
 import kb04.team02.web.mvc.dto.WalletDto;
 import kb04.team02.web.mvc.repository.bank.BankRepository;
+import kb04.team02.web.mvc.repository.bank.OfflineReceiptRepository;
+import kb04.team02.web.mvc.repository.wallet.group.GroupWalletRespository;
+import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,6 +25,9 @@ import java.util.stream.Collectors;
 public class ExchangeServiceImpl implements ExchangeService{
 
     private final BankRepository bankRepository;
+    private final OfflineReceiptRepository offlineReceiptRepository;
+    private final PersonalWalletRepository personalWalletRepository;
+    private final GroupWalletRespository groupWalletRespository;
 
     @Override
     public List<BankDto> bankList() {
@@ -28,17 +40,43 @@ public class ExchangeServiceImpl implements ExchangeService{
 
     @Override
     public List<WalletDto> chairManWalletList() {
+
         return null;
     }
 
     @Override
     public Long selectedWalletBalance() {
+
         return null;
     }
 
     @Override
-    public List<OfflineReceiptDto> offlineReceiptHistory() {
-        return null;
+    public List<OfflineReceiptDto> offlineReceiptHistory(Long personalWalletId, Map<Long, Role> map) {
+
+        // 개인지갑 -> 환전 내역
+        PersonalWallet personalWallet = personalWalletRepository.findById(personalWalletId).orElse(null);
+        List<OfflineReceiptDto> pwReceiptHistory = offlineReceiptRepository.findAllByPersonalWallet(personalWallet).stream()
+                .map(OfflineReceiptDto::toPersonalOfflineReceiptDto)
+                .collect(Collectors.toList());
+
+        // 모임지갑 -> 환전 내역
+        List<OfflineReceipt> gwOfflineReceiptList = new ArrayList<>();
+        for(Long gwId : map.keySet()){
+            GroupWallet groupWallet = groupWalletRespository.findById(gwId).orElse(null);
+            gwOfflineReceiptList.addAll(offlineReceiptRepository.findAllByGroupWallet(groupWallet));
+        }
+
+        List<OfflineReceiptDto> gwReceiptHistory = gwOfflineReceiptList.stream()
+                .map(OfflineReceiptDto::toGroupOfflineReceiptDto)
+                .collect(Collectors.toList());
+
+
+        // 개인지갑 내역 + 모임지갑 내역
+        List<OfflineReceiptDto> resList = new ArrayList<>();
+        resList.addAll(pwReceiptHistory);
+        resList.addAll(gwReceiptHistory);
+
+        return resList;
     }
 
     @Override

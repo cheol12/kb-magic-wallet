@@ -2,12 +2,14 @@ package kb04.team02.web.mvc.service.exchange;
 
 import kb04.team02.web.mvc.domain.bank.Bank;
 import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
+import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.dto.BankDto;
 import kb04.team02.web.mvc.dto.ExchangeDto;
 import kb04.team02.web.mvc.dto.OfflineReceiptDto;
 import kb04.team02.web.mvc.dto.WalletDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ExchangeService {
 
@@ -61,7 +63,7 @@ public interface ExchangeService {
      *  - 수령일자
      *  - 상태코드(수령여부)
      */
-    List<OfflineReceiptDto> offlineReceiptHistory();
+    List<OfflineReceiptDto> offlineReceiptHistory(Long personalWalletId, Map<Long, Role> map);
 
     /**
      * 오프라인 환전 요청
