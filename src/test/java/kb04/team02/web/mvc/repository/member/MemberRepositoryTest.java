@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 @Commit // DML 작업 시 필수
 class MemberRepositoryTest {
 

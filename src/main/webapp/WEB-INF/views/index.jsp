@@ -11,6 +11,8 @@
     <title>Title</title>
 </head>
 <body>
+
+<jsp:include page="common/navbar.jsp"/>
 <h1>깨비의 요술지갑</h1>
 <button>모임지갑</button><br>
 <button>개인지갑</button><br>
