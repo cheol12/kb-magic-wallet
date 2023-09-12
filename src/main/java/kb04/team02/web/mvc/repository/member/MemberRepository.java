@@ -4,6 +4,8 @@ import kb04.team02.web.mvc.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
     /*
@@ -28,6 +30,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
       JPA: X
      */
-    Member findById(String id);
+    Optional<Member> findById(String id);
 
+    /**
+     *
+     * @param id 로그인 아이디
+     * @param password 로그인 비밀번호
+     * @return
+     */
+    Optional<Member> findByIdAndPassword(String id, String password);
 }

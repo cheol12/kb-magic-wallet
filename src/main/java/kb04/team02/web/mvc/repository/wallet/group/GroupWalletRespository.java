@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
+import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.Participation;
 import kb04.team02.web.mvc.dto.GroupWalletDto;
@@ -114,13 +115,6 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      * JPA : GroupWalletRepository.save(GroupWallet groupWallet);
      * */
 
-
-    /**
-     *
-     * */
-
-
-
     /**
      * ROWNUM 16
      * 내 모임지갑의 모임원 리스트 불러오기
@@ -131,4 +125,11 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      **/
     // -> join하는거 보류.
     List<Participation> findByParticipationStateIsTrue(Long groupWalletId);
+
+    /**
+     * ROWNUM 4
+     * 내가 모임장인 모임지갑 리스트
+     */
+    List<GroupWallet> findByMember(Member member);
+
 }
