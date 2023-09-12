@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.controller.exchange;
 
 import kb04.team02.web.mvc.domain.bank.Bank;
+import kb04.team02.web.mvc.dto.OfflineReceiptDto;
 import kb04.team02.web.mvc.service.exchange.ExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -52,7 +53,7 @@ public class ExchangeController {
      */
     @PostMapping("/offline/form")
     public String exchangeOffline() {
-        exchangeService.requestOfflineReceipt();
+        int result = exchangeService.requestOfflineReceipt();
         return "redirect:/offline";
     }
 
@@ -62,8 +63,8 @@ public class ExchangeController {
      */
     @ResponseBody
     @DeleteMapping("/offline/form")
-    public List<Class> exchangeOfflineCancel(Long exchange_id) {
-        return null;
+    public List<OfflineReceiptDto> exchangeOfflineCancel(Long exchange_id) {
+        return exchangeService.cancelOfflineReceipt();
     }
 
     /**
