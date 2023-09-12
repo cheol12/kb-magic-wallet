@@ -32,6 +32,7 @@ public interface ExchangeService {
      *  - wallet seq
      *  - 권한
      *  - 지갑 이름
+     *  - 지갑 구분
      */
     List<WalletDto> chairManWalletList();
 

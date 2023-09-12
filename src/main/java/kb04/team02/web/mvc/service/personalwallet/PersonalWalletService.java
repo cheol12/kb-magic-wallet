@@ -2,6 +2,7 @@ package kb04.team02.web.mvc.service.personalwallet;
 
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.dto.PersonalWalletDto;
+import kb04.team02.web.mvc.dto.WalletDetailDto;
 import org.springframework.stereotype.Service;
 
 public interface PersonalWalletService {
@@ -18,7 +19,7 @@ public interface PersonalWalletService {
      * @param member 조회할 개인지갑 id
      * @return 개인지갑에 필요한 DTO
      */
-    PersonalWalletDto personalWallet(Member member);
+    WalletDetailDto personalWallet(Member member);
 
     /**
      * 개인지갑 충전 서비스

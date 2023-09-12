@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.controller.exchange;
 
 import kb04.team02.web.mvc.domain.bank.Bank;
+import kb04.team02.web.mvc.dto.BankDto;
 import kb04.team02.web.mvc.dto.OfflineReceiptDto;
 import kb04.team02.web.mvc.service.exchange.ExchangeService;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class ExchangeController {
      */
     @GetMapping("/offline/form")
     public String exchangeOfflineForm(Model model) {
-        List<Bank> bankList = exchangeService.bankList();
+        List<BankDto> bankList = exchangeService.bankList();
         model.addAttribute("bankList", bankList);
         return "exchange/offline/form";
     }

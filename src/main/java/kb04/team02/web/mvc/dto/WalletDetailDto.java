@@ -13,11 +13,9 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonalWalletDto {
-    private Long KRWBalance;
-    private Long USDBalance;
-    private Long JPYBalance;
-
+public class WalletDetailDto {
+    Map<String, Long> balance;
     private List<WalletHistoryDto> list;
+
 
 }

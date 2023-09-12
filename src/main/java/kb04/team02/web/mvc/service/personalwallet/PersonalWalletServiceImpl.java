@@ -35,18 +35,18 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
         List<PersonalWalletTransfer> personalWalletTransfers
                 = personalWalletTransferRepository.searchAllByPersonalWallet(personalWallet);
 
-        // 잔액 dto 변환 완료
-        dto.setKRWBalance(personalWallet.getBalance());
-        for (PersonalWalletForeignCurrencyBalance balance : personalWalletForeignCurrencyBalances) {
-            switch (balance.getCurrencyCode()) {
-                case USD:
-                    dto.setUSDBalance(balance.getBalance());
-                    break;
-                case JPY:
-                    dto.setJPYBalance(balance.getBalance());
-                    break;
-            }
-        }
+//        // 잔액 dto 변환 완료
+//        dto.setKRWBalance(personalWallet.getBalance());
+//        for (PersonalWalletForeignCurrencyBalance balance : personalWalletForeignCurrencyBalances) {
+//            switch (balance.getCurrencyCode()) {
+//                case USD:
+//                    dto.setUSDBalance(balance.getBalance());
+//                    break;
+//                case JPY:
+//                    dto.setJPYBalance(balance.getBalance());
+//                    break;
+//            }
+//        }
 
         //== 미완성
         for (PersonalWalletTransfer transfer : personalWalletTransfers) {
