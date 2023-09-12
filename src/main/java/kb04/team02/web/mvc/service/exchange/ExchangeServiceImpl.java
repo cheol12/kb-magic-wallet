@@ -4,15 +4,21 @@ import kb04.team02.web.mvc.domain.bank.Bank;
 import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
 import kb04.team02.web.mvc.domain.bank.ReceiptState;
 import kb04.team02.web.mvc.domain.member.Role;
+import kb04.team02.web.mvc.domain.wallet.common.WalletExchange;
+import kb04.team02.web.mvc.domain.wallet.common.WalletType;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
+import kb04.team02.web.mvc.domain.wallet.group.GroupWalletExchange;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
+import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletExchange;
 import kb04.team02.web.mvc.dto.BankDto;
 import kb04.team02.web.mvc.dto.ExchangeDto;
 import kb04.team02.web.mvc.dto.OfflineReceiptDto;
 import kb04.team02.web.mvc.dto.WalletDto;
 import kb04.team02.web.mvc.repository.bank.BankRepository;
 import kb04.team02.web.mvc.repository.bank.OfflineReceiptRepository;
+import kb04.team02.web.mvc.repository.wallet.group.GroupWalletExchangeRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletRespository;
+import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletExchangeRepository;
 import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,11 +33,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ExchangeServiceImpl implements ExchangeService{
 
+    private final EntityManager em;
     private final BankRepository bankRepository;
     private final OfflineReceiptRepository offlineReceiptRepository;
     private final PersonalWalletRepository personalWalletRepository;
     private final GroupWalletRespository groupWalletRespository;
-    private final EntityManager em;
+    private final PersonalWalletExchangeRepository personalWalletExchangeRepository;
+    private final GroupWalletExchangeRepository groupWalletExchangeRepository;
 
     @Override
     public List<BankDto> bankList() {
@@ -85,6 +93,9 @@ public class ExchangeServiceImpl implements ExchangeService{
 
     @Override
     public int requestOfflineReceipt(OfflineReceiptDto offlineReceiptDto) {
+
+        // balance보다 높은 금액을 신청한 경우 예외 발생
+
         Bank bank = bankRepository.findById(offlineReceiptDto.getBankId()).get();
         GroupWallet groupWallet = groupWalletRespository.findById(offlineReceiptDto.getOfflineReceiptId()).get();
         PersonalWallet personalWallet = personalWalletRepository.findById(offlineReceiptDto.getPersonalWalletId()).get();
@@ -101,8 +112,6 @@ public class ExchangeServiceImpl implements ExchangeService{
                         .build()
         );
 
-        // 예외처리...
-
         return 1;
     }
     
@@ -118,6 +127,25 @@ public class ExchangeServiceImpl implements ExchangeService{
 
     @Override
     public int requestExchangeOnline(ExchangeDto exchangeDto) {
-        return 0;
+
+        // balance보다 높은 금액을 신청한 경우 예외 발생
+        // 일단 원화 -> 외화 환전일 경우만..
+
+
+        if(exchangeDto.getWalletType().equals(WalletType.PERSONAL_WALLET)){
+            // 개인지갑 -> 환전일 경우
+            PersonalWallet personalWallet = personalWalletRepository.findById(exchangeDto.getWalletId()).get();
+            PersonalWalletExchange personalWalletExchange = ExchangeDto.toPersonalEntity(exchangeDto, personalWallet);
+            personalWalletExchangeRepository.save(personalWalletExchange);
+        } else if (exchangeDto.getWalletType().equals(WalletType.GROUP_WALLET)) {
+            // 모임지갑 -> 환전일 경우
+            GroupWallet groupWallet = groupWalletRespository.findById(exchangeDto.getWalletId()).get();
+            GroupWalletExchange groupWalletExchange = ExchangeDto.toGroupEntity(exchangeDto, groupWallet);
+            groupWalletExchangeRepository.save(groupWalletExchange);
+        }
+
+        // 예외 처리...
+
+        return 1;
     }
 }

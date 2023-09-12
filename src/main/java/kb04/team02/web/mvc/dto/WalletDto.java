@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.dto;
 
 import kb04.team02.web.mvc.domain.member.Role;
+import kb04.team02.web.mvc.domain.wallet.common.WalletType;
 import lombok.*;
 
 @AllArgsConstructor
@@ -18,6 +19,6 @@ public class WalletDto {
     private Long groupWalletId;
     private String nickname;
     private Role role;
-    private String walletType;
+    private WalletType walletType;
 
 }
