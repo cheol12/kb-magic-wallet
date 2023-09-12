@@ -14,22 +14,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class WalletHistoryDto {
 
+    //==common==/
     private LocalDateTime dateTime;
-    private String dest;
     private String type;
-    private String currencyCode;
-    private Long amount;
-    private Long afterBalance;
-
-//    public static WalletHistoryDto toDto(Transfer transfer) {
-//        return new WalletHistoryDto()
-//    }
-//
-//    public static WalletHistoryDto toDto(WalletExchange exchange) {
-//        return new WalletHistoryDto()
-//    }
-//
-//    public static WalletHistoryDto toDto(Payment payment) {
-//        return new WalletHistoryDto()
-//    }
+    private String detail;
+    private String amount;
+    private String balance;
 }
