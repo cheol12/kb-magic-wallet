@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.service.personalwallet;
 
 import kb04.team02.web.mvc.domain.member.Member;;
+import kb04.team02.web.mvc.dto.PersonalWalletTransferDto;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
 
 public interface PersonalWalletService {
@@ -27,7 +28,7 @@ public interface PersonalWalletService {
      * @param personalWalletTransferDto 사용자가 입력한 폼 데이터
      * @return 개인지갑 이체내역에 넣은 이체 내역 DTO
      */
-//    PersonalWalletTransferDto personalWalletDeposit(PersonalWalletTransferDto personalWalletTransferDto);
+    PersonalWalletTransferDto personalWalletDeposit(PersonalWalletTransferDto personalWalletTransferDto);
 
     /**
      * 개인지갑 환불 서비스
@@ -37,5 +38,5 @@ public interface PersonalWalletService {
      * @param personalWalletTransferDto 사용자가 입력한 폼 데이터
      * @return 개인지갑 이체내역에 넣은 이체 내역 DTO
      */
-//    PersonalWalletTransferDto personalWalletWithdraw(PersonalWalletTransferDto personalWalletTransferDto);
+    PersonalWalletTransferDto personalWalletWithdraw(PersonalWalletTransferDto personalWalletTransferDto);
 }

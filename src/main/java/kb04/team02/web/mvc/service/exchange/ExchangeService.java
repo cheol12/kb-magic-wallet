@@ -53,6 +53,7 @@ public interface ExchangeService {
      * 오프라인 환전 페이지에 들어갔을 때, 보여질 자신의 환전 신청 내역 리스트 반환
      * 
      * OfflineReceiptDto
+     *  - 수령 내역 Seq
      *  - 수령 지점명
      *  - 금액
      *  - 통화

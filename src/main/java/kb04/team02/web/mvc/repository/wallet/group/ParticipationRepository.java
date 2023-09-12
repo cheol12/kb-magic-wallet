@@ -25,14 +25,20 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     /**
      * ROWNUM 17
      * 내 모임지갑에서 본인이 탈퇴하기
-     *
+     * <p>
      * SQL
-     *
+     * <p>
      * update participation
      * set state = ‘참여안함’
      * where member_id = ‘현재 나의 세션’
-     *
+     * <p>
      * JPA : ParticipationRepository.save(int memberId);
-     * */
+     */
 
+    /**
+     * 내가 참여중/참여했던 모임지갑
+     * @param memberId
+     * @return
+     */
+    List<Participation> findByMemberId(Long memberId);
 }

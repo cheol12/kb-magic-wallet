@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 public interface MyPageService {
 
     /**
-     * 카드신청
+     * 카드 새로 신청
      * <p>
      * 0) 멤버 존재하는지 memberId로 확인
      * 1) 멤버의 카드가 모두 정지되어 있는지 확인

@@ -16,6 +16,4 @@ import java.util.Map;
 public class WalletDetailDto {
     Map<String, Long> balance;
     private List<WalletHistoryDto> list;
-
-
 }
