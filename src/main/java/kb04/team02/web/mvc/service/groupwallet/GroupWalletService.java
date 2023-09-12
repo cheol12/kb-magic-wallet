@@ -6,6 +6,7 @@ import kb04.team02.web.mvc.domain.wallet.group.GroupWalletTransfer;
 import kb04.team02.web.mvc.dto.TransferDto;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
 import kb04.team02.web.mvc.dto.WalletDto;
+import kb04.team02.web.mvc.dto.WalletHistoryDto;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public interface GroupWalletService {
      * *  - 지갑 이름
      * *  - 지갑 구분
      */
-    List<WalletDto> selectAllMyGroupWallet(int memberId);
+    List<WalletDto> selectAllMyGroupWallet(Long memberId);
 
     /**
      * 모임지갑 생성하기
@@ -41,16 +42,16 @@ public interface GroupWalletService {
      * API 명세서 ROWNUM:13
      *
      * @param groupWalletId 조회할 모임지갑 id
-     * @return GroupWallet 객체 보여주기
+     * @return WalletHistoryDto = 해당 GroupWallet의 모든 내역
      */
-    WalletDetailDto getGroupWalletDetail(Long groupWalletId);
+    List<WalletHistoryDto> getGroupWalletDetail(Long groupWalletId);
 
     /**
      * 모임지갑 삭제 요청
      * API 명세서 ROWNUM:14
      *
      * @param groupWalletId 삭제할 모임지갑 id
-     * @return void
+     * @return int
      */
     int deleteGroupWallet(Long groupWalletId);
 
@@ -59,18 +60,46 @@ public interface GroupWalletService {
      * API 명세서 ROWNUM:15
      *
      * @param groupWalletId 초대링크를 생성할 모임지갑 id
-     * @return void
+     * @return String
      */
     String inviteMember(Long groupWalletId);
 
     /**
-     * 모임지갑 자진 탈퇴 요청
+     * 모임지갑 탈퇴 요청
      * API 명세서 ROWNUM:17
      *
-     * @param groupWalletId,memberId 자진 탈퇴 요청 모임지갑 id, 탈퇴할 사람의 식별번호
-     * @return GroupWallet
+     * @param groupWalletId,memberId 탈퇴 요청 모임지갑 id, 탈퇴할 사람의 식별번호
+     * @return int
      */
     int groupWalletMemberOut(Long groupWalletId, Long memberId);
+
+    /**
+     * 모임지갑 회비 규칙 불러오기
+     * API 명세서 ROWNUM:19
+     *
+     * @param groupWalletId
+     * @return GroupWallet
+     * */
+    GroupWallet getGroupWalletDueRule(Long groupWalletId, int dueDate, Long due);
+
+    /**
+     * 모임지갑 회비 규칙 설정하기
+     * API 명세서 ROWNUM:20
+     *
+     * @param groupWalletId,groupWallet
+     * @return
+     * */
+    GroupWallet setGroupWalletDueRule(Long groupWalletId, GroupWallet groupWallet);
+
+    /**
+     * 모임지갑 회비 규칙 삭제하기
+     * API 명세서 ROWNUM:22
+     *
+     * @param groupWalletId
+     * @return GroupWallet
+     * */
+    GroupWallet deleteGroupWalletDueRule(Long groupWalletId);
+
 
     /**
      * 모임지갑 꺼내기 요청
