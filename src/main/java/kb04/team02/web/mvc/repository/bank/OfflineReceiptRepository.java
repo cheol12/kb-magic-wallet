@@ -24,7 +24,7 @@ public interface OfflineReceiptRepository extends JpaRepository<OfflineReceipt, 
     List<OfflineReceipt> findAllByPersonalWalletOrGroupWallet(PersonalWallet personalWallet, GroupWallet groupWallet);
 
     /*
-    ROWNUM 43
+    ROWNUM 44
 
     SQL
     insert into offline_receipt
@@ -36,7 +36,7 @@ public interface OfflineReceiptRepository extends JpaRepository<OfflineReceipt, 
      */
 
     /*
-    ROWNUM 43
+    ROWNUM 45
 
     SQL
     update offline_receipt
@@ -45,6 +45,11 @@ public interface OfflineReceiptRepository extends JpaRepository<OfflineReceipt, 
 
     JPA: OfflineReceiptRepository.save(OfflineReceipt offlineReceipt)
      */
+
+    /*
+    ROWNUM
+     */
+
 
 
 }

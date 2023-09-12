@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.controller.exchange;
 
+import kb04.team02.web.mvc.domain.bank.Bank;
 import kb04.team02.web.mvc.service.exchange.ExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,7 @@ public class ExchangeController {
      */
     @GetMapping("/offline")
     public String exchangeOfflineIndex(HttpSession session, Model model) {
+
         return null;
     }
 
@@ -38,7 +40,10 @@ public class ExchangeController {
      * API 명세서 ROWNUM:43
      */
     @GetMapping("/offline/form")
-    public void exchangeOfflineForm() {
+    public String exchangeOfflineForm(Model model) {
+        List<Bank> bankList = exchangeService.bankList();
+        model.addAttribute("bankList", bankList);
+        return "exchange/offline/form";
     }
 
     /**
@@ -47,6 +52,7 @@ public class ExchangeController {
      */
     @PostMapping("/offline/form")
     public String exchangeOffline() {
+        exchangeService.requestOfflineReceipt();
         return "redirect:/offline";
     }
 
