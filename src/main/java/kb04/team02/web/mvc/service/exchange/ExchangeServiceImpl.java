@@ -2,6 +2,7 @@ package kb04.team02.web.mvc.service.exchange;
 
 import kb04.team02.web.mvc.domain.bank.Bank;
 import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
+import kb04.team02.web.mvc.domain.bank.ReceiptState;
 import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
@@ -16,6 +17,7 @@ import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ public class ExchangeServiceImpl implements ExchangeService{
     private final OfflineReceiptRepository offlineReceiptRepository;
     private final PersonalWalletRepository personalWalletRepository;
     private final GroupWalletRespository groupWalletRespository;
+    private final EntityManager em;
 
     @Override
     public List<BankDto> bankList() {
@@ -104,8 +107,13 @@ public class ExchangeServiceImpl implements ExchangeService{
     }
     
     @Override
-    public List<OfflineReceiptDto> cancelOfflineReceipt() {
-        return null;
+    public int cancelOfflineReceipt(Long receipt_id) {
+        OfflineReceipt offlineReceipt = em.find(OfflineReceipt.class, receipt_id);
+
+        // 예외처리 offlineReceipt == null
+
+        offlineReceipt.setReceiptState(ReceiptState.CANCEL);
+        return 1;
     }
 
     @Override

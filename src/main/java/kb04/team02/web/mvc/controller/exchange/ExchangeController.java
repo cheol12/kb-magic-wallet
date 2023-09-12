@@ -68,17 +68,17 @@ public class ExchangeController {
     @PostMapping("/offline/form")
     public String exchangeOffline(OfflineReceiptDto offlineReceiptDto) {
         int result = exchangeService.requestOfflineReceipt(offlineReceiptDto);
-        return "redirect:/offline";
+        return "redirect:/exchange/offline";
     }
 
     /**
      * 오프라인 환전 취소 요청
      * API 명세서 ROWNUM:45
      */
-    @ResponseBody
     @DeleteMapping("/offline/form")
-    public List<OfflineReceiptDto> exchangeOfflineCancel(Long exchange_id) {
-        return exchangeService.cancelOfflineReceipt();
+    public String exchangeOfflineCancel(Long receipt_id) {
+        int res = exchangeService.cancelOfflineReceipt(receipt_id);
+        return "redirect:/exchange/offline";
     }
 
     /**

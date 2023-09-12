@@ -86,7 +86,7 @@ public interface ExchangeService {
      * 환전 취소 시, rest로 자신의 환전 신청 내역을 리스트로 전송하여 환전 메인페이지를 리프레시한다
      * OfflineReceiptDto 리스트 반환
      */
-    List<OfflineReceiptDto> cancelOfflineReceipt();
+    int cancelOfflineReceipt(Long receipt_id);
 
     /**
      * 온라인 환전 신청
