@@ -17,7 +17,7 @@ public interface GroupWalletTabService {
      * @param pageable
      * @return
      */
-    List<GroupMemberDto> getMembersByGroupId(String id, Pageable pageable);
+    List<GroupMemberDto> getMembersByGroupId(Long id, Pageable pageable);
 
     /**
      * 모임지갑 모임원 삭제
@@ -55,7 +55,7 @@ public interface GroupWalletTabService {
      * @param ruleDto
      * @return
      */
-    boolean createRule(RuleDto ruleDto);
+    boolean createRule(Long id, RuleDto ruleDto);
 
     /**
      * 모임지갑 회비 납부 요청 요청
