@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
+import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -102,4 +103,9 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      *
      * JPA : GroupWalletRepository.save(GroupWallet groupWallet);
      * */
+
+    /**
+     * 내가 모임장인 모임지갑
+     */
+    List<GroupWallet> findByMember(Member member);
 }
