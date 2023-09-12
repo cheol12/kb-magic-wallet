@@ -15,4 +15,8 @@ public interface BankRepository extends JpaRepository<Bank, Long> {
 
     JPA: BankRepository.findAll()
     */
+
+    /*
+    ROWNUM
+    */
 }

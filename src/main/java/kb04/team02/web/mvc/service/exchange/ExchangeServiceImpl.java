@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.service.exchange;
 
+import kb04.team02.web.mvc.domain.bank.Bank;
 import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
 import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
@@ -81,7 +82,25 @@ public class ExchangeServiceImpl implements ExchangeService{
 
     @Override
     public int requestOfflineReceipt(OfflineReceiptDto offlineReceiptDto) {
-        return 0;
+        Bank bank = bankRepository.findById(offlineReceiptDto.getBankId()).get();
+        GroupWallet groupWallet = groupWalletRespository.findById(offlineReceiptDto.getOfflineReceiptId()).get();
+        PersonalWallet personalWallet = personalWalletRepository.findById(offlineReceiptDto.getPersonalWalletId()).get();
+
+        OfflineReceipt offlineReceipt = offlineReceiptRepository.save(
+                OfflineReceipt.builder()
+                        .receiptDate(offlineReceiptDto.getReceiptDate())
+                        .currencyCode(offlineReceiptDto.getCurrencyCode())
+                        .amount(offlineReceiptDto.getAmount())
+                        .receiptState(offlineReceiptDto.getReceiptState())
+                        .bank(bank)
+                        .personalWallet(personalWallet)
+                        .groupWallet(groupWallet)
+                        .build()
+        );
+
+        // 예외처리...
+
+        return 1;
     }
     
     @Override
