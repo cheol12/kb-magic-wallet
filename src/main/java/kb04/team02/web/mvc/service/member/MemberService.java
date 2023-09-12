@@ -3,6 +3,9 @@ package kb04.team02.web.mvc.service.member;
 import kb04.team02.web.mvc.dto.MemberLoginDto;
 import kb04.team02.web.mvc.dto.MemberRegisterDto;
 import kb04.team02.web.mvc.dto.LoginMemberDto;
+import kb04.team02.web.mvc.exception.LoginException;
+import kb04.team02.web.mvc.exception.RegisterException;
+
 
 public interface MemberService {
 
@@ -13,7 +16,7 @@ public interface MemberService {
      *
      * @param memberRegisterDto
      */
-    void register(MemberRegisterDto memberRegisterDto);
+    void register(MemberRegisterDto memberRegisterDto) throws RegisterException;
 
     /**
      * 로그인
@@ -21,5 +24,5 @@ public interface MemberService {
      * @param memberLoginDto id, password
      * @return 로그인 되면 LoginMemberDto 정보 채워서 반환, 안되면 null 반환
      */
-    LoginMemberDto login(MemberLoginDto memberLoginDto);
+    LoginMemberDto login(MemberLoginDto memberLoginDto) throws LoginException;
 }
