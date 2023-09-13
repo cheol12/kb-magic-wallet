@@ -71,7 +71,6 @@ public class MemberServiceImpl implements MemberService {
                 .memberId(member.getMemberId())
                 .id(member.getId())
                 .name(member.getName())
-                .bankAccount(member.getBankAccount())
                 .build();
 
         // 지갑 정보

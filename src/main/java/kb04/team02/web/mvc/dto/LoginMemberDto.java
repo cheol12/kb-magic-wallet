@@ -17,8 +17,6 @@ public class LoginMemberDto {
     private Long memberId;
     private String id;
     private String name;
-    private String bankAccount;
-    private String cardNumber;
     private Long personalWalletId;
     Map<Long, Role> groupWalletIdList;
 }
