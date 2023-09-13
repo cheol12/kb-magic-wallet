@@ -17,13 +17,13 @@
 <nav class="navbar">
     <div class="navbar-container container">
         <ul class="menu-items">
-            <li><a href="#">개인 지갑</a></li>
-            <li><a href="#">모임 지갑</a></li>
-            <li><a href="#">환전</a></li>
-            <li><a href="#">적금</a></li>
-            <li><a href="#">마이페이지</a></li>
-            <li><a href="#">회원가입</a></li>
-            <li><a href="#">로그아웃</a></li>
+            <li><a href="/personal-wallet/">개인 지갑</a></li>
+            <li><a href="/group-wallet/">모임 지갑</a></li>
+            <li><a href="/exchange/">환전</a></li>
+            <li><a href="/saving/">적금</a></li>
+            <li><a href="/">마이페이지</a></li>
+            <li><a href="register">회원가입</a></li>
+            <li><a href="/">로그아웃</a></li>
         </ul>
         <h1 class="logo">요술지갑</h1>
     </div>
