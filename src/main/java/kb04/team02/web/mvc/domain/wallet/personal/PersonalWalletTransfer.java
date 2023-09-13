@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+
 @SuperBuilder
 @Entity
 @NoArgsConstructor
