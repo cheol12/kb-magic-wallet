@@ -55,9 +55,28 @@ public class ExchangeServiceImpl implements ExchangeService{
     public List<WalletDto> WalletList(Long memberId) {
         // 일단 지갑리스트 전부 return하고 view에서 선택 못하게
 
-        
+        // 개인 + 모임
+        List<WalletDto> resList = new ArrayList<>();
 
-        return null;
+        // 개인 지갑
+        List<WalletDto> pWalletList = personalWalletRepository.findById(memberId).stream()
+                .map(WalletDto::toPersoanlDto)
+                .collect(Collectors.toList());
+
+        // 모임 지갑
+        // 모임 지갑 없으면 예외...
+        GroupWallet groupWallet = groupWalletRespository.findById(memberId).orElse(null);
+        if(groupWallet != null){
+            List<WalletDto> gWalletList = groupWalletRespository.findById(memberId).stream()
+                    .map(WalletDto::toGroupDto)
+                    .collect(Collectors.toList());
+
+            resList.addAll(gWalletList);
+        }
+
+        resList.addAll(pWalletList);
+
+        return resList;
     }
 
     @Override
