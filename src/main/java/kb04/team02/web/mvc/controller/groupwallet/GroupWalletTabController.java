@@ -353,13 +353,13 @@ public class GroupWalletTabController {
 
         List<CardIssuanceDto> cardIssuanceDtoList = groupWalletTabService.getCard(Long.parseLong(id));
 
-        return cardIssuanceDtoList;
 
-//        if (isCardLinked) {
-//            return "redirect:/group-wallet/{id}/card/list";
-//        } else {
+        if (isCardLinked) {
+            return cardIssuanceDtoList;
+        } else {
+            return null;
 //            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-//        }
+        }
     }
 
     //== 카드 탭 END ==//
