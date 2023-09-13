@@ -1,0 +1,22 @@
+.savingForm{
+    width: auto;
+    height: 500px;
+    background: #757575;
+    border-radius: 50px;
+    margin-top: 50px;
+}
+
+.savingContentForm{
+    margin-left: 150px;
+    margin-top: 50px;
+}
+
+.savingContentForm > .savingHeader{
+    font-size: 50px;
+
+
+}
+
+.savingContentForm > .savingContent{
+    font-size: 30px;
+}
