@@ -330,13 +330,13 @@ public class GroupWalletTabController {
     public List<CardIssuanceDto> groupWalletCardList(@PathVariable String id) {
         List<CardIssuanceDto> cardIssuanceDtoList = groupWalletTabService.getCard(Long.parseLong(id));
 
-        return cardIssuanceDtoList;
 
-//        if (cardIssuanceDtoList != null) {
-//            return "redirect:/group-wallet/{id}/card/list";
-//        } else {
+        if (cardIssuanceDtoList != null) {
+            return cardIssuanceDtoList;
+        } else {
+            return null;
 //            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-//        }
+        }
     }
 
 
