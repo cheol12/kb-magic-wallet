@@ -48,6 +48,8 @@ public class GroupWalletTabController {
         return memberMap;
     }
 
+    //
+
 
 
     //== 모임원 조회 탭 START ==//
@@ -336,22 +338,9 @@ public class GroupWalletTabController {
      *
      * @param id 내역 조회할 모임지갑 id
      */
-    /* @author: hyun
-    // 카드 내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미? 
-    // 3개 다 합친 것? Map으로 만들어야하나?
-    public String groupWalletHistoryList(@PathVariable String id) {
-        History history = groupWalletService.getHistory(id);
-
-        if (history != null) {
-            return "redirect:/group-wallet/{id}/history";
-        } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
-    }
-     */
     @ResponseBody
     @GetMapping("/{id}/history")
-    public HashMap<String, Object> groupWalletHistoryList(@PathVariable String id, Model model, @RequestParam(defaultValue = "1") int nowPage) {
+    public HashMap<String, Object> groupWalletHistoryList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
 //        // 페이징 처리, 내역 날짜순, History.java에 날짜 필드를 어떻게 저장했는지 확인 필요
         Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
         Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
@@ -381,7 +370,7 @@ public class GroupWalletTabController {
     @GetMapping("/{id}/{historyid}")
     // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미? 
     // 3개 다 합친 것? 대응되는 개념?
-    public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
+    public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid) {
         WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id), Long.parseLong(historyid), (String) model.getAttribute("type"));
 
         if (historyDetail != null) {
