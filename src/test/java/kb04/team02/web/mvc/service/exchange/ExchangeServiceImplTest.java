@@ -71,12 +71,30 @@ class ExchangeServiceImplTest {
         }
     }
 
-    @Test
-    @DisplayName("selectOfflineReceiptHistory")
-    void offlineReceiptHistory() {
 
+    @Test
+    @DisplayName("walletList")
+    void walletList() {
     }
 
+    @Test
+    void selectedWalletBalance() {
+    }
 
+    @Test
+    @DisplayName("selectOfflineReceiptHistory")
+    void testOfflineReceiptHistory() {
+    }
 
+    @Test
+    void requestOfflineReceipt() {
+    }
+
+    @Test
+    void cancelOfflineReceipt() {
+    }
+
+    @Test
+    void requestExchangeOnline() {
+    }
 }

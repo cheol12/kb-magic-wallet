@@ -153,6 +153,8 @@ public class ExchangeServiceImpl implements ExchangeService{
                         .build()
         );
 
+        // 선택한 지갑의 balance update
+
         return 1;
     }
     
@@ -192,6 +194,8 @@ public class ExchangeServiceImpl implements ExchangeService{
             GroupWalletExchange groupWalletExchange = ExchangeDto.toGroupEntity(exchangeDto, groupWallet);
             groupWalletExchangeRepository.save(groupWalletExchange);
         }
+
+        // 선택한 지갑의 balance update - 원화 잔액, 외화 잔액 모두
 
         return 1;
     }
