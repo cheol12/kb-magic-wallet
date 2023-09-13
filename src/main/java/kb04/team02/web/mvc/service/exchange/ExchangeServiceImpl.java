@@ -1,8 +1,10 @@
 package kb04.team02.web.mvc.service.exchange;
 
 import kb04.team02.web.mvc.domain.bank.Bank;
+import kb04.team02.web.mvc.domain.bank.ExchangeRate;
 import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
 import kb04.team02.web.mvc.domain.bank.ReceiptState;
+import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.common.WalletExchange;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
@@ -10,12 +12,10 @@ import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletExchange;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletExchange;
-import kb04.team02.web.mvc.dto.BankDto;
-import kb04.team02.web.mvc.dto.ExchangeDto;
-import kb04.team02.web.mvc.dto.OfflineReceiptDto;
-import kb04.team02.web.mvc.dto.WalletDto;
+import kb04.team02.web.mvc.dto.*;
 import kb04.team02.web.mvc.exception.ExchangeException;
 import kb04.team02.web.mvc.repository.bank.BankRepository;
+import kb04.team02.web.mvc.repository.bank.ExchangeRateRepository;
 import kb04.team02.web.mvc.repository.bank.OfflineReceiptRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletExchangeRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletRespository;
@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ExchangeServiceImpl implements ExchangeService{
 
     private final EntityManager em;
@@ -41,6 +43,7 @@ public class ExchangeServiceImpl implements ExchangeService{
     private final GroupWalletRespository groupWalletRespository;
     private final PersonalWalletExchangeRepository personalWalletExchangeRepository;
     private final GroupWalletExchangeRepository groupWalletExchangeRepository;
+    private final ExchangeRateRepository exchangeRateRepository;
 
     @Override
     public List<BankDto> bankList() {
@@ -141,7 +144,7 @@ public class ExchangeServiceImpl implements ExchangeService{
         GroupWallet groupWallet = groupWalletRespository.findById(offlineReceiptDto.getOfflineReceiptId()).get();
         PersonalWallet personalWallet = personalWalletRepository.findById(offlineReceiptDto.getPersonalWalletId()).get();
 
-        OfflineReceipt offlineReceipt = offlineReceiptRepository.save(
+        offlineReceiptRepository.save(
                 OfflineReceipt.builder()
                         .receiptDate(offlineReceiptDto.getReceiptDate())
                         .currencyCode(offlineReceiptDto.getCurrencyCode())
@@ -170,6 +173,7 @@ public class ExchangeServiceImpl implements ExchangeService{
 
     @Override
     public int requestExchangeOnline(ExchangeDto exchangeDto) {
+        // 원화 -> 외화일 경우만
 
         // 선택한 지갑의 balance
         Long balance = 0L;
@@ -179,10 +183,13 @@ public class ExchangeServiceImpl implements ExchangeService{
             balance = selectedWalletBalance(exchangeDto.getWalletId(), exchangeDto.getWalletType());
         }
 
+        // 환율 적용
+        Long expectedAmount = expectedExchangeAmount(exchangeDto.getBuyCurrencyCode(), exchangeDto.getBuyAmount()).getExpectedAmount();
+        exchangeDto.setSellAmount(expectedAmount);
         // balance보다 높은 금액을 신청한 경우 예외 발생
-        if(exchangeDto.getBuyAmount() > balance) throw new ExchangeException("잔액이 부족합니다.");
+        if(expectedAmount > balance) throw new ExchangeException("잔액이 부족합니다.");
 
-
+        
         if(exchangeDto.getWalletType().equals(WalletType.PERSONAL_WALLET)){
             // 개인지갑 -> 환전일 경우
             PersonalWallet personalWallet = personalWalletRepository.findById(exchangeDto.getWalletId()).get();
@@ -198,5 +205,31 @@ public class ExchangeServiceImpl implements ExchangeService{
         // 선택한 지갑의 balance update - 원화 잔액, 외화 잔액 모두
 
         return 1;
+    }
+
+    @Override
+    public ExchangeCalDto expectedExchangeAmount(CurrencyCode currencyCode, Long amount) {
+
+        // 적용 환율 구하기
+        Double applicableExchangeRate = 0.0;
+        ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurrencyCode(currencyCode);
+        if(! currencyCode.equals(CurrencyCode.KRW)){
+            // 원화 -> 외화
+            applicableExchangeRate = exchangeRate.getTelegraphicTransferBuyingRate();
+        }else {
+            // 외화 -> 원화
+            applicableExchangeRate = exchangeRate.getTelegraphicTransferSellingRate();
+        }
+
+        // 환율 적용 계산: 신청 금액 * 적용 환율
+        Long expectedAmount = (long) (amount * applicableExchangeRate);
+
+        // dto set
+        ExchangeCalDto exchangeCalDto = new ExchangeCalDto();
+        exchangeCalDto.setExpectedAmount(expectedAmount);
+        exchangeCalDto.setTradingBaseRate(exchangeRate.getTradingBaseRate());
+        exchangeCalDto.setApplicableExchangeRate(applicableExchangeRate);
+
+        return exchangeCalDto;
     }
 }

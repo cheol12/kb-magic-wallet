@@ -2,12 +2,10 @@ package kb04.team02.web.mvc.service.exchange;
 
 import kb04.team02.web.mvc.domain.bank.Bank;
 import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
+import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
-import kb04.team02.web.mvc.dto.BankDto;
-import kb04.team02.web.mvc.dto.ExchangeDto;
-import kb04.team02.web.mvc.dto.OfflineReceiptDto;
-import kb04.team02.web.mvc.dto.WalletDto;
+import kb04.team02.web.mvc.dto.*;
 
 import java.util.List;
 import java.util.Map;
@@ -106,4 +104,12 @@ public interface ExchangeService {
      * - 개인지갑 / 모임지갑..?
      */
     int requestExchangeOnline(ExchangeDto exchangeDto);
+
+    /**
+     * 선택한 통화와 입력 금액에 대한 환전 예상 금액을 반환
+     * @param currencyCode
+     * @param amount
+     * @return ExchangeDto
+     */
+    ExchangeCalDto expectedExchangeAmount(CurrencyCode currencyCode, Long amount);
 }

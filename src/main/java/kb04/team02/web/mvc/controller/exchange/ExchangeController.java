@@ -1,11 +1,10 @@
 package kb04.team02.web.mvc.controller.exchange;
 
 import kb04.team02.web.mvc.domain.bank.Bank;
+import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Role;
-import kb04.team02.web.mvc.dto.BankDto;
-import kb04.team02.web.mvc.dto.ExchangeDto;
-import kb04.team02.web.mvc.dto.OfflineReceiptDto;
-import kb04.team02.web.mvc.dto.WalletDto;
+import kb04.team02.web.mvc.domain.wallet.common.WalletType;
+import kb04.team02.web.mvc.dto.*;
 import kb04.team02.web.mvc.service.exchange.ExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -28,7 +27,7 @@ public class ExchangeController {
      * 환전 메인 페이지
      * API 명세서 ROWNUM:41
      */
-    @GetMapping("/")
+    @GetMapping("/exchange/exchange")
     public void exchangeIndex() {
     }
 
@@ -36,7 +35,7 @@ public class ExchangeController {
      * 오프라인 환전 메인 페이지
      * API 명세서 ROWNUM:42
      */
-    @GetMapping("/offline")
+    @GetMapping("exchange/offline")
     public String exchangeOfflineIndex(HttpSession session, Model model) {
         // session에서 모임지갑 seq, 개인지갑 seq 가져와야 함
         // Map<Long, Role> groupWalletIdList
@@ -44,7 +43,7 @@ public class ExchangeController {
         Long personalWalletId = 0L; // getSession
 
         exchangeService.offlineReceiptHistory(personalWalletId, map);
-        return null;
+        return "exchange/offlineExchange";
     }
 
     /**
@@ -57,7 +56,7 @@ public class ExchangeController {
         List<WalletDto> WalletList = exchangeService.WalletList(0L); // 지갑 리스트 - 전달인수 세션으로 수정할 것
 
         model.addAttribute("bankList", bankList);
-        return "exchange/offline/form";
+        return "exchange/exchangeOfflineForm";
     }
 
     /**
@@ -84,7 +83,7 @@ public class ExchangeController {
      * 온라인 환전 메인 페이지
      * API 명세서 ROWNUM:46
      */
-    @GetMapping("/online")
+    @GetMapping("/exchange/onlineExchange")
     public void exchangeOnlineIndex() {
     }
 
@@ -93,8 +92,10 @@ public class ExchangeController {
      * API 명세서 ROWNUM:47
      */
     @GetMapping("/online/form")
-    public void exchangeOnlineForm(HttpSession session) {
-        List<WalletDto> nWalletList = exchangeService.WalletList(0L);
+    public String exchangeOnlineForm(HttpSession session, Model model) {
+        List<WalletDto> walletList = exchangeService.WalletList(0L);
+        model.addAttribute("walletList", walletList);
+        return "exchange/exchangeOnlineForm";
     }
 
     /**
@@ -104,7 +105,30 @@ public class ExchangeController {
     @PostMapping("/online/form")
     public String exchangeOnline(ExchangeDto exchangeDto) {
         exchangeService.requestExchangeOnline(exchangeDto);
+        // 어디로 가야 하죠...
         return null;
+    }
+
+    /**
+     * 선택한 지갑의 잔액 요청
+     * API 명세서 ROWNUM: 55
+     * @param walletId
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/walletBalance")
+    public Long selectedWalletBalance(Long walletId, WalletType walletType){
+        return exchangeService.selectedWalletBalance(walletId, walletType);
+    }
+
+    /**
+     * 선택한 통화와 입력 금액에 대한 환전 예상 금액 요청
+     * API 명세서: ROWNUM 56
+     */
+    @ResponseBody
+    @PostMapping("/expectedAmount")
+    public ExchangeCalDto expectedAmount(){
+        return exchangeService.expectedExchangeAmount(CurrencyCode.USD, 1000L);
     }
 
 }
