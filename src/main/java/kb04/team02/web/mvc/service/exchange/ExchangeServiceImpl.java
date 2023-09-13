@@ -135,11 +135,13 @@ public class ExchangeServiceImpl implements ExchangeService{
     @Override
     public int requestOfflineReceipt(OfflineReceiptDto offlineReceiptDto) {
 
+        WalletType type = offlineReceiptDto.getWalletType();
+
         // 선택한 지갑의 balance
         Long balance = 0L;
-        if(offlineReceiptDto.getWalletType().equals(WalletType.PERSONAL_WALLET)) {
+        if(type.equals(WalletType.PERSONAL_WALLET)) {
             balance = selectedWalletBalance(offlineReceiptDto.getPersonalWalletId(), offlineReceiptDto.getWalletType());
-        } else if (offlineReceiptDto.getWalletType().equals(WalletType.GROUP_WALLET)) {
+        } else if (type.equals(WalletType.GROUP_WALLET)) {
             balance = selectedWalletBalance(offlineReceiptDto.getGroupWalletId(), offlineReceiptDto.getWalletType());
         }
 
@@ -163,6 +165,10 @@ public class ExchangeServiceImpl implements ExchangeService{
         );
 
         // 선택한 지갑의 balance update
+        Long minus = expectedExchangeAmount(offlineReceiptDto.getCurrencyCode(), offlineReceiptDto.getAmount()).getExpectedAmount();
+
+        if(type.equals(WalletType.PERSONAL_WALLET)) personalWallet.setBalance(balance-minus);
+        else if (type.equals(WalletType.GROUP_WALLET)) groupWallet.setBalance(balance-minus);
 
         return 1;
     }
