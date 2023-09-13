@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.service.personalwallet;
 
 import kb04.team02.web.mvc.domain.member.Member;;
+import kb04.team02.web.mvc.dto.LoginMemberDto;
 import kb04.team02.web.mvc.dto.PersonalWalletTransferDto;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
 
@@ -20,7 +21,7 @@ public interface PersonalWalletService {
      * @param member 조회할 개인지갑 id
      * @return 개인지갑에 필요한 DTO
      */
-    WalletDetailDto personalWallet(Member member);
+    WalletDetailDto personalWallet(LoginMemberDto member);
 
     /**
      * 개인지갑 충전 서비스

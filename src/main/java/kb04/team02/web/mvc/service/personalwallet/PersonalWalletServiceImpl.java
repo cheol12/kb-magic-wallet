@@ -7,6 +7,7 @@ import kb04.team02.web.mvc.domain.wallet.common.TargetType;
 import kb04.team02.web.mvc.domain.wallet.common.Transfer;
 import kb04.team02.web.mvc.domain.wallet.common.TransferType;
 import kb04.team02.web.mvc.domain.wallet.personal.*;
+import kb04.team02.web.mvc.dto.LoginMemberDto;
 import kb04.team02.web.mvc.dto.PersonalWalletTransferDto;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
 import kb04.team02.web.mvc.dto.WalletHistoryDto;
@@ -33,8 +34,11 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
     private final MemberRepository memberRepository;
 
     @Override
-    public WalletDetailDto personalWallet(Member member) {
+    public WalletDetailDto personalWallet(LoginMemberDto loginMemberDto) {
         WalletDetailDto dto = new WalletDetailDto();
+
+        Member member = memberRepository.findById(loginMemberDto.getMemberId())
+                .orElseThrow(() -> new NoSuchElementException("멤버 조회 오류"));
 
         PersonalWallet personalWallet = walletRepository.findByMember(member);
         List<PersonalWalletForeignCurrencyBalance> foreignBalance
