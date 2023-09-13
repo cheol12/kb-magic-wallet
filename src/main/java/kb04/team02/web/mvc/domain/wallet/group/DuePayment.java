@@ -2,13 +2,14 @@ package kb04.team02.web.mvc.domain.wallet.group;
 
 import kb04.team02.web.mvc.domain.member.Member;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
+@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

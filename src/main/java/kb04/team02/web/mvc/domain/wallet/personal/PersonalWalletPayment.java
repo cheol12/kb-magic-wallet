@@ -4,12 +4,13 @@ import kb04.team02.web.mvc.domain.wallet.common.Payment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+@SuperBuilder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
