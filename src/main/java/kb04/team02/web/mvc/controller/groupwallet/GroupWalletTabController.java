@@ -130,16 +130,20 @@ public class GroupWalletTabController {
 
     @ResponseBody
     @DeleteMapping("/{id}/{member}/revoke")
-    public String groupwalletAuthRevoke(@PathVariable String id, @PathVariable String member) {
+    public List<GroupMemberDto> groupwalletAuthRevoke(@PathVariable String id, @PathVariable String member, @RequestParam(defaultValue = "1") int nowPage) {
         boolean isAuthRevoked = groupWalletTabService.revokeMemberAuth(Long.parseLong(id), Long.parseLong(member));
 
-        // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
-        if (isAuthRevoked) {
-            return "redirect:/group-wallet/{id}/member-list";
-            // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
-        } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
+        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
+        List<GroupMemberDto> groupMemberDtoList = groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+        return groupMemberDtoList;
+
+//        // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
+//        if (isAuthRevoked) {
+//            return "redirect:/group-wallet/{id}/member-list";
+//            // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
+//        } else {
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+//        }
     }
 
 
