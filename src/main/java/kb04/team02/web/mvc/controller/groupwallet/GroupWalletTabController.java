@@ -287,14 +287,16 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/card/list")
     // Card_issuance 테이블과 대응되는 객체를 Card.java라고 가정한 코드
-    public String groupWalletCardList(@PathVariable String id) {
+    public List<CardIssuanceDto> groupWalletCardList(@PathVariable String id) {
         List<CardIssuanceDto> cardIssuanceDtoList = groupWalletTabService.getCard(Long.parseLong(id));
 
-        if (cardIssuanceDtoList != null) {
-            return "redirect:/group-wallet/{id}/card/list";
-        } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
+        return cardIssuanceDtoList;
+
+//        if (cardIssuanceDtoList != null) {
+//            return "redirect:/group-wallet/{id}/card/list";
+//        } else {
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+//        }
     }
 
 
