@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -49,20 +50,23 @@ public class GroupWalletTabController {
     // 2. 여러 개의 페이지로 나누는 방식
     @ResponseBody
     @GetMapping("/{id}/member-list")
-    public List<GroupMemberDto> groupWalletMemberList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
-//        // 페이징 처리, 회원 이름순, Member.java에 이름 필드를 어떻게 저장했는지 확인 필요
+    public HashMap<String, Object> groupWalletMemberList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
+        // 페이징 처리, 회원 이름순, Member.java에 이름 필드를 어떻게 저장했는지 확인 필요
         Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
-//        Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
-//
-//        int temp = (nowPage - 1) % BLOCK_SIZE;
-//        int startPage = nowPage - temp;
-//        model.addAttribute("pageList", memberPageList); // 뷰에서 ${pageList.content}
-//        model.addAttribute("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-//        model.addAttribute("startPage", startPage);
-//        model.addAttribute("nowPage", nowPage);
+        Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+
+        int temp = (nowPage - 1) % BLOCK_SIZE;
+        int startPage = nowPage - temp;
 
         List<GroupMemberDto> groupMemberDtoList = groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
-        return groupMemberDtoList;
+
+        HashMap<String, Object> memberMap = new HashMap<String, Object>();
+        memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
+        memberMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
+        memberMap.put("startPage", startPage);
+        memberMap.put("nowPage", nowPage);
+
+        return memberMap;
 
     }
 
