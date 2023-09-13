@@ -10,5 +10,9 @@ import java.util.List;
 @Repository
 public interface GroupWalletForeignCurrencyBalanceRepository extends JpaRepository<GroupWalletForeignCurrencyBalance, Long> {
 
-    List<GroupWalletForeignCurrencyBalance> findByGroupWalletAndGroupWallet_BalanceGreaterThan(GroupWallet groupWallet, Long groupWallet_balance);
+    /**
+     * 모임지갑 외화잔액 내역
+     *
+     */
+    List<GroupWalletForeignCurrencyBalance> findByGroupWallet(Long groupWalletId);
 }
