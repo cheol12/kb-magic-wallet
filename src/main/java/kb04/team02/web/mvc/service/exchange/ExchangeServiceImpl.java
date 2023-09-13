@@ -14,6 +14,7 @@ import kb04.team02.web.mvc.dto.BankDto;
 import kb04.team02.web.mvc.dto.ExchangeDto;
 import kb04.team02.web.mvc.dto.OfflineReceiptDto;
 import kb04.team02.web.mvc.dto.WalletDto;
+import kb04.team02.web.mvc.exception.ExchangeException;
 import kb04.team02.web.mvc.repository.bank.BankRepository;
 import kb04.team02.web.mvc.repository.bank.OfflineReceiptRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletExchangeRepository;
@@ -51,15 +52,46 @@ public class ExchangeServiceImpl implements ExchangeService{
     }
 
     @Override
-    public List<WalletDto> chairManWalletList() {
+    public List<WalletDto> WalletList(Long memberId) {
+        // 일단 지갑리스트 전부 return하고 view에서 선택 못하게
 
-        return null;
+        // 개인 + 모임
+        List<WalletDto> resList = new ArrayList<>();
+
+        // 개인 지갑
+        List<WalletDto> pWalletList = personalWalletRepository.findById(memberId).stream()
+                .map(WalletDto::toPersoanlDto)
+                .collect(Collectors.toList());
+
+        // 모임 지갑
+        // 모임 지갑 없으면 예외...
+        GroupWallet groupWallet = groupWalletRespository.findById(memberId).orElse(null);
+        if(groupWallet != null){
+            List<WalletDto> gWalletList = groupWalletRespository.findById(memberId).stream()
+                    .map(WalletDto::toGroupDto)
+                    .collect(Collectors.toList());
+
+            resList.addAll(gWalletList);
+        }
+
+        resList.addAll(pWalletList);
+
+        return resList;
     }
 
     @Override
-    public Long selectedWalletBalance() {
+    public Long selectedWalletBalance(Long WalletId, WalletType walletType) {
 
-        return null;
+        Long balance = 0L;
+
+        if(walletType.equals(WalletType.PERSONAL_WALLET)){
+            // 선택한 지갑이 개인지갑
+            balance = personalWalletRepository.findById(WalletId).get().getBalance();
+        } else if (walletType.equals(WalletType.GROUP_WALLET)) {
+            // 선택한 지갑이 모임지갑
+            balance = groupWalletRespository.findById(WalletId).get().getBalance();
+        }
+        return balance;
     }
 
     @Override
@@ -94,7 +126,16 @@ public class ExchangeServiceImpl implements ExchangeService{
     @Override
     public int requestOfflineReceipt(OfflineReceiptDto offlineReceiptDto) {
 
+        // 선택한 지갑의 balance
+        Long balance = 0L;
+        if(offlineReceiptDto.getWalletType().equals(WalletType.PERSONAL_WALLET)) {
+            balance = selectedWalletBalance(offlineReceiptDto.getPersonalWalletId(), offlineReceiptDto.getWalletType());
+        } else if (offlineReceiptDto.getWalletType().equals(WalletType.GROUP_WALLET)) {
+            balance = selectedWalletBalance(offlineReceiptDto.getGroupWalletId(), offlineReceiptDto.getWalletType());
+        }
+
         // balance보다 높은 금액을 신청한 경우 예외 발생
+        if(offlineReceiptDto.getAmount() > balance) throw new ExchangeException("잔액이 부족합니다.");
 
         Bank bank = bankRepository.findById(offlineReceiptDto.getBankId()).get();
         GroupWallet groupWallet = groupWalletRespository.findById(offlineReceiptDto.getOfflineReceiptId()).get();
@@ -112,6 +153,8 @@ public class ExchangeServiceImpl implements ExchangeService{
                         .build()
         );
 
+        // 선택한 지갑의 balance update
+
         return 1;
     }
     
@@ -128,8 +171,16 @@ public class ExchangeServiceImpl implements ExchangeService{
     @Override
     public int requestExchangeOnline(ExchangeDto exchangeDto) {
 
+        // 선택한 지갑의 balance
+        Long balance = 0L;
+        if(exchangeDto.getWalletType().equals(WalletType.PERSONAL_WALLET)) {
+            balance = selectedWalletBalance(exchangeDto.getWalletId(), exchangeDto.getWalletType());
+        } else if (exchangeDto.getWalletType().equals(WalletType.GROUP_WALLET)) {
+            balance = selectedWalletBalance(exchangeDto.getWalletId(), exchangeDto.getWalletType());
+        }
+
         // balance보다 높은 금액을 신청한 경우 예외 발생
-        // 일단 원화 -> 외화 환전일 경우만..
+        if(exchangeDto.getBuyAmount() > balance) throw new ExchangeException("잔액이 부족합니다.");
 
 
         if(exchangeDto.getWalletType().equals(WalletType.PERSONAL_WALLET)){
@@ -144,7 +195,7 @@ public class ExchangeServiceImpl implements ExchangeService{
             groupWalletExchangeRepository.save(groupWalletExchange);
         }
 
-        // 예외 처리...
+        // 선택한 지갑의 balance update - 원화 잔액, 외화 잔액 모두
 
         return 1;
     }
