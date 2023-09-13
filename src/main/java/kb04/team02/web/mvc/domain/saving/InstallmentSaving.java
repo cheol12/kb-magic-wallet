@@ -2,10 +2,7 @@ package kb04.team02.web.mvc.domain.saving;
 
 import kb04.team02.web.mvc.domain.common.BooleanToYNConverter;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -18,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
+@Setter
 public class InstallmentSaving {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "installment_seq")
@@ -31,7 +29,7 @@ public class InstallmentSaving {
     private LocalDateTime maturityDate;
 
     @Convert(converter = BooleanToYNConverter.class)
-    private boolean isDone;
+    private boolean done;
 
     private Long totalAmount;
     private int savingDate;

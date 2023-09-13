@@ -1,6 +1,8 @@
 package kb04.team02.web.mvc.controller.groupwallet;
 
+import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
+import kb04.team02.web.mvc.dto.WalletDetailDto;
 import kb04.team02.web.mvc.service.groupwallet.GroupWalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -33,17 +35,14 @@ public class GroupWalletController {
      * API 명세서 ROWNUM:12
      */
     @PostMapping("/new")
-    public String groupWalletCreate(GroupWallet gWallet, Model model, HttpSession session) {
+    public String groupWalletCreate(GroupWallet gWallet, Model model, HttpSession session, @RequestParam String nick) {
 	// 모임장의 회원 식별번호 불러오기, 
-	// 뷰에서 입력한 별칭 필요, 회비 상태 필요
-	Integer memberId = (Integer) session.getAttribute("member_id");
-//	gWallet.setMemberId(memberId);
-//	groupWalletService.createGroupWallet(gWallet);
+	// 뷰에서 입력한 별칭 필요
+	    Member member = (Member) session.getAttribute("member_id");
+	    groupWalletService.createGroupWallet(member, nick);
 	
-	
-	
-	// 생성되었습니다 알림 띄우고 group-wallet으로 이동
-	return "redirect:/group-wallet";		// "redirect:/"; 인가?
+	    // 생성되었습니다 알림 띄우고 group-wallet으로 이동
+	    return "redirect:/group-wallet";		// "redirect:/"; 인가?
     }
 
     /**
@@ -53,11 +52,12 @@ public class GroupWalletController {
      * @param id 조회할 모임지갑 id
      */
     @GetMapping("/{id}")
-    public void groupWalletDetail(@PathVariable String id, Model model) {
+    public void getGroupWalletDetail(@PathVariable Long id, Model model) {
 	// id = 내 모임지갑의 id중 하나임.
 	// 
-//	GroupWallet gWallet = groupWalletService.getGroupWalletDetail(id);
-//	model.addAttribute("gWallet", gWallet);
+//        Long temp  = Long.parseLong(id);
+        WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
+	    model.addAttribute("walletDetailDto", walletDetailDto);
 	
     }
 

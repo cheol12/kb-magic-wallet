@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.service.groupwallet;
 
+import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.common.Transfer;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletTransfer;
@@ -26,7 +27,8 @@ public interface GroupWalletService {
      * *  - 지갑 이름
      * *  - 지갑 구분
      */
-    List<WalletDto> selectAllMyGroupWallet(Long memberId);
+    List<GroupWallet> selectAllMyGroupWallet(Member member);
+
 
     /**
      * 모임지갑 생성하기
@@ -35,7 +37,8 @@ public interface GroupWalletService {
      * @param walletDto 모임지갑 객체를 폼에 입력해서 생성
      * @return int 1: OK 0:FAIL
      */
-    int createGroupWallet(WalletDto walletDto);
+    int createGroupWallet(Member member, String nickname);
+
 
     /**
      * 개별 모임지갑 상세 보기
@@ -44,7 +47,8 @@ public interface GroupWalletService {
      * @param groupWalletId 조회할 모임지갑 id
      * @return WalletHistoryDto = 해당 GroupWallet의 모든 내역
      */
-    List<WalletHistoryDto> getGroupWalletDetail(Long groupWalletId);
+    WalletDetailDto getGroupWalletDetail(Long groupWalletId);
+
 
     /**
      * 모임지갑 삭제 요청
@@ -55,6 +59,7 @@ public interface GroupWalletService {
      */
     int deleteGroupWallet(Long groupWalletId);
 
+
     /**
      * 모임지갑 초대 링크 생성 요청
      * API 명세서 ROWNUM:15
@@ -63,6 +68,7 @@ public interface GroupWalletService {
      * @return String
      */
     String inviteMember(Long groupWalletId);
+
 
     /**
      * 모임지갑 탈퇴 요청
@@ -73,6 +79,7 @@ public interface GroupWalletService {
      */
     int groupWalletMemberOut(Long groupWalletId, Long memberId);
 
+
     /**
      * 모임지갑 회비 규칙 불러오기
      * API 명세서 ROWNUM:19
@@ -82,6 +89,7 @@ public interface GroupWalletService {
      * */
     GroupWallet getGroupWalletDueRule(Long groupWalletId, int dueDate, Long due);
 
+
     /**
      * 모임지갑 회비 규칙 설정하기
      * API 명세서 ROWNUM:20
@@ -90,6 +98,7 @@ public interface GroupWalletService {
      * @return
      * */
     GroupWallet setGroupWalletDueRule(Long groupWalletId, GroupWallet groupWallet);
+
 
     /**
      * 모임지갑 회비 규칙 삭제하기
@@ -119,6 +128,7 @@ public interface GroupWalletService {
      */
     int groupWalletWithdraw(TransferDto transferDto);
 
+
     /**
      * 모임지갑 정산하기
      * API 명세서 ROWNUM:32
@@ -139,6 +149,7 @@ public interface GroupWalletService {
      */
     int settle(TransferDto transferDto);
 
+
     /**
      * 모임지갑 채우기
      * API 명세서 ROWNUM:34
@@ -154,4 +165,5 @@ public interface GroupWalletService {
      *                    - to id(내내 개인지갑 자동)
      */
     int groupWalletDeposit(TransferDto transferDto);
+
 }

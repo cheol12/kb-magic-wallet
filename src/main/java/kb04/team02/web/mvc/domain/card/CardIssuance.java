@@ -2,9 +2,9 @@ package kb04.team02.web.mvc.domain.card;
 
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
+@Builder
 public class CardIssuance {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_issuance_seq")
@@ -30,7 +32,7 @@ public class CardIssuance {
     @Enumerated(EnumType.ORDINAL)
     private CardState cardState;
 
-    private Long wallet_id;
+    private Long walletId;
 
     @Enumerated(EnumType.ORDINAL)
     private WalletType walletType;
@@ -40,4 +42,18 @@ public class CardIssuance {
     @JoinColumn(name = "member_id")
     private Member member;
     //== 연관관계 설정 END==//
+
+    //== 메소드 START ==//
+    public void changeStateOk() {
+        this.cardState = CardState.OK;
+    }
+
+    public void changeStateStop(){
+        this.cardState = CardState.STOP;
+    }
+
+    public void changeStateTemporalStop() {
+        this.cardState = CardState.TEMPORAL_STOP;
+    }
+    //== 메소드 END ==//
 }

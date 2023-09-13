@@ -3,6 +3,7 @@ package kb04.team02.web.mvc.repository.wallet.group;
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.Participation;
+import kb04.team02.web.mvc.dto.WalletDetailDto;
 import kb04.team02.web.mvc.dto.WalletDto;
 import kb04.team02.web.mvc.dto.WalletHistoryDto;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,24 +20,19 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
     /**
      * ROWNUM 12
      *
-     * SQL
-     *
      * (모임지갑 생성시 사용)
-     * insert into group_wallet
-     * (group_wallet_id, nickname, insert_date, balance, due_condition, due_accumulation, member_id, due_accumulation, due_onoff, due_period, due)
-     * values
-     * (wallet_seq_nextval, nickname, sysdate, 0, “모임장 세션값”, 0, “off”, null, null) ;
      *
-     * JPA : GroupWallet.save(GroupWallet groupWallet);
+     * JPA : GroupWalletRepository.save(GroupWallet groupWallet);
+     * Member 객체로
      * */
-
+//    GroupWallet findByMember(Member member);
 
     /**
      * ROWNUM 10
      * 모임지갑 메인화면
      * 나의 모임지갑 전부 검색
      * */
-    List<WalletDto> findAllByMemberOrderByGroupWalletId(Long memberId);
+    List<GroupWallet> findAllByMemberOrderByGroupWalletId(Member member);
 
 
     /**
@@ -44,11 +40,13 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      * 모임지갑 상세화면
      * 선택한 나의 모임지갑의 모든 거래내역(외화내역, 이체내역, 환전내역)
      */
-    List<WalletHistoryDto> findAllByGroupWalletIdOrderByInsertDate(Long groupWalletId);
+    WalletDetailDto findAllByGroupWalletIdOrderByInsertDate(Long groupWalletId);
 //    여러 종류의 거래내역을 오버라이딩해서 한 번에 불러오는 게 헷갈림다
 
-    //
 
+    /**
+     *
+     * */
 
     /**
      * ROWNUM 14
@@ -79,7 +77,7 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
 
     /**
      * ROWNUM 19
-     * 내 모임지갑의 회비 규칙 불러오기
+     * 내 모임지갑의 회비 규칙 불러오기 = 모임지갑 정보 불러오기
      * */
     GroupWallet findByGroupWalletId(Long groupWalletId);
 

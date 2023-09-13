@@ -4,6 +4,7 @@ import kb04.team02.web.mvc.domain.wallet.common.Transfer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @DiscriminatorValue("GroupWalletTransfer")
+@SuperBuilder
 public class GroupWalletTransfer extends Transfer {
     //== 연관관계 설정 START==//
     @ManyToOne

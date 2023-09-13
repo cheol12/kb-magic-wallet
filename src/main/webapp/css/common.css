@@ -1,8 +1,21 @@
 .pageWrap {
-  top: 100px;
+  top: 80px;
   padding: 5em;
   position: relative;
   width: auto;
-  padding: 2em;
   border: 1px solid black;
+}
+
+
+.center{
+  border: 1px solid black;
+  width: 1400px;
+  margin: auto;
+
+}
+
+.center .banner{
+  border: 1px solid black;
+  margin: auto;
+  width: 1400px;
 }

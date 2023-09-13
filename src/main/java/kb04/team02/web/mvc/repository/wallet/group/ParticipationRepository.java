@@ -1,10 +1,13 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
+import kb04.team02.web.mvc.domain.member.Member;
+import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.group.*;
 import kb04.team02.web.mvc.domain.wallet.group.Participation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -41,4 +44,31 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
      * @return
      */
     List<Participation> findByMemberId(Long memberId);
+
+
+    /**
+     * @author 김진형
+     * 
+     * 그룹원 참여 삭제
+     */
+    Participation findByGroupWalletAndMemberId(GroupWallet groupWallet, Long memberId);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 해당 모임 지갑의 모임장, 공동 모임장 회원 리스트 찾기
+    List<Participation> findByGroupWalletAndRoleIn(GroupWallet groupWallet, Collection<Role> role);
+
 }

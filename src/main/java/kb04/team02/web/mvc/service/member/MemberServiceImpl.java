@@ -1,8 +1,11 @@
 package kb04.team02.web.mvc.service.member;
 
+import kb04.team02.web.mvc.domain.card.CardIssuance;
+import kb04.team02.web.mvc.domain.card.CardState;
 import kb04.team02.web.mvc.domain.member.Address;
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.member.Role;
+import kb04.team02.web.mvc.domain.wallet.common.WalletType;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.Participation;
 import kb04.team02.web.mvc.domain.wallet.group.ParticipationState;
@@ -12,6 +15,7 @@ import kb04.team02.web.mvc.dto.MemberLoginDto;
 import kb04.team02.web.mvc.dto.MemberRegisterDto;
 import kb04.team02.web.mvc.exception.LoginException;
 import kb04.team02.web.mvc.exception.RegisterException;
+import kb04.team02.web.mvc.repository.card.CardIssuanceRepository;
 import kb04.team02.web.mvc.repository.member.MemberRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletRespository;
 import kb04.team02.web.mvc.repository.wallet.group.ParticipationRepository;
@@ -21,6 +25,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Random;
+
+import static kb04.team02.web.mvc.common.module.CardNumberIssuance.generateRandomCardNumber;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +37,7 @@ public class MemberServiceImpl implements MemberService {
     private final PersonalWalletRepository personalWalletRepository;
     private final GroupWalletRespository groupWalletRespository;
     private final ParticipationRepository participationRepository;
+    private final CardIssuanceRepository cardIssuanceRepository;
 
     @Override
     @Transactional
@@ -51,7 +59,24 @@ public class MemberServiceImpl implements MemberService {
                 .bankAccount(memberRegisterDto.getBankAccount())
                 .build();
 
-        memberRepository.save(member);
+        Member saved = memberRepository.save(member);
+
+        // 지갑 생성
+        PersonalWallet personalWallet = PersonalWallet.builder()
+                .member(saved)
+                .build();
+
+        PersonalWallet savedWallet = personalWalletRepository.save(personalWallet);
+
+        // 카드 발급
+        CardIssuance card = CardIssuance.builder()
+                .cardNumber(generateRandomCardNumber())
+                .cardState(CardState.OK)
+                .walletId(savedWallet.getPersonalWalletId())
+                .walletType(WalletType.PERSONAL_WALLET)
+                .build();
+
+        CardIssuance savedCard = cardIssuanceRepository.save(card);
     }
 
     @Override
@@ -71,7 +96,6 @@ public class MemberServiceImpl implements MemberService {
                 .memberId(member.getMemberId())
                 .id(member.getId())
                 .name(member.getName())
-                .bankAccount(member.getBankAccount())
                 .build();
 
         // 지갑 정보

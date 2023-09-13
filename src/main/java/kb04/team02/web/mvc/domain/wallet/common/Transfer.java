@@ -2,6 +2,8 @@ package kb04.team02.web.mvc.domain.wallet.common;
 
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -10,7 +12,9 @@ import java.time.LocalDateTime;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
+@NoArgsConstructor
 @Getter
+@SuperBuilder
 public abstract class Transfer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wallet_transfer_seq")
@@ -25,7 +29,7 @@ public abstract class Transfer {
     private TransferType transferType;
 
     @Enumerated(value = EnumType.ORDINAL)
-    private TargetType formType;
+    private TargetType fromType;
 
     @Enumerated(value = EnumType.ORDINAL)
     private TargetType toType;
