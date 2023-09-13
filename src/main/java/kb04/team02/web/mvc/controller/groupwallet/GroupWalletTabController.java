@@ -160,14 +160,16 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/rule")
     // 회비 테이블과 객체 필요해 보임, 회비 객체를 Rule.java로 가정함
-    public String groupWalletRule(@PathVariable String id) {
+    public RuleDto groupWalletRule(@PathVariable String id) {
         RuleDto ruleDto = groupWalletTabService.getRuleById(Long.parseLong(id));
 
-        if (ruleDto != null) {
-            return "redirect:/group-wallet/{id}/rule";
-        } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
+        return ruleDto;
+
+//        if (ruleDto != null) {
+//            return "redirect:/group-wallet/{id}/rule";
+//        } else {
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+//        }
     }
 
 
