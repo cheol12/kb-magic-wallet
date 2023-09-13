@@ -58,7 +58,6 @@ public class GroupWalletTabController {
         int temp = (nowPage - 1) % BLOCK_SIZE;
         int startPage = nowPage - temp;
 
-        List<GroupMemberDto> groupMemberDtoList = groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
 
         HashMap<String, Object> memberMap = new HashMap<String, Object>();
         memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
@@ -92,7 +91,7 @@ public class GroupWalletTabController {
             int temp = (nowPage - 1) % BLOCK_SIZE;
             int startPage = nowPage - temp;
 
-            List<GroupMemberDto> groupMemberDtoList = groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+
 
             HashMap<String, Object> memberMap = new HashMap<String, Object>();
             memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
@@ -131,7 +130,7 @@ public class GroupWalletTabController {
             int temp = (nowPage - 1) % BLOCK_SIZE;
             int startPage = nowPage - temp;
 
-            List<GroupMemberDto> groupMemberDtoList = groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+
 
             HashMap<String, Object> memberMap = new HashMap<String, Object>();
             memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
@@ -171,7 +170,7 @@ public class GroupWalletTabController {
             int temp = (nowPage - 1) % BLOCK_SIZE;
             int startPage = nowPage - temp;
 
-            List<GroupMemberDto> groupMemberDtoList = groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+
 
             HashMap<String, Object> memberMap = new HashMap<String, Object>();
             memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
