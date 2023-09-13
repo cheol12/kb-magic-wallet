@@ -1,0 +1,8 @@
+.pageWrap {
+  top: 100px;
+  padding: 5em;
+  position: relative;
+  width: auto;
+  padding: 2em;
+  border: 1px solid black;
+}
