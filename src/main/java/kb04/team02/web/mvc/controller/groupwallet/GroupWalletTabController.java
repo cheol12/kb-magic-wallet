@@ -288,13 +288,12 @@ public class GroupWalletTabController {
     public InstallmentDto groupWalletSavingInfo(@PathVariable String id) {
         InstallmentDto installmentDto = groupWalletTabService.getSavingById(Long.parseLong(id));
 
-        return installmentDto;
-
-//        if (installmentDto != null) {
-//            return "redirect:/group-wallet/{id}/saving";
-//        } else {
+        if (installmentDto != null) {
+            return installmentDto;
+        } else {
+            return null;
 //            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-//        }
+        }
     }
 
 
