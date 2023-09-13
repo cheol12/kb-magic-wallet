@@ -31,6 +31,24 @@ public class GroupWalletTabController {
     private final static int PAGE_SIZE = 10;
     private final static int BLOCK_SIZE = 5;
 
+    // 모임원 조회 함수
+    public HashMap<String, Object> createMemberMap(int nowPage, String id) {
+        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
+        Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+
+        int temp = (nowPage - 1) % BLOCK_SIZE;
+        int startPage = nowPage - temp;
+
+        HashMap<String, Object> memberMap = new HashMap<>();
+        memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
+        memberMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
+        memberMap.put("startPage", startPage);
+        memberMap.put("nowPage", nowPage);
+
+        return memberMap;
+    }
+
+
 
     //== 모임원 조회 탭 START ==//
 
@@ -51,22 +69,8 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/member-list")
     public HashMap<String, Object> groupWalletMemberList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
-        // 페이징 처리, 회원 이름순, Member.java에 이름 필드를 어떻게 저장했는지 확인 필요
-        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
-        Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
-
-        int temp = (nowPage - 1) % BLOCK_SIZE;
-        int startPage = nowPage - temp;
-
-
-        HashMap<String, Object> memberMap = new HashMap<String, Object>();
-        memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
-        memberMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-        memberMap.put("startPage", startPage);
-        memberMap.put("nowPage", nowPage);
-
+        HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
         return memberMap;
-
     }
 
 
@@ -85,20 +89,7 @@ public class GroupWalletTabController {
 
         // 2. 멤버가 성공적으로 삭제되었을 경우 멤버를 삭제한 후의 페이지 리턴
         if (isMemberDeleted) {
-            Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
-            Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
-
-            int temp = (nowPage - 1) % BLOCK_SIZE;
-            int startPage = nowPage - temp;
-
-
-
-            HashMap<String, Object> memberMap = new HashMap<String, Object>();
-            memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
-            memberMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-            memberMap.put("startPage", startPage);
-            memberMap.put("nowPage", nowPage);
-
+            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
             return memberMap;
             // 멤버가 없거나 삭제에 실패했을 경우 에러페이지로 이동
         } else {
@@ -124,20 +115,7 @@ public class GroupWalletTabController {
 
         // 2. 멤버 권한이 성공적으로 삭제되었을 경우 멤버 페이지 리턴
         if (isAuthGranted) {
-            Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
-            Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
-
-            int temp = (nowPage - 1) % BLOCK_SIZE;
-            int startPage = nowPage - temp;
-
-
-
-            HashMap<String, Object> memberMap = new HashMap<String, Object>();
-            memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
-            memberMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-            memberMap.put("startPage", startPage);
-            memberMap.put("nowPage", nowPage);
-
+            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
             return memberMap;
             // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
         } else {
@@ -164,20 +142,7 @@ public class GroupWalletTabController {
 
         // 2. 멤버 권한이 성공적으로 삭제되었을 경우 멤버 페이지 리턴
         if (isAuthRevoked) {
-            Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
-            Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
-
-            int temp = (nowPage - 1) % BLOCK_SIZE;
-            int startPage = nowPage - temp;
-
-
-
-            HashMap<String, Object> memberMap = new HashMap<String, Object>();
-            memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
-            memberMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-            memberMap.put("startPage", startPage);
-            memberMap.put("nowPage", nowPage);
-
+            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
             return memberMap;
             // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
         } else {
