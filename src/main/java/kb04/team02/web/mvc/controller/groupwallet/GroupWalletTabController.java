@@ -103,8 +103,12 @@ public class GroupWalletTabController {
 
     @ResponseBody
     @GetMapping("/{id}/{member}/auth")
-    public String groupWalletAuthRequest(@PathVariable String id, @PathVariable String member) {
+    public List<GroupMemberDto> groupWalletAuthRequest(@PathVariable String id, @PathVariable String member, @RequestParam(defaultValue = "1") int nowPage) {
         boolean isAuthGranted = groupWalletTabService.grantMemberAuth(Long.parseLong(id), Long.parseLong(member));
+
+        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
+        List<GroupMemberDto> groupMemberDtoList = groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+        return groupMemberDtoList;
 
 //        // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
 //        if (isAuthGranted) {
