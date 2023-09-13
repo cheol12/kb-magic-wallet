@@ -48,7 +48,22 @@ public class GroupWalletTabController {
         return memberMap;
     }
 
-    //
+    // 모임지갑 내역 조회 함수
+    public HashMap<String, Object> createHistoryMap(int nowPage, String id) {
+        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
+        Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
+
+        int temp = (nowPage - 1) % BLOCK_SIZE;
+        int startPage = nowPage - temp;
+
+        HashMap<String, Object> historyMap = new HashMap<String, Object>();
+        historyMap.put("memberPageList", historyPageList); // 뷰에서 ${memberPageList.content}
+        historyMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
+        historyMap.put("startPage", startPage);
+        historyMap.put("nowPage", nowPage);
+
+        return historyMap;
+    }
 
 
 
@@ -341,20 +356,9 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/history")
     public HashMap<String, Object> groupWalletHistoryList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
-//        // 페이징 처리, 내역 날짜순, History.java에 날짜 필드를 어떻게 저장했는지 확인 필요
-        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
-        Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
-
-        int temp = (nowPage - 1) % BLOCK_SIZE;
-        int startPage = nowPage - temp;
-
-        HashMap<String, Object> historyMap = new HashMap<String, Object>();
-        historyMap.put("memberPageList", historyPageList); // 뷰에서 ${memberPageList.content}
-        historyMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-        historyMap.put("startPage", startPage);
-        historyMap.put("nowPage", nowPage);
-
+        HashMap<String, Object> historyMap = createHistoryMap(nowPage, id);
         return historyMap;
+
 
     }
 
