@@ -5,10 +5,7 @@ import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
-import kb04.team02.web.mvc.dto.BankDto;
-import kb04.team02.web.mvc.dto.ExchangeDto;
-import kb04.team02.web.mvc.dto.OfflineReceiptDto;
-import kb04.team02.web.mvc.dto.WalletDto;
+import kb04.team02.web.mvc.dto.*;
 
 import java.util.List;
 import java.util.Map;
@@ -114,5 +111,5 @@ public interface ExchangeService {
      * @param amount
      * @return ExchangeDto
      */
-    ExchangeDto expectedExchangeAmount(CurrencyCode currencyCode, Long amount);
+    ExchangeCalDto expectedExchangeAmount(CurrencyCode currencyCode, Long amount);
 }

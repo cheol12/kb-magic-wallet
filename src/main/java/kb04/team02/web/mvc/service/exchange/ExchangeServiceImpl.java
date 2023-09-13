@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.service.exchange;
 
 import kb04.team02.web.mvc.domain.bank.Bank;
+import kb04.team02.web.mvc.domain.bank.ExchangeRate;
 import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
 import kb04.team02.web.mvc.domain.bank.ReceiptState;
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
@@ -11,12 +12,10 @@ import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletExchange;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletExchange;
-import kb04.team02.web.mvc.dto.BankDto;
-import kb04.team02.web.mvc.dto.ExchangeDto;
-import kb04.team02.web.mvc.dto.OfflineReceiptDto;
-import kb04.team02.web.mvc.dto.WalletDto;
+import kb04.team02.web.mvc.dto.*;
 import kb04.team02.web.mvc.exception.ExchangeException;
 import kb04.team02.web.mvc.repository.bank.BankRepository;
+import kb04.team02.web.mvc.repository.bank.ExchangeRateRepository;
 import kb04.team02.web.mvc.repository.bank.OfflineReceiptRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletExchangeRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletRespository;
@@ -42,6 +41,7 @@ public class ExchangeServiceImpl implements ExchangeService{
     private final GroupWalletRespository groupWalletRespository;
     private final PersonalWalletExchangeRepository personalWalletExchangeRepository;
     private final GroupWalletExchangeRepository groupWalletExchangeRepository;
+    private final ExchangeRateRepository exchangeRateRepository;
 
     @Override
     public List<BankDto> bankList() {
@@ -202,7 +202,20 @@ public class ExchangeServiceImpl implements ExchangeService{
     }
 
     @Override
-    public ExchangeDto expectedExchangeAmount(CurrencyCode currencyCode, Long amount) {
-        return null;
+    public ExchangeCalDto expectedExchangeAmount(CurrencyCode currencyCode, Long amount) {
+
+        ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurrencyCode(currencyCode);
+        Double telegraphicTransferBuyingRate = exchangeRate.getTelegraphicTransferBuyingRate();
+
+        // 환율 적용 계산
+        Long expectedAmount = (long) (amount * telegraphicTransferBuyingRate);
+
+        // dto set
+        ExchangeCalDto exchangeCalDto = new ExchangeCalDto();
+        exchangeCalDto.setExpectedAmount(expectedAmount);
+        exchangeCalDto.setTradingBaseRate(exchangeRate.getTradingBaseRate());
+        exchangeCalDto.setTelegraphicTransferBuyingRate(telegraphicTransferBuyingRate);
+
+        return exchangeCalDto;
     }
 }

@@ -4,10 +4,7 @@ import kb04.team02.web.mvc.domain.bank.Bank;
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
-import kb04.team02.web.mvc.dto.BankDto;
-import kb04.team02.web.mvc.dto.ExchangeDto;
-import kb04.team02.web.mvc.dto.OfflineReceiptDto;
-import kb04.team02.web.mvc.dto.WalletDto;
+import kb04.team02.web.mvc.dto.*;
 import kb04.team02.web.mvc.service.exchange.ExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -130,7 +127,7 @@ public class ExchangeController {
      */
     @ResponseBody
     @PostMapping("/expectedAmount")
-    public ExchangeDto expectedAmount(){
+    public ExchangeCalDto expectedAmount(){
         return exchangeService.expectedExchangeAmount(CurrencyCode.USD, 1000L);
     }
 
