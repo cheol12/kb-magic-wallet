@@ -2,9 +2,12 @@ package kb04.team02.web.mvc.domain.wallet.common;
 
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-
+@NoArgsConstructor
+@SuperBuilder
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn

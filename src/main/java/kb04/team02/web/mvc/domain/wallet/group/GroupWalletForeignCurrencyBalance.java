@@ -5,18 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+@SuperBuilder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Builder
-@DiscriminatorValue("GroupWalletForeignCurrencyBalance")
+@DiscriminatorValue("GroupWalletForeign")
 public class GroupWalletForeignCurrencyBalance extends ForeignCurrencyBalance {
     //== 연관관계 설정 START==//
     @ManyToOne
