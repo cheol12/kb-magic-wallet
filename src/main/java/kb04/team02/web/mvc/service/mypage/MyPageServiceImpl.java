@@ -5,6 +5,7 @@ import kb04.team02.web.mvc.domain.card.CardState;
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
+import kb04.team02.web.mvc.dto.CardNumberDto;
 import kb04.team02.web.mvc.dto.LoginMemberDto;
 import kb04.team02.web.mvc.repository.card.CardIssuanceRepository;
 import kb04.team02.web.mvc.repository.member.MemberRepository;
@@ -78,11 +79,11 @@ public class MyPageServiceImpl implements MyPageService {
     }
 
     @Override
-    public void linkAccount(LoginMemberDto loginMember, String newAccount) {
+    public void linkAccount(LoginMemberDto loginMember, String account) {
         Member member = memberRepository.findById(loginMember.getMemberId())
                 .orElseThrow(() -> new NoSuchElementException("멤버 조회 실패"));
 
-        member.changeAccount(newAccount);
+        member.changeAccount(account);
     }
 
     @Override
@@ -96,13 +97,17 @@ public class MyPageServiceImpl implements MyPageService {
     }
 
     @Override
-    public String getCardNumber(LoginMemberDto loginMember) {
+    public CardNumberDto getCardNumber(LoginMemberDto loginMember) {
         Member member = memberRepository.findById(loginMember.getMemberId())
                 .orElseThrow(() -> new NoSuchElementException("멤버 조회 실패"));
 
-        return cardIssuanceRepository.findFirstByMemberOrderByInsertDateDesc(member)
-                .orElseThrow(() -> new NoSuchElementException("카드 조회 실패"))
-                .getCardNumber();
+        CardIssuance card = cardIssuanceRepository.findFirstByMemberOrderByInsertDateDesc(member)
+                .orElseThrow(() -> new NoSuchElementException("카드 조회 실패"));
+
+        return CardNumberDto.builder()
+                .cardNumber(card.getCardNumber())
+                .cardState(card.getCardState())
+                .build();
     }
 
     @Override
