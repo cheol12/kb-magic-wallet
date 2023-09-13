@@ -204,13 +204,13 @@ public class GroupWalletTabController {
     public RuleDto groupWalletRule(@PathVariable String id) {
         RuleDto ruleDto = groupWalletTabService.getRuleById(Long.parseLong(id));
 
-        return ruleDto;
 
-//        if (ruleDto != null) {
-//            return "redirect:/group-wallet/{id}/rule";
-//        } else {
+        if (ruleDto != null) {
+            return ruleDto;
+        } else {
+            return null;
 //            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-//        }
+        }
     }
 
 
