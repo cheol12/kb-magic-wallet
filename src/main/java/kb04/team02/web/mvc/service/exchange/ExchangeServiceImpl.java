@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ExchangeServiceImpl implements ExchangeService{
 
     private final EntityManager em;
@@ -142,7 +144,7 @@ public class ExchangeServiceImpl implements ExchangeService{
         GroupWallet groupWallet = groupWalletRespository.findById(offlineReceiptDto.getOfflineReceiptId()).get();
         PersonalWallet personalWallet = personalWalletRepository.findById(offlineReceiptDto.getPersonalWalletId()).get();
 
-        OfflineReceipt offlineReceipt = offlineReceiptRepository.save(
+        offlineReceiptRepository.save(
                 OfflineReceipt.builder()
                         .receiptDate(offlineReceiptDto.getReceiptDate())
                         .currencyCode(offlineReceiptDto.getCurrencyCode())
@@ -171,6 +173,7 @@ public class ExchangeServiceImpl implements ExchangeService{
 
     @Override
     public int requestExchangeOnline(ExchangeDto exchangeDto) {
+        // 원화 -> 외화일 경우만
 
         // 선택한 지갑의 balance
         Long balance = 0L;
@@ -180,10 +183,13 @@ public class ExchangeServiceImpl implements ExchangeService{
             balance = selectedWalletBalance(exchangeDto.getWalletId(), exchangeDto.getWalletType());
         }
 
+        // 환율 적용
+        Long expectedAmount = expectedExchangeAmount(exchangeDto.getBuyCurrencyCode(), exchangeDto.getBuyAmount()).getExpectedAmount();
+        exchangeDto.setSellAmount(expectedAmount);
         // balance보다 높은 금액을 신청한 경우 예외 발생
-        if(exchangeDto.getBuyAmount() > balance) throw new ExchangeException("잔액이 부족합니다.");
+        if(expectedAmount > balance) throw new ExchangeException("잔액이 부족합니다.");
 
-
+        
         if(exchangeDto.getWalletType().equals(WalletType.PERSONAL_WALLET)){
             // 개인지갑 -> 환전일 경우
             PersonalWallet personalWallet = personalWalletRepository.findById(exchangeDto.getWalletId()).get();
@@ -204,17 +210,25 @@ public class ExchangeServiceImpl implements ExchangeService{
     @Override
     public ExchangeCalDto expectedExchangeAmount(CurrencyCode currencyCode, Long amount) {
 
+        // 적용 환율 구하기
+        Double applicableExchangeRate = 0.0;
         ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurrencyCode(currencyCode);
-        Double telegraphicTransferBuyingRate = exchangeRate.getTelegraphicTransferBuyingRate();
+        if(! currencyCode.equals(CurrencyCode.KRW)){
+            // 원화 -> 외화
+            applicableExchangeRate = exchangeRate.getTelegraphicTransferBuyingRate();
+        }else {
+            // 외화 -> 원화
+            applicableExchangeRate = exchangeRate.getTelegraphicTransferSellingRate();
+        }
 
-        // 환율 적용 계산
-        Long expectedAmount = (long) (amount * telegraphicTransferBuyingRate);
+        // 환율 적용 계산: 신청 금액 * 적용 환율
+        Long expectedAmount = (long) (amount * applicableExchangeRate);
 
         // dto set
         ExchangeCalDto exchangeCalDto = new ExchangeCalDto();
         exchangeCalDto.setExpectedAmount(expectedAmount);
         exchangeCalDto.setTradingBaseRate(exchangeRate.getTradingBaseRate());
-        exchangeCalDto.setTelegraphicTransferBuyingRate(telegraphicTransferBuyingRate);
+        exchangeCalDto.setApplicableExchangeRate(applicableExchangeRate);
 
         return exchangeCalDto;
     }

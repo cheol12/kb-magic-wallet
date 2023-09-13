@@ -10,8 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExchangeCalDto {
-    // 계산 금액, 현재 고시 환율, 적용 환율, 우대 금액
+    // 계산 금액, 현재 고시 환율, 적용 환율
     private Long expectedAmount;
     private Double tradingBaseRate;
-    private Double telegraphicTransferBuyingRate;
+    private Double applicableExchangeRate;
 }
