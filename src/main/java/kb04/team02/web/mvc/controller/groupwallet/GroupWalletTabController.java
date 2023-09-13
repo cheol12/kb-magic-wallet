@@ -420,12 +420,12 @@ public class GroupWalletTabController {
     public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
         WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id), Long.parseLong(historyid), (String) model.getAttribute("type"));
 
-        return historyDetail;
-//        if (historyDetail != null) {
-//            return "redirect:/group-wallet/{id}/history";
-//        } else {
+        if (historyDetail != null) {
+            return historyDetail;
+        } else {
+            return null;
 //            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-//        }
+        }
     }
 
     //== 내역 탭 END ==//
