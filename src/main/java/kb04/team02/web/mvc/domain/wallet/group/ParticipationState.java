@@ -6,7 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ParticipationState {
-    INVITED(0),
+//    INVITED(0),
     WAITING(1),
     PARTICIPATED(2);
 

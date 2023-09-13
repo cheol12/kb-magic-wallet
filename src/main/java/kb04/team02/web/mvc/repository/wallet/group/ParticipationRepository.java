@@ -71,4 +71,5 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     // 해당 모임 지갑의 모임장, 공동 모임장 회원 리스트 찾기
     List<Participation> findByGroupWalletAndRoleIn(GroupWallet groupWallet, Collection<Role> role);
 
+
 }

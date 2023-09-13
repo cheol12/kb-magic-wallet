@@ -24,10 +24,12 @@ public class GroupWalletController {
      * API 명세서 ROWNUM:10
      */
     @GetMapping("/")
-    public void groupWalletIndex(Model model, HttpSession session) {
-	Integer memberId = (Integer) session.getAttribute("member_id");
-//	List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(memberId);
-//	model.addAttribute("gWalletList", gWalletList);
+    public String groupWalletIndex(Model model, HttpSession session) {
+
+	        Member member = (Member) session.getAttribute("member_id");
+	        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(member);
+	        model.addAttribute("gWalletList", gWalletList);
+        return "group/groupIndex";
     }
 
     /**
@@ -52,13 +54,12 @@ public class GroupWalletController {
      * @param id 조회할 모임지갑 id
      */
     @GetMapping("/{id}")
-    public void getGroupWalletDetail(@PathVariable Long id, Model model) {
+    public String getGroupWalletDetail(@PathVariable Long id, Model model) {
 	// id = 내 모임지갑의 id중 하나임.
-	// 
 //        Long temp  = Long.parseLong(id);
-        WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
-	    model.addAttribute("walletDetailDto", walletDetailDto);
-	
+            WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
+	        model.addAttribute("walletDetailDto", walletDetailDto);
+        return "group/groupWalletDetail";
     }
 
     /**
@@ -82,9 +83,9 @@ public class GroupWalletController {
      */
     @ResponseBody
     @GetMapping("/{id}/link")
-    public String groupWalletCreateInviteLink(@PathVariable String id) {
+    public String groupWalletCreateInviteLink(@PathVariable Long id) {
 	// 메시지 api 불러오기
-//	groupWalletService.inviteMember(id);
+	groupWalletService.inviteMember(id);
 	//json으로 데이터 전달하기
 	    return "redirect:/group-wallet/{id}/member-list";
     }
