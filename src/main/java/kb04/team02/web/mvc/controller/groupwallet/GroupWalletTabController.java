@@ -387,23 +387,21 @@ public class GroupWalletTabController {
      */
     @ResponseBody
     @GetMapping("/{id}/history")
-    public Page<WalletHistoryDto> groupWalletHistoryList(@PathVariable String id, Model model, @RequestParam(defaultValue = "1") int nowPage) {
+    public HashMap<String, Object> groupWalletHistoryList(@PathVariable String id, Model model, @RequestParam(defaultValue = "1") int nowPage) {
 //        // 페이징 처리, 내역 날짜순, History.java에 날짜 필드를 어떻게 저장했는지 확인 필요
-        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("date")));
-//        // GroupWallet에서 쓸 정보들만 가져와서 History
-//
-//        Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
-//
-//        int temp = (nowPage - 1) % BLOCK_SIZE;
-//        int startPage = nowPage - temp;
-//
-//        model.addAttribute("pageList", historyPageList); // 뷰에서 ${pageList.content}
-//        model.addAttribute("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-//        model.addAttribute("startPage", startPage);
-//        model.addAttribute("nowPage", nowPage);
+        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
+        Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
 
-        Page<WalletHistoryDto> walletHistoryDtoList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
-        return walletHistoryDtoList;
+        int temp = (nowPage - 1) % BLOCK_SIZE;
+        int startPage = nowPage - temp;
+
+        HashMap<String, Object> historyMap = new HashMap<String, Object>();
+        historyMap.put("memberPageList", historyPageList); // 뷰에서 ${memberPageList.content}
+        historyMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
+        historyMap.put("startPage", startPage);
+        historyMap.put("nowPage", nowPage);
+
+        return historyMap;
 
     }
 
