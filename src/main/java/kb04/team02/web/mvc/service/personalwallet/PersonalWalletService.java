@@ -32,7 +32,7 @@ public interface PersonalWalletService {
      * @return 개인지갑 이체내역에 넣은 이체 내역 DTO
      * 개인지갑메인으로 돌아가니까 필요 없지 않나?
      */
-    void personalWalletDeposit(PersonalWalletTransferDto personalWalletTransferDto) throws NoSuchElementException;
+    void personalWalletDeposit(PersonalWalletTransferDto personalWalletTransferDto);
 
     /**
      * 개인지갑 환불 서비스
@@ -43,5 +43,5 @@ public interface PersonalWalletService {
      * @return 개인지갑 이체내역에 넣은 이체 내역 DTO
      * 오류 캐치 안되면 정상 작동.
      */
-    void personalWalletWithdraw(PersonalWalletTransferDto personalWalletTransferDto) throws NoSuchElementException;
+    void personalWalletWithdraw(PersonalWalletTransferDto personalWalletTransferDto);
 }
