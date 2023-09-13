@@ -4,6 +4,7 @@ import kb04.team02.web.mvc.domain.wallet.common.WalletExchange;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
 @AllArgsConstructor
 @Getter
 @DiscriminatorValue("GroupWalletExchange")
+@SuperBuilder
 public class GroupWalletExchange extends WalletExchange {
     //== 연관관계 설정 START==//
     @ManyToOne

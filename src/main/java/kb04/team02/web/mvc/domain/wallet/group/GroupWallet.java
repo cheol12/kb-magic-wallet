@@ -4,10 +4,7 @@ import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
 import kb04.team02.web.mvc.domain.common.BooleanToYNConverter;
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.saving.InstallmentSaving;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
@@ -22,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class GroupWallet {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wallet_seq")

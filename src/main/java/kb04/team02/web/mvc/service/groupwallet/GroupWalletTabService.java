@@ -33,7 +33,7 @@ public interface GroupWalletTabService {
      * @param member
      * @return
      */
-    boolean GrantMemberAuth(Long id, Long member);
+    boolean grantMemberAuth(Long id, Long member);
 
     /**
      * 모임지갑 공동모임장 권한 박탈
@@ -41,7 +41,7 @@ public interface GroupWalletTabService {
      * @param member
      * @return
      */
-    boolean RevokeMemberAuth(Long id, Long member);
+    boolean revokeMemberAuth(Long id, Long member);
 
     /**
      * 모임지갑 회비 규칙 조회
@@ -78,7 +78,7 @@ public interface GroupWalletTabService {
      * @param id
      * @return
      */
-    SavingDto getSavingById(Long id);
+    InstallmentDto getSavingById(Long id);
 
     /**
      * 모임지갑 가입 적금상품 해지
@@ -99,7 +99,7 @@ public interface GroupWalletTabService {
      * @param id
      * @return
      */
-    boolean linkCard(Long id);
+    boolean linkCard(Long id, Long memberId);
 
     /**
      * 모임지갑 내역 조회
@@ -114,5 +114,5 @@ public interface GroupWalletTabService {
      * @param id
      * @return
      */
-    WalletHistoryDto getHistory(Long id);
+    WalletHistoryDto getHistory(Long id, Long historyId, String type);
 }

@@ -2,6 +2,8 @@ package kb04.team02.web.mvc.domain.wallet.common;
 
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
 @Getter
+@NoArgsConstructor
+@SuperBuilder
 public abstract class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wallet_payment_seq")

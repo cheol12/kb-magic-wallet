@@ -1,8 +1,12 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
+import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletExchange;
+import kb04.team02.web.mvc.domain.wallet.group.GroupWalletTransfer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface GroupWalletExchangeRepository  extends JpaRepository<GroupWalletExchange, Long> {
@@ -20,4 +24,10 @@ public interface GroupWalletExchangeRepository  extends JpaRepository<GroupWalle
      * 
      * JPA: GroupWalletExchangeRepository.save(GroupWalletExchange, groupWalletExchange);
      */
+
+
+
+
+
+    List<GroupWalletExchange> searchAllByGroupWallet(GroupWallet groupWallet);
 }
