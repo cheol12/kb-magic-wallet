@@ -3,6 +3,7 @@ package kb04.team02.web.mvc.service.exchange;
 import kb04.team02.web.mvc.domain.bank.Bank;
 import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
 import kb04.team02.web.mvc.domain.bank.ReceiptState;
+import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.common.WalletExchange;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
@@ -198,5 +199,10 @@ public class ExchangeServiceImpl implements ExchangeService{
         // 선택한 지갑의 balance update - 원화 잔액, 외화 잔액 모두
 
         return 1;
+    }
+
+    @Override
+    public ExchangeDto expectedExchangeAmount(CurrencyCode currencyCode, Long amount) {
+        return null;
     }
 }
