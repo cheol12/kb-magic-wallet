@@ -119,20 +119,31 @@ public class GroupWalletTabController {
 
     @ResponseBody
     @GetMapping("/{id}/{member}/auth")
-    public List<GroupMemberDto> groupWalletAuthRequest(@PathVariable String id, @PathVariable String member, @RequestParam(defaultValue = "1") int nowPage) {
+    public HashMap<String, Object> groupWalletAuthRequest(@PathVariable String id, @PathVariable String member, @RequestParam(defaultValue = "1") int nowPage) {
         boolean isAuthGranted = groupWalletTabService.grantMemberAuth(Long.parseLong(id), Long.parseLong(member));
 
-        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
-        List<GroupMemberDto> groupMemberDtoList = groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
-        return groupMemberDtoList;
+        // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
+        if (isAuthGranted) {
+            Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
+            Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
 
-//        // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
-//        if (isAuthGranted) {
-//            return "redirect:/group-wallet";
-//            // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
-//        } else {
+            int temp = (nowPage - 1) % BLOCK_SIZE;
+            int startPage = nowPage - temp;
+
+            List<GroupMemberDto> groupMemberDtoList = groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+
+            HashMap<String, Object> memberMap = new HashMap<String, Object>();
+            memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
+            memberMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
+            memberMap.put("startPage", startPage);
+            memberMap.put("nowPage", nowPage);
+
+            return memberMap;
+            // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
+        } else {
+            return null;
 //            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-//        }
+        }
     }
 
 
