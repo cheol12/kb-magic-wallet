@@ -4,9 +4,11 @@ import kb04.team02.web.mvc.domain.wallet.common.Transfer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
+@SuperBuilder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

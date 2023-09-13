@@ -4,16 +4,18 @@ import kb04.team02.web.mvc.domain.member.Member;;
 import kb04.team02.web.mvc.dto.PersonalWalletTransferDto;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
 
+import java.util.NoSuchElementException;
+
 public interface PersonalWalletService {
 
     /**
      * 개인지갑 메인페이지 서비스
      * PersonalWalletDto
-     *  - Long Balance
-     *  - List<PersonalWalletTransferDto> list1
-     *  - List<PersonalWalletPaymentDto> list2
-     *  - List<PersonalWalletExchangeDto> list3
-     *  - List<PersonalWalletForeignCurrencyBalanceDto> list4
+     * - Long Balance
+     * - List<PersonalWalletTransferDto> list1
+     * - List<PersonalWalletPaymentDto> list2
+     * - List<PersonalWalletExchangeDto> list3
+     * - List<PersonalWalletForeignCurrencyBalanceDto> list4
      *
      * @param member 조회할 개인지갑 id
      * @return 개인지갑에 필요한 DTO
@@ -27,8 +29,9 @@ public interface PersonalWalletService {
      *
      * @param personalWalletTransferDto 사용자가 입력한 폼 데이터
      * @return 개인지갑 이체내역에 넣은 이체 내역 DTO
+     * 개인지갑메인으로 돌아가니까 필요 없지 않나?
      */
-    PersonalWalletTransferDto personalWalletDeposit(PersonalWalletTransferDto personalWalletTransferDto);
+    void personalWalletDeposit(PersonalWalletTransferDto personalWalletTransferDto) throws NoSuchElementException;
 
     /**
      * 개인지갑 환불 서비스
@@ -37,6 +40,7 @@ public interface PersonalWalletService {
      *
      * @param personalWalletTransferDto 사용자가 입력한 폼 데이터
      * @return 개인지갑 이체내역에 넣은 이체 내역 DTO
+     * 오류 캐치 안되면 정상 작동.
      */
-    PersonalWalletTransferDto personalWalletWithdraw(PersonalWalletTransferDto personalWalletTransferDto);
+    void personalWalletWithdraw(PersonalWalletTransferDto personalWalletTransferDto) throws NoSuchElementException;
 }
