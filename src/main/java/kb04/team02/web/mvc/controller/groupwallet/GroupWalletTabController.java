@@ -244,14 +244,16 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/saving")
     // Saving 테이블과 대응되는 객체를 Saving.java라고 가정한 코드
-    public String groupWalletSavingInfo(@PathVariable String id) {
+    public InstallmentDto groupWalletSavingInfo(@PathVariable String id) {
         InstallmentDto installmentDto = groupWalletTabService.getSavingById(Long.parseLong(id));
 
-        if (installmentDto != null) {
-            return "redirect:/group-wallet/{id}/saving";
-        } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
+        return installmentDto;
+
+//        if (installmentDto != null) {
+//            return "redirect:/group-wallet/{id}/saving";
+//        } else {
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+//        }
     }
 
 
