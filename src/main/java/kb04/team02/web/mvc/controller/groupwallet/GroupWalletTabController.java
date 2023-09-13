@@ -308,14 +308,18 @@ public class GroupWalletTabController {
      */
     @ResponseBody
     @GetMapping("/{id}/card")
-    public String groupWalletCardLink(@PathVariable String id) {
+    public List<CardIssuanceDto> groupWalletCardLink(@PathVariable String id) {
         boolean isCardLinked = groupWalletTabService.linkCard(Long.parseLong(id), 1L);
 
-        if (isCardLinked) {
-            return "redirect:/group-wallet/{id}/card/list";
-        } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
+        List<CardIssuanceDto> cardIssuanceDtoList = groupWalletTabService.getCard(Long.parseLong(id));
+
+        return cardIssuanceDtoList;
+
+//        if (isCardLinked) {
+//            return "redirect:/group-wallet/{id}/card/list";
+//        } else {
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+//        }
     }
 
     //== 카드 탭 END ==//
