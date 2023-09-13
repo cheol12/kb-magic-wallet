@@ -1,6 +1,8 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
 import kb04.team02.web.mvc.domain.member.Member;
+import kb04.team02.web.mvc.domain.wallet.common.ForeignCurrencyBalance;
+import kb04.team02.web.mvc.domain.wallet.common.Payment;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.Participation;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
@@ -40,7 +42,8 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      * 모임지갑 상세화면
      * 선택한 나의 모임지갑의 모든 거래내역(외화내역, 이체내역, 환전내역)
      */
-    WalletDetailDto findAllByGroupWalletIdOrderByInsertDate(Long groupWalletId);
+    Payment findAllByGroupWalletIdOrderByInsertDate(Long groupWalletId);
+
 //    여러 종류의 거래내역을 오버라이딩해서 한 번에 불러오는 게 헷갈림다
 
 

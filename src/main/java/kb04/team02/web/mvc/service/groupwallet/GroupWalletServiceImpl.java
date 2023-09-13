@@ -2,6 +2,7 @@ package kb04.team02.web.mvc.service.groupwallet;
 
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Member;
+import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.common.PaymentType;
 import kb04.team02.web.mvc.domain.wallet.common.Transfer;
 import kb04.team02.web.mvc.domain.wallet.common.TransferType;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EnumType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +35,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     private final GroupWalletForeignCurrencyBalanceRepository groupForeignBalanceRep;
     private final GroupWalletPaymentRepository groupPaymentRep;
     private final GroupWalletTransferRepository groupTransferRep;
-//    private final Participation participationRep;
+    private final ParticipationRepository participationRep;
 
     @Override
     public List<GroupWallet> selectAllMyGroupWallet(Member member) {
@@ -44,7 +46,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         //groupWalletList 를 for문으로 돌리면서 하나 하나를 WalletDto에 알맞는 객체로 set or save 해서 리턴하도록 하기
 
-        return null;
+        return groupWalletList;
     }
 
     @Override
@@ -65,11 +67,20 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         // participation 테이블에도 모임장 데이터를 추가해야하지 않나
 
-//        Participation participation;
+        Participation partici;
 
-//        participation = participationRep.
+        partici = participationRep.save(
+                Participation.builder()
+                        .participationState(ParticipationState.PARTICIPATED)
+                        .memberId(member.getMemberId())
+                        .role(Role.CHAIRMAN)
+                        .groupWallet(groupWalletSave)
+                        .build()
+        );
 
-        if (groupWalletSave == null) {
+        System.out.println("memberId : " + groupWalletSave.getMember().getMemberId());
+
+        if (groupWalletSave == null || partici == null) {
             throw new InsertException("모임 지갑 생성에 실패했습니다");
         }
         return 1;

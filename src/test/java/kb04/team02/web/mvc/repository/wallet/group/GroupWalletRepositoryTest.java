@@ -23,20 +23,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GroupWalletRepositoryTest {
 
     @Autowired
-    private GroupWalletRespository groupRespository;
+    private GroupWalletRespository groupWalletRep;
 
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberRepository memberRep;
 
     @AfterEach
     public void afterEach(){
-        System.out.println("후 처리");
-        groupRespository.deleteAll();
+        groupWalletRep.deleteAll();
     }
 
     @Test
     @DisplayName("createGroupWallet")
-    public void createGroupWallet() throws Exception{
+    void createGroupWallet() throws Exception{
 
         // given
         Address address = new Address("서울시", "국회대로 54길 10", "07246");
@@ -48,13 +47,13 @@ public class GroupWalletRepositoryTest {
                 .bankAccount("111-111-1111-12")
                 .name("김철")
                 .payPassword("123123")
-                .id("jang")
+                .id("cheol")
                 .password("1231123")
                 .phoneNumber("010-1111-1112").build();
-        Member save = memberRepository.save(member);
+        Member save = memberRep.save(member);
 
         //2.
-//        Member save = memberRepository.save(Member.builder()
+//        Member save = MemberRepository.save(Member.builder()
 //                .address(address)
 //                .email("cheol@naver.com")
 //                .bankAccount("111-111-1111-12")
@@ -73,12 +72,12 @@ public class GroupWalletRepositoryTest {
                 .member(save)
                 .nickname(nickname)
                 .build();  //new GroupWallet();
-        groupRespository.save(groupWallet);
+        groupWalletRep.save(groupWallet);
 
         System.out.println("save의 nickname : " + groupWallet.getNickname());
 
         // when
-        List<GroupWallet> findByMember = groupRespository.findByMember(save);
+        List<GroupWallet> findByMember = groupWalletRep.findByMember(save);
 
         System.out.println("rep의 nickname : " + findByMember.get(0).getNickname());
 
@@ -88,7 +87,7 @@ public class GroupWalletRepositoryTest {
     }
 
 
-//    @Test
+    @Test
     @DisplayName("findAllByMemberOrderByGroupWalletId")
     public void findAllByMemberOrderByGroupWalletId() throws Exception{
 
@@ -102,10 +101,10 @@ public class GroupWalletRepositoryTest {
                 .bankAccount("111-111-1111-01")
                 .name("이이잉")
                 .payPassword("123123")
-                .id("jang")
-                .password("1231123")
+                .id("cheol01")
+                .password("123123")
                 .phoneNumber("010-1111-1101").build();
-        Member save = memberRepository.save(member);
+        Member save = memberRep.save(member);
 
         String nickname = "내 모";
 
@@ -116,7 +115,7 @@ public class GroupWalletRepositoryTest {
                 .member(save)
                 .nickname(nickname)
                 .build();  //new GroupWallet();
-        groupRespository.save(groupWallet);
+        groupWalletRep.save(groupWallet);
 
         nickname = "내 내";
         groupWallet = GroupWallet.builder()
@@ -124,10 +123,10 @@ public class GroupWalletRepositoryTest {
                 .member(save)
                 .nickname(nickname)
                 .build();
-        groupRespository.save(groupWallet);
+        groupWalletRep.save(groupWallet);
 
         // when
-        List<GroupWallet> list = groupRespository.findAllByMemberOrderByGroupWalletId(member);
+        List<GroupWallet> list = groupWalletRep.findAllByMemberOrderByGroupWalletId(member);
 
         // then
         assertThat(list.size()).isEqualTo(2);
@@ -136,6 +135,7 @@ public class GroupWalletRepositoryTest {
     @Test
     @DisplayName("getGroupWalletDetail")
     public void getGroupWalletDetail() throws Exception{
+
 
     }
 

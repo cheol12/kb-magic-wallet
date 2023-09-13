@@ -18,7 +18,7 @@ public interface GroupWalletService {
      * API 명세서 ROWNUM:10
      * 나의 모든 모임지갑 목록 불러오기
      *
-     * @param memberId 세션에서 불러옴
+     * @param member 세션에서 불러옴
      * @return List<WalletDto>
      * <p>
      * * WalletDto
@@ -34,7 +34,7 @@ public interface GroupWalletService {
      * 모임지갑 생성하기
      * API 명세서 ROWNUM:12
      *
-     * @param walletDto 모임지갑 객체를 폼에 입력해서 생성
+     * @param member,nickname 모임지갑 객체를 폼에 입력해서 생성
      * @return int 1: OK 0:FAIL
      */
     int createGroupWallet(Member member, String nickname);
