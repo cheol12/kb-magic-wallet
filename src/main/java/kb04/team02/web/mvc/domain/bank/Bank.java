@@ -2,6 +2,7 @@ package kb04.team02.web.mvc.domain.bank;
 
 import kb04.team02.web.mvc.domain.member.Address;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Builder
 public class Bank {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bank_seq")

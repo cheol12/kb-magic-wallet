@@ -2,12 +2,14 @@ package kb04.team02.web.mvc.service.exchange;
 
 import kb04.team02.web.mvc.domain.bank.Bank;
 import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
+import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.dto.BankDto;
 import kb04.team02.web.mvc.dto.ExchangeDto;
 import kb04.team02.web.mvc.dto.OfflineReceiptDto;
 import kb04.team02.web.mvc.dto.WalletDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ExchangeService {
 
@@ -61,7 +63,7 @@ public interface ExchangeService {
      *  - 수령일자
      *  - 상태코드(수령여부)
      */
-    List<OfflineReceiptDto> offlineReceiptHistory();
+    List<OfflineReceiptDto> offlineReceiptHistory(Long personalWalletId, Map<Long, Role> map);
 
     /**
      * 오프라인 환전 요청
@@ -84,7 +86,7 @@ public interface ExchangeService {
      * 환전 취소 시, rest로 자신의 환전 신청 내역을 리스트로 전송하여 환전 메인페이지를 리프레시한다
      * OfflineReceiptDto 리스트 반환
      */
-    List<OfflineReceiptDto> cancelOfflineReceipt();
+    int cancelOfflineReceipt(Long receipt_id);
 
     /**
      * 온라인 환전 신청

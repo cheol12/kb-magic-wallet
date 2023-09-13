@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.controller.exchange;
 
 import kb04.team02.web.mvc.domain.bank.Bank;
+import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.dto.BankDto;
 import kb04.team02.web.mvc.dto.ExchangeDto;
 import kb04.team02.web.mvc.dto.OfflineReceiptDto;
@@ -12,7 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/exchange")
@@ -35,7 +38,12 @@ public class ExchangeController {
      */
     @GetMapping("/offline")
     public String exchangeOfflineIndex(HttpSession session, Model model) {
+        // session에서 모임지갑 seq, 개인지갑 seq 가져와야 함
+        // Map<Long, Role> groupWalletIdList
+        Map<Long, Role> map = new HashMap<>(); // getSession
+        Long personalWalletId = 0L; // getSession
 
+        exchangeService.offlineReceiptHistory(personalWalletId, map);
         return null;
     }
 
@@ -60,17 +68,17 @@ public class ExchangeController {
     @PostMapping("/offline/form")
     public String exchangeOffline(OfflineReceiptDto offlineReceiptDto) {
         int result = exchangeService.requestOfflineReceipt(offlineReceiptDto);
-        return "redirect:/offline";
+        return "redirect:/exchange/offline";
     }
 
     /**
      * 오프라인 환전 취소 요청
      * API 명세서 ROWNUM:45
      */
-    @ResponseBody
     @DeleteMapping("/offline/form")
-    public List<OfflineReceiptDto> exchangeOfflineCancel(Long exchange_id) {
-        return exchangeService.cancelOfflineReceipt();
+    public String exchangeOfflineCancel(Long receipt_id) {
+        int res = exchangeService.cancelOfflineReceipt(receipt_id);
+        return "redirect:/exchange/offline";
     }
 
     /**

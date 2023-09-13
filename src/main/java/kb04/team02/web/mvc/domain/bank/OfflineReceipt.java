@@ -3,8 +3,7 @@ package kb04.team02.web.mvc.domain.bank;
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -13,6 +12,9 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor()
 @Getter
+@AllArgsConstructor
+@Builder
+@Setter
 public class OfflineReceipt {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offline_receipt_seq")
