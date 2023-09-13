@@ -1,8 +1,11 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
+import kb04.team02.web.mvc.domain.wallet.group.GroupWalletExchange;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletTransfer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface GroupWalletTransferRepository extends JpaRepository<GroupWalletTransfer, Long> {
@@ -52,4 +55,5 @@ public interface GroupWalletTransferRepository extends JpaRepository<GroupWallet
      * JPA : GroupWalletTransferRepository.save(GroupWalletTransfer groupWalletTransfer);
      * */
 
+    List<GroupWalletTransfer> findByGroupWallet(Long groupWalletId);
 }

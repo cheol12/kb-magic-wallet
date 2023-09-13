@@ -4,12 +4,14 @@ import kb04.team02.web.mvc.domain.wallet.group.GroupWalletExchange;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface GroupWalletExchangeRepository  extends JpaRepository<GroupWalletExchange, Long> {
     
     
     /**
-     * 모임지갑 환전내역
+     * 모임지갑 환전내역 입력하기
      * ROWNUM 35?
      * 
      * SQL
@@ -20,4 +22,11 @@ public interface GroupWalletExchangeRepository  extends JpaRepository<GroupWalle
      * 
      * JPA: GroupWalletExchangeRepository.save(GroupWalletExchange, groupWalletExchange);
      */
+
+    /**
+     * 모임지갑 환전내역 불러오기
+     * */
+    List<GroupWalletExchange> findByGroupWallet(Long groupWalletId);
+
+
 }
