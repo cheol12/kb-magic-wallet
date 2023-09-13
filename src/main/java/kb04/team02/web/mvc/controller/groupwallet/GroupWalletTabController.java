@@ -268,7 +268,7 @@ public class GroupWalletTabController {
         boolean isSavingCanceled = groupWalletTabService.cancelSaving(Long.parseLong(id));
 
         if (isSavingCanceled) {
-            return "redirect:/group-wallet/{id}/saving";
+            return "redirect:/group-wallet/{id}/history";
         } else {
             return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
