@@ -49,17 +49,20 @@ public class GroupWalletTabController {
     // 2. 여러 개의 페이지로 나누는 방식
     @ResponseBody
     @GetMapping("/{id}/member-list")
-    public void groupWalletMemberList(@PathVariable String id, Model model, @RequestParam(defaultValue = "1") int nowPage) {
-        // 페이징 처리, 회원 이름순, Member.java에 이름 필드를 어떻게 저장했는지 확인 필요
+    public List<GroupMemberDto> groupWalletMemberList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
+//        // 페이징 처리, 회원 이름순, Member.java에 이름 필드를 어떻게 저장했는지 확인 필요
         Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
-        Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+//        Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+//
+//        int temp = (nowPage - 1) % BLOCK_SIZE;
+//        int startPage = nowPage - temp;
+//        model.addAttribute("pageList", memberPageList); // 뷰에서 ${pageList.content}
+//        model.addAttribute("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
+//        model.addAttribute("startPage", startPage);
+//        model.addAttribute("nowPage", nowPage);
 
-        int temp = (nowPage - 1) % BLOCK_SIZE;
-        int startPage = nowPage - temp;
-        model.addAttribute("pageList", memberPageList); // 뷰에서 ${pageList.content}
-        model.addAttribute("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("nowPage", nowPage);
+        List<GroupMemberDto> groupMemberDtoList = groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+        return groupMemberDtoList;
 
     }
 
@@ -73,16 +76,21 @@ public class GroupWalletTabController {
      */
     @ResponseBody
     @DeleteMapping("/{id}/{member}")
-    public String groupWalletMemberKick(@PathVariable String id, @PathVariable String member) {
+    public List<GroupMemberDto> groupWalletMemberKick(@PathVariable String id, @PathVariable String member, @RequestParam(defaultValue = "1") int nowPage) {
         boolean isMemberDeleted = groupWalletTabService.deleteMember(Long.parseLong(id), Long.parseLong(member));
 
+        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
+        List<GroupMemberDto> groupMemberDtoList = groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+        return groupMemberDtoList;
+
         // 멤버가 성공적으로 삭제되었을 경우 멤버 조회로 이동
-        if (isMemberDeleted) {
-            return "redirect:/group-wallet/{id}/member-list";
-            // 멤버가 없거나 삭제에 실패했을 경우 에러페이지로 이동
-        } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
+//        if (isMemberDeleted) {
+//            return "redirect:/group-wallet/{id}/member-list";
+//            // 멤버가 없거나 삭제에 실패했을 경우 에러페이지로 이동
+//        } else {
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+//        }
+//
     }
 
     /**
@@ -98,13 +106,13 @@ public class GroupWalletTabController {
     public String groupWalletAuthRequest(@PathVariable String id, @PathVariable String member) {
         boolean isAuthGranted = groupWalletTabService.grantMemberAuth(Long.parseLong(id), Long.parseLong(member));
 
-        // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
-        if (isAuthGranted) {
-            return "redirect:/group-wallet/{id}/member-list";
-            // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
-        } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
+//        // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
+//        if (isAuthGranted) {
+//            return "redirect:/group-wallet";
+//            // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
+//        } else {
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+//        }
     }
 
 
