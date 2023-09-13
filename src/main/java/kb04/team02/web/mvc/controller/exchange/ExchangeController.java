@@ -52,10 +52,9 @@ public class ExchangeController {
      * API 명세서 ROWNUM:43
      */
     @GetMapping("/offline/form")
-    public String exchangeOfflineForm(Model model) {
+    public String exchangeOfflineForm(HttpSession session, Model model) {
         List<BankDto> bankList = exchangeService.bankList();
-        List<WalletDto> chairManWalletList = exchangeService.chairManWalletList();
-        // chairManWalletList 권한 걸러주고 개인지갑 추가해서 view로 넘겨줘야 함
+        List<WalletDto> WalletList = exchangeService.WalletList(0L); // 지갑 리스트 - 전달인수 세션으로 수정할 것
 
         model.addAttribute("bankList", bankList);
         return "exchange/offline/form";
@@ -94,9 +93,8 @@ public class ExchangeController {
      * API 명세서 ROWNUM:47
      */
     @GetMapping("/online/form")
-    public void exchangeOnlineForm() {
-        List<WalletDto> chairManWalletList = exchangeService.chairManWalletList();
-        // chairManWalletList 권한 걸러주고 개인지갑 추가해서 view로 넘겨줘야 함
+    public void exchangeOnlineForm(HttpSession session) {
+        List<WalletDto> nWalletList = exchangeService.WalletList(0L);
     }
 
     /**
