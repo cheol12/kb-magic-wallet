@@ -21,8 +21,8 @@ public interface OfflineReceiptRepository extends JpaRepository<OfflineReceipt, 
 
       JPA: X / QueryDSL O
      */
-    List<OfflineReceipt> findAllByPersonalWalletPersonalWalletId(Long pwId);
-    List<OfflineReceipt> findAllByGroupWalletGroupWalletId(Long gwId);
+    List<OfflineReceipt> findAllByPersonalWallet(PersonalWallet personalWallet);
+    List<OfflineReceipt> findAllByGroupWallet(GroupWallet groupWallet);
 
     /*
     ROWNUM 44
