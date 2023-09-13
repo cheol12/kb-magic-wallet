@@ -68,4 +68,10 @@ public class Member {
     private List<GroupWallet> groupWallets = new ArrayList<>();
 
     //== 연관관계 설정 END==//
+
+    //== 메소드 START ==//
+    public void changeAccount(String newAccount) {
+        this.bankAccount = newAccount;
+    }
+    //== 메소드 END ==//
 }

@@ -1,9 +1,12 @@
 package kb04.team02.web.mvc.repository.card;
 
 import kb04.team02.web.mvc.domain.card.CardIssuance;
+import kb04.team02.web.mvc.domain.card.CardState;
+import kb04.team02.web.mvc.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -32,4 +35,9 @@ public interface CardIssuanceRepository extends JpaRepository<CardIssuance, Long
      * @Param card_number
      */
     Optional<CardIssuance> findCardIssuanceByCardNumber(String card_number);
+
+    /**
+     * 멤버의 최신 카드 하나만 가져오기
+     */
+    Optional<CardIssuance> findFirstByMemberOrderByInsertDateDesc(Member member);
 }
