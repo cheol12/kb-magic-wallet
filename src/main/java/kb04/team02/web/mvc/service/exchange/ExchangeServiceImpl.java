@@ -10,16 +10,20 @@ import kb04.team02.web.mvc.domain.wallet.common.WalletExchange;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletExchange;
+import kb04.team02.web.mvc.domain.wallet.group.GroupWalletForeignCurrencyBalance;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletExchange;
+import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletForeignCurrencyBalance;
 import kb04.team02.web.mvc.dto.*;
 import kb04.team02.web.mvc.exception.ExchangeException;
 import kb04.team02.web.mvc.repository.bank.BankRepository;
 import kb04.team02.web.mvc.repository.bank.ExchangeRateRepository;
 import kb04.team02.web.mvc.repository.bank.OfflineReceiptRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletExchangeRepository;
+import kb04.team02.web.mvc.repository.wallet.group.GroupWalletForeignCurrencyBalanceRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletRespository;
 import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletExchangeRepository;
+import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletForeignCurrencyBalanceRepository;
 import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +33,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +49,8 @@ public class ExchangeServiceImpl implements ExchangeService{
     private final PersonalWalletExchangeRepository personalWalletExchangeRepository;
     private final GroupWalletExchangeRepository groupWalletExchangeRepository;
     private final ExchangeRateRepository exchangeRateRepository;
+    private final PersonalWalletForeignCurrencyBalanceRepository pFCBalanceRepository;
+    private final GroupWalletForeignCurrencyBalanceRepository gFCBalanceRepository;
 
     @Override
     public List<BankDto> bankList() {
@@ -67,7 +74,6 @@ public class ExchangeServiceImpl implements ExchangeService{
                 .collect(Collectors.toList());
 
         // 모임 지갑
-        // 모임 지갑 없으면 예외...
         GroupWallet groupWallet = groupWalletRespository.findById(memberId).orElse(null);
         if(groupWallet != null){
             List<WalletDto> gWalletList = groupWalletRespository.findById(memberId).stream()
@@ -163,9 +169,8 @@ public class ExchangeServiceImpl implements ExchangeService{
     
     @Override
     public int cancelOfflineReceipt(Long receipt_id) {
-        OfflineReceipt offlineReceipt = em.find(OfflineReceipt.class, receipt_id);
-
-        // 예외처리 offlineReceipt == null
+        OfflineReceipt offlineReceipt = offlineReceiptRepository.findById(receipt_id)
+                .orElseThrow(() -> new NoSuchElementException("오프라인 환전 내역 조회 실패"));
 
         offlineReceipt.setReceiptState(ReceiptState.CANCEL);
         return 1;
@@ -174,35 +179,84 @@ public class ExchangeServiceImpl implements ExchangeService{
     @Override
     public int requestExchangeOnline(ExchangeDto exchangeDto) {
         // 원화 -> 외화일 경우만
+        exchangeDto.setSellCurrencyCode(CurrencyCode.KRW);
+
+        Long walletId = exchangeDto.getWalletId();
+        CurrencyCode buyCode = exchangeDto.getBuyCurrencyCode();
 
         // 선택한 지갑의 balance
         Long balance = 0L;
         if(exchangeDto.getWalletType().equals(WalletType.PERSONAL_WALLET)) {
-            balance = selectedWalletBalance(exchangeDto.getWalletId(), exchangeDto.getWalletType());
+            balance = selectedWalletBalance(walletId, exchangeDto.getWalletType());
         } else if (exchangeDto.getWalletType().equals(WalletType.GROUP_WALLET)) {
-            balance = selectedWalletBalance(exchangeDto.getWalletId(), exchangeDto.getWalletType());
+            balance = selectedWalletBalance(walletId, exchangeDto.getWalletType());
         }
 
+        // 환전 정보 반환
+        ExchangeCalDto exchangeCalDto = expectedExchangeAmount(buyCode, exchangeDto.getBuyAmount());
         // 환율 적용
-        Long expectedAmount = expectedExchangeAmount(exchangeDto.getBuyCurrencyCode(), exchangeDto.getBuyAmount()).getExpectedAmount();
-        exchangeDto.setSellAmount(expectedAmount);
+        Long expectedAmount = exchangeCalDto.getExpectedAmount();
+        exchangeDto.setSellAmount(expectedAmount); // 매도 금액 설정
         // balance보다 높은 금액을 신청한 경우 예외 발생
         if(expectedAmount > balance) throw new ExchangeException("잔액이 부족합니다.");
 
-        
+        // 환율 설정
+        exchangeDto.setExchangeRate(exchangeCalDto.getApplicableExchangeRate());
+
         if(exchangeDto.getWalletType().equals(WalletType.PERSONAL_WALLET)){
             // 개인지갑 -> 환전일 경우
-            PersonalWallet personalWallet = personalWalletRepository.findById(exchangeDto.getWalletId()).get();
+            PersonalWallet personalWallet = personalWalletRepository.findById(walletId).get();
+            Long kwBalance = personalWallet.getBalance(); // 원화 balance
+
+            // 해당 코드 환전 내역 조회
+            PersonalWalletForeignCurrencyBalance pwfcb = pFCBalanceRepository.findPersonalWalletForeignCurrencyBalanceByCurrencyCodeAAndPersonalWallet(buyCode, personalWallet).orElse(null);
+
+            Long fBalance = 0L;
+            // 해당코드 환전 내역이 있을 때
+            if(pwfcb != null) fBalance = pwfcb.getBalance();
+
+            // 외화 지갑 balance insert / update
+            pFCBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
+                    .currencyCode(buyCode)
+                    .balance(fBalance + exchangeDto.getBuyAmount())
+                    .personalWallet(personalWallet)
+                    .build());
+
+            // exchangeDto setter
+            exchangeDto.setAfterSellBalance(kwBalance - expectedAmount); // 지갑 balance - 매도 금액
+            exchangeDto.setAfterBuyBalance(fBalance + exchangeDto.getBuyAmount()); // 외화 지갑 balance + 매수 금액
             PersonalWalletExchange personalWalletExchange = ExchangeDto.toPersonalEntity(exchangeDto, personalWallet);
             personalWalletExchangeRepository.save(personalWalletExchange);
+
+
         } else if (exchangeDto.getWalletType().equals(WalletType.GROUP_WALLET)) {
             // 모임지갑 -> 환전일 경우
-            GroupWallet groupWallet = groupWalletRespository.findById(exchangeDto.getWalletId()).get();
+            GroupWallet groupWallet = groupWalletRespository.findById(walletId).get();
+            Long kwBalance = groupWallet.getBalance(); // 원화 balance
+
+            // 해당 코드 환전 내역 조회
+            GroupWalletForeignCurrencyBalance bwfcb = gFCBalanceRepository.findGroupWalletForeignCurrencyBalanceByCurrencyCodeAndGroupWallet(buyCode, groupWallet).orElse(null);
+
+            Long fBalance = 0L;
+            // 해당코드 환전 내역이 있을 때
+            if(bwfcb != null) fBalance = bwfcb.getBalance();
+
+            // 외화 지갑 balance insert / update
+            gFCBalanceRepository.save(GroupWalletForeignCurrencyBalance.builder()
+                    .currencyCode(buyCode)
+                    .balance(fBalance + exchangeDto.getBuyAmount())
+                    .groupWallet(groupWallet)
+                    .build());
+
+            // exchangeDto setter
+            exchangeDto.setAfterSellBalance(kwBalance - expectedAmount); // 지갑 balance - 매도 금액
+            exchangeDto.setAfterBuyBalance(fBalance + exchangeDto.getBuyAmount()); // 외화 지갑 balance + 매수 금액
+
+
             GroupWalletExchange groupWalletExchange = ExchangeDto.toGroupEntity(exchangeDto, groupWallet);
             groupWalletExchangeRepository.save(groupWalletExchange);
-        }
 
-        // 선택한 지갑의 balance update - 원화 잔액, 외화 잔액 모두
+        }
 
         return 1;
     }
