@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 
@@ -25,13 +26,13 @@ public class GroupWalletTabController {
     private final GroupWalletTabService groupWalletTabService;
 
 
-     // 페이지당 항목 수
-     private final static int PAGE_SIZE=10;
-     private final static int BLOCK_SIZE=5;
-
+    // 페이지당 항목 수
+    private final static int PAGE_SIZE = 10;
+    private final static int BLOCK_SIZE = 5;
 
 
     //== 모임원 조회 탭 START ==//
+
     /**
      * 모임지갑 모임원 리스트 조회 요청
      *
@@ -50,15 +51,15 @@ public class GroupWalletTabController {
     @GetMapping("/{id}/member-list")
     public void groupWalletMemberList(@PathVariable String id, Model model, @RequestParam(defaultValue = "1") int nowPage) {
         // 페이징 처리, 회원 이름순, Member.java에 이름 필드를 어떻게 저장했는지 확인 필요
-        Pageable page = PageRequest.of((nowPage-1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
+        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
         Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
 
-        int temp = (nowPage-1)%BLOCK_SIZE;
-        int startPage=nowPage-temp;
+        int temp = (nowPage - 1) % BLOCK_SIZE;
+        int startPage = nowPage - temp;
         model.addAttribute("pageList", memberPageList); // 뷰에서 ${pageList.content}
-	    model.addAttribute("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-	    model.addAttribute("startPage", startPage);
-	    model.addAttribute("nowPage", nowPage);
+        model.addAttribute("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("nowPage", nowPage);
 
     }
 
@@ -67,7 +68,7 @@ public class GroupWalletTabController {
      * 모임지갑 모임원 강퇴 요청
      * API 명세서 ROWNUM:18
      *
-     * @param id 모임지갑 id 
+     * @param id     모임지갑 id
      * @param member 강퇴할 모임원 id
      */
     @ResponseBody
@@ -95,14 +96,14 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/{member}/auth")
     public String groupWalletAuthRequest(@PathVariable String id, @PathVariable String member) {
-        boolean isAuthGranted = groupWalletTabService.GrantMemberAuth(Long.parseLong(id), Long.parseLong(member));
-        
+        boolean isAuthGranted = groupWalletTabService.grantMemberAuth(Long.parseLong(id), Long.parseLong(member));
+
         // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
         if (isAuthGranted) {
             return "redirect:/group-wallet/{id}/member-list";
-        // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
+            // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
         } else {
-             return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
 
@@ -118,14 +119,14 @@ public class GroupWalletTabController {
     @ResponseBody
     @DeleteMapping("/{id}/{member}/revoke")
     public String groupwalletAuthRevoke(@PathVariable String id, @PathVariable String member) {
-        boolean isAuthRevoked = groupWalletTabService.RevokeMemberAuth(Long.parseLong(id), Long.parseLong(member));
-        
+        boolean isAuthRevoked = groupWalletTabService.revokeMemberAuth(Long.parseLong(id), Long.parseLong(member));
+
         // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
         if (isAuthRevoked) {
             return "redirect:/group-wallet/{id}/member-list";
-        // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
+            // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
         } else {
-             return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
 
@@ -133,6 +134,7 @@ public class GroupWalletTabController {
     //== 모임원 조회 탭 END ==//
 
     //== 규칙 탭 START ==//
+
     /**
      * 모임지갑 회비 규칙 조회
      * API 명세서 ROWNUM:19
@@ -199,7 +201,7 @@ public class GroupWalletTabController {
      *
      * @param id 회비 규칙을 삭제할 모임지갑 id
      */
-    
+
     @DeleteMapping("/{id}/rule")
     public String groupWalletDeleteRule(@PathVariable String id) {
         boolean isRuleDeleted = groupWalletTabService.deleteRule(Long.parseLong(id));
@@ -214,6 +216,7 @@ public class GroupWalletTabController {
     //== 규칙 탭 END ==//
 
     //== 적금 탭 START ==//
+
     /**
      * 모임지갑 가입 적금상품 조회
      * API 명세서 ROWNUM:25
@@ -224,16 +227,14 @@ public class GroupWalletTabController {
     @GetMapping("/{id}/saving")
     // Saving 테이블과 대응되는 객체를 Saving.java라고 가정한 코드
     public String groupWalletSavingInfo(@PathVariable String id) {
-        SavingDto Savingdto = groupWalletTabService.getSavingById(Long.parseLong(id));
+        InstallmentDto installmentDto = groupWalletTabService.getSavingById(Long.parseLong(id));
 
-        if (Savingdto != null) {
+        if (installmentDto != null) {
             return "redirect:/group-wallet/{id}/saving";
         } else {
             return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
-
-
 
 
     /**
@@ -256,6 +257,7 @@ public class GroupWalletTabController {
     //== 적금 탭 END ==//
 
     //== 카드 탭 START ==//
+
     /**
      * 모임지갑 카드 연결 현황 조회 요청
      * API 명세서 ROWNUM:27
@@ -285,7 +287,7 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/card")
     public String groupWalletCardLink(@PathVariable String id) {
-        boolean isCardLinked = groupWalletTabService.linkCard(Long.parseLong(id));
+        boolean isCardLinked = groupWalletTabService.linkCard(Long.parseLong(id), 1L);
 
         if (isCardLinked) {
             return "redirect:/group-wallet/{id}/card/list";
@@ -297,6 +299,7 @@ public class GroupWalletTabController {
     //== 카드 탭 END ==//
 
     //== 내역 탭 START ==//
+
     /**
      * 모임지갑 내역 조회
      * API 명세서 ROWNUM:35
@@ -320,34 +323,35 @@ public class GroupWalletTabController {
     @GetMapping("/{id}/history")
     public void groupWalletHistoryList(@PathVariable String id, Model model, @RequestParam(defaultValue = "1") int nowPage) {
         // 페이징 처리, 내역 날짜순, History.java에 날짜 필드를 어떻게 저장했는지 확인 필요
-        Pageable page = PageRequest.of((nowPage-1), PAGE_SIZE, Sort.by(Sort.Order.asc("date")));
+        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("date")));
         // GroupWallet에서 쓸 정보들만 가져와서 History
+
         Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
 
-        int temp = (nowPage-1)%BLOCK_SIZE;
-        int startPage=nowPage-temp;
+        int temp = (nowPage - 1) % BLOCK_SIZE;
+        int startPage = nowPage - temp;
 
         model.addAttribute("pageList", historyPageList); // 뷰에서 ${pageList.content}
-	    model.addAttribute("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-	    model.addAttribute("startPage", startPage);
-	    model.addAttribute("nowPage", nowPage);
+        model.addAttribute("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("nowPage", nowPage);
 
-    }    
+    }
 
 
     /**
      * 모임지갑 상세 내역 조회
      * API 명세서 ROWNUM:36
      *
-     * @param id 상세 내역 조회할 모임지갑 id
+     * @param id        상세 내역 조회할 모임지갑 id
      * @param historyid 상세 내역 조회할 내역 id
      */
     @ResponseBody
     @GetMapping("/{id}/{historyid}")
     // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미? 
     // 3개 다 합친 것? 대응되는 개념?
-    public String groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid) {
-        WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id));
+    public String groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
+        WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id), Long.parseLong(historyid), (String) model.getAttribute("type"));
 
         if (historyDetail != null) {
             return "redirect:/group-wallet/{id}/history";

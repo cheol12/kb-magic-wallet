@@ -1,6 +1,8 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
+import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletExchange;
+import kb04.team02.web.mvc.domain.wallet.group.GroupWalletTransfer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,10 +25,12 @@ public interface GroupWalletExchangeRepository  extends JpaRepository<GroupWalle
      * JPA: GroupWalletExchangeRepository.save(GroupWalletExchange, groupWalletExchange);
      */
 
+
     /**
      * 모임지갑 환전내역 불러오기
      * */
     List<GroupWalletExchange> findByGroupWallet(Long groupWalletId);
 
+    List<GroupWalletExchange> searchAllByGroupWallet(GroupWallet groupWallet);
 
 }

@@ -72,7 +72,7 @@ public class MemberServiceImpl implements MemberService {
         CardIssuance card = CardIssuance.builder()
                 .cardNumber(generateRandomCardNumber())
                 .cardState(CardState.OK)
-                .wallet_id(savedWallet.getPersonalWalletId())
+                .walletId(savedWallet.getPersonalWalletId())
                 .walletType(WalletType.PERSONAL_WALLET)
                 .build();
 

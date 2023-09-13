@@ -1,7 +1,9 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletExchange;
+import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletPayment;
+import kb04.team02.web.mvc.domain.wallet.group.GroupWalletTransfer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -27,4 +29,7 @@ public interface GroupWalletPaymentRepository extends JpaRepository<GroupWalletP
      * 모임지갑 결제내역 내역 불러오기
      * */
     List<GroupWalletPayment> findByGroupWallet(Long groupWalletId);
+
+    List<GroupWalletPayment> searchAllByGroupWallet(GroupWallet groupWallet);
+
 }

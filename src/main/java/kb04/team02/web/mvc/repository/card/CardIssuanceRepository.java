@@ -40,4 +40,8 @@ public interface CardIssuanceRepository extends JpaRepository<CardIssuance, Long
      * 멤버의 최신 카드 하나만 가져오기
      */
     Optional<CardIssuance> findFirstByMemberOrderByInsertDateDesc(Member member);
+
+    List<CardIssuance> findAllByWalletId(Long walletId);
+
+    CardIssuance findByMemberAndCardState(Member member, CardState cardState);
 }

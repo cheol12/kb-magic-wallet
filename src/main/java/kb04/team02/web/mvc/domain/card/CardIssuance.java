@@ -2,10 +2,9 @@ package kb04.team02.web.mvc.domain.card;
 
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -15,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
 public class CardIssuance {
     @Id
@@ -32,7 +32,7 @@ public class CardIssuance {
     @Enumerated(EnumType.ORDINAL)
     private CardState cardState;
 
-    private Long wallet_id;
+    private Long walletId;
 
     @Enumerated(EnumType.ORDINAL)
     private WalletType walletType;

@@ -49,7 +49,7 @@ public class MyPageServiceImpl implements MyPageService {
         CardIssuance card = CardIssuance.builder()
                 .cardNumber(generateRandomCardNumber())
                 .cardState(CardState.OK)
-                .wallet_id(personalWallet.getPersonalWalletId())
+                .walletId(personalWallet.getPersonalWalletId())
                 .walletType(WalletType.PERSONAL_WALLET)
                 .member(member)
                 .build();

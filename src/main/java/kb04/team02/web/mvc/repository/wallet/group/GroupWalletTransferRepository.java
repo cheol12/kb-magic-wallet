@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletExchange;
+import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletTransfer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -43,17 +44,19 @@ public interface GroupWalletTransferRepository extends JpaRepository<GroupWallet
 
     /**
      * ROWNUM 34
-     *
+     * <p>
      * SQL
-     *
+     * <p>
      * (모임지갑 입금 시 입금으로 사용)
      * insert into group_wallet_transfer
      * (transfer_seq, insert_date, type, from, to, amount, balance, group_wallet_id)
      * values
      * (transfer_seq.nextval, sysdate, “입금”, “모임지갑”, “회비 낸 사람 지갑”, 회비, balance + 회비, “현재 모임지갑 식별번호”)
-     *
+     * <p>
      * JPA : GroupWalletTransferRepository.save(GroupWalletTransfer groupWalletTransfer);
-     * */
+     */
 
     List<GroupWalletTransfer> findByGroupWallet(Long groupWalletId);
+
+    List<GroupWalletTransfer> searchAllByGroupWallet(GroupWallet groupWallet);
 }
