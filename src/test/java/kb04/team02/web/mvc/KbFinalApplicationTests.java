@@ -287,7 +287,7 @@ class KbFinalApplicationTests {
         return groupWalletTransfers;
     }
 
-    // 개인지갑 이체 내역 TODO 이체는 개인지갑<->은행계좌 간의 거래 또는 개인지갑<->모임지갑 간의 거래를 말함.
+    // 개인지갑 이체 내역
     public static List<PersonalWalletTransfer> createPersonalWalletTransfers(PersonalWallet personalWallet, int numberOfTransfers) {
         List<PersonalWalletTransfer> personalWalletTransfers = new ArrayList<>();
         Random random = new Random();
