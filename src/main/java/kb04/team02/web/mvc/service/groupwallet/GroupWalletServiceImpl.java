@@ -193,11 +193,11 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     }
 
     @Override
-    public int groupWalletMemberOut(Long groupWalletId, Long memberId) {
+    public int groupWalletMemberOut(Long groupWalletId, Member member) {
 
         // 모임원 내보내기 or 탈퇴
 
-        int result = groupWalletRep.deleteByGroupWalletIdAndMember(groupWalletId, memberId);
+        int result = groupWalletRep.deleteByGroupWalletIdAndMember(groupWalletId, member);
         return result;
     }
 
