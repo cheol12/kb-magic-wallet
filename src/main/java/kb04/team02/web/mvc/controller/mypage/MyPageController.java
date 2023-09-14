@@ -41,7 +41,7 @@ public class MyPageController {
     public String cardCreate(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.createCard(loggedIn);
-        return "mypage/index";
+        return "mypage/main";
     }
 
     /**
@@ -52,7 +52,7 @@ public class MyPageController {
     public String cardInvalidate(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.invalidateCard(loggedIn);
-        return "mypage/index";
+        return "mypage/main";
     }
 
     /**
@@ -71,7 +71,7 @@ public class MyPageController {
     public String bankLink(@RequestBody String account, HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.linkAccount(loggedIn, account);
-        return "mypage/index";
+        return "mypage/main";
     }
 
     /**
@@ -82,7 +82,7 @@ public class MyPageController {
     public String cardPause(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.pauseCard(loggedIn);
-        return "mypage/index";
+        return "mypage/main";
     }
 
     /**
@@ -93,7 +93,7 @@ public class MyPageController {
     public String cardResume(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.resumeCard(loggedIn);
-        return "mypage/index";
+        return "mypage/main";
     }
 
     /**
