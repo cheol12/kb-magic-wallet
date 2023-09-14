@@ -49,7 +49,8 @@ public class MemberController {
      * 회원가입 폼
      */
     @GetMapping("/register")
-    public void registerForm() {
+    public String registerForm() {
+        return "/member/register";
     }
 
     /**
