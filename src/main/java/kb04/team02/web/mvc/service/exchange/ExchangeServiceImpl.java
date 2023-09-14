@@ -5,6 +5,7 @@ import kb04.team02.web.mvc.domain.bank.ExchangeRate;
 import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
 import kb04.team02.web.mvc.domain.bank.ReceiptState;
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
+import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.common.WalletExchange;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
@@ -19,6 +20,7 @@ import kb04.team02.web.mvc.exception.ExchangeException;
 import kb04.team02.web.mvc.repository.bank.BankRepository;
 import kb04.team02.web.mvc.repository.bank.ExchangeRateRepository;
 import kb04.team02.web.mvc.repository.bank.OfflineReceiptRepository;
+import kb04.team02.web.mvc.repository.member.MemberRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletExchangeRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletForeignCurrencyBalanceRepository;
 import kb04.team02.web.mvc.repository.wallet.group.GroupWalletRespository;
@@ -51,6 +53,7 @@ public class ExchangeServiceImpl implements ExchangeService{
     private final ExchangeRateRepository exchangeRateRepository;
     private final PersonalWalletForeignCurrencyBalanceRepository pFCBalanceRepository;
     private final GroupWalletForeignCurrencyBalanceRepository gFCBalanceRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public List<BankDto> bankList() {
@@ -67,16 +70,18 @@ public class ExchangeServiceImpl implements ExchangeService{
 
         // 개인 + 모임
         List<WalletDto> resList = new ArrayList<>();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("멤버 조회 실패"));
+
 
         // 개인 지갑
-        List<WalletDto> pWalletList = personalWalletRepository.findById(memberId).stream()
-                .map(WalletDto::toPersoanlDto)
-                .collect(Collectors.toList());
-
+        List<WalletDto> pWalletList = new ArrayList<>();
+        PersonalWallet pw = personalWalletRepository.findByMember(member);
+        pWalletList.add(WalletDto.toPersoanlDto(pw));
         // 모임 지갑
-        GroupWallet groupWallet = groupWalletRespository.findById(memberId).orElse(null);
+        List<GroupWallet> groupWallet = groupWalletRespository.findByMember(member);
         if(groupWallet != null){
-            List<WalletDto> gWalletList = groupWalletRespository.findById(memberId).stream()
+            List<WalletDto> gWalletList = groupWallet.stream()
                     .map(WalletDto::toGroupDto)
                     .collect(Collectors.toList());
 
@@ -84,7 +89,6 @@ public class ExchangeServiceImpl implements ExchangeService{
         }
 
         resList.addAll(pWalletList);
-
         return resList;
     }
 
@@ -215,7 +219,7 @@ public class ExchangeServiceImpl implements ExchangeService{
             Long kwBalance = personalWallet.getBalance(); // 원화 balance
 
             // 해당 코드 환전 내역 조회
-            PersonalWalletForeignCurrencyBalance pwfcb = pFCBalanceRepository.findPersonalWalletForeignCurrencyBalanceByCurrencyCodeAAndPersonalWallet(buyCode, personalWallet).orElse(null);
+            PersonalWalletForeignCurrencyBalance pwfcb = pFCBalanceRepository.findPersonalWalletForeignCurrencyBalanceByCurrencyCodeAndPersonalWallet(buyCode, personalWallet).orElse(null);
 
             Long fBalance = 0L;
             // 해당코드 환전 내역이 있을 때

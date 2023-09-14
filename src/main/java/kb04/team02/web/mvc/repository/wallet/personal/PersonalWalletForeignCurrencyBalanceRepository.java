@@ -22,5 +22,5 @@ public interface PersonalWalletForeignCurrencyBalanceRepository extends JpaRepos
      * @param pw
      * @return
      */
-    Optional<PersonalWalletForeignCurrencyBalance> findPersonalWalletForeignCurrencyBalanceByCurrencyCodeAAndPersonalWallet(CurrencyCode code, PersonalWallet pw);
+    Optional<PersonalWalletForeignCurrencyBalance> findPersonalWalletForeignCurrencyBalanceByCurrencyCodeAndPersonalWallet(CurrencyCode code, PersonalWallet pw);
 }
