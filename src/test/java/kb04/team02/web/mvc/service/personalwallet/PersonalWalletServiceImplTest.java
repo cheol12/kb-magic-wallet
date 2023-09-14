@@ -29,13 +29,13 @@ class PersonalWalletServiceImplTest {
 
     @BeforeAll
     static void beforeAll() {
-        loggedIn = LoginMemberDto.builder()
-                .memberId()
-                .id()
-                .name()
-                .personalWalletId()
-                .groupWalletIdList()
-                .build();
+//        loggedIn = LoginMemberDto.builder()
+//                .memberId()
+//                .id()
+//                .name()
+//                .personalWalletId()
+//                .groupWalletIdList()
+//                .build();
     }
 
     @Order(1)
