@@ -9,7 +9,7 @@
 
 .center{
   border: 1px solid black;
-  width: 1400px;
+  width: 1200px;
   margin: auto;
 
 }
@@ -17,5 +17,43 @@
 .center .banner{
   border: 1px solid black;
   margin: auto;
-  width: 1400px;
+  width: 1200px;
+}
+
+.center .walletCard{
+  border: 1px solid black;
+  border-radius: 70px;
+  width: 100%;
+  padding-top: 3%;
+  padding-bottom: 35%;
+  background: #d0e1ff;
+}
+
+.walletCard .walletForm{
+  border: 1px solid black;
+  width: 50%;
+  padding-bottom: 30%;
+  margin-left: 5%;
+  float: left;
+}
+
+.walletCard .walletBalance{
+  border: 1px black solid;
+  width: 40%;
+  padding-bottom: 30%;
+  margin-left: 1%;
+  float: left;
+}
+
+.walletUsingList{
+  border: 1px solid black;
+  width: 100%;
+  height: 500px;
+}
+
+.walletUsingList .walletUsingHistory{
+  border: 1px solid black;
+  width: 100%;
+  margin: auto;
+  margin-top: 10px;
 }
