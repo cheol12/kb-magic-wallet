@@ -32,6 +32,7 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
     private final PersonalWalletPaymentRepository paymentRepository;
     private final PersonalWalletForeignCurrencyBalanceRepository foreignBalanceRepository;
     private final MemberRepository memberRepository;
+    private final PersonalWalletRepository personalWalletRepository;
 
     @Override
     public WalletDetailDto personalWallet(LoginMemberDto loginMemberDto) {
@@ -114,7 +115,8 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
                 .orElseThrow(() -> new NoSuchElementException());
 
         String bankAccount = member.getBankAccount();
-        PersonalWallet personalWallet = member.getPersonalWallet();
+
+        PersonalWallet personalWallet = personalWalletRepository.findByMember(member);
         Long walletId = personalWallet.getPersonalWalletId();
         Long KRW = personalWallet.getBalance();
         Long amount = personalWalletTransferDto.getAmount();
@@ -141,7 +143,8 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
                 .orElseThrow(() -> new NoSuchElementException());
 
         String bankAccount = member.getBankAccount();
-        PersonalWallet personalWallet = member.getPersonalWallet();
+
+        PersonalWallet personalWallet = personalWalletRepository.findByMember(member);
         Long walletId = personalWallet.getPersonalWalletId();
         Long KRW = personalWallet.getBalance();
         Long amount = personalWalletTransferDto.getAmount();

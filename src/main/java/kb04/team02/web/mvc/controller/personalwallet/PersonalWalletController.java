@@ -3,13 +3,12 @@ package kb04.team02.web.mvc.controller.personalwallet;
 import kb04.team02.web.mvc.dto.LoginMemberDto;
 import kb04.team02.web.mvc.dto.PersonalWalletTransferDto;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
+import kb04.team02.web.mvc.exception.InsufficientBalanceException;
 import kb04.team02.web.mvc.service.personalwallet.PersonalWalletService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -80,6 +79,7 @@ public class PersonalWalletController {
         try {
             personalWalletService.personalWalletWithdraw(transferDto);
         } catch (NoSuchElementException e) {
+        } catch (InsufficientBalanceException e) {
             // TODO 개인지갑 환불 실패시 어디가지?
         }
 
