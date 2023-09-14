@@ -15,6 +15,8 @@ import org.springframework.test.annotation.Commit;
 
 import javax.transaction.Transactional;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -27,29 +29,27 @@ class PersonalWalletServiceImplTest {
 
     static LoginMemberDto loggedIn;
 
-    @BeforeAll
-    static void beforeAll() {
-//        loggedIn = LoginMemberDto.builder()
-//                .memberId()
-//                .id()
-//                .name()
-//                .personalWalletId()
-//                .groupWalletIdList()
-//                .build();
+    @BeforeEach
+    void setUp() {
+        loggedIn = LoginMemberDto.builder()
+                .memberId(1L)
+                .id("id1")
+                .name("User 1")
+                .personalWalletId(1L)
+                .groupWalletIdList(new HashMap<>())
+                .build();
     }
 
     @Order(1)
-    @Name("개인지갑 메인 정보")
     @Test
     void personalWallet() {
 
         WalletDetailDto walletDetailDto = personalWalletService.personalWallet(loggedIn);
 
-        // TODO 검증
+        System.out.println(walletDetailDto);
     }
 
     @Order(2)
-    @Name("은행계좌 -> 개인지갑 충전 성공 ")
     @Test
     void personalWalletDeposit() {
         PersonalWalletTransferDto dto = new PersonalWalletTransferDto();
@@ -60,7 +60,6 @@ class PersonalWalletServiceImplTest {
     }
 
     @Order(3)
-    @Name("개인지갑 -> 은행계좌 환불 성공 ")
     @Test
     void personalWalletWithdraw() {
         PersonalWalletTransferDto dto = new PersonalWalletTransferDto();
@@ -70,7 +69,6 @@ class PersonalWalletServiceImplTest {
     }
 
     @Order(4)
-    @Name("개인지갑 -> 은행계좌 환불 실패 ")
     @Test
     void personalWalletWithdrawFailed() {
         PersonalWalletTransferDto dto = new PersonalWalletTransferDto();
