@@ -99,10 +99,14 @@ public class ExchangeServiceImpl implements ExchangeService{
 
         if(walletType.equals(WalletType.PERSONAL_WALLET)){
             // 선택한 지갑이 개인지갑
-            balance = personalWalletRepository.findById(WalletId).get().getBalance();
+            PersonalWallet personalWallet = personalWalletRepository.findById(WalletId)
+                    .orElseThrow(() -> new NoSuchElementException("개인 지갑 조회 실패"));
+            balance = personalWallet.getBalance();
         } else if (walletType.equals(WalletType.GROUP_WALLET)) {
             // 선택한 지갑이 모임지갑
-            balance = groupWalletRespository.findById(WalletId).get().getBalance();
+            GroupWallet groupWallet = groupWalletRespository.findById(WalletId)
+                    .orElseThrow(() -> new NoSuchElementException("모임 지갑 조회 실패"));
+            balance = groupWallet.getBalance();
         }
         return balance;
     }
@@ -144,17 +148,15 @@ public class ExchangeServiceImpl implements ExchangeService{
         // 선택한 지갑의 balance
         Long balance = 0L;
         if(type.equals(WalletType.PERSONAL_WALLET)) {
-            balance = selectedWalletBalance(offlineReceiptDto.getPersonalWalletId(), offlineReceiptDto.getWalletType());
+            balance = selectedWalletBalance(offlineReceiptDto.getPersonalWalletId(), type);
         } else if (type.equals(WalletType.GROUP_WALLET)) {
-            balance = selectedWalletBalance(offlineReceiptDto.getGroupWalletId(), offlineReceiptDto.getWalletType());
+            balance = selectedWalletBalance(offlineReceiptDto.getGroupWalletId(), type);
         }
-
         // balance보다 높은 금액을 신청한 경우 예외 발생
         Long expectedAmount = expectedExchangeAmount(offlineReceiptDto.getCurrencyCode(), offlineReceiptDto.getAmount()).getExpectedAmount();
         if(expectedAmount > balance) throw new ExchangeException("잔액이 부족합니다.");
 
         Bank bank = bankRepository.findById(offlineReceiptDto.getBankId()).get();
-
         GroupWallet groupWallet = null;
         PersonalWallet personalWallet = null;
         if(offlineReceiptDto.getGroupWalletId() != null){

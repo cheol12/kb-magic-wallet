@@ -165,6 +165,17 @@ class ExchangeServiceImplTest {
         int res = exchangeService.requestOfflineReceipt(offlineReceiptDto);
         System.out.println(res);
 
+        OfflineReceiptDto offlineReceiptDto2 = OfflineReceiptDto.builder()
+                .receiptDate(LocalDateTime.now())
+                .currencyCode(CurrencyCode.USD)
+                .amount(1L)
+                .receiptState(ReceiptState.WAITING)
+                .bankId(5L)
+                .personalWalletId(41L)
+                .walletType(WalletType.PERSONAL_WALLET).build();
+        int res2 = exchangeService.requestOfflineReceipt(offlineReceiptDto2);
+        System.out.println(res2);
+
     }
 
     @Test
