@@ -44,7 +44,7 @@ public class GroupWallet {
     private Long due;
 
     //== 연관관계 설정 START==//
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
 
     private Member member;

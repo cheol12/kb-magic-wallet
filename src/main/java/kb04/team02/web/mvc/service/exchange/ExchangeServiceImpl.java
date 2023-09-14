@@ -99,10 +99,14 @@ public class ExchangeServiceImpl implements ExchangeService{
 
         if(walletType.equals(WalletType.PERSONAL_WALLET)){
             // 선택한 지갑이 개인지갑
-            balance = personalWalletRepository.findById(WalletId).get().getBalance();
+            PersonalWallet personalWallet = personalWalletRepository.findById(WalletId)
+                    .orElseThrow(() -> new NoSuchElementException("개인 지갑 조회 실패"));
+            balance = personalWallet.getBalance();
         } else if (walletType.equals(WalletType.GROUP_WALLET)) {
             // 선택한 지갑이 모임지갑
-            balance = groupWalletRespository.findById(WalletId).get().getBalance();
+            GroupWallet groupWallet = groupWalletRespository.findById(WalletId)
+                    .orElseThrow(() -> new NoSuchElementException("모임 지갑 조회 실패"));
+            balance = groupWallet.getBalance();
         }
         return balance;
     }
@@ -144,18 +148,23 @@ public class ExchangeServiceImpl implements ExchangeService{
         // 선택한 지갑의 balance
         Long balance = 0L;
         if(type.equals(WalletType.PERSONAL_WALLET)) {
-            balance = selectedWalletBalance(offlineReceiptDto.getPersonalWalletId(), offlineReceiptDto.getWalletType());
+            balance = selectedWalletBalance(offlineReceiptDto.getPersonalWalletId(), type);
         } else if (type.equals(WalletType.GROUP_WALLET)) {
-            balance = selectedWalletBalance(offlineReceiptDto.getGroupWalletId(), offlineReceiptDto.getWalletType());
+            balance = selectedWalletBalance(offlineReceiptDto.getGroupWalletId(), type);
         }
-
         // balance보다 높은 금액을 신청한 경우 예외 발생
-        if(offlineReceiptDto.getAmount() > balance) throw new ExchangeException("잔액이 부족합니다.");
+        Long expectedAmount = expectedExchangeAmount(offlineReceiptDto.getCurrencyCode(), offlineReceiptDto.getAmount()).getExpectedAmount();
+        if(expectedAmount > balance) throw new ExchangeException("잔액이 부족합니다.");
 
         Bank bank = bankRepository.findById(offlineReceiptDto.getBankId()).get();
-        GroupWallet groupWallet = groupWalletRespository.findById(offlineReceiptDto.getOfflineReceiptId()).get();
-        PersonalWallet personalWallet = personalWalletRepository.findById(offlineReceiptDto.getPersonalWalletId()).get();
-
+        GroupWallet groupWallet = null;
+        PersonalWallet personalWallet = null;
+        if(offlineReceiptDto.getGroupWalletId() != null){
+            groupWallet = groupWalletRespository.findById(offlineReceiptDto.getGroupWalletId()).orElse(null);
+        }
+        if(offlineReceiptDto.getPersonalWalletId() != null) {
+            personalWallet = personalWalletRepository.findById(offlineReceiptDto.getPersonalWalletId()).orElse(null);
+        }
         offlineReceiptRepository.save(
                 OfflineReceipt.builder()
                         .receiptDate(offlineReceiptDto.getReceiptDate())
@@ -215,17 +224,21 @@ public class ExchangeServiceImpl implements ExchangeService{
 
         if(exchangeDto.getWalletType().equals(WalletType.PERSONAL_WALLET)){
             // 개인지갑 -> 환전일 경우
-            PersonalWallet personalWallet = personalWalletRepository.findById(walletId).get();
+            PersonalWallet personalWallet = personalWalletRepository.findById(walletId)
+                    .orElseThrow(() -> new NoSuchElementException("개인 지갑 조회 실패"));
             Long kwBalance = personalWallet.getBalance(); // 원화 balance
 
             // 해당 코드 환전 내역 조회
             PersonalWalletForeignCurrencyBalance pwfcb = pFCBalanceRepository.findPersonalWalletForeignCurrencyBalanceByCurrencyCodeAndPersonalWallet(buyCode, personalWallet).orElse(null);
 
             Long fBalance = 0L;
-            // 해당코드 환전 내역이 있을 때
-            if(pwfcb != null) fBalance = pwfcb.getBalance();
+            // 해당코드 환전 내역이 있을 때 - update
+            if(pwfcb != null) {
+                fBalance = pwfcb.getBalance();
+                pwfcb.setBalance(fBalance + exchangeDto.getBuyAmount());
+            }
 
-            // 외화 지갑 balance insert / update
+            // 없을 때 insert
             pFCBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
                     .currencyCode(buyCode)
                     .balance(fBalance + exchangeDto.getBuyAmount())
@@ -241,7 +254,8 @@ public class ExchangeServiceImpl implements ExchangeService{
 
         } else if (exchangeDto.getWalletType().equals(WalletType.GROUP_WALLET)) {
             // 모임지갑 -> 환전일 경우
-            GroupWallet groupWallet = groupWalletRespository.findById(walletId).get();
+            GroupWallet groupWallet = groupWalletRespository.findById(walletId)
+                    .orElseThrow(() -> new NoSuchElementException("모임 지갑 조회 실패"));;
             Long kwBalance = groupWallet.getBalance(); // 원화 balance
 
             // 해당 코드 환전 내역 조회
@@ -276,7 +290,8 @@ public class ExchangeServiceImpl implements ExchangeService{
 
         // 적용 환율 구하기
         Double applicableExchangeRate = 0.0;
-        ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurrencyCode(currencyCode);
+        ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurrencyCode(currencyCode)
+                .orElseThrow(() -> new NoSuchElementException("환율 조회 실패"));
         if(! currencyCode.equals(CurrencyCode.KRW)){
             // 원화 -> 외화
             applicableExchangeRate = exchangeRate.getTelegraphicTransferBuyingRate();

@@ -6,11 +6,11 @@ import kb04.team02.web.mvc.domain.bank.ReceiptState;
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Address;
 import kb04.team02.web.mvc.domain.member.Member;
+import kb04.team02.web.mvc.domain.member.Role;
+import kb04.team02.web.mvc.domain.wallet.common.WalletType;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
-import kb04.team02.web.mvc.dto.BankDto;
-import kb04.team02.web.mvc.dto.SavingDto;
-import kb04.team02.web.mvc.dto.WalletDto;
+import kb04.team02.web.mvc.dto.*;
 import kb04.team02.web.mvc.repository.bank.BankRepository;
 import kb04.team02.web.mvc.repository.bank.OfflineReceiptRepository;
 import kb04.team02.web.mvc.repository.member.MemberRepository;
@@ -27,9 +27,7 @@ import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +51,7 @@ class ExchangeServiceImplTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @AfterEach
+/*    @AfterEach
     public void afterEach() {
         System.out.println("afterEach.....................................");
         bankRepository.deleteAll();
@@ -61,7 +59,7 @@ class ExchangeServiceImplTest {
         personalWalletRepository.deleteAll();
         groupWalletRespository.deleteAll();
         memberRepository.deleteAll();
-    }
+    }*/
 
     @Test
     @DisplayName("selectBank")
@@ -130,23 +128,89 @@ class ExchangeServiceImplTest {
     }
 
     @Test
+    @DisplayName("walletBalance")
     void selectedWalletBalance() {
+        System.out.println(exchangeService.selectedWalletBalance(141L, WalletType.GROUP_WALLET));
+        System.out.println(exchangeService.selectedWalletBalance(41L, WalletType.PERSONAL_WALLET));
     }
 
     @Test
     @DisplayName("selectOfflineReceiptHistory")
     void testOfflineReceiptHistory() {
+        Map<Long, Role> map = new HashMap<>();
+        map.put(141L, Role.CHAIRMAN);
+        map.put(140L, Role.GENERAL);
+        List<OfflineReceiptDto> list = exchangeService.offlineReceiptHistory(41L, map);
+        System.out.println("=========================================");
+        for(OfflineReceiptDto o : list){
+            System.out.println("지갑 타입: " + o.getWalletType());
+            System.out.println("환전 내역: " +o.getAmount());
+            System.out.println("은행: " + o.getBankName());
+        }
     }
 
     @Test
+    @DisplayName("requestOfflineReceipt")
     void requestOfflineReceipt() {
+        OfflineReceiptDto offlineReceiptDto = OfflineReceiptDto.builder()
+                .receiptDate(LocalDateTime.now())
+                .currencyCode(CurrencyCode.USD)
+                .amount(1L)
+                .receiptState(ReceiptState.WAITING)
+                .bankId(5L)
+                .groupWalletId(141L)
+                .walletType(WalletType.GROUP_WALLET).build();
+        int res = exchangeService.requestOfflineReceipt(offlineReceiptDto);
+        System.out.println(res);
+
+        OfflineReceiptDto offlineReceiptDto2 = OfflineReceiptDto.builder()
+                .receiptDate(LocalDateTime.now())
+                .currencyCode(CurrencyCode.USD)
+                .amount(1L)
+                .receiptState(ReceiptState.WAITING)
+                .bankId(5L)
+                .personalWalletId(41L)
+                .walletType(WalletType.PERSONAL_WALLET).build();
+        int res2 = exchangeService.requestOfflineReceipt(offlineReceiptDto2);
+        System.out.println(res2);
+
     }
 
     @Test
+    @DisplayName("cancelOfflineReceipt")
     void cancelOfflineReceipt() {
+        int res = exchangeService.cancelOfflineReceipt(121L);
+        System.out.println(res);
     }
 
     @Test
+    @DisplayName("requestExchangeOnline")
     void requestExchangeOnline() {
+        ExchangeDto dto = new ExchangeDto();
+       dto.setBuyAmount(1L);
+        dto.setBuyCurrencyCode(CurrencyCode.USD);
+        dto.setWalletId(41L);
+        dto.setWalletType(WalletType.PERSONAL_WALLET);
+
+        int res = exchangeService.requestExchangeOnline(dto);
+        System.out.println(res);
+
+        ExchangeDto dto2 = new ExchangeDto();
+        dto2.setBuyAmount(1L);
+        dto2.setBuyCurrencyCode(CurrencyCode.USD);
+        dto2.setWalletId(140L);
+        dto2.setWalletType(WalletType.GROUP_WALLET);
+
+        int res2 = exchangeService.requestExchangeOnline(dto2);
+        System.out.println(res2);
+    }
+
+    @Test
+    @DisplayName("expectedExchangeAmount")
+    void expectedExchangeAmount() {
+        System.out.println("==================================");
+        System.out.println(exchangeService.expectedExchangeAmount(CurrencyCode.USD, 1L).getApplicableExchangeRate());
+        System.out.println(exchangeService.expectedExchangeAmount(CurrencyCode.USD, 1L).getExpectedAmount());
+
     }
 }
