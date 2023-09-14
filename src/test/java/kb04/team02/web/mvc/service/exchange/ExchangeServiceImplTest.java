@@ -180,6 +180,8 @@ class ExchangeServiceImplTest {
 
     @Test
     void cancelOfflineReceipt() {
+        int res = exchangeService.cancelOfflineReceipt(121L);
+        System.out.println(res);
     }
 
     @Test
