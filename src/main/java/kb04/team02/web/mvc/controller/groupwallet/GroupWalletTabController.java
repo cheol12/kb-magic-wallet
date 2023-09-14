@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -29,6 +30,41 @@ public class GroupWalletTabController {
     // 페이지당 항목 수
     private final static int PAGE_SIZE = 10;
     private final static int BLOCK_SIZE = 5;
+
+    // 모임원 조회 함수
+    public HashMap<String, Object> createMemberMap(int nowPage, String id) {
+        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
+        Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+
+        int temp = (nowPage - 1) % BLOCK_SIZE;
+        int startPage = nowPage - temp;
+
+        HashMap<String, Object> memberMap = new HashMap<>();
+        memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
+        memberMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
+        memberMap.put("startPage", startPage);
+        memberMap.put("nowPage", nowPage);
+
+        return memberMap;
+    }
+
+    // 모임지갑 내역 조회 함수
+    public HashMap<String, Object> createHistoryMap(int nowPage, String id) {
+        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
+        Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
+
+        int temp = (nowPage - 1) % BLOCK_SIZE;
+        int startPage = nowPage - temp;
+
+        HashMap<String, Object> historyMap = new HashMap<String, Object>();
+        historyMap.put("memberPageList", historyPageList); // 뷰에서 ${memberPageList.content}
+        historyMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
+        historyMap.put("startPage", startPage);
+        historyMap.put("nowPage", nowPage);
+
+        return historyMap;
+    }
+
 
 
     //== 모임원 조회 탭 START ==//
@@ -49,18 +85,9 @@ public class GroupWalletTabController {
     // 2. 여러 개의 페이지로 나누는 방식
     @ResponseBody
     @GetMapping("/{id}/member-list")
-    public void groupWalletMemberList(@PathVariable String id, Model model, @RequestParam(defaultValue = "1") int nowPage) {
-        // 페이징 처리, 회원 이름순, Member.java에 이름 필드를 어떻게 저장했는지 확인 필요
-        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
-        Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
-
-        int temp = (nowPage - 1) % BLOCK_SIZE;
-        int startPage = nowPage - temp;
-        model.addAttribute("pageList", memberPageList); // 뷰에서 ${pageList.content}
-        model.addAttribute("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("nowPage", nowPage);
-
+    public HashMap<String, Object> groupWalletMemberList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
+        HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
+        return memberMap;
     }
 
 
@@ -73,16 +100,20 @@ public class GroupWalletTabController {
      */
     @ResponseBody
     @DeleteMapping("/{id}/{member}")
-    public String groupWalletMemberKick(@PathVariable String id, @PathVariable String member) {
+    public HashMap<String, Object> groupWalletMemberKick(@PathVariable String id, @PathVariable String member, @RequestParam(defaultValue = "1") int nowPage) {
+        // 1. 멤버 삭제
         boolean isMemberDeleted = groupWalletTabService.deleteMember(Long.parseLong(id), Long.parseLong(member));
 
-        // 멤버가 성공적으로 삭제되었을 경우 멤버 조회로 이동
+        // 2. 멤버가 성공적으로 삭제되었을 경우 멤버를 삭제한 후의 페이지 리턴
         if (isMemberDeleted) {
-            return "redirect:/group-wallet/{id}/member-list";
+            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
+            return memberMap;
             // 멤버가 없거나 삭제에 실패했을 경우 에러페이지로 이동
         } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return null;
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
+
     }
 
     /**
@@ -95,15 +126,18 @@ public class GroupWalletTabController {
 
     @ResponseBody
     @GetMapping("/{id}/{member}/auth")
-    public String groupWalletAuthRequest(@PathVariable String id, @PathVariable String member) {
+    public HashMap<String, Object> groupWalletAuthRequest(@PathVariable String id, @PathVariable String member, @RequestParam(defaultValue = "1") int nowPage) {
+        // 1. 멤버 권한 부여
         boolean isAuthGranted = groupWalletTabService.grantMemberAuth(Long.parseLong(id), Long.parseLong(member));
 
-        // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
+        // 2. 멤버 권한이 성공적으로 삭제되었을 경우 멤버 페이지 리턴
         if (isAuthGranted) {
-            return "redirect:/group-wallet/{id}/member-list";
+            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
+            return memberMap;
             // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
         } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return null;
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
 
@@ -118,15 +152,19 @@ public class GroupWalletTabController {
 
     @ResponseBody
     @DeleteMapping("/{id}/{member}/revoke")
-    public String groupwalletAuthRevoke(@PathVariable String id, @PathVariable String member) {
+    public HashMap<String, Object> groupwalletAuthRevoke(@PathVariable String id, @PathVariable String member, @RequestParam(defaultValue = "1") int nowPage) {
+        // 1. 멤버 권한 박탈
         boolean isAuthRevoked = groupWalletTabService.revokeMemberAuth(Long.parseLong(id), Long.parseLong(member));
 
-        // 멤버 권한이 성공적으로 삭제되었을 경우 멤버 조회로 이동
+
+        // 2. 멤버 권한이 성공적으로 삭제되었을 경우 멤버 페이지 리턴
         if (isAuthRevoked) {
-            return "redirect:/group-wallet/{id}/member-list";
+            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
+            return memberMap;
             // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
         } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return null;
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
 
@@ -144,13 +182,15 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/rule")
     // 회비 테이블과 객체 필요해 보임, 회비 객체를 Rule.java로 가정함
-    public String groupWalletRule(@PathVariable String id) {
+    public RuleDto groupWalletRule(@PathVariable String id) {
         RuleDto ruleDto = groupWalletTabService.getRuleById(Long.parseLong(id));
 
+
         if (ruleDto != null) {
-            return "redirect:/group-wallet/{id}/rule";
+            return ruleDto;
         } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return null;
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
 
@@ -226,13 +266,14 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/saving")
     // Saving 테이블과 대응되는 객체를 Saving.java라고 가정한 코드
-    public String groupWalletSavingInfo(@PathVariable String id) {
+    public InstallmentDto groupWalletSavingInfo(@PathVariable String id) {
         InstallmentDto installmentDto = groupWalletTabService.getSavingById(Long.parseLong(id));
 
         if (installmentDto != null) {
-            return "redirect:/group-wallet/{id}/saving";
+            return installmentDto;
         } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return null;
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
 
@@ -248,7 +289,7 @@ public class GroupWalletTabController {
         boolean isSavingCanceled = groupWalletTabService.cancelSaving(Long.parseLong(id));
 
         if (isSavingCanceled) {
-            return "redirect:/group-wallet/{id}/saving";
+            return "redirect:/group-wallet/{id}/history";
         } else {
             return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
@@ -267,13 +308,15 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/card/list")
     // Card_issuance 테이블과 대응되는 객체를 Card.java라고 가정한 코드
-    public String groupWalletCardList(@PathVariable String id) {
+    public List<CardIssuanceDto> groupWalletCardList(@PathVariable String id) {
         List<CardIssuanceDto> cardIssuanceDtoList = groupWalletTabService.getCard(Long.parseLong(id));
 
+
         if (cardIssuanceDtoList != null) {
-            return "redirect:/group-wallet/{id}/card/list";
+            return cardIssuanceDtoList;
         } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return null;
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
 
@@ -286,13 +329,17 @@ public class GroupWalletTabController {
      */
     @ResponseBody
     @GetMapping("/{id}/card")
-    public String groupWalletCardLink(@PathVariable String id) {
+    public List<CardIssuanceDto> groupWalletCardLink(@PathVariable String id) {
         boolean isCardLinked = groupWalletTabService.linkCard(Long.parseLong(id), 1L);
 
+        List<CardIssuanceDto> cardIssuanceDtoList = groupWalletTabService.getCard(Long.parseLong(id));
+
+
         if (isCardLinked) {
-            return "redirect:/group-wallet/{id}/card/list";
+            return cardIssuanceDtoList;
         } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return null;
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
 
@@ -306,35 +353,12 @@ public class GroupWalletTabController {
      *
      * @param id 내역 조회할 모임지갑 id
      */
-    /* @author: hyun
-    // 카드 내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미? 
-    // 3개 다 합친 것? Map으로 만들어야하나?
-    public String groupWalletHistoryList(@PathVariable String id) {
-        History history = groupWalletService.getHistory(id);
-
-        if (history != null) {
-            return "redirect:/group-wallet/{id}/history";
-        } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
-    }
-     */
     @ResponseBody
     @GetMapping("/{id}/history")
-    public void groupWalletHistoryList(@PathVariable String id, Model model, @RequestParam(defaultValue = "1") int nowPage) {
-        // 페이징 처리, 내역 날짜순, History.java에 날짜 필드를 어떻게 저장했는지 확인 필요
-        Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("date")));
-        // GroupWallet에서 쓸 정보들만 가져와서 History
+    public HashMap<String, Object> groupWalletHistoryList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
+        HashMap<String, Object> historyMap = createHistoryMap(nowPage, id);
+        return historyMap;
 
-        Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
-
-        int temp = (nowPage - 1) % BLOCK_SIZE;
-        int startPage = nowPage - temp;
-
-        model.addAttribute("pageList", historyPageList); // 뷰에서 ${pageList.content}
-        model.addAttribute("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("nowPage", nowPage);
 
     }
 
@@ -350,13 +374,14 @@ public class GroupWalletTabController {
     @GetMapping("/{id}/{historyid}")
     // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미? 
     // 3개 다 합친 것? 대응되는 개념?
-    public String groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
+    public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
         WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id), Long.parseLong(historyid), (String) model.getAttribute("type"));
 
         if (historyDetail != null) {
-            return "redirect:/group-wallet/{id}/history";
+            return historyDetail;
         } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return null;
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
     }
 
