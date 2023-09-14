@@ -17,9 +17,9 @@ public class GroupWalletFormController {
      * API 명세서 ROWNUM:11
      */
     @GetMapping("/new")
-    public void groupWalletCreateForm() {
+    public String groupWalletCreateForm() {
 	
-	
+        return "group/groupWalletCreateForm";
     }
 
     /**
@@ -29,7 +29,8 @@ public class GroupWalletFormController {
      * @param id 모임지갑에서 꺼내기 할 모임지갑 id
      */
     @GetMapping("/{id}/withdraw")
-    public void groupWalletWithdrawForm() {
+    public String groupWalletWithdrawForm() {
+        return "group/groupWalletWithdrawForm";
     }
 
     /**
@@ -39,7 +40,8 @@ public class GroupWalletFormController {
      * @param id 정산을 진행할 모임지갑 id
      */
     @GetMapping("/{id}/settle")
-    public void groupwalletSettleForm() {
+    public String groupWalletSettleForm() {
+        return "group/groupWalletSettleForm";
     }
 
     /**
@@ -49,7 +51,8 @@ public class GroupWalletFormController {
      * @param id 입금할 모임지갑 id
      */
     @GetMapping("/{id}/deposit")
-    public void groupwalletDepositForm() {
+    public String groupWalletDepositForm() {
+        return "group/groupWalletDepositForm";
     }
 
     /**
@@ -60,8 +63,8 @@ public class GroupWalletFormController {
      * @param id 회비 규칙을 만들 모임지갑 id
      */
     @GetMapping("/{id}/rule/form")
-    public void groupWalletRuleForm(@PathVariable String id) {
-
+    public String groupWalletRuleForm(@PathVariable String id) {
+        return "group/groupWalletRuleForm";
     }
 
 

@@ -2,8 +2,10 @@ package kb04.team02.web.mvc.controller.groupwallet;
 
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
+import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
 import kb04.team02.web.mvc.service.groupwallet.GroupWalletService;
+import kb04.team02.web.mvc.service.personalwallet.PersonalWalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,7 @@ import java.util.List;
 public class GroupWalletController {
 
     private final GroupWalletService groupWalletService;
+    private final PersonalWalletService personalWalletService;
 
     /**
      * 모임지갑 메인 페이지
@@ -26,9 +29,10 @@ public class GroupWalletController {
     @GetMapping("/")
     public String groupWalletIndex(Model model, HttpSession session) {
 
-	        Member member = (Member) session.getAttribute("member_id");
-	        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(member);
-	        model.addAttribute("gWalletList", gWalletList);
+        Member member = (Member) session.getAttribute("member_id");
+        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(member);
+        model.addAttribute("gWalletList", gWalletList);
+
         return "group/groupIndex";
     }
 
@@ -68,10 +72,10 @@ public class GroupWalletController {
      *
      * @param id 삭제할 모임지갑 id
      */
-    @DeleteMapping("/{id}")
-    public String groupWalletDelete(@PathVariable String id) {
+    @DeleteMapping("/{id}") // 매핑값이 /{id} 가 맞는지?
+    public String groupWalletDelete(@PathVariable Long id) {
 	// 삭제할때 카드비밀번호 입력해서 삭제하기?
-//	groupWalletService.deleteGroupWallet(id);
+	    groupWalletService.deleteGroupWallet(id);
 	return "redirect:/group-wallet";
     }
 
@@ -85,7 +89,7 @@ public class GroupWalletController {
     @GetMapping("/{id}/link")
     public String groupWalletCreateInviteLink(@PathVariable Long id) {
 	// 메시지 api 불러오기
-	groupWalletService.inviteMember(id);
+	    groupWalletService.inviteMember(id);
 	//json으로 데이터 전달하기
 	    return "redirect:/group-wallet/{id}/member-list";
     }
@@ -97,10 +101,13 @@ public class GroupWalletController {
      * @param id 자진 탈퇴 요청 모임지갑 id
      */
     @DeleteMapping("/{id}/out")
-    public String groupWalletMemberOut(@PathVariable String id, HttpSession session) {
-	Integer memberId = (Integer) session.getAttribute("member_id");
-//	groupWalletService.groupWalletMemberOut(id, memberId);
-	return "redirect:/group-wallet";
+    public String groupWalletMemberOut(@PathVariable Long id, HttpSession session) {
+        // 모임지갑 id
+	    Member member = (Member) session.getAttribute("member_id");
+
+	    // id=모임지갑에서 memberId=내가 탈퇴한다.
+	    groupWalletService.groupWalletMemberOut(id, member);
+	    return "redirect:/group-wallet";
     }
 
     /**
@@ -110,9 +117,11 @@ public class GroupWalletController {
      * @param id 모임지갑에서 꺼내기 할 모임지갑 id
      */
     @PostMapping("/{id}/withdraw")
-    public String groupWalletWithdraw(@PathVariable String id, int amount) {
-	
-//	groupWalletService.groupWalleWithdraw(id, amount);
+    public String groupWalletWithdraw(@PathVariable Long id, int amount, HttpSession session) {
+        Member member = (Member) session.getAttribute("member_id");
+
+        // member로 꺼내기하는 사람을 불러오고, {id}로 모임지갑 id를 불러오고, amount로 폼에서의 입력값을 부른다.
+//	    groupWalletService.groupWalleWithdraw(member, id, amount);
 	return "redirect:/group-wallet/{id}";
     }
 
@@ -124,21 +133,23 @@ public class GroupWalletController {
      */
     @PostMapping("/{id}/settle")
     public String groupWalletSettle(@PathVariable String id, int amount) {
-	// 세션모임지갑
+	// {id} 로 현재 모임지갑 부르고, 폼 입력값을 amount로 부른다.
 //	groupWalletService.settle(id, amount);
 	return "redirect:/group-wallet/{id}";
     }
 
     /**
-     * 모임지갑 입금 요청
+     * 모임지갑 입금 = 채우기 요청
      * API 명세서 ROWNUM:34
      *
      * @param id 입금할 모임지갑 id
      */
     @PostMapping("/{id}/deposit")
-    public String groupWalletDeposit(@PathVariable String id, int amount, HttpSession session) {
-	Integer memberId = (Integer) session.getAttribute("member_id");
-	//PersonalWallet pWallet = personalWalletService.selectById(memberId);
+    public String groupWalletDeposit(@PathVariable Long id, int amount, HttpSession session) {
+	    Member member = (Member) session.getAttribute("member_id");
+
+	    // 모임지갑 '채우기' 를 하기 위해 개인지갑을 '꺼내기' 한다.
+//	    PersonalWallet pWallet = personalWalletService.personalWalletWithdraw();
 	
 	// 입금했을 경우,
 	// GroupWallet 의 잔액을 update : id, amount 필요
@@ -146,9 +157,8 @@ public class GroupWalletController {
 	// PersonalWallet 의 잔액을 update,
 	// 개인지갑 이체내역 데이터 insert
 	// 이를 service.deposit 에서 한 번에 트랜잭션 처리
-	
-	
 //	groupWalletService.groupWalletDeposit(id, amount, memberId );
+
 	return "redirect:/group-wallet/{id}";
     }
 

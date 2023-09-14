@@ -77,7 +77,7 @@ public interface GroupWalletService {
      * @param groupWalletId,memberId 탈퇴 요청 모임지갑 id, 탈퇴할 사람의 식별번호
      * @return int
      */
-    int groupWalletMemberOut(Long groupWalletId, Long memberId);
+    int groupWalletMemberOut(Long groupWalletId, Member member);
 
 
     /**

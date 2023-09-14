@@ -76,7 +76,7 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      * where group_wallet_id = ? and member_id = ?;
      * JPA : ParticipationRepository.save(int memberId);
      * */
-    int deleteByGroupWalletIdAndMember(Long groupWalletId, Long memberId);
+    int deleteByGroupWalletIdAndMember(Long groupWalletId, Member memberId);
 
     /**
      * ROWNUM 19
