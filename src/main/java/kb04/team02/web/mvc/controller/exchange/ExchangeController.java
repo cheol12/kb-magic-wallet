@@ -27,8 +27,9 @@ public class ExchangeController {
      * 환전 메인 페이지
      * API 명세서 ROWNUM:41
      */
-    @GetMapping("/exchange/exchange")
-    public void exchangeIndex() {
+    @GetMapping("/")
+    public String exchangeIndex() {
+        return "exchange/exchange";
     }
 
     /**

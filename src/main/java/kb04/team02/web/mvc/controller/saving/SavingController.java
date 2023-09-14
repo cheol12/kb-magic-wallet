@@ -27,7 +27,7 @@ public class SavingController {
     @GetMapping("/")
     public ModelAndView savingIndex() {
         List<SavingDto> savingList = savingService.selectSavings();
-        return new ModelAndView("saving", "savingList", savingList);
+        return new ModelAndView("saving/saving", "savingList", savingList);
     }
 
     /**
@@ -37,10 +37,10 @@ public class SavingController {
      * @param id 상세 조회 할 적금 상품 id
      */
     @GetMapping("/{id}")
-    public void savingDetail(@PathVariable String id) throws Exception {
+    public ModelAndView savingDetail(@PathVariable String id) throws Exception {
         SavingDto saving = savingService.selectSavingDetail(Long.parseLong(id));
 
-//        return new ModelAndView("savingDetail", "saving", saving);
+        return new ModelAndView("saving/savingDetail", "saving", saving);
     }
 
     /**
@@ -62,7 +62,7 @@ public class SavingController {
     @PostMapping("/{id}/form")
     public String savingJoin(@PathVariable String id, SavingInstallmentDto installmentDto) {
         int result = savingService.insertInstallmentSaving(installmentDto);
-        return "redirect:/saving";
+        return "redirect:/saving/";
     }
 
     //== 예외 처리 ==/

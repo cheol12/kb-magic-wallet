@@ -1,10 +1,14 @@
 package kb04.team02.web.mvc.domain.wallet.group;
 
 import kb04.team02.web.mvc.domain.wallet.common.ForeignCurrencyBalance;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import lombok.*;
+
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.DiscriminatorValue;
@@ -17,6 +21,7 @@ import javax.persistence.ManyToOne;
 @AllArgsConstructor
 @Getter
 @DiscriminatorValue("GroupWalletForeign")
+@Setter
 public class GroupWalletForeignCurrencyBalance extends ForeignCurrencyBalance {
     //== 연관관계 설정 START==//
     @ManyToOne

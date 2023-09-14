@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
+@Setter
 public class PersonalWallet {
 
     @Id
