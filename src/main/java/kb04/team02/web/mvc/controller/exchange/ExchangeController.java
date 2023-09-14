@@ -36,7 +36,7 @@ public class ExchangeController {
      * 오프라인 환전 메인 페이지
      * API 명세서 ROWNUM:42
      */
-    @GetMapping("exchange/offline")
+    @GetMapping("/offline")
     public String exchangeOfflineIndex(HttpSession session, Model model) {
         // session에서 모임지갑 seq, 개인지갑 seq 가져와야 함
         // Map<Long, Role> groupWalletIdList
@@ -84,7 +84,7 @@ public class ExchangeController {
      * 온라인 환전 메인 페이지
      * API 명세서 ROWNUM:46
      */
-    @GetMapping("/exchange/onlineExchange")
+    @GetMapping("/onlineExchange")
     public void exchangeOnlineIndex() {
     }
 

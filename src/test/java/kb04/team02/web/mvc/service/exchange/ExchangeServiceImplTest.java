@@ -10,10 +10,7 @@ import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
-import kb04.team02.web.mvc.dto.BankDto;
-import kb04.team02.web.mvc.dto.OfflineReceiptDto;
-import kb04.team02.web.mvc.dto.SavingDto;
-import kb04.team02.web.mvc.dto.WalletDto;
+import kb04.team02.web.mvc.dto.*;
 import kb04.team02.web.mvc.repository.bank.BankRepository;
 import kb04.team02.web.mvc.repository.bank.OfflineReceiptRepository;
 import kb04.team02.web.mvc.repository.member.MemberRepository;
@@ -153,6 +150,7 @@ class ExchangeServiceImplTest {
     }
 
     @Test
+    @DisplayName("requestOfflineReceipt")
     void requestOfflineReceipt() {
         OfflineReceiptDto offlineReceiptDto = OfflineReceiptDto.builder()
                 .receiptDate(LocalDateTime.now())
@@ -179,16 +177,40 @@ class ExchangeServiceImplTest {
     }
 
     @Test
+    @DisplayName("cancelOfflineReceipt")
     void cancelOfflineReceipt() {
         int res = exchangeService.cancelOfflineReceipt(121L);
         System.out.println(res);
     }
 
     @Test
+    @DisplayName("requestExchangeOnline")
     void requestExchangeOnline() {
+        ExchangeDto dto = new ExchangeDto();
+       dto.setBuyAmount(1L);
+        dto.setBuyCurrencyCode(CurrencyCode.USD);
+        dto.setWalletId(41L);
+        dto.setWalletType(WalletType.PERSONAL_WALLET);
+
+        int res = exchangeService.requestExchangeOnline(dto);
+        System.out.println(res);
+
+        ExchangeDto dto2 = new ExchangeDto();
+        dto2.setBuyAmount(1L);
+        dto2.setBuyCurrencyCode(CurrencyCode.USD);
+        dto2.setWalletId(140L);
+        dto2.setWalletType(WalletType.GROUP_WALLET);
+
+        int res2 = exchangeService.requestExchangeOnline(dto2);
+        System.out.println(res2);
     }
 
     @Test
+    @DisplayName("expectedExchangeAmount")
     void expectedExchangeAmount() {
+        System.out.println("==================================");
+        System.out.println(exchangeService.expectedExchangeAmount(CurrencyCode.USD, 1L).getApplicableExchangeRate());
+        System.out.println(exchangeService.expectedExchangeAmount(CurrencyCode.USD, 1L).getExpectedAmount());
+
     }
 }
