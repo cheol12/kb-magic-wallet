@@ -12,6 +12,9 @@
     <title>Title</title>
 
     <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 </head>
 <body>
 <header>
@@ -22,27 +25,36 @@
 <main>
     <div class="pageWrap">
         <div class="center">
-            <div>
-                <article>
-                    모임 지갑 설명 img, content
-                </article>
-
-            </div>
 
             <div>
-                모임지갑 리스트<br>
-
 
                 <c:forEach var="list" varStatus="status" items="${gWalletList}">
-                    <section>
-                        <div class="groupWalletCard" onclick="location.href='/group-wallet/'">
-                            지갑 정보들
+
+
+                    <div style="margin-top: 5px">
+                        <div class="card">
+                            <div class="card-header">
+                                    ${list.getNickName()}
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">원화 잔액 : ${list.getBalance()}</h5>
+                                <a href="/group-wallet/${list.getGroupWalletId()}" class="btn btn-primary">상세보기</a>
+                            </div>
                         </div>
-                    </section>
+                    </div>
+
                 </c:forEach>
                 <section>
-                    <div class="groupWalletCard" onclick="location.href='/group-wallet/new'">
-                        생성 폼
+                    <div style="margin-top: 5px">
+                        <div class="card">
+                            <div class="card-header">
+                                새로운 모임 지갑 생성
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title"></h5>
+                                <a href="/group-wallet/new" class="btn btn-primary">생성하기</a>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </div>
