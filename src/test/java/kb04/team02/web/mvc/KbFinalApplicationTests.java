@@ -1,3 +1,4 @@
+//
 //package kb04.team02.web.mvc;
 //
 //import kb04.team02.web.mvc.domain.bank.Bank;
@@ -189,29 +190,24 @@
 //    }
 //
 //
-//    // 회원 생성
-//    public static List<Member> createSampleMembers() {
-//        List<Member> members = new ArrayList<>();
-//
-//        for (int i = 1; i <= MEMBER_NUM; i++) {
-//            Address address = new Address("Street " + i, "City " + i, "Zip " + i);
-//
-//            Member member = Member.builder()
-//                    .id("id" + i)
-//                    .password("password" + i)
-//                    .name("User " + i)
-//                    .address(address)
-//                    .phoneNumber("123-456-789" + i)
-//                    .email("user" + i + "@example.com")
-//                    .payPassword("pay" + i)
-//                    .bankAccount("123-456-789" + i)
-//                    .build();
-//
-//            members.add(member);
-//        }
-//
-//        return members;
-//    }
+////    // 회원 생성
+////    public static List<Member> createSampleMembers() {
+////        List<Member> members = new ArrayList<>();
+////
+////        Member member = Member.builder()
+////                .id("id" + i)
+////                .password("password" + i)
+////                .name("User " + i)
+////                .address(address)
+////                .phoneNumber("123-456-789" + i)
+////                .email("user" + i + "@example.com")
+////                .payPassword("pay" + i)
+////                .bankAccount("123-456-789" + i)
+////                .build();
+////
+////        members.add(member);
+////        return members;
+////    }
 //
 //    // 모임지갑 생성
 //    // 매개변수 = 모임장
@@ -551,3 +547,4 @@
 //        return offlineReceipt;
 //    }
 //}
+//
