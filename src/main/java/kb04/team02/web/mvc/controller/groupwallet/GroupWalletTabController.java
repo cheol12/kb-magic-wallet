@@ -374,7 +374,7 @@ public class GroupWalletTabController {
     @GetMapping("/{id}/{historyid}")
     // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미? 
     // 3개 다 합친 것? 대응되는 개념?
-    public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid) {
+    public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
         WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id), Long.parseLong(historyid), (String) model.getAttribute("type"));
 
         if (historyDetail != null) {
