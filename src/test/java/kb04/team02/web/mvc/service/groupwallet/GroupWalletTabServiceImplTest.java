@@ -16,6 +16,9 @@ import kb04.team02.web.mvc.repository.member.MemberRepository;
 import kb04.team02.web.mvc.repository.saving.InstallmentSavingRepository;
 import kb04.team02.web.mvc.repository.saving.SavingRepository;
 import kb04.team02.web.mvc.repository.wallet.group.*;
+import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletForeignCurrencyBalanceRepository;
+import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletRepository;
+import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletTransferRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,6 +60,14 @@ class GroupWalletTabServiceImplTest {
     private GroupWalletExchangeRepository exchangeRepository;
     @Autowired
     private GroupWalletPaymentRepository paymentRepository;
+    @Autowired
+    private GroupWalletForeignCurrencyBalanceRepository groupForeignCurrencyRepository;
+    @Autowired
+    private PersonalWalletForeignCurrencyBalanceRepository personalForeignCurrencyBalanceRepository;
+    @Autowired
+    private PersonalWalletRepository personalWalletRepository;
+    @Autowired
+    private PersonalWalletTransferRepository personalWalletTransferRepository;
 
 
     @AfterEach
@@ -68,6 +79,10 @@ class GroupWalletTabServiceImplTest {
         transferRepository.deleteAll();
         exchangeRepository.deleteAll();
         paymentRepository.deleteAll();
+        groupForeignCurrencyRepository.deleteAll();
+        personalForeignCurrencyBalanceRepository.deleteAll();
+        personalWalletTransferRepository.deleteAll();
+        personalWalletRepository.deleteAll();
         groupWalletRespository.deleteAll();
         memberRepository.deleteAll();
     }

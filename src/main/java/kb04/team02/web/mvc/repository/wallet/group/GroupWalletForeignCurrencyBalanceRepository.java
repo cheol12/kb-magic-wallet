@@ -16,6 +16,7 @@ public interface GroupWalletForeignCurrencyBalanceRepository extends JpaReposito
      * 모임지갑 외화잔액 내역
      *
      */
+
     List<GroupWalletForeignCurrencyBalance> findByGroupWallet(Long groupWalletId);
 
     /**
@@ -25,4 +26,7 @@ public interface GroupWalletForeignCurrencyBalanceRepository extends JpaReposito
      * @return
      */
     Optional<GroupWalletForeignCurrencyBalance> findGroupWalletForeignCurrencyBalanceByCurrencyCodeAndGroupWallet(CurrencyCode code, GroupWallet gw);
+
+    List<GroupWalletForeignCurrencyBalance> findByGroupWallet(GroupWallet groupWallet);
+
 }
