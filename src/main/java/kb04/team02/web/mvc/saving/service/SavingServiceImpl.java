@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +46,7 @@ public class SavingServiceImpl implements SavingService {
 
     @Override
     public SavingDto selectSavingDetail(Long savingId){
-        Saving saving = savingRepository.findById(savingId).orElse(null);
+        Saving saving = savingRepository.findById(savingId).orElseThrow(()->new NoSuchElementException("적금 상품 조회 실패"));
 
         SavingDto dto = SavingDto.builder()
                 .savingId(saving.getSavingId())
@@ -63,9 +64,9 @@ public class SavingServiceImpl implements SavingService {
     @Override
     public int insertInstallmentSaving(SavingInstallmentDto installmentDto) {
         Saving saving =
-                savingRepository.findById(installmentDto.getSavingId()).get();
+                savingRepository.findById(installmentDto.getSavingId()).orElseThrow(()->new NoSuchElementException("적금 상품 조회 실패"));
         GroupWallet groupWallet =
-                groupWalletRespository.findById(installmentDto.getGroupWalletId()).get();
+                groupWalletRespository.findById(installmentDto.getGroupWalletId()).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
 
         InstallmentSaving save = installmentSavingRepository.save(
                 InstallmentSaving.builder()

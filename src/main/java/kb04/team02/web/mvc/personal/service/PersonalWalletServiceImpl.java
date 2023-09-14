@@ -112,7 +112,7 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
     @Override
     public void personalWalletDeposit(PersonalWalletTransferDto personalWalletTransferDto) {
         Member member = memberRepository.findById(personalWalletTransferDto.getMemberId())
-                .orElseThrow(() -> new NoSuchElementException());
+                .orElseThrow(() -> new NoSuchElementException("개인지갑 조회 실패"));
 
         String bankAccount = member.getBankAccount();
 
@@ -140,7 +140,7 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
     @Override
     public void personalWalletWithdraw(PersonalWalletTransferDto personalWalletTransferDto) {
         Member member = memberRepository.findById(personalWalletTransferDto.getMemberId())
-                .orElseThrow(() -> new NoSuchElementException());
+                .orElseThrow(() -> new NoSuchElementException("개인지갑 조회 실패"));
 
         String bankAccount = member.getBankAccount();
 
