@@ -8,9 +8,21 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>회원가입</title>
+    <title>회원 가입</title>
+    <link rel="stylesheet"type="text/css" href="/css/common.css">
 </head>
 <body>
-    <h1>Register Page</h1>
+    <jsp:include page="../common/navbar.jsp"/>
+
+    <div class="pageWrap">
+        <div class="center">
+            <form>
+                <input type="text" name="id">
+                <input type="password" name="password">
+                <input type="text" name="name">
+                <input type="text" name="account">
+            </form>
+        </div>
+    </div>
 </body>
 </html>

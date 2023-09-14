@@ -22,7 +22,7 @@
             <li><a href="/exchange/">환전</a></li>
             <li><a href="/saving/">적금</a></li>
             <li><a href="/">마이페이지</a></li>
-            <li><a href="register">회원가입</a></li>
+            <li><a href="/register">회원가입</a></li>
             <li><a href="/">로그아웃</a></li>
         </ul>
         <h1 class="logo">요술지갑</h1>
