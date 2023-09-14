@@ -1,10 +1,18 @@
 package kb04.team02.web.mvc.service.personalwallet;
 
 import jdk.jfr.Name;
+import kb04.team02.web.mvc.domain.common.CurrencyCode;
+import kb04.team02.web.mvc.domain.member.Address;
 import kb04.team02.web.mvc.domain.member.Member;
+import kb04.team02.web.mvc.domain.wallet.common.TargetType;
+import kb04.team02.web.mvc.domain.wallet.common.TransferType;
+import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
+import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletForeignCurrencyBalance;
+import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletTransfer;
 import kb04.team02.web.mvc.dto.LoginMemberDto;
 import kb04.team02.web.mvc.dto.PersonalWalletTransferDto;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
+import kb04.team02.web.mvc.exception.InsufficientBalanceException;
 import kb04.team02.web.mvc.repository.member.MemberRepository;
 import kb04.team02.web.mvc.repository.wallet.personal.*;
 import org.junit.jupiter.api.*;
@@ -16,8 +24,9 @@ import org.springframework.test.annotation.Commit;
 import javax.transaction.Transactional;
 
 import java.util.HashMap;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -26,24 +35,74 @@ class PersonalWalletServiceImplTest {
 
     @Autowired
     private PersonalWalletService personalWalletService;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private PersonalWalletRepository personalWalletRepository;
+    @Autowired
+    private PersonalWalletForeignCurrencyBalanceRepository personalWalletForeignCurrencyBalanceRepository;
+    @Autowired
+    private PersonalWalletTransferRepository personalWalletTransferRepository;
 
     static LoginMemberDto loggedIn;
 
-    @BeforeEach
-    void setUp() {
+    void setUp() {// TODO @BeforeEach 는 왜 안되는거야!!!
+        Member member = memberRepository.save(
+                Member.builder()
+                        .id("member1")
+                        .password("1234")
+                        .name("name1")
+                        .address(new Address(
+                                "seoul", "sunrung 428", "20981"
+                        ))
+                        .phoneNumber("010-0000-0000")
+                        .email("email@gmail.com")
+                        .payPassword("283748")
+                        .bankAccount("3333-1298374-19")
+                        .build()
+        );
+
+        PersonalWallet personalWallet = personalWalletRepository.save(
+                PersonalWallet.builder().member(member).build()
+        );
+        personalWallet.setBalance(100000L);// 10,000 won
+
+        PersonalWalletForeignCurrencyBalance USD = personalWalletForeignCurrencyBalanceRepository.save(
+                PersonalWalletForeignCurrencyBalance.builder()
+                        .currencyCode(CurrencyCode.USD)
+                        .balance(10L)// 10 dollar
+                        .personalWallet(personalWallet)
+                        .build()
+        );
+        PersonalWalletForeignCurrencyBalance JPY = personalWalletForeignCurrencyBalanceRepository.save(
+                PersonalWalletForeignCurrencyBalance.builder()
+                        .currencyCode(CurrencyCode.JPY)
+                        .balance(1000L)// 1000 yen
+                        .personalWallet(personalWallet)
+                        .build()
+        );
+
         loggedIn = LoginMemberDto.builder()
-                .memberId(1L)
-                .id("id1")
-                .name("User 1")
+                .memberId(member.getMemberId())
+                .id(member.getId())
+                .name(member.getName())
                 .personalWalletId(1L)
                 .groupWalletIdList(new HashMap<>())
                 .build();
     }
 
+    @AfterEach
+    void tearDown() {
+        personalWalletTransferRepository.deleteAll();
+        personalWalletForeignCurrencyBalanceRepository.deleteAll();
+        personalWalletRepository.deleteAll();
+        memberRepository.deleteAll();
+    }
+
     @Order(1)
     @Test
     void personalWallet() {
-
+        setUp();
         WalletDetailDto walletDetailDto = personalWalletService.personalWallet(loggedIn);
 
         System.out.println(walletDetailDto);
@@ -52,28 +111,52 @@ class PersonalWalletServiceImplTest {
     @Order(2)
     @Test
     void personalWalletDeposit() {
+        setUp();
+
         PersonalWalletTransferDto dto = new PersonalWalletTransferDto();
         dto.setMemberId(loggedIn.getMemberId());
         dto.setAmount(30000L);
+        personalWalletService.personalWalletDeposit(dto);
 
+        // 개인지갑 메인에서 확인
+        WalletDetailDto walletDetailDto = personalWalletService.personalWallet(loggedIn);
 
+        assertThat(walletDetailDto.getList().size()).isEqualTo(1);
+        System.out.println(walletDetailDto);
     }
 
     @Order(3)
     @Test
     void personalWalletWithdraw() {
+        setUp();
+
         PersonalWalletTransferDto dto = new PersonalWalletTransferDto();
         dto.setMemberId(loggedIn.getMemberId());
         dto.setAmount(30000L);
+        personalWalletService.personalWalletWithdraw(dto);
 
+        // 개인지갑 메인에서 확인
+        WalletDetailDto walletDetailDto = personalWalletService.personalWallet(loggedIn);
+
+        assertThat(walletDetailDto.getList().size()).isEqualTo(1);
+        System.out.println(walletDetailDto);
     }
 
     @Order(4)
     @Test
     void personalWalletWithdrawFailed() {
+        setUp();
+
         PersonalWalletTransferDto dto = new PersonalWalletTransferDto();
         dto.setMemberId(loggedIn.getMemberId());
-        dto.setAmount(30000L);
+        dto.setAmount(300000L);
+        assertThatThrownBy(() -> {
+            personalWalletService.personalWalletWithdraw(dto);
+        }).isInstanceOf(InsufficientBalanceException.class);
 
+        // 개인지갑 메인에서 확인
+        WalletDetailDto walletDetailDto = personalWalletService.personalWallet(loggedIn);
+
+        System.out.println(walletDetailDto);
     }
 }
