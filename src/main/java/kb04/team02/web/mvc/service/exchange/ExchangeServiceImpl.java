@@ -150,12 +150,19 @@ public class ExchangeServiceImpl implements ExchangeService{
         }
 
         // balance보다 높은 금액을 신청한 경우 예외 발생
-        if(offlineReceiptDto.getAmount() > balance) throw new ExchangeException("잔액이 부족합니다.");
+        Long expectedAmount = expectedExchangeAmount(offlineReceiptDto.getCurrencyCode(), offlineReceiptDto.getAmount()).getExpectedAmount();
+        if(expectedAmount > balance) throw new ExchangeException("잔액이 부족합니다.");
 
         Bank bank = bankRepository.findById(offlineReceiptDto.getBankId()).get();
-        GroupWallet groupWallet = groupWalletRespository.findById(offlineReceiptDto.getOfflineReceiptId()).get();
-        PersonalWallet personalWallet = personalWalletRepository.findById(offlineReceiptDto.getPersonalWalletId()).get();
 
+        GroupWallet groupWallet = null;
+        PersonalWallet personalWallet = null;
+        if(offlineReceiptDto.getGroupWalletId() != null){
+            groupWallet = groupWalletRespository.findById(offlineReceiptDto.getGroupWalletId()).orElse(null);
+        }
+        if(offlineReceiptDto.getPersonalWalletId() != null) {
+            personalWallet = personalWalletRepository.findById(offlineReceiptDto.getPersonalWalletId()).orElse(null);
+        }
         offlineReceiptRepository.save(
                 OfflineReceipt.builder()
                         .receiptDate(offlineReceiptDto.getReceiptDate())
@@ -276,7 +283,8 @@ public class ExchangeServiceImpl implements ExchangeService{
 
         // 적용 환율 구하기
         Double applicableExchangeRate = 0.0;
-        ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurrencyCode(currencyCode);
+        ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurrencyCode(currencyCode)
+                .orElseThrow(() -> new NoSuchElementException("환율 조회 실패"));
         if(! currencyCode.equals(CurrencyCode.KRW)){
             // 원화 -> 외화
             applicableExchangeRate = exchangeRate.getTelegraphicTransferBuyingRate();

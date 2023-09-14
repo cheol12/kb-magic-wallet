@@ -6,10 +6,12 @@ import kb04.team02.web.mvc.domain.bank.ReceiptState;
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Address;
 import kb04.team02.web.mvc.domain.member.Member;
+import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
 import kb04.team02.web.mvc.dto.BankDto;
+import kb04.team02.web.mvc.dto.OfflineReceiptDto;
 import kb04.team02.web.mvc.dto.SavingDto;
 import kb04.team02.web.mvc.dto.WalletDto;
 import kb04.team02.web.mvc.repository.bank.BankRepository;
@@ -28,9 +30,7 @@ import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -131,6 +131,7 @@ class ExchangeServiceImplTest {
     }
 
     @Test
+    @DisplayName("walletBalance")
     void selectedWalletBalance() {
         System.out.println(exchangeService.selectedWalletBalance(141L, WalletType.GROUP_WALLET));
         System.out.println(exchangeService.selectedWalletBalance(41L, WalletType.PERSONAL_WALLET));
@@ -139,10 +140,31 @@ class ExchangeServiceImplTest {
     @Test
     @DisplayName("selectOfflineReceiptHistory")
     void testOfflineReceiptHistory() {
+        Map<Long, Role> map = new HashMap<>();
+        map.put(141L, Role.CHAIRMAN);
+        map.put(140L, Role.GENERAL);
+        List<OfflineReceiptDto> list = exchangeService.offlineReceiptHistory(41L, map);
+        System.out.println("=========================================");
+        for(OfflineReceiptDto o : list){
+            System.out.println("지갑 타입: " + o.getWalletType());
+            System.out.println("환전 내역: " +o.getAmount());
+            System.out.println("은행: " + o.getBankName());
+        }
     }
 
     @Test
     void requestOfflineReceipt() {
+        OfflineReceiptDto offlineReceiptDto = OfflineReceiptDto.builder()
+                .receiptDate(LocalDateTime.now())
+                .currencyCode(CurrencyCode.USD)
+                .amount(1L)
+                .receiptState(ReceiptState.WAITING)
+                .bankId(5L)
+                .groupWalletId(141L)
+                .walletType(WalletType.GROUP_WALLET).build();
+        int res = exchangeService.requestOfflineReceipt(offlineReceiptDto);
+        System.out.println(res);
+
     }
 
     @Test
