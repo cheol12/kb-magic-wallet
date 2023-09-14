@@ -1,12 +1,12 @@
 package kb04.team02.web.mvc.controller.mypage;
 
+import kb04.team02.web.mvc.dto.CardNumberDto;
+import kb04.team02.web.mvc.dto.LoginMemberDto;
+import kb04.team02.web.mvc.repository.bank.BankRepository;
 import kb04.team02.web.mvc.service.mypage.MyPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,13 +15,13 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class MyPageController {
 
-//    private final MyPageService myPageService;
+    private final MyPageService myPageService;
 
     /**
      * 마이 페이지
      * API 명세서 ROWNUM:49
      */
-    @GetMapping("/")
+    @GetMapping("/main")
     public void mypageIndex() {
     }
 
@@ -29,7 +29,7 @@ public class MyPageController {
      * 마이 페이지 - 카드 신청 폼
      * API 명세서 ROWNUM:50
      */
-    @GetMapping("/card")
+    @GetMapping("/cardForm")
     public void cardForm() {
     }
 
@@ -39,7 +39,9 @@ public class MyPageController {
      */
     @PostMapping("/card")
     public String cardCreate(HttpSession session) {
-        return null;
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        myPageService.createCard(loggedIn);
+        return "mypage/main";
     }
 
     /**
@@ -48,14 +50,16 @@ public class MyPageController {
      */
     @DeleteMapping("/card")
     public String cardInvalidate(HttpSession session) {
-        return null;
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        myPageService.invalidateCard(loggedIn);
+        return "mypage/main";
     }
 
     /**
      * 마이 페이지 - 은행 계좌 연결 폼
      * API 명세서 ROWNUM:53
      */
-    @GetMapping("/bank")
+    @GetMapping("/bankForm")
     public void bankLinkForm() {
     }
 
@@ -64,7 +68,53 @@ public class MyPageController {
      * API 명세서 ROWNUM:54
      */
     @PostMapping("/bank")
-    public String bankLink(HttpSession session) {
-        return null;
+    public String bankLink(@RequestBody String account, HttpSession session) {
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        myPageService.linkAccount(loggedIn, account);
+        return "mypage/main";
+    }
+
+    /**
+     * 마이페이지 - 카드 일시 정지, 재개
+     * TODO API 명세서 추가
+     */
+    @PatchMapping("/card/stop")
+    public String cardPause(HttpSession session) {
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        myPageService.pauseCard(loggedIn);
+        return "mypage/main";
+    }
+
+    /**
+     * 마이페이지 - 카드 다시 시작
+     * TODO API 명세서 추가
+     */
+    @PatchMapping("/card/restart")
+    public String cardResume(HttpSession session) {
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        myPageService.resumeCard(loggedIn);
+        return "mypage/main";
+    }
+
+    /**
+     * 마이 페이지 - 카드 번호, 상태
+     * TODO API 명세서 추가
+     */
+    @GetMapping("/mycard")
+    @ResponseBody
+    public CardNumberDto cardNumber(HttpSession session) {
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        return myPageService.getCardNumber(member);
+    }
+
+    /**
+     * 마이 페이지 - 은행 계좌 조회
+     * TODO API 명세서 추가
+     */
+    @GetMapping("/mybank")
+    @ResponseBody
+    public String bankAccount(HttpSession session) {
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        return myPageService.getBankAccount(member);
     }
 }

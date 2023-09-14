@@ -3,12 +3,16 @@ package kb04.team02.web.mvc.service.personalwallet;
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.common.PaymentType;
+import kb04.team02.web.mvc.domain.wallet.common.TargetType;
 import kb04.team02.web.mvc.domain.wallet.common.Transfer;
 import kb04.team02.web.mvc.domain.wallet.common.TransferType;
 import kb04.team02.web.mvc.domain.wallet.personal.*;
+import kb04.team02.web.mvc.dto.LoginMemberDto;
 import kb04.team02.web.mvc.dto.PersonalWalletTransferDto;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
 import kb04.team02.web.mvc.dto.WalletHistoryDto;
+import kb04.team02.web.mvc.exception.InsufficientBalanceException;
+import kb04.team02.web.mvc.repository.member.MemberRepository;
 import kb04.team02.web.mvc.repository.wallet.personal.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +31,14 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
     private final PersonalWalletExchangeRepository exchangeRepository;
     private final PersonalWalletPaymentRepository paymentRepository;
     private final PersonalWalletForeignCurrencyBalanceRepository foreignBalanceRepository;
+    private final MemberRepository memberRepository;
 
     @Override
-    public WalletDetailDto personalWallet(Member member) {
+    public WalletDetailDto personalWallet(LoginMemberDto loginMemberDto) {
         WalletDetailDto dto = new WalletDetailDto();
+
+        Member member = memberRepository.findById(loginMemberDto.getMemberId())
+                .orElseThrow(() -> new NoSuchElementException("멤버 조회 오류"));
 
         PersonalWallet personalWallet = walletRepository.findByMember(member);
         List<PersonalWalletForeignCurrencyBalance> foreignBalance
@@ -100,12 +109,59 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
     }
 
     @Override
-    public PersonalWalletTransferDto personalWalletDeposit(PersonalWalletTransferDto personalWalletTransferDto) {
-        return null;
+    public void personalWalletDeposit(PersonalWalletTransferDto personalWalletTransferDto) {
+        Member member = memberRepository.findById(personalWalletTransferDto.getMemberId())
+                .orElseThrow(() -> new NoSuchElementException());
+
+        String bankAccount = member.getBankAccount();
+        PersonalWallet personalWallet = member.getPersonalWallet();
+        Long walletId = personalWallet.getPersonalWalletId();
+        Long KRW = personalWallet.getBalance();
+        Long amount = personalWalletTransferDto.getAmount();
+        Long afterBalance = KRW + amount;
+
+        PersonalWalletTransfer deposit = PersonalWalletTransfer.builder()
+                .personalWallet(personalWallet)
+                .transferType(TransferType.DEPOSIT)
+                .fromType(TargetType.ACCOUNT)
+                .toType(TargetType.PERSONAL_WALLET)
+                .src(bankAccount)
+                .dest(String.valueOf(walletId))
+                .amount(amount)
+                .afterBalance(afterBalance)
+                .currencyCode(CurrencyCode.KRW)
+                .build();
+
+        transferRepository.save(deposit);
     }
 
     @Override
-    public PersonalWalletTransferDto personalWalletWithdraw(PersonalWalletTransferDto personalWalletTransferDto) {
-        return null;
+    public void personalWalletWithdraw(PersonalWalletTransferDto personalWalletTransferDto) {
+        Member member = memberRepository.findById(personalWalletTransferDto.getMemberId())
+                .orElseThrow(() -> new NoSuchElementException());
+
+        String bankAccount = member.getBankAccount();
+        PersonalWallet personalWallet = member.getPersonalWallet();
+        Long walletId = personalWallet.getPersonalWalletId();
+        Long KRW = personalWallet.getBalance();
+        Long amount = personalWalletTransferDto.getAmount();
+        Long afterBalance = KRW - amount;
+        if (afterBalance < 0) {
+            throw new InsufficientBalanceException("개인지갑의 잔액이 부족합니다.");
+        }
+
+        PersonalWalletTransfer withdraw = PersonalWalletTransfer.builder()
+                .personalWallet(personalWallet)
+                .transferType(TransferType.WITHDRAW)
+                .fromType(TargetType.PERSONAL_WALLET)
+                .toType(TargetType.ACCOUNT)
+                .src(String.valueOf(walletId))
+                .dest(bankAccount)
+                .amount(amount)
+                .afterBalance(afterBalance)
+                .currencyCode(CurrencyCode.KRW)
+                .build();
+
+        transferRepository.save(withdraw);
     }
 }

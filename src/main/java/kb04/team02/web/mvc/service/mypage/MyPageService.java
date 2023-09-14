@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.service.mypage;
 
+import kb04.team02.web.mvc.dto.CardNumberDto;
 import kb04.team02.web.mvc.dto.LoginMemberDto;
 
 public interface MyPageService {
@@ -20,7 +21,6 @@ public interface MyPageService {
      * 0) 멤버 존재하는지 memberId로 확인
      * 1) 멤버에 사용 상태 카드 하나만 있는지 확인
      * 2) 카드 정지
-     *
      */
     void invalidateCard(LoginMemberDto loginMember);
 
@@ -30,7 +30,6 @@ public interface MyPageService {
      * 0) 멤버 존재하는지 memberId로 확인
      * 1) 멤버에 사용 상태 카드 하나만 있는지 확인
      * 2) 카드 일시 정지
-     *
      */
     void pauseCard(LoginMemberDto loginMember);
 
@@ -39,7 +38,6 @@ public interface MyPageService {
      * <p>
      * 0) 멤버 존재하는지 memberId로 확인
      * 1) 은행 계좌 연결 update
-     *
      */
     void linkAccount(LoginMemberDto loginMember, String newAccount);
 
@@ -51,7 +49,7 @@ public interface MyPageService {
     /**
      * 카드번호 요청
      */
-    String getCardNumber(LoginMemberDto loginMember);
+    CardNumberDto getCardNumber(LoginMemberDto loginMember);
 
     /**
      * 계좌번호 요청
