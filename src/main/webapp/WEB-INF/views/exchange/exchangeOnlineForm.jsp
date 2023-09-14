@@ -11,6 +11,10 @@
     <title>깨비의 요술 지갑 - 환전</title>
 </head>
 <body>
+    <div class="pageWrap">
+        <div class="center">
 
+        </div>
+    </div>
 </body>
 </html>
