@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -96,6 +97,7 @@ public class MemberServiceImpl implements MemberService {
                 .memberId(member.getMemberId())
                 .id(member.getId())
                 .name(member.getName())
+                .groupWalletIdList(new HashMap<>())
                 .build();
 
         // 지갑 정보

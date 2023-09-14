@@ -24,7 +24,7 @@ public class MemberController {
      * 로그인
      */
     @PostMapping("/login")
-    public String login(@RequestBody MemberLoginDto memberLoginDto, HttpSession session) {
+    public String login(MemberLoginDto memberLoginDto, HttpSession session) {
         try {
             LoginMemberDto loggedIn = memberService.login(memberLoginDto);
             session.setAttribute("member", loggedIn);
@@ -55,7 +55,7 @@ public class MemberController {
     /**
      * 회원가입
      *
-     * @return
+     * @return /로 이동
      */
     @PostMapping("/register")
     public String register(@RequestBody MemberRegisterDto memberRegisterDto) {
