@@ -1,22 +1,46 @@
-.savingForm{
-    width: auto;
-    height: 500px;
-    background: #757575;
-    border-radius: 50px;
-    margin-top: 50px;
-}
-
-.savingContentForm{
-    margin-left: 150px;
-    margin-top: 50px;
-}
-
-.savingContentForm > .savingHeader{
-    font-size: 50px;
-
+.savingList{
 
 }
 
-.savingContentForm > .savingContent{
-    font-size: 30px;
+.savingCardSection{
+    width: 100%;
+
+}
+
+.savingCard{
+    border: #b0b000 2px solid;
+    margin-top: 5%;
+
+}
+
+.savingCard > .cardName{
+    padding-left: 1em;
+    background: #edf692;
+    font-size: 5em;
+    border-bottom: #b0b000 1px solid;
+}
+
+.savingCard > .cardContent{
+    padding-left: 1em;
+    font-size: 3em;
+}
+
+.savingDetail{
+    border: #b0b000 2px solid;
+    margin-top: 5%;
+
+}
+
+.savingDetail > .savingDetailName{
+    padding-left: 1em;
+
+    background: #edf692;
+    font-size: 5em;
+    border-bottom: #b0b000 1px solid;
+}
+
+.savingDetail > .savingDetailContent{
+    padding-left: 1em;
+
+    font-size: 3em;
 }

@@ -26,21 +26,20 @@
         <div class="bannerImg">
             <h3>모두의 여행 통장!</h3>
             <h1>깨비의 요술 지갑</h1>
-
         </div>
         <!--로그인 폼-->
-        <form>
+        <form method="post" action="/login">
             <div class="group">
-                <input type="text"><span class="highlight"></span><span class="bar"></span>
-                <label>ID</label>
+                <input type="text" name="id"><span class="highlight"></span><span class="bar"></span>
+                <label>아이디</label>
             </div>
             <div class="group">
-                <input type="email"><span class="highlight"></span><span class="bar"></span>
-                <label>PASSWORD</label>
+                <input type="password" name="password"><span class="highlight"></span><span class="bar"></span>
+                <label>비밀번호</label>
             </div>
-            <button type="button" class="button buttonBlue">Subscribe
+            <input type="submit" class="button buttonBlue" value="로그인">
                 <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
-            </button>
+            </input>
         </form>
         <!--/로그인 폼-->
 
@@ -65,6 +64,7 @@
     <!--/메인 버튼 4개-->
 
 </div>
+
 
 </body>
 </html>

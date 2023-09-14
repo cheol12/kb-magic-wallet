@@ -11,6 +11,6 @@
     <title>깨비의 요술 지갑 - 환전</title>
 </head>
 <body>
-    <a href="exchangeOfflineForm.jsp">수령 신청</a>
+    <a href="/exchange/offline/form">수령 신청</a>
 </body>
 </html>

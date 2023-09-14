@@ -3,12 +3,10 @@
   padding: 5em;
   position: relative;
   width: auto;
-  border: 1px solid black;
 }
 
 
 .center{
-  border: 1px solid black;
   width: 1200px;
   margin: auto;
 
@@ -67,4 +65,46 @@
 
 .groupWalletCard:hover{
   background: gray;
+}
+
+
+
+/*
+국민은행 시그니처 색상
+#60584c    -그레이
+#ffbc00    -진노랑
+ */
+
+
+.wideCard{
+  box-sizing: border-box;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 10px;
+  border: 3px solid #60584c;
+  width: 100%;
+}
+
+.wideCard > .cardHeader{
+  font-size: 5em;
+  border-bottom: solid 3px #60584c;
+}
+
+.wideCard > .cardContent{
+  font-size: 3em;
+  margin-top: 30px;
+}
+
+
+.btnBasic{
+  background: none;
+  margin-top: 50px;
+  width: 400px;
+  height: 60px;
+  border: 3px solid #ffcc00;
+  font-size: 30px;
+}
+
+.btnBasic:hover{
+  background: #edf692;
 }
