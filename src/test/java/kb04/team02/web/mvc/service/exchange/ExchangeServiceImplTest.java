@@ -6,6 +6,7 @@ import kb04.team02.web.mvc.domain.bank.ReceiptState;
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Address;
 import kb04.team02.web.mvc.domain.member.Member;
+import kb04.team02.web.mvc.domain.wallet.common.WalletType;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
 import kb04.team02.web.mvc.dto.BankDto;
@@ -53,7 +54,7 @@ class ExchangeServiceImplTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @AfterEach
+/*    @AfterEach
     public void afterEach() {
         System.out.println("afterEach.....................................");
         bankRepository.deleteAll();
@@ -61,7 +62,7 @@ class ExchangeServiceImplTest {
         personalWalletRepository.deleteAll();
         groupWalletRespository.deleteAll();
         memberRepository.deleteAll();
-    }
+    }*/
 
     @Test
     @DisplayName("selectBank")
@@ -131,6 +132,8 @@ class ExchangeServiceImplTest {
 
     @Test
     void selectedWalletBalance() {
+        System.out.println(exchangeService.selectedWalletBalance(141L, WalletType.GROUP_WALLET));
+        System.out.println(exchangeService.selectedWalletBalance(41L, WalletType.PERSONAL_WALLET));
     }
 
     @Test
@@ -148,5 +151,9 @@ class ExchangeServiceImplTest {
 
     @Test
     void requestExchangeOnline() {
+    }
+
+    @Test
+    void expectedExchangeAmount() {
     }
 }
