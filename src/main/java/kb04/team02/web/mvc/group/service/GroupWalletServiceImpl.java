@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -99,7 +100,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     public WalletDetailDto getGroupWalletDetail(Long groupWalletId) {
         WalletDetailDto dto = new WalletDetailDto();
 
-        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElse(null);
+        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElseThrow(()->new NoSuchElementException("모임 지갑 조회 실패"));
 
         List<GroupWalletExchange> exchangeList = groupExchangeRep.searchAllByGroupWallet(groupWallet);
 
@@ -111,7 +112,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         dto.setBalance(new HashMap<>());
 
-        System.out.println("foreignCurrencyBalanceList = " + foreignCurrencyBalanceList.size());
+
         // 외화 잔액 내역 설정
         for (GroupWalletForeignCurrencyBalance foreignCurrencyBalance : foreignCurrencyBalanceList) {
             dto.getBalance().put(foreignCurrencyBalance.getCurrencyCode().name(), foreignCurrencyBalance.getBalance());
@@ -191,7 +192,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     public int deleteGroupWallet(Long groupWalletId) throws WalletDeleteException {
         // 모임장이 모임지갑을 삭제하는 것.
         // 모임장인지 확인하는 것은 어디서할지?
-        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElse(null);
+        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElseThrow(()-> new NoSuchElementException("모임 지갑 조회 실패"));
         Member member = groupWallet.getMember();
         Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, member.getMemberId());
         List<Participation> participations = participationRep.findByGroupWalletAndParticipationState(groupWallet, ParticipationState.PARTICIPATED);
@@ -212,7 +213,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         // 모임원 내보내기 or 탈퇴
 //        int result = groupWalletRep.deleteByGroupWalletIdAndMember(groupWalletId, memberId);
-        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElse(null);
+        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElseThrow(()->new NoSuchElementException("멤버 조회 실패"));
         Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, member.getMemberId());
         participationRep.delete(participation);
         return 1;
@@ -220,7 +221,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
     @Override
     public GroupWallet setGroupWalletDueRule(Long groupWalletId, int dueDate, Long due) {
-        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
+        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElseThrow(()->new NoSuchElementException("모임 지갑 조회 실패"));
         groupWallet.setDueCondition(true);
         groupWallet.setDueDate(dueDate);
         groupWallet.setDue(due);
@@ -255,8 +256,8 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     @Override
     public int groupWalletWithdraw(WithDrawDto withDrawDto) throws NotEnoughBalanceException {
         Long walletId = withDrawDto.getSrcWalletId();
-        GroupWallet groupWallet = groupWalletRep.findById(walletId).orElse(null);
-        Member member = memberRepository.findById(withDrawDto.getDestMemberId()).orElse(null);
+        GroupWallet groupWallet = groupWalletRep.findById(walletId).orElseThrow(()->new NoSuchElementException("모임 지갑 조회 실패"));
+        Member member = memberRepository.findById(withDrawDto.getDestMemberId()).orElseThrow(()->new NoSuchElementException("멤버 조회 실패"));
 
         PersonalWallet personalWallet = personalWalletRepository.findByMember(member);
 
@@ -267,8 +268,8 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 = personalForeignBalanceRep.searchAllByPersonalWallet(personalWallet);
 
         CurrencyCode code = CurrencyCode.KRW;
-        GroupWalletForeignCurrencyBalance currGroupForiegnBalance = null;
-        PersonalWalletForeignCurrencyBalance currPersonalForeignBalance = null;
+        GroupWalletForeignCurrencyBalance currGroupForiegnBalance = new GroupWalletForeignCurrencyBalance();
+        PersonalWalletForeignCurrencyBalance currPersonalForeignBalance = new PersonalWalletForeignCurrencyBalance();
 
         for (GroupWalletForeignCurrencyBalance balance : foreignCurrencyBalances) {
             if (balance.getCurrencyCode() == withDrawDto.getCurrencyCode()) {
@@ -289,7 +290,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             case KRW:
                 if (withDrawDto.getAmount() > groupWallet.getBalance()) {
                     // 잔액초과
-                    throw new NotEnoughBalanceException();
+                    throw new NotEnoughBalanceException("잔액이 부족합니다");
                 }
                 groupWallet.setBalance(groupWallet.getBalance() - withDrawDto.getAmount());
                 personalWallet.setBalance(personalWallet.getBalance() + withDrawDto.getAmount());
@@ -363,7 +364,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     @Override
     public int settle(SettleDto settleDto) throws NotEnoughBalanceException {
         Long groupWalletId = settleDto.getGroupWalletId();
-        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElse(null);
+        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElseThrow(()->new NoSuchElementException("모임 지갑 조회 실패"));
         List<Participation> memberList = participationRep.findByGroupWalletAndParticipationState(groupWallet, ParticipationState.PARTICIPATED);
 
         // 원화 정산
@@ -372,11 +373,11 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 switch (settleDto.getSettleType()) {
                     case NBBANG:
                         Long divideAmount = settleDto.getTotalAmout() / memberList.size();
-                        Long chairmanDivideAmount = divideAmount + settleDto.getTotalAmout() % memberList.size();
+                             Long chairmanDivideAmount = divideAmount + settleDto.getTotalAmout() % memberList.size();
                         System.out.println("divideAmount = " + divideAmount);
                         System.out.println("chairmanDivideAmount = " + chairmanDivideAmount);
                         for (Participation participation : memberList) {
-                            Member mem = memberRepository.findById(participation.getMemberId()).orElse(null);
+                            Member mem = memberRepository.findById(participation.getMemberId()).orElseThrow(()->new NoSuchElementException("회원 조회 실패"));
 
                             if(participation.getRole()==Role.CHAIRMAN)
                                 this.groupWalletToPersonalWallet(groupWallet, mem, chairmanDivideAmount, CurrencyCode.KRW);
@@ -408,7 +409,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                         Long chairmanDivideAmount = divideAmount + settleDto.getTotalAmout() % memberList.size();
 
                         for (Participation participation : memberList) {
-                            Member mem = memberRepository.findById(participation.getMemberId()).orElse(null);
+                            Member mem = memberRepository.findById(participation.getMemberId()).orElseThrow(()->new NoSuchElementException("회원 조회 실패"));
 
                             if(participation.getRole()==Role.CHAIRMAN)
                                 this.groupWalletToPersonalWallet(groupWallet, mem, chairmanDivideAmount, settleDto.getCurrencyCode());
@@ -431,8 +432,8 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     public int groupWalletDeposit(DepositDto depositDto) throws NotEnoughBalanceException {
 
         Long walletId = depositDto.getDestWalletId();
-        GroupWallet groupWallet = groupWalletRep.findById(walletId).orElse(null);
-        Member member = memberRepository.findById(depositDto.getSrcMemberId()).orElse(null);
+        GroupWallet groupWallet = groupWalletRep.findById(walletId).orElseThrow(()->new NoSuchElementException("모임 지갑 조회 실패"));
+        Member member = memberRepository.findById(depositDto.getSrcMemberId()).orElseThrow(()->new NoSuchElementException("회원 조회 실패"));
         PersonalWallet personalWallet = personalWalletRepository.findByMember(member);
 
         List<GroupWalletForeignCurrencyBalance> foreignCurrencyBalances
@@ -442,8 +443,8 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 = personalForeignBalanceRep.searchAllByPersonalWallet(personalWallet);
 
         CurrencyCode code = CurrencyCode.KRW;
-        GroupWalletForeignCurrencyBalance currGroupForiegnBalance = null;
-        PersonalWalletForeignCurrencyBalance currPersonalForeignBalance = null;
+        GroupWalletForeignCurrencyBalance currGroupForiegnBalance = new GroupWalletForeignCurrencyBalance();
+        PersonalWalletForeignCurrencyBalance currPersonalForeignBalance = new PersonalWalletForeignCurrencyBalance();
 
         for (GroupWalletForeignCurrencyBalance balance : foreignCurrencyBalances) {
             if (balance.getCurrencyCode() == depositDto.getCurrencyCode()) {
@@ -547,8 +548,8 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 = personalForeignBalanceRep.searchAllByPersonalWallet(personalWallet);
 
         CurrencyCode code = CurrencyCode.KRW;
-        GroupWalletForeignCurrencyBalance currGroupForiegnBalance = null;
-        PersonalWalletForeignCurrencyBalance currPersonalForeignBalance = null;
+        GroupWalletForeignCurrencyBalance currGroupForiegnBalance = new GroupWalletForeignCurrencyBalance();
+        PersonalWalletForeignCurrencyBalance currPersonalForeignBalance = new PersonalWalletForeignCurrencyBalance();
 
         for (GroupWalletForeignCurrencyBalance balance : foreignCurrencyBalances) {
             if (balance.getCurrencyCode() == currencyCode) {

@@ -40,7 +40,7 @@ public class MyPageServiceImpl implements MyPageService {
 
         // 개인 지갑 존재 확인
         PersonalWallet personalWallet = personalWalletRepository.findById(loginMember.getPersonalWalletId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()->new NoSuchElementException("개인지갑 조회 실패"));
 
         if (personalWallet == null) {
             throw new NoSuchElementException();
