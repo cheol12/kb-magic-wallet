@@ -1,13 +1,13 @@
 package kb04.team02.web.mvc.service.groupwallet;
 
+import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.common.Transfer;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWalletTransfer;
-import kb04.team02.web.mvc.dto.TransferDto;
-import kb04.team02.web.mvc.dto.WalletDetailDto;
-import kb04.team02.web.mvc.dto.WalletDto;
-import kb04.team02.web.mvc.dto.WalletHistoryDto;
+import kb04.team02.web.mvc.dto.*;
+import kb04.team02.web.mvc.exception.NotEnoughBalanceException;
+import kb04.team02.web.mvc.exception.WalletDeleteException;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public interface GroupWalletService {
      * @param groupWalletId 삭제할 모임지갑 id
      * @return int
      */
-    int deleteGroupWallet(Long groupWalletId);
+    int deleteGroupWallet(Long groupWalletId) throws WalletDeleteException;
 
 
     /**
@@ -87,7 +87,7 @@ public interface GroupWalletService {
      * @param groupWalletId
      * @return GroupWallet
      * */
-    GroupWallet getGroupWalletDueRule(Long groupWalletId, int dueDate, Long due);
+    GroupWallet setGroupWalletDueRule(Long groupWalletId, int dueDate, Long due);
 
 
     /**
@@ -97,7 +97,7 @@ public interface GroupWalletService {
      * @param groupWalletId,groupWallet
      * @return
      * */
-    GroupWallet setGroupWalletDueRule(Long groupWalletId, GroupWallet groupWallet);
+    RuleDto getGroupWalletDueRule(Long groupWalletId);
 
 
     /**
@@ -117,7 +117,7 @@ public interface GroupWalletService {
      * 모임지갑의 잔액 update + 모임지갑 이체내역 insert + 개인지갑의 잔액 update + 개인지갑 이체내역 insert
      * => 트랜잭션 처리
      *
-     * @param transferDto 이체내역을 insert할 transferDto객체.
+     * @param withDrawDto 이체내역을 insert할 transferDto객체.
      *                    Q) 개인과 모임 이체내역 둘 다 하나의 객체로 불러오는 것은 어디에?
      *                    <p>
      *                    TransferDto
@@ -126,7 +126,7 @@ public interface GroupWalletService {
      *                    - from id(group wallet id 자동)
      *                    - to id(내내 개인지갑 자동)
      */
-    int groupWalletWithdraw(TransferDto transferDto);
+    int groupWalletWithdraw(WithDrawDto withDrawDto) throws NotEnoughBalanceException;
 
 
     /**
@@ -140,14 +140,14 @@ public interface GroupWalletService {
      * 모임지갑 잔액은 0원이 된다. (나누어 떨어지지 않으면 어떻게?)
      * 해당 모임 내에 있는 모든 멤버의 개인지갑 잔액을 update 하고, 이체내역 데이터를 insert 한다.
      *
-     * @param transferDto 이체내역을 insert할 transferDto객체
+     * @param settleDto 이체내역을 insert할 transferDto객체
      *                    TransferDto
      *                    - 통화
      *                    - 금액
      *                    - from id(group wallet id 자동)
      *                    - to id(내내 개인지갑 자동)
      */
-    int settle(TransferDto transferDto);
+    int settle(SettleDto settleDto) throws NotEnoughBalanceException;
 
 
     /**
@@ -157,13 +157,25 @@ public interface GroupWalletService {
      * 모임지갑 잔액 update + 모임지갑 이체내역 insert + 개인지갑 잔액 update + 개인지갑 이체내역 insert
      * => 트랜잭션 처리
      *
-     * @param transferDto 이체내역을 insert할 transferDto객체
+     * @param depositDto 이체내역을 insert할 transferDto객체
      *                    TransferDto
      *                    - 통화
      *                    - 금액
      *                    - from id(group wallet id 자동)
      *                    - to id(내내 개인지갑 자동)
      */
-    int groupWalletDeposit(TransferDto transferDto);
+    int groupWalletDeposit(DepositDto depositDto) throws NotEnoughBalanceException;
+
+    /**
+     * 정산 시 모임지갑에서 개인지갑으로의 돈 전송
+     *
+     * @param groupWallet 모임지갑 ID
+     * @param member 개인지갑 소유주
+     * @param amount 양
+     * @param currencyCode 통화코드
+     * @return
+     */
+    int groupWalletToPersonalWallet(GroupWallet groupWallet, Member member, Long amount, CurrencyCode currencyCode) throws NotEnoughBalanceException;
+
 
 }

@@ -298,10 +298,10 @@ class KbFinalApplicationTests {
 
             PersonalWalletTransfer personalWalletTransfer = PersonalWalletTransfer.builder()
                     .transferType(TransferType.WITHDRAW)
-                    .fromType(TargetType.PERSONAL_WALLET) // Personal Wallet로 변경
+                    .fromType(TargetType.ACCOUNT) // Personal Wallet로 변경
                     .toType(TargetType.PERSONAL_WALLET) // Personal Wallet로 변경
-                    .src(personalWallet.getMember().getName())
-                    .dest("Receiver's Name") // 수신자 이름 또는 정보
+                    .src("국민은행 실제 계좌")
+                    .dest(personalWallet.getMember().getName()) // 수신자 이름 또는 정보
                     .amount(randomAmount)
                     .afterBalance(personalWallet.getBalance() - randomAmount) // 이체 후 잔액 계산
                     .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
