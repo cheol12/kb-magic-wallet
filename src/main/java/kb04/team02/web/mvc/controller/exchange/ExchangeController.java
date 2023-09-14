@@ -5,6 +5,9 @@ import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Role;
 import kb04.team02.web.mvc.domain.wallet.common.WalletType;
 import kb04.team02.web.mvc.dto.*;
+import kb04.team02.web.mvc.exception.ExchangeException;
+import kb04.team02.web.mvc.exception.InsertException;
+import kb04.team02.web.mvc.exception.NoSavingDetailException;
 import kb04.team02.web.mvc.service.exchange.ExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/exchange")
@@ -132,4 +136,10 @@ public class ExchangeController {
         return exchangeService.expectedExchangeAmount(CurrencyCode.USD, 1000L);
     }
 
+    //== 예외 처리 ==/
+    @ExceptionHandler({ExchangeException.class, InsertException.class, NoSuchElementException.class})
+    public String exchangeException(Exception e) {
+        System.out.println(e.getMessage());
+        return "error";
+    }
 }
