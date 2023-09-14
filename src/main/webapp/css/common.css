@@ -57,3 +57,14 @@
   margin: auto;
   margin-top: 10px;
 }
+
+.groupWalletCard{
+  width: 100px;
+  height: 100px;
+  border: black 1px solid;
+}
+
+
+.groupWalletCard:hover{
+  background: gray;
+}

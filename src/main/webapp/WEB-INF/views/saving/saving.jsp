@@ -20,7 +20,7 @@
     <div class="pageWrap">
         <div class="center">
             <div class="banner">
-                <img src="/images/kb_saving_banner.jpg" style="width: 1400px" height="400px">
+                <img src="/images/kb_saving_banner.jpg" style="width: 1200px" height="400px">
             </div>
             <%--
            <c:forEach var="saving" items="${savingList}" varStatus="status">
