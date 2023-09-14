@@ -1,31 +1,35 @@
 package kb04.team02.web.mvc.service.groupwallet;
 
-import kb04.team02.web.mvc.domain.common.CurrencyCode;
-import kb04.team02.web.mvc.domain.member.Address;
-import kb04.team02.web.mvc.domain.member.Member;
-import kb04.team02.web.mvc.domain.member.Role;
-import kb04.team02.web.mvc.domain.wallet.common.*;
-import kb04.team02.web.mvc.domain.wallet.group.*;
-import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
-import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletForeignCurrencyBalance;
-import kb04.team02.web.mvc.dto.*;
-import kb04.team02.web.mvc.exception.InsertException;
-import kb04.team02.web.mvc.exception.NotEnoughBalanceException;
-import kb04.team02.web.mvc.exception.WalletDeleteException;
-import kb04.team02.web.mvc.repository.card.CardIssuanceRepository;
-import kb04.team02.web.mvc.repository.member.MemberRepository;
-import kb04.team02.web.mvc.repository.saving.InstallmentSavingRepository;
-import kb04.team02.web.mvc.repository.saving.SavingRepository;
-import kb04.team02.web.mvc.repository.wallet.group.*;
-import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletForeignCurrencyBalanceRepository;
-import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletRepository;
-import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletTransferRepository;
+import kb04.team02.web.mvc.common.dto.WalletDetailDto;
+import kb04.team02.web.mvc.common.entity.*;
+import kb04.team02.web.mvc.exchange.dto.RuleDto;
+import kb04.team02.web.mvc.group.dto.DepositDto;
+import kb04.team02.web.mvc.group.dto.SettleDto;
+import kb04.team02.web.mvc.group.dto.WithDrawDto;
+import kb04.team02.web.mvc.group.entity.*;
+import kb04.team02.web.mvc.group.repository.*;
+import kb04.team02.web.mvc.group.service.GroupWalletService;
+import kb04.team02.web.mvc.member.entity.Address;
+import kb04.team02.web.mvc.member.entity.Member;
+import kb04.team02.web.mvc.member.entity.Role;
+import kb04.team02.web.mvc.personal.entity.PersonalWallet;
+import kb04.team02.web.mvc.personal.entity.PersonalWalletForeignCurrencyBalance;
+import kb04.team02.web.mvc.group.exception.NotEnoughBalanceException;
+import kb04.team02.web.mvc.group.exception.WalletDeleteException;
+import kb04.team02.web.mvc.mypage.repository.CardIssuanceRepository;
+import kb04.team02.web.mvc.member.repository.MemberRepository;
+import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
+import kb04.team02.web.mvc.saving.repository.SavingRepository;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletForeignCurrencyBalanceRepository;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletTransferRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -34,7 +38,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Commit
+@Rollback
 public class GroupWalletServiceImplTest {
 
     @Autowired

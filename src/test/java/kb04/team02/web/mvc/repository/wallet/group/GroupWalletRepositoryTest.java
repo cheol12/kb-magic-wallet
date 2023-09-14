@@ -1,15 +1,17 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
-import kb04.team02.web.mvc.domain.member.Address;
-import kb04.team02.web.mvc.domain.member.Member;
-import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
-import kb04.team02.web.mvc.repository.member.MemberRepository;
+import kb04.team02.web.mvc.group.repository.GroupWalletRespository;
+import kb04.team02.web.mvc.member.entity.Address;
+import kb04.team02.web.mvc.member.entity.Member;
+import kb04.team02.web.mvc.group.entity.GroupWallet;
+import kb04.team02.web.mvc.member.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 
@@ -19,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-@Commit
+@Rollback
 public class GroupWalletRepositoryTest {
 
     @Autowired
@@ -137,10 +139,4 @@ public class GroupWalletRepositoryTest {
     @DisplayName("getGroupWalletDetail")
     public void getGroupWalletDetail() throws Exception{
     }
-
-
-
-
-
-
 }

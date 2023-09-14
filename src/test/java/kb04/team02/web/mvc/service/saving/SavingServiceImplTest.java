@@ -1,24 +1,24 @@
 package kb04.team02.web.mvc.service.saving;
 
-import kb04.team02.web.mvc.domain.saving.Saving;
-import kb04.team02.web.mvc.dto.SavingDto;
-import kb04.team02.web.mvc.repository.saving.SavingRepository;
+import kb04.team02.web.mvc.saving.entity.Saving;
+import kb04.team02.web.mvc.saving.dto.SavingDto;
+import kb04.team02.web.mvc.saving.repository.SavingRepository;
+import kb04.team02.web.mvc.saving.service.SavingService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Transactional
-@Commit
+@Rollback
 class SavingServiceImplTest {
 
     @Autowired

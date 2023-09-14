@@ -1,41 +1,39 @@
 package kb04.team02.web.mvc.service.exchange;
 
-import kb04.team02.web.mvc.domain.bank.Bank;
-import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
-import kb04.team02.web.mvc.domain.bank.ReceiptState;
-import kb04.team02.web.mvc.domain.common.CurrencyCode;
-import kb04.team02.web.mvc.domain.member.Address;
-import kb04.team02.web.mvc.domain.member.Member;
-import kb04.team02.web.mvc.domain.member.Role;
-import kb04.team02.web.mvc.domain.wallet.common.WalletType;
-import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
-import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
-import kb04.team02.web.mvc.dto.*;
-import kb04.team02.web.mvc.repository.bank.BankRepository;
-import kb04.team02.web.mvc.repository.bank.OfflineReceiptRepository;
-import kb04.team02.web.mvc.repository.member.MemberRepository;
-import kb04.team02.web.mvc.repository.wallet.group.GroupWalletRespository;
-import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletRepository;
-import org.junit.jupiter.api.AfterEach;
+import kb04.team02.web.mvc.exchange.dto.WalletDto;
+import kb04.team02.web.mvc.exchange.dto.BankDto;
+import kb04.team02.web.mvc.exchange.dto.ExchangeDto;
+import kb04.team02.web.mvc.exchange.dto.OfflineReceiptDto;
+import kb04.team02.web.mvc.exchange.entity.Bank;
+import kb04.team02.web.mvc.exchange.entity.ReceiptState;
+import kb04.team02.web.mvc.common.entity.CurrencyCode;
+import kb04.team02.web.mvc.exchange.service.ExchangeService;
+import kb04.team02.web.mvc.member.entity.Address;
+import kb04.team02.web.mvc.member.entity.Member;
+import kb04.team02.web.mvc.member.entity.Role;
+import kb04.team02.web.mvc.common.entity.WalletType;
+import kb04.team02.web.mvc.group.entity.GroupWallet;
+import kb04.team02.web.mvc.personal.entity.PersonalWallet;
+import kb04.team02.web.mvc.exchange.repository.BankRepository;
+import kb04.team02.web.mvc.exchange.repository.OfflineReceiptRepository;
+import kb04.team02.web.mvc.member.repository.MemberRepository;
+import kb04.team02.web.mvc.group.repository.GroupWalletRespository;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @Transactional
-@Commit
+@Rollback
 class ExchangeServiceImplTest {
 
     @Autowired

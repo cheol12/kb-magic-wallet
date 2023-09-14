@@ -1,13 +1,14 @@
 package kb04.team02.web.mvc.repository.saving;
 
-import kb04.team02.web.mvc.domain.saving.Saving;
+import kb04.team02.web.mvc.saving.entity.Saving;
+import kb04.team02.web.mvc.saving.repository.SavingRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
-import org.springframework.transaction.annotation.Propagation;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -16,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-@Commit
+@Rollback
 class SavingRepositoryTest {
 
     @Autowired

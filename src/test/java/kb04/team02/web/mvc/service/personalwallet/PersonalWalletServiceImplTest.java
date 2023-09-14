@@ -1,30 +1,27 @@
 package kb04.team02.web.mvc.service.personalwallet;
 
-import jdk.jfr.Name;
-import kb04.team02.web.mvc.domain.common.CurrencyCode;
-import kb04.team02.web.mvc.domain.member.Address;
-import kb04.team02.web.mvc.domain.member.Member;
-import kb04.team02.web.mvc.domain.wallet.common.TargetType;
-import kb04.team02.web.mvc.domain.wallet.common.TransferType;
-import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
-import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletForeignCurrencyBalance;
-import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletTransfer;
-import kb04.team02.web.mvc.dto.LoginMemberDto;
-import kb04.team02.web.mvc.dto.PersonalWalletTransferDto;
-import kb04.team02.web.mvc.dto.WalletDetailDto;
-import kb04.team02.web.mvc.exception.InsufficientBalanceException;
-import kb04.team02.web.mvc.repository.member.MemberRepository;
-import kb04.team02.web.mvc.repository.wallet.personal.*;
+import kb04.team02.web.mvc.common.entity.CurrencyCode;
+import kb04.team02.web.mvc.member.entity.Address;
+import kb04.team02.web.mvc.member.entity.Member;
+import kb04.team02.web.mvc.personal.entity.PersonalWallet;
+import kb04.team02.web.mvc.personal.entity.PersonalWalletForeignCurrencyBalance;
+import kb04.team02.web.mvc.common.dto.LoginMemberDto;
+import kb04.team02.web.mvc.personal.dto.PersonalWalletTransferDto;
+import kb04.team02.web.mvc.common.dto.WalletDetailDto;
+import kb04.team02.web.mvc.common.exception.InsufficientBalanceException;
+import kb04.team02.web.mvc.member.repository.MemberRepository;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletForeignCurrencyBalanceRepository;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletTransferRepository;
+import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.Commit;
 
 import javax.transaction.Transactional;
 
 import java.util.HashMap;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
