@@ -4,6 +4,7 @@ import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
+import kb04.team02.web.mvc.exception.WalletDeleteException;
 import kb04.team02.web.mvc.service.groupwallet.GroupWalletService;
 import kb04.team02.web.mvc.service.personalwallet.PersonalWalletService;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +74,7 @@ public class GroupWalletController {
      * @param id 삭제할 모임지갑 id
      */
     @DeleteMapping("/{id}") // 매핑값이 /{id} 가 맞는지?
-    public String groupWalletDelete(@PathVariable Long id) {
+    public String groupWalletDelete(@PathVariable Long id) throws WalletDeleteException {
 	// 삭제할때 카드비밀번호 입력해서 삭제하기?
 	    groupWalletService.deleteGroupWallet(id);
 	return "redirect:/group-wallet";

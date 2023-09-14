@@ -31,6 +31,7 @@ public class GroupWalletRepositoryTest {
     @AfterEach
     public void afterEach(){
         groupWalletRep.deleteAll();
+        memberRep.deleteAll();
     }
 
     @Test
@@ -135,8 +136,6 @@ public class GroupWalletRepositoryTest {
     @Test
     @DisplayName("getGroupWalletDetail")
     public void getGroupWalletDetail() throws Exception{
-
-
     }
 
 

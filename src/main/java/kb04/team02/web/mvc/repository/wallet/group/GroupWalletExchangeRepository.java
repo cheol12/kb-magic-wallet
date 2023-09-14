@@ -29,7 +29,7 @@ public interface GroupWalletExchangeRepository  extends JpaRepository<GroupWalle
     /**
      * 모임지갑 환전내역 불러오기
      * */
-    List<GroupWalletExchange> findByGroupWallet(Long groupWalletId);
+    List<GroupWalletExchange> findByGroupWallet(GroupWallet groupWallet);
 
     List<GroupWalletExchange> searchAllByGroupWallet(GroupWallet groupWallet);
 

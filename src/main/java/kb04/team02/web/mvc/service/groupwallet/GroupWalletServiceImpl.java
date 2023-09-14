@@ -3,18 +3,21 @@ package kb04.team02.web.mvc.service.groupwallet;
 import kb04.team02.web.mvc.domain.common.CurrencyCode;
 import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.member.Role;
-import kb04.team02.web.mvc.domain.wallet.common.PaymentType;
-import kb04.team02.web.mvc.domain.wallet.common.Transfer;
-import kb04.team02.web.mvc.domain.wallet.common.TransferType;
-import kb04.team02.web.mvc.domain.wallet.common.WalletExchange;
+import kb04.team02.web.mvc.domain.wallet.common.*;
 import kb04.team02.web.mvc.domain.wallet.group.*;
+import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletForeignCurrencyBalance;
-import kb04.team02.web.mvc.dto.TransferDto;
-import kb04.team02.web.mvc.dto.WalletDetailDto;
-import kb04.team02.web.mvc.dto.WalletDto;
-import kb04.team02.web.mvc.dto.WalletHistoryDto;
+import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletTransfer;
+import kb04.team02.web.mvc.dto.*;
 import kb04.team02.web.mvc.exception.InsertException;
+import kb04.team02.web.mvc.exception.NotEnoughBalanceException;
+import kb04.team02.web.mvc.exception.WalletDeleteException;
+import kb04.team02.web.mvc.repository.member.MemberRepository;
 import kb04.team02.web.mvc.repository.wallet.group.*;
+import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletForeignCurrencyBalanceRepository;
+import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletRepository;
+import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletTransferRepository;
+import kb04.team02.web.mvc.service.personalwallet.PersonalWalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,9 +36,15 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     private final GroupWalletRespository groupWalletRep;
     private final GroupWalletExchangeRepository groupExchangeRep;
     private final GroupWalletForeignCurrencyBalanceRepository groupForeignBalanceRep;
+    private final PersonalWalletForeignCurrencyBalanceRepository personalForeignBalanceRep;
     private final GroupWalletPaymentRepository groupPaymentRep;
     private final GroupWalletTransferRepository groupTransferRep;
     private final ParticipationRepository participationRep;
+    private final PersonalWalletRepository personalWalletRepository;
+    private final MemberRepository memberRepository;
+    private final PersonalWalletTransferRepository personalTransferRep;
+
+    private final PersonalWalletService personalWalletService;
 
     @Override
     public List<GroupWallet> selectAllMyGroupWallet(Member member) {
@@ -67,9 +76,9 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         // participation 테이블에도 모임장 데이터를 추가해야하지 않나
 
-        Participation partici;
+        Participation participation;
 
-        partici = participationRep.save(
+        participation = participationRep.save(
                 Participation.builder()
                         .participationState(ParticipationState.PARTICIPATED)
                         .memberId(member.getMemberId())
@@ -78,9 +87,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                         .build()
         );
 
-        System.out.println("memberId : " + groupWalletSave.getMember().getMemberId());
-
-        if (groupWalletSave == null || partici == null) {
+        if (groupWalletSave == null || participation == null) {
             throw new InsertException("모임 지갑 생성에 실패했습니다");
         }
         return 1;
@@ -90,16 +97,19 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     public WalletDetailDto getGroupWalletDetail(Long groupWalletId) {
         WalletDetailDto dto = new WalletDetailDto();
 
-        List<GroupWalletExchange> exchangeList = groupExchangeRep.findByGroupWallet(groupWalletId);
+        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElse(null);
 
-        List<GroupWalletForeignCurrencyBalance> foreignCurrencyBalanceList = groupForeignBalanceRep.findByGroupWallet(groupWalletId);
+        List<GroupWalletExchange> exchangeList = groupExchangeRep.searchAllByGroupWallet(groupWallet);
 
-        List<GroupWalletPayment> paymentList = groupPaymentRep.findByGroupWallet(groupWalletId);
+        List<GroupWalletForeignCurrencyBalance> foreignCurrencyBalanceList = groupForeignBalanceRep.findByGroupWallet(groupWallet);
 
-        List<GroupWalletTransfer> transferList = groupTransferRep.findByGroupWallet(groupWalletId);
+        List<GroupWalletPayment> paymentList = groupPaymentRep.searchAllByGroupWallet(groupWallet);
+
+        List<GroupWalletTransfer> transferList = groupTransferRep.searchAllByGroupWallet(groupWallet);
 
         dto.setBalance(new HashMap<>());
 
+        System.out.println("foreignCurrencyBalanceList = " + foreignCurrencyBalanceList.size());
         // 외화 잔액 내역 설정
         for (GroupWalletForeignCurrencyBalance foreignCurrencyBalance : foreignCurrencyBalanceList) {
             dto.getBalance().put(foreignCurrencyBalance.getCurrencyCode().name(), foreignCurrencyBalance.getBalance());
@@ -176,48 +186,56 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     }
 
     @Override
-    public int deleteGroupWallet(Long groupWalletId) {
+    public int deleteGroupWallet(Long groupWalletId) throws WalletDeleteException {
         // 모임장이 모임지갑을 삭제하는 것.
         // 모임장인지 확인하는 것은 어디서할지?
+        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElse(null);
+        Member member = groupWallet.getMember();
+        Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, member.getMemberId());
+        List<Participation> participations = participationRep.findByGroupWalletAndParticipationState(groupWallet, ParticipationState.PARTICIPATED);
+        if (participations.size() > 1 && participation.getRole() == Role.CHAIRMAN) {
+            throw new WalletDeleteException("모임원이 있는 상태에서 삭제할 수 없습니다");
+        }
 
-        int result = groupWalletRep.deleteGroupWalletByGroupWalletId(groupWalletId);
-        return result;
+        return groupWalletRep.deleteGroupWalletByGroupWalletId(groupWalletId);
     }
 
     @Override
     public String inviteMember(Long groupWalletId) {
-
-        // 미완
-
-        return null;
+        return "http://초대링크";
     }
 
     @Override
     public int groupWalletMemberOut(Long groupWalletId, Member member) {
 
         // 모임원 내보내기 or 탈퇴
-
-        int result = groupWalletRep.deleteByGroupWalletIdAndMember(groupWalletId, member);
-        return result;
+//        int result = groupWalletRep.deleteByGroupWalletIdAndMember(groupWalletId, memberId);
+        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElse(null);
+        Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, member.getMemberId());
+        participationRep.delete(participation);
+        return 1;
     }
 
     @Override
-    public GroupWallet getGroupWalletDueRule(Long groupWalletId, int dueDate, Long due) {
+    public GroupWallet setGroupWalletDueRule(Long groupWalletId, int dueDate, Long due) {
         GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
-
+        groupWallet.setDueCondition(true);
+        groupWallet.setDueDate(dueDate);
+        groupWallet.setDue(due);
         return groupWallet;
     }
 
     @Override
-    public GroupWallet setGroupWalletDueRule(Long groupWalletId, GroupWallet groupWallet) {
+    public RuleDto getGroupWalletDueRule(Long groupWalletId) {
         // 모임 회비 규칙 생성은 모임장만!
         // 모임장 권한 확인은 어디서 할지 생각
-
-        GroupWallet groupWallet01 = groupWalletRep.findByGroupWalletId(groupWalletId);
-        groupWallet01.setDueCondition(true);
-        groupWallet01.setDueDate(groupWallet.getDueDate());
-        groupWallet01.setDue(groupWallet.getDue());
-        return groupWallet01;
+        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
+        RuleDto ruleDto = new RuleDto();
+        if (groupWallet.isDueCondition()) {
+            ruleDto.setDueDate(groupWallet.getDueDate());
+            ruleDto.setDuePrice(groupWallet.getDue());
+        }
+        return ruleDto;
     }
 
     @Override
@@ -231,21 +249,390 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         return groupWallet;
     }
 
-
+    @Transactional
     @Override
-    public int groupWalletWithdraw(TransferDto transferDto) {
+    public int groupWalletWithdraw(WithDrawDto withDrawDto) throws NotEnoughBalanceException {
+        Long walletId = withDrawDto.getSrcWalletId();
+        GroupWallet groupWallet = groupWalletRep.findById(walletId).orElse(null);
+        Member member = memberRepository.findById(withDrawDto.getDestMemberId()).orElse(null);
 
+        PersonalWallet personalWallet = personalWalletRepository.findByMember(member);
 
-        return 0;
+        List<GroupWalletForeignCurrencyBalance> foreignCurrencyBalances
+                = groupForeignBalanceRep.findByGroupWallet(groupWallet);
+
+        List<PersonalWalletForeignCurrencyBalance> personalWalletForeignCurrencyBalances
+                = personalForeignBalanceRep.searchAllByPersonalWallet(personalWallet);
+
+        CurrencyCode code = CurrencyCode.KRW;
+        GroupWalletForeignCurrencyBalance currGroupForiegnBalance = null;
+        PersonalWalletForeignCurrencyBalance currPersonalForeignBalance = null;
+
+        for (GroupWalletForeignCurrencyBalance balance : foreignCurrencyBalances) {
+            if (balance.getCurrencyCode() == withDrawDto.getCurrencyCode()) {
+                code = balance.getCurrencyCode();
+                currGroupForiegnBalance = balance;
+
+            }
+        }
+
+        for (PersonalWalletForeignCurrencyBalance balance : personalWalletForeignCurrencyBalances) {
+            if (balance.getCurrencyCode() == withDrawDto.getCurrencyCode()) {
+                code = balance.getCurrencyCode();
+                currPersonalForeignBalance = balance;
+            }
+        }
+
+        switch (code) {
+            case KRW:
+                if (withDrawDto.getAmount() > groupWallet.getBalance()) {
+                    // 잔액초과
+                    throw new NotEnoughBalanceException();
+                }
+                groupWallet.setBalance(groupWallet.getBalance() - withDrawDto.getAmount());
+                personalWallet.setBalance(personalWallet.getBalance() + withDrawDto.getAmount());
+
+                groupTransferRep.save(GroupWalletTransfer.builder()
+                        .currencyCode(code)
+                        .groupWallet(groupWallet)
+                        .src(groupWallet.getNickname())
+                        .transferType(TransferType.WITHDRAW)
+                        .fromType(TargetType.GROUP_WALLET)
+                        .toType(TargetType.PERSONAL_WALLET)
+                        .dest(member.getName())
+                        .afterBalance(groupWallet.getBalance())
+                        .amount(withDrawDto.getAmount())
+                        .build());
+
+                personalTransferRep.save(PersonalWalletTransfer.builder()
+                        .currencyCode(code)
+                        .personalWallet(personalWallet)
+                        .src(groupWallet.getNickname())
+                        .transferType(TransferType.WITHDRAW)
+                        .fromType(TargetType.GROUP_WALLET)
+                        .toType(TargetType.PERSONAL_WALLET)
+                        .dest(member.getName())
+                        .afterBalance(personalWallet.getBalance())
+                        .amount(withDrawDto.getAmount())
+                        .build());
+
+                break;
+            case JPY:
+            case USD:
+                if (withDrawDto.getAmount() > currGroupForiegnBalance.getBalance()) {
+                    // 잔액초과
+                    throw new NotEnoughBalanceException();
+                }
+                currGroupForiegnBalance.setBalance(currGroupForiegnBalance.getBalance()
+                        - withDrawDto.getAmount());
+                currPersonalForeignBalance.setBalance(currPersonalForeignBalance.getBalance()
+                        + withDrawDto.getAmount());
+
+                groupTransferRep.save(GroupWalletTransfer.builder()
+                        .currencyCode(code)
+                        .groupWallet(groupWallet)
+                        .src(groupWallet.getNickname())
+                        .transferType(TransferType.WITHDRAW)
+                        .fromType(TargetType.GROUP_WALLET)
+                        .toType(TargetType.PERSONAL_WALLET)
+                        .dest(member.getName())
+                        .afterBalance(currGroupForiegnBalance.getBalance())
+                        .amount(withDrawDto.getAmount())
+                        .build());
+
+                personalTransferRep.save(PersonalWalletTransfer.builder()
+                        .currencyCode(code)
+                        .personalWallet(personalWallet)
+                        .src(groupWallet.getNickname())
+                        .transferType(TransferType.DEPOSIT)
+                        .fromType(TargetType.GROUP_WALLET)
+                        .toType(TargetType.PERSONAL_WALLET)
+                        .dest(member.getName())
+                        .afterBalance(currPersonalForeignBalance.getBalance())
+                        .amount(withDrawDto.getAmount())
+                        .build());
+
+                break;
+        }
+        return 1;
     }
 
+    @Transactional
     @Override
-    public int settle(TransferDto transferDto) {
-        return 0;
+    public int settle(SettleDto settleDto) throws NotEnoughBalanceException {
+        Long groupWalletId = settleDto.getGroupWalletId();
+        GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElse(null);
+        List<Participation> memberList = participationRep.findByGroupWalletAndParticipationState(groupWallet, ParticipationState.PARTICIPATED);
+
+        // 원화 정산
+        switch (settleDto.getCurrencyCode()) {
+            case KRW:
+                switch (settleDto.getSettleType()) {
+                    case NBBANG:
+                        Long divideAmount = settleDto.getTotalAmout() / memberList.size();
+                        Long chairmanDivideAmount = divideAmount + settleDto.getTotalAmout() % memberList.size();
+                        System.out.println("divideAmount = " + divideAmount);
+                        System.out.println("chairmanDivideAmount = " + chairmanDivideAmount);
+                        for (Participation participation : memberList) {
+                            Member mem = memberRepository.findById(participation.getMemberId()).orElse(null);
+
+                            if(participation.getRole()==Role.CHAIRMAN)
+                                this.groupWalletToPersonalWallet(groupWallet, mem, chairmanDivideAmount, CurrencyCode.KRW);
+                            else
+                                this.groupWalletToPersonalWallet(groupWallet, mem, divideAmount, CurrencyCode.KRW);
+                        }
+                        break;
+                    case RATIO_SETTLE:
+                    case RANDOM_SETTLE:
+                        // 미구현
+                        break;
+                }
+                break;
+            case USD:
+            case JPY:
+                switch (settleDto.getSettleType()) {
+                    case NBBANG:
+//                        List<GroupWalletForeignCurrencyBalance> currencyBalanceList
+//                                = groupForeignBalanceRep.findByGroupWallet(groupWallet);
+//                        Long balance = 0L;
+//
+//                        for (GroupWalletForeignCurrencyBalance currency : currencyBalanceList) {
+//                            if (currency.getCurrencyCode() == settleDto.getCurrencyCode()) {
+//                                balance = currency.getBalance();
+//                            }
+//                        }
+
+                        Long divideAmount = settleDto.getTotalAmout() / memberList.size();
+                        Long chairmanDivideAmount = divideAmount + settleDto.getTotalAmout() % memberList.size();
+
+                        for (Participation participation : memberList) {
+                            Member mem = memberRepository.findById(participation.getMemberId()).orElse(null);
+
+                            if(participation.getRole()==Role.CHAIRMAN)
+                                this.groupWalletToPersonalWallet(groupWallet, mem, chairmanDivideAmount, settleDto.getCurrencyCode());
+                            else
+                                this.groupWalletToPersonalWallet(groupWallet, mem, divideAmount, settleDto.getCurrencyCode());
+                        }
+                        break;
+                    case RATIO_SETTLE:
+                    case RANDOM_SETTLE:
+                        // 미구현
+                        break;
+                }
+                break;
+        }
+        return 1;
     }
 
+    @Transactional
     @Override
-    public int groupWalletDeposit(TransferDto transferDto) {
-        return 0;
+    public int groupWalletDeposit(DepositDto depositDto) throws NotEnoughBalanceException {
+
+        Long walletId = depositDto.getDestWalletId();
+        GroupWallet groupWallet = groupWalletRep.findById(walletId).orElse(null);
+        Member member = memberRepository.findById(depositDto.getSrcMemberId()).orElse(null);
+        PersonalWallet personalWallet = personalWalletRepository.findByMember(member);
+
+        List<GroupWalletForeignCurrencyBalance> foreignCurrencyBalances
+                = groupForeignBalanceRep.findByGroupWallet(groupWallet);
+
+        List<PersonalWalletForeignCurrencyBalance> personalWalletForeignCurrencyBalances
+                = personalForeignBalanceRep.searchAllByPersonalWallet(personalWallet);
+
+        CurrencyCode code = CurrencyCode.KRW;
+        GroupWalletForeignCurrencyBalance currGroupForiegnBalance = null;
+        PersonalWalletForeignCurrencyBalance currPersonalForeignBalance = null;
+
+        for (GroupWalletForeignCurrencyBalance balance : foreignCurrencyBalances) {
+            if (balance.getCurrencyCode() == depositDto.getCurrencyCode()) {
+                code = balance.getCurrencyCode();
+                currGroupForiegnBalance = balance;
+
+            }
+        }
+
+        for (PersonalWalletForeignCurrencyBalance balance : personalWalletForeignCurrencyBalances) {
+            if (balance.getCurrencyCode() == depositDto.getCurrencyCode()) {
+                code = balance.getCurrencyCode();
+                currPersonalForeignBalance = balance;
+            }
+        }
+
+        switch (code) {
+            case KRW:
+                if (depositDto.getAmount() > personalWallet.getBalance()) {
+                    // 잔액부족
+                    throw new NotEnoughBalanceException("개인지갑 잔액 부족");
+                }
+                personalWallet.setBalance(personalWallet.getBalance() - depositDto.getAmount());
+                groupWallet.setBalance(groupWallet.getBalance() + depositDto.getAmount());
+
+                groupTransferRep.save(GroupWalletTransfer.builder()
+                        .currencyCode(code)
+                        .groupWallet(groupWallet)
+                        .src(member.getName())
+                        .transferType(TransferType.DEPOSIT)
+                        .fromType(TargetType.PERSONAL_WALLET)
+                        .toType(TargetType.GROUP_WALLET)
+                        .dest(groupWallet.getNickname())
+                        .afterBalance(groupWallet.getBalance())
+                        .amount(depositDto.getAmount())
+                        .build());
+
+                personalTransferRep.save(PersonalWalletTransfer.builder()
+                        .currencyCode(code)
+                        .personalWallet(personalWallet)
+                        .src(member.getName())
+                        .transferType(TransferType.DEPOSIT)
+                        .fromType(TargetType.PERSONAL_WALLET)
+                        .toType(TargetType.GROUP_WALLET)
+                        .dest(groupWallet.getNickname())
+                        .afterBalance(personalWallet.getBalance())
+                        .amount(depositDto.getAmount())
+                        .build());
+
+                break;
+            case JPY:
+            case USD:
+                if (depositDto.getAmount() > currPersonalForeignBalance.getBalance()) {
+                    // 잔액부족
+                    throw new NotEnoughBalanceException("개인지갑 잔액 부족");
+                }
+                currPersonalForeignBalance.setBalance(currPersonalForeignBalance.getBalance()
+                        - depositDto.getAmount());
+                currGroupForiegnBalance.setBalance(currGroupForiegnBalance.getBalance()
+                        + depositDto.getAmount());
+
+                groupTransferRep.save(GroupWalletTransfer.builder()
+                        .currencyCode(code)
+                        .groupWallet(groupWallet)
+                        .src(member.getName())
+                        .transferType(TransferType.WITHDRAW)
+                        .fromType(TargetType.PERSONAL_WALLET)
+                        .toType(TargetType.GROUP_WALLET)
+                        .dest(groupWallet.getNickname())
+                        .afterBalance(currGroupForiegnBalance.getBalance())
+                        .amount(depositDto.getAmount())
+                        .build());
+
+                personalTransferRep.save(PersonalWalletTransfer.builder()
+                        .currencyCode(code)
+                        .personalWallet(personalWallet)
+                        .src(member.getName())
+                        .transferType(TransferType.DEPOSIT)
+                        .fromType(TargetType.PERSONAL_WALLET)
+                        .toType(TargetType.GROUP_WALLET)
+                        .dest(groupWallet.getNickname())
+                        .afterBalance(currPersonalForeignBalance.getBalance())
+                        .amount(depositDto.getAmount())
+                        .build());
+
+                break;
+        }
+        return 1;
+    }
+
+    @Transactional
+    @Override
+    public int groupWalletToPersonalWallet(GroupWallet groupWallet, Member member, Long amount, CurrencyCode currencyCode) throws NotEnoughBalanceException {
+
+        PersonalWallet personalWallet = personalWalletRepository.findByMember(member);
+
+        List<GroupWalletForeignCurrencyBalance> foreignCurrencyBalances
+                = groupForeignBalanceRep.findByGroupWallet(groupWallet);
+
+        List<PersonalWalletForeignCurrencyBalance> personalWalletForeignCurrencyBalances
+                = personalForeignBalanceRep.searchAllByPersonalWallet(personalWallet);
+
+        CurrencyCode code = CurrencyCode.KRW;
+        GroupWalletForeignCurrencyBalance currGroupForiegnBalance = null;
+        PersonalWalletForeignCurrencyBalance currPersonalForeignBalance = null;
+
+        for (GroupWalletForeignCurrencyBalance balance : foreignCurrencyBalances) {
+            if (balance.getCurrencyCode() == currencyCode) {
+                code = balance.getCurrencyCode();
+                currGroupForiegnBalance = balance;
+
+            }
+        }
+
+        for (PersonalWalletForeignCurrencyBalance balance : personalWalletForeignCurrencyBalances) {
+            if (balance.getCurrencyCode() == currencyCode) {
+                code = balance.getCurrencyCode();
+                currPersonalForeignBalance = balance;
+            }
+        }
+
+        switch (code) {
+            case KRW:
+                if (amount > groupWallet.getBalance()) {
+                    // 잔액초과
+                    throw new NotEnoughBalanceException();
+                }
+                groupWallet.setBalance(groupWallet.getBalance() - amount);
+                personalWallet.setBalance(personalWallet.getBalance() + amount);
+
+                groupTransferRep.save(GroupWalletTransfer.builder()
+                        .currencyCode(code)
+                        .groupWallet(groupWallet)
+                        .src(member.getName())
+                        .transferType(TransferType.DEPOSIT)
+                        .fromType(TargetType.GROUP_WALLET)
+                        .toType(TargetType.PERSONAL_WALLET)
+                        .dest(groupWallet.getNickname())
+                        .afterBalance(groupWallet.getBalance())
+                        .amount(amount)
+                        .build());
+
+                personalTransferRep.save(PersonalWalletTransfer.builder()
+                        .currencyCode(code)
+                        .personalWallet(personalWallet)
+                        .src(groupWallet.getNickname())
+                        .transferType(TransferType.DEPOSIT)
+                        .fromType(TargetType.GROUP_WALLET)
+                        .toType(TargetType.PERSONAL_WALLET)
+                        .dest(member.getName())
+                        .afterBalance(personalWallet.getBalance())
+                        .amount(amount)
+                        .build());
+
+                break;
+            case JPY:
+            case USD:
+                if (amount > currGroupForiegnBalance.getBalance()) {
+                    // 잔액초과
+                    throw new NotEnoughBalanceException();
+                }
+                currGroupForiegnBalance.setBalance(currGroupForiegnBalance.getBalance()
+                        - amount);
+                currPersonalForeignBalance.setBalance(currPersonalForeignBalance.getBalance()
+                        + amount);
+                groupTransferRep.save(GroupWalletTransfer.builder()
+                        .currencyCode(code)
+                        .groupWallet(groupWallet)
+                        .src(groupWallet.getNickname())
+                        .transferType(TransferType.WITHDRAW)
+                        .fromType(TargetType.GROUP_WALLET)
+                        .toType(TargetType.PERSONAL_WALLET)
+                        .dest(member.getName())
+                        .afterBalance(currGroupForiegnBalance.getBalance())
+                        .amount(amount)
+                        .build());
+
+                personalTransferRep.save(PersonalWalletTransfer.builder()
+                        .currencyCode(code)
+                        .personalWallet(personalWallet)
+                        .src(groupWallet.getNickname())
+                        .transferType(TransferType.DEPOSIT)
+                        .fromType(TargetType.GROUP_WALLET)
+                        .toType(TargetType.PERSONAL_WALLET)
+                        .dest(member.getName())
+                        .afterBalance(currPersonalForeignBalance.getBalance())
+                        .amount(amount)
+                        .build());
+                break;
+        }
+
+        return 1;
     }
 }
