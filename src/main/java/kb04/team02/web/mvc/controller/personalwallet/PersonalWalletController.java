@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.controller.personalwallet;
 
+import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.dto.LoginMemberDto;
 import kb04.team02.web.mvc.dto.PersonalWalletTransferDto;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
@@ -50,7 +51,9 @@ public class PersonalWalletController {
      * API 명세서 ROWNUM:7
      */
     @PostMapping("/deposit")
-    public String personalwalletDeposit(@RequestBody PersonalWalletTransferDto transferDto) {
+    public String personalwalletDeposit(PersonalWalletTransferDto transferDto, HttpSession session) {
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        transferDto.setMemberId(member.getMemberId());
 
         try {
             personalWalletService.personalWalletDeposit(transferDto);
@@ -58,7 +61,7 @@ public class PersonalWalletController {
             // TODO 개인지갑 충전 실패시 어디가지?
         }
 
-        return "personalwallet/personal-wallet";
+        return "redirect:/personalwallet/main";
     }
 
     /**
@@ -83,6 +86,6 @@ public class PersonalWalletController {
             // TODO 개인지갑 환불 실패시 어디가지?
         }
 
-        return "personalwallet/personal-wallet";
+        return "personalwallet/main";
     }
 }
