@@ -10,6 +10,7 @@ import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletForeignCurrencyB
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWalletTransfer;
 import kb04.team02.web.mvc.dto.*;
 import kb04.team02.web.mvc.exception.InsertException;
+import kb04.team02.web.mvc.repository.member.MemberRepository;
 import kb04.team02.web.mvc.exception.NotEnoughBalanceException;
 import kb04.team02.web.mvc.exception.WalletDeleteException;
 import kb04.team02.web.mvc.repository.member.MemberRepository;

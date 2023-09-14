@@ -4,7 +4,8 @@ import kb04.team02.web.mvc.domain.member.Member;
 import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
 import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
 import kb04.team02.web.mvc.dto.WalletDetailDto;
-import kb04.team02.web.mvc.exception.WalletDeleteException;
+import kb04.team02.web.mvc.repository.member.MemberRepository;
+import kb04.team02.web.mvc.repository.wallet.group.GroupWalletRespository;
 import kb04.team02.web.mvc.service.groupwallet.GroupWalletService;
 import kb04.team02.web.mvc.service.personalwallet.PersonalWalletService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,9 @@ public class GroupWalletController {
     private final GroupWalletService groupWalletService;
     private final PersonalWalletService personalWalletService;
 
+//    private final GroupWalletRespository groupWalletRep;  -- 테스트용 임시코드
+//    private final MemberRepository memberRep;             -- 테스트용 임시코드
+
     /**
      * 모임지갑 메인 페이지
      * API 명세서 ROWNUM:10
@@ -31,8 +35,21 @@ public class GroupWalletController {
     public String groupWalletIndex(Model model, HttpSession session) {
 
         Member member = (Member) session.getAttribute("member_id");
+
+
+        System.out.println("------------------------");
+//        Member member = memberRep.findById(1L).get();     // 테스트용 임시코드
+        System.out.println("--------------------------");
+
         List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(member);
+
+        member.setGroupWallets(gWalletList);
+
         model.addAttribute("gWalletList", gWalletList);
+//        model.addAttribute("member", member);             // 테스트용 임시코드
+
+//        session.setAttribute("member", member);           // 테스트용 임시코드
+        System.out.println("member" + member);
 
         return "group/groupIndex";
     }
@@ -42,12 +59,18 @@ public class GroupWalletController {
      * API 명세서 ROWNUM:12
      */
     @PostMapping("/new")
-    public String groupWalletCreate(GroupWallet gWallet, Model model, HttpSession session, @RequestParam String nick) {
-	// 모임장의 회원 식별번호 불러오기, 
-	// 뷰에서 입력한 별칭 필요
-	    Member member = (Member) session.getAttribute("member_id");
-	    groupWalletService.createGroupWallet(member, nick);
-	
+    public String groupWalletCreate(GroupWallet gWallet, Model model, HttpSession session, @RequestParam String nickname) {
+	    // 모임장의 회원 식별번호 불러오기,
+	    // 뷰에서 입력한 별칭 필요
+        // 멤버 컬럼 : memberid, id, password, name, address, phonenumber, email, insertDate, payPassword, bankaccount
+
+        Member member = (Member) session.getAttribute("member_id");
+
+//        Member member = memberRep.findById(1L).get();     // 테스트용 임시코드
+//        model.addAttribute("member", member);             // 테스트용 임시코드
+
+	    groupWalletService.createGroupWallet(member, nickname);
+
 	    // 생성되었습니다 알림 띄우고 group-wallet으로 이동
 	    return "redirect:/group-wallet";		// "redirect:/"; 인가?
     }
@@ -61,9 +84,8 @@ public class GroupWalletController {
     @GetMapping("/{id}")
     public String getGroupWalletDetail(@PathVariable Long id, Model model) {
 	// id = 내 모임지갑의 id중 하나임.
-//        Long temp  = Long.parseLong(id);
-            WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
-	        model.addAttribute("walletDetailDto", walletDetailDto);
+        WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
+        model.addAttribute("walletDetailDto", walletDetailDto);
         return "group/groupWalletDetail";
     }
 
@@ -74,10 +96,10 @@ public class GroupWalletController {
      * @param id 삭제할 모임지갑 id
      */
     @DeleteMapping("/{id}") // 매핑값이 /{id} 가 맞는지?
-    public String groupWalletDelete(@PathVariable Long id) throws WalletDeleteException {
-	// 삭제할때 카드비밀번호 입력해서 삭제하기?
+    public String groupWalletDelete(@PathVariable Long id) {
+	    // 삭제할때 카드비밀번호 입력해서 삭제하기?
 	    groupWalletService.deleteGroupWallet(id);
-	return "redirect:/group-wallet";
+	    return "redirect:/group-wallet";
     }
 
     /**

@@ -18,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
+@Setter
 public class Member {
 
     @Id
@@ -58,7 +59,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<CardIssuance> cardIssuances = new ArrayList<>();
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member" , fetch = FetchType.LAZY)
     private PersonalWallet personalWallet;
 
     @OneToMany(mappedBy = "member")

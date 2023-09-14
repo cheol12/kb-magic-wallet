@@ -27,7 +27,7 @@ public class PersonalWallet {
     private Long balance;
 
     //== 연관관계 설정 START==//
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
