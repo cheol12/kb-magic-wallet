@@ -68,22 +68,22 @@ public class MemberServiceImpl implements MemberService {
         Member saved = memberRepository.save(member);
         System.out.println("saved = " + saved);
 
-//        // 지갑 생성
-//        PersonalWallet personalWallet = PersonalWallet.builder()
-//                .member(saved)
-//                .build();
-//
-//        PersonalWallet savedWallet = personalWalletRepository.save(personalWallet);
-//
-//        // 카드 발급
-//        CardIssuance card = CardIssuance.builder()
-//                .cardNumber(generateRandomCardNumber())
-//                .cardState(CardState.OK)
-//                .walletId(savedWallet.getPersonalWalletId())
-//                .walletType(WalletType.PERSONAL_WALLET)
-//                .build();
-//
-//        CardIssuance savedCard = cardIssuanceRepository.save(card);
+        // 지갑 생성
+        PersonalWallet personalWallet = PersonalWallet.builder()
+                .member(saved)
+                .build();
+
+        PersonalWallet savedWallet = personalWalletRepository.save(personalWallet);
+
+        // 카드 발급
+        CardIssuance card = CardIssuance.builder()
+                .cardNumber(generateRandomCardNumber())
+                .cardState(CardState.OK)
+                .walletId(savedWallet.getPersonalWalletId())
+                .walletType(WalletType.PERSONAL_WALLET)
+                .build();
+
+        CardIssuance savedCard = cardIssuanceRepository.save(card);
     }
 
     @Override
