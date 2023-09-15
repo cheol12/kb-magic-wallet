@@ -65,15 +65,14 @@
                                             환전 신청 금액
                                         </div>
                                         <div class="col-2">
-                                            <select class="form-select color-dropdown">
+                                            <select class="form-select color-dropdown" name="currencyCode">
                                                 <option selected>통화선택</option>
-                                                <option >KRW</option>
-                                                <option >USD</option>
-                                                <option >JPY</option>
+                                                <option value="1">USD</option>
+                                                <option value="2">JPY</option>
                                             </select>
                                         </div>
                                         <div class="col-5">
-                                            <input type="number" class="form-control" placeholder="금액을 입력하세요">
+                                            <input type="number" class="form-control" placeholder="금액을 입력하세요" name="amount">
                                         </div>
                                         <div class="col-3">
                                             <button type="button" class="btn btn-outline-warning">환전 예상 금액 확인</button>
@@ -111,8 +110,11 @@
                                 <div class="card-body">
                                     <div class="row gx-3 gy-2 align-items-center">
                                         <div class="col-10">
-                                            <select class="form-select color-dropdown">
+                                            <select class="form-select color-dropdown" name="walletId">
                                                 <option selected>지갑을 선택하세요</option>
+                                                <c:forEach items="${walletList}" var="wallet" varStatus="loop">
+                                                    <option value="${wallet.walletId};${wallet.walletType}">${wallet.nickname}</option>
+                                                </c:forEach>
                                             </select>
                                         </div>
                                         <div class="col-2">
@@ -136,8 +138,11 @@
                                         수령희망지점
                                         <label class="form-label"></label>
                                         <div class="input-group input-group-merge">
-                                            <select id="#" class="form-select color-dropdown">
-                                                <option value="bg-primary" selected>국민은행 대치점</option>
+                                            <select id="#" class="form-select color-dropdown" name="bankId">
+                                                <option selected>수령 지점을 선택하세요</option>
+                                                <c:forEach items="${bankList}" var="bank" varStatus="loop">
+                                                <option value="${bank.bankId}">${bank.name}</option>
+                                                </c:forEach>
                                             </select>
                                         </div>
                                     </div>
@@ -150,7 +155,7 @@
                                         수령희망날짜
                                         <label class="form-label"></label>
                                         <div class="input-group input-group-merge">
-                                            <input class="form-control form-label" type="datetime-local" min="2023-09-16">
+                                            <input class="form-control form-label" type="datetime-local" min="2023-09-16" name="receiptDate">
                                         </div>
                                     </div>
 

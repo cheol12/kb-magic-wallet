@@ -63,10 +63,10 @@ public class ExchangeController {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         Long memberId = loggedIn.getMemberId();
         List<BankDto> bankList = exchangeService.bankList();
-        List<WalletDto> WalletList = exchangeService.WalletList(memberId);
+        List<WalletDto> walletList = exchangeService.WalletList(memberId);
 
         model.addAttribute("bankList", bankList);
-        model.addAttribute("WalletList", WalletList);
+        model.addAttribute("walletList", walletList);
         return "exchange/exchangeOfflineForm";
     }
 

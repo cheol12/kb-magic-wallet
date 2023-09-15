@@ -149,14 +149,11 @@ public class ExchangeServiceImpl implements ExchangeService {
     public int requestOfflineReceipt(OfflineReceiptDto offlineReceiptDto) {
 
         WalletType type = offlineReceiptDto.getWalletType();
+        Long walletId = offlineReceiptDto.getWalletId();
 
         // 선택한 지갑의 balance
-        Long balance = 0L;
-        if (type.equals(WalletType.PERSONAL_WALLET)) {
-            balance = selectedWalletBalance(offlineReceiptDto.getPersonalWalletId(), type);
-        } else if (type.equals(WalletType.GROUP_WALLET)) {
-            balance = selectedWalletBalance(offlineReceiptDto.getGroupWalletId(), type);
-        }
+        Long balance = selectedWalletBalance(walletId, type);
+
         // balance보다 높은 금액을 신청한 경우 예외 발생
         Long expectedAmount = expectedExchangeAmount(offlineReceiptDto.getCurrencyCode(), offlineReceiptDto.getAmount()).getExpectedAmount();
         if (expectedAmount > balance) throw new ExchangeException("잔액이 부족합니다.");
@@ -164,11 +161,11 @@ public class ExchangeServiceImpl implements ExchangeService {
         Bank bank = bankRepository.findById(offlineReceiptDto.getBankId()).orElseThrow(() -> new NoSuchElementException("은행 조회 실패"));
         GroupWallet groupWallet = new GroupWallet();
         PersonalWallet personalWallet = new PersonalWallet();
-        if (offlineReceiptDto.getGroupWalletId() != null) {
-            groupWallet = groupWalletRespository.findById(offlineReceiptDto.getGroupWalletId()).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
+        if (walletId != null) {
+            groupWallet = groupWalletRespository.findById(walletId).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         }
-        if (offlineReceiptDto.getPersonalWalletId() != null) {
-            personalWallet = personalWalletRepository.findById(offlineReceiptDto.getPersonalWalletId()).orElseThrow(() -> new NoSuchElementException("개인지갑 조회 실패"));
+        if (walletId != null) {
+            personalWallet = personalWalletRepository.findById(walletId).orElseThrow(() -> new NoSuchElementException("개인지갑 조회 실패"));
         }
         offlineReceiptRepository.save(
                 OfflineReceipt.builder()

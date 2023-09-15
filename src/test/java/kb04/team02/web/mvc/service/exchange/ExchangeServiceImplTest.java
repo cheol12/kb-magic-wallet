@@ -243,7 +243,7 @@ class ExchangeServiceImplTest {
                 .amount(1L)
                 .receiptState(ReceiptState.WAITING)
                 .bankId(bank1.getBankId())
-                .groupWalletId(groupWallet1.getGroupWalletId())
+                .walletId(groupWallet1.getGroupWalletId())
                 .walletType(WalletType.GROUP_WALLET).build();
 
         int res = exchangeService.requestOfflineReceipt(offlineReceiptDto);
@@ -255,7 +255,7 @@ class ExchangeServiceImplTest {
                 .amount(1L)
                 .receiptState(ReceiptState.WAITING)
                 .bankId(5L)
-                .personalWalletId(41L)
+                .walletId(41L)
                 .walletType(WalletType.PERSONAL_WALLET).build();
         int res2 = exchangeService.requestOfflineReceipt(offlineReceiptDto2);
         System.out.println(res2);
