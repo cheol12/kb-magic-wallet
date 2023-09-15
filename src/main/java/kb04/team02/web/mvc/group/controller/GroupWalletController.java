@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.group.controller;
 
+import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
@@ -32,22 +33,18 @@ public class GroupWalletController {
     @GetMapping("/")
     public String groupWalletIndex(Model model, HttpSession session) {
 
-        Member member = (Member) session.getAttribute("member_id");
-
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
 
         System.out.println("------------------------");
 //        Member member = memberRep.findById(1L).get();     // 테스트용 임시코드
-        System.out.println("--------------------------");
 
-        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(member);
-
-        member.setGroupWallets(gWalletList);
+        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(loginMemberDto);
 
         model.addAttribute("gWalletList", gWalletList);
 //        model.addAttribute("member", member);             // 테스트용 임시코드
 
 //        session.setAttribute("member", member);           // 테스트용 임시코드
-        System.out.println("member" + member);
+        System.out.println("loginMemberDto : " + loginMemberDto);
 
         return "group/groupIndex";
     }
@@ -62,15 +59,15 @@ public class GroupWalletController {
 	    // 뷰에서 입력한 별칭 필요
         // 멤버 컬럼 : memberid, id, password, name, address, phonenumber, email, insertDate, payPassword, bankaccount
 
-        Member member = (Member) session.getAttribute("member_id");
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
 
 //        Member member = memberRep.findById(1L).get();     // 테스트용 임시코드
 //        model.addAttribute("member", member);             // 테스트용 임시코드
 
-	    groupWalletService.createGroupWallet(member, nickname);
+        groupWalletService.createGroupWallet(loginMemberDto.getMemberId(), nickname);
 
-	    // 생성되었습니다 알림 띄우고 group-wallet으로 이동
-	    return "redirect:/group-wallet";		// "redirect:/"; 인가?
+        // 생성 실행 후 컨트롤러에서 /group-wallet/ 을 호출하는 메소드 실행
+        return "redirect:/group-wallet/";
     }
 
     /**

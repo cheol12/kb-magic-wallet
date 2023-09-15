@@ -4,6 +4,7 @@ import kb04.team02.web.mvc.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -40,4 +41,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
      * @return
      */
     Optional<Member> findByIdAndPassword(String id, String password);
+
+    // memberId로 Member 객체 불러오기
+    List<Member> findByMemberId(Long memberId);
+
 }

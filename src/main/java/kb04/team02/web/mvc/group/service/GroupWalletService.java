@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.group.service;
 
+import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.RuleDto;
@@ -20,7 +21,7 @@ public interface GroupWalletService {
      * API 명세서 ROWNUM:10
      * 나의 모든 모임지갑 목록 불러오기
      *
-     * @param member 세션에서 불러옴
+     * @param loginMemberDto 세션에서 불러옴
      * @return List<WalletDto>
      * <p>
      * * WalletDto
@@ -29,17 +30,17 @@ public interface GroupWalletService {
      * *  - 지갑 이름
      * *  - 지갑 구분
      */
-    List<GroupWallet> selectAllMyGroupWallet(Member member);
+    List<GroupWallet> selectAllMyGroupWallet(LoginMemberDto loginMemberDto);
 
 
     /**
      * 모임지갑 생성하기
      * API 명세서 ROWNUM:12
      *
-     * @param member,nickname 모임지갑 객체를 폼에 입력해서 생성
+     * @param memberId,nickname 모임지갑 객체를 폼에 입력해서 생성
      * @return int 1: OK 0:FAIL
      */
-    int createGroupWallet(Member member, String nickname);
+    int createGroupWallet(Long memberId, String nickname);
 
 
     /**
