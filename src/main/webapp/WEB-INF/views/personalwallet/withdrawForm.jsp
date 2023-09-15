@@ -31,10 +31,7 @@
                     <label for="amount" class="col-form-label">환불하실 금액</label>
                 </div>
                 <div class="col-auto" >
-
-                    <input type="text" id="amount" class="form-control" aria-describedby="passwordHelpInline">
-
-
+                    <input type="text" id="amount" class="form-control" aria-describedby="passwordHelpInline" name="amount">
                 </div>
 
             </div>

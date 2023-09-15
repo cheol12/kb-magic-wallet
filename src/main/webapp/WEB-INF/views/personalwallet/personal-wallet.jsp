@@ -28,9 +28,11 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">개인 지갑</h5>
+                            <br>
+                            <h5> 원화 ${walletDetailDto.balance.get("KRW")}₩ </h5>
                             <br><br>
                             <a href="/personalwallet/depositForm" class="btn btn-primary">채우기</a>
-                            <a href="/personalwallet/withdraw" class="btn btn-primary">꺼내기</a>
+                            <a href="/personalwallet/withdrawForm" class="btn btn-primary">꺼내기</a>
                         </div>
                     </div>
                 </div>
@@ -39,8 +41,8 @@
                         <div class="card-body">
                             <h5 class="card-title">외화별 잔액</h5>
                             <br>
-                            <h5 class="card-title">달러 ${walletDetailDto.getBalance().get("USD")}</h5>
-                            <h5 class="card-title">엔 ${walletDetailDto.getBalance().get("JPY")}</h5>
+                            <h5 class="card-title">달러 ${walletDetailDto.getBalance().get("USD")}$</h5>
+                            <h5 class="card-title">엔 ${walletDetailDto.getBalance().get("JPY")}￥</h5>
 
 
                         </div>
@@ -51,11 +53,11 @@
             <c:forEach var="list" items="${walletDetailDto.getList()}" varStatus="status">
                 <div class="card" style="margin-top: 5px;">
                     <div class="card-header">
-                            ${list.getAmount()}
+                        ${list.getDateTime()} ${list.getType()}
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">${list.getDetail()}</h5>
-
+                        <h5 class="card-title">${list.getAmount()}</h5>
+                        ${list.getDetail()}
                     </div>
                 </div>
             </c:forEach>
