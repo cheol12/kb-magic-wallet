@@ -49,7 +49,7 @@ public class MemberController {
      */
     @GetMapping("/register")
     public String registerForm() {
-        return "/member/register";
+        return "member/register";
     }
 
     /**
@@ -58,8 +58,9 @@ public class MemberController {
      * @return /로 이동
      */
     @PostMapping("/register")
-    public String register(@RequestBody MemberRegisterDto memberRegisterDto) {
-
+//    public String register(@RequestBody MemberRegisterDto memberRegisterDto) {
+    public String register(MemberRegisterDto memberRegisterDto) {
+        System.out.println("memberRegisterDto = " + memberRegisterDto);
         try {
             memberService.register(memberRegisterDto);
         } catch (RegisterException e) {
