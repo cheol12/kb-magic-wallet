@@ -105,7 +105,9 @@ public class ExchangeController {
      */
     @GetMapping("/online/form")
     public String exchangeOnlineForm(HttpSession session, Model model) {
-        List<WalletDto> walletList = exchangeService.WalletList(0L);
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        Long memberId = loggedIn.getMemberId();
+        List<WalletDto> walletList = exchangeService.WalletList(memberId);
         model.addAttribute("walletList", walletList);
         return "exchange/exchangeOnlineForm";
     }

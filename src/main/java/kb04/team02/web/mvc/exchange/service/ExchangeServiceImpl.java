@@ -100,7 +100,7 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     @Override
     public Long selectedWalletBalance(Long WalletId, WalletType walletType) {
-
+        // 원화 잔액
         Long balance = 0L;
 
         if (walletType.equals(WalletType.PERSONAL_WALLET)) {
