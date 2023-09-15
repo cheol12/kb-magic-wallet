@@ -31,7 +31,7 @@ public class MemberController {
             return "forward:/";
         }
 
-        return "index";
+        return "mypage/main";
     }
 
     /**
