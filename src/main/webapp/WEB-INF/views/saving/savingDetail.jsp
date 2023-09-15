@@ -34,11 +34,7 @@
                 <h5 class="card-title">혜택 : ${saving.getSavingComment()}</h5>
             </div>
         </div>
-
-
-
-        <button type="button" class="btnBasic">적금 신청</button>
-
+        <a href="${pageContext.request.contextPath}/saving/${saving.getSavingId()}/form" class="btn btn-primary">적금 신청</a>
     </div>
 
 </div>
