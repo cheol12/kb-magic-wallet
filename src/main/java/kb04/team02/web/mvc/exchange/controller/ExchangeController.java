@@ -1,11 +1,13 @@
 package kb04.team02.web.mvc.exchange.controller;
 
+import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.WalletDto;
 import kb04.team02.web.mvc.exchange.dto.BankDto;
 import kb04.team02.web.mvc.exchange.dto.ExchangeCalDto;
 import kb04.team02.web.mvc.exchange.dto.ExchangeDto;
 import kb04.team02.web.mvc.exchange.dto.OfflineReceiptDto;
+import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.member.entity.Role;
 import kb04.team02.web.mvc.common.entity.WalletType;
 import kb04.team02.web.mvc.exchange.exception.ExchangeException;
@@ -44,12 +46,11 @@ public class ExchangeController {
      */
     @GetMapping("/offline")
     public String exchangeOfflineIndex(HttpSession session, Model model) {
-        // session에서 모임지갑 seq, 개인지갑 seq 가져와야 함
-        // Map<Long, Role> groupWalletIdList
-        Map<Long, Role> map = new HashMap<>(); // getSession
-        Long personalWalletId = 0L; // getSession
-
-        exchangeService.offlineReceiptHistory(personalWalletId, map);
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        Map<Long, Role> map = loggedIn.getGroupWalletIdList();
+        Long personalWalletId = loggedIn.getPersonalWalletId();
+        List<OfflineReceiptDto> offlineExchangeHistoryList = exchangeService.offlineReceiptHistory(personalWalletId, map);
+        model.addAttribute("offlineExchangeHistoryList", offlineExchangeHistoryList);
         return "exchange/offlineExchange";
     }
 
@@ -59,10 +60,13 @@ public class ExchangeController {
      */
     @GetMapping("/offline/form")
     public String exchangeOfflineForm(HttpSession session, Model model) {
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        Long memberId = loggedIn.getMemberId();
         List<BankDto> bankList = exchangeService.bankList();
-        List<WalletDto> WalletList = exchangeService.WalletList(0L); // 지갑 리스트 - 전달인수 세션으로 수정할 것
+        List<WalletDto> WalletList = exchangeService.WalletList(memberId); // 지갑 리스트 - 전달인수 세션으로 수정할 것
 
         model.addAttribute("bankList", bankList);
+        model.addAttribute("WalletList", WalletList);
         return "exchange/exchangeOfflineForm";
     }
 
@@ -81,9 +85,10 @@ public class ExchangeController {
      * API 명세서 ROWNUM:45
      */
     @DeleteMapping("/offline/form")
-    public String exchangeOfflineCancel(Long receipt_id) {
-        int res = exchangeService.cancelOfflineReceipt(receipt_id);
-        return "redirect:/exchange/offline";
+    @ResponseBody
+    public String exchangeOfflineCancel(@RequestParam String offlineReceiptId) {
+        int res = exchangeService.cancelOfflineReceipt(Long.parseLong(offlineReceiptId));
+        return "success";
     }
 
     /**

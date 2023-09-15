@@ -80,7 +80,10 @@ public class ExchangeServiceImpl implements ExchangeService {
         // 개인 지갑
         List<WalletDto> pWalletList = new ArrayList<>();
         PersonalWallet pw = personalWalletRepository.findByMember(member);
-        pWalletList.add(WalletDto.toPersoanlDto(pw));
+        WalletDto pwDto = WalletDto.toPersoanlDto(pw);
+        pwDto.setNickname("개인 지갑");
+        pwDto.setWalletType(WalletType.PERSONAL_WALLET);
+        pWalletList.add(pwDto);
         // 모임 지갑
         List<GroupWallet> groupWallet = groupWalletRespository.findByMember(member);
         if (groupWallet != null) {
@@ -116,7 +119,6 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     @Override
     public List<OfflineReceiptDto> offlineReceiptHistory(Long personalWalletId, Map<Long, Role> map) {
-
         // 개인지갑 -> 환전 내역
         PersonalWallet personalWallet = personalWalletRepository.findById(personalWalletId).orElseThrow(() -> new NoSuchElementException("개인 지갑 조회 실패"));
         List<OfflineReceiptDto> pwReceiptHistory = offlineReceiptRepository.findAllByPersonalWallet(personalWallet).stream()
@@ -193,6 +195,10 @@ public class ExchangeServiceImpl implements ExchangeService {
     public int cancelOfflineReceipt(Long receipt_id) {
         OfflineReceipt offlineReceipt = offlineReceiptRepository.findById(receipt_id)
                 .orElseThrow(() -> new NoSuchElementException("오프라인 환전 내역 조회 실패"));
+
+        if(! offlineReceipt.getReceiptState().equals(ReceiptState.WAITING)){
+            throw new ExchangeException("취소할 수 없습니다.");
+        }
 
         offlineReceipt.setReceiptState(ReceiptState.CANCEL);
         return 1;
