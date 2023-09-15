@@ -34,7 +34,7 @@
                     <div style="margin-top: 5px">
                         <div class="card">
                             <div class="card-header">
-                                    ${list.getNickName()}
+                                    ${list.getNickname()}
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">원화 잔액 : ${list.getBalance()}</h5>
