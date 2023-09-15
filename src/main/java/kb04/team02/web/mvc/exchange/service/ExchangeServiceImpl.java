@@ -80,7 +80,10 @@ public class ExchangeServiceImpl implements ExchangeService {
         // 개인 지갑
         List<WalletDto> pWalletList = new ArrayList<>();
         PersonalWallet pw = personalWalletRepository.findByMember(member);
-        pWalletList.add(WalletDto.toPersoanlDto(pw));
+        WalletDto pwDto = WalletDto.toPersoanlDto(pw);
+        pwDto.setNickname("개인 지갑");
+        pwDto.setWalletType(WalletType.PERSONAL_WALLET);
+        pWalletList.add(pwDto);
         // 모임 지갑
         List<GroupWallet> groupWallet = groupWalletRespository.findByMember(member);
         if (groupWallet != null) {

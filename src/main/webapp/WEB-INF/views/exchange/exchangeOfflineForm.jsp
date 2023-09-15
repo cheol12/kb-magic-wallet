@@ -27,10 +27,11 @@
             </select><br><br>
 
             <label for="wallet">지갑 선택:</label>
-            <input type="radio" id="wallet1" name="wallet" value="wallet1" required>
-            <label for="wallet1">지갑 1</label>
-            <input type="radio" id="wallet2" name="wallet" value="wallet2" required>
-            <label for="wallet2">지갑 2</label>
+            <select id="wallet" name="wallet" required>
+                <c:forEach items="${WalletList}" var="wallet" varStatus="loop">
+                    <option value="">${wallet.nickname} : </option>
+                </c:forEach>
+            </select>
             <!-- 필요에 따라 지갑 옵션을 추가/수정할 수 있습니다. --><br><br>
 
             <label for="bank">은행 선택:</label>

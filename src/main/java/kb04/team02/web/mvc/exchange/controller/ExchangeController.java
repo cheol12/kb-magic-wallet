@@ -60,10 +60,13 @@ public class ExchangeController {
      */
     @GetMapping("/offline/form")
     public String exchangeOfflineForm(HttpSession session, Model model) {
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        Long memberId = loggedIn.getMemberId();
         List<BankDto> bankList = exchangeService.bankList();
-        List<WalletDto> WalletList = exchangeService.WalletList(0L); // 지갑 리스트 - 전달인수 세션으로 수정할 것
+        List<WalletDto> WalletList = exchangeService.WalletList(memberId); // 지갑 리스트 - 전달인수 세션으로 수정할 것
 
         model.addAttribute("bankList", bankList);
+        model.addAttribute("WalletList", WalletList);
         return "exchange/exchangeOfflineForm";
     }
 
