@@ -95,6 +95,13 @@
             <version>2.15.2</version>
         </dependency>
         <!--jackson dependency END-->
+
+        <!-- Spring AOP dependency START -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <!-- Spring AOP dependency START -->
     </dependencies>
 
     <build>
