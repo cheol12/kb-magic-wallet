@@ -1,41 +1,43 @@
 package kb04.team02.web.mvc.service.exchange;
 
-import kb04.team02.web.mvc.domain.bank.Bank;
-import kb04.team02.web.mvc.domain.bank.OfflineReceipt;
-import kb04.team02.web.mvc.domain.bank.ReceiptState;
-import kb04.team02.web.mvc.domain.common.CurrencyCode;
-import kb04.team02.web.mvc.domain.member.Address;
-import kb04.team02.web.mvc.domain.member.Member;
-import kb04.team02.web.mvc.domain.member.Role;
-import kb04.team02.web.mvc.domain.wallet.common.WalletType;
-import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
-import kb04.team02.web.mvc.domain.wallet.personal.PersonalWallet;
-import kb04.team02.web.mvc.dto.*;
-import kb04.team02.web.mvc.repository.bank.BankRepository;
-import kb04.team02.web.mvc.repository.bank.OfflineReceiptRepository;
-import kb04.team02.web.mvc.repository.member.MemberRepository;
-import kb04.team02.web.mvc.repository.wallet.group.GroupWalletRespository;
-import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletRepository;
-import org.junit.jupiter.api.AfterEach;
+import kb04.team02.web.mvc.exchange.dto.WalletDto;
+import kb04.team02.web.mvc.exchange.dto.BankDto;
+import kb04.team02.web.mvc.exchange.dto.ExchangeDto;
+import kb04.team02.web.mvc.exchange.dto.OfflineReceiptDto;
+import kb04.team02.web.mvc.exchange.entity.Bank;
+import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
+import kb04.team02.web.mvc.exchange.entity.ReceiptState;
+import kb04.team02.web.mvc.common.entity.CurrencyCode;
+import kb04.team02.web.mvc.exchange.service.ExchangeService;
+import kb04.team02.web.mvc.member.entity.Address;
+import kb04.team02.web.mvc.member.entity.Member;
+import kb04.team02.web.mvc.member.entity.Role;
+import kb04.team02.web.mvc.common.entity.WalletType;
+import kb04.team02.web.mvc.group.entity.GroupWallet;
+import kb04.team02.web.mvc.personal.entity.PersonalWallet;
+import kb04.team02.web.mvc.exchange.repository.BankRepository;
+import kb04.team02.web.mvc.exchange.repository.OfflineReceiptRepository;
+import kb04.team02.web.mvc.member.repository.MemberRepository;
+import kb04.team02.web.mvc.group.repository.GroupWalletRespository;
+import kb04.team02.web.mvc.personal.entity.PersonalWalletForeignCurrencyBalance;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletForeignCurrencyBalanceRepository;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Commit
+@Rollback
 class ExchangeServiceImplTest {
 
     @Autowired
@@ -50,6 +52,8 @@ class ExchangeServiceImplTest {
     private GroupWalletRespository groupWalletRespository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private PersonalWalletForeignCurrencyBalanceRepository personalForeignCurrencyBalanceRepository;
 
 /*    @AfterEach
     public void afterEach() {
@@ -66,19 +70,19 @@ class ExchangeServiceImplTest {
     void bankList() {
         bankRepository.save(Bank.builder()
                 .name("국민은행")
-                .address(new Address("서울시 강남구", "삼성로 406","06185"))
+                .address(new Address("서울시 강남구", "삼성로 406", "06185"))
                 .build());
         bankRepository.save(Bank.builder()
                 .name("국민은행")
-                .address(new Address("서울시 강남구", "삼성로 407","06185"))
+                .address(new Address("서울시 강남구", "삼성로 407", "06185"))
                 .build());
         bankRepository.save(Bank.builder()
                 .name("국민은행")
-                .address(new Address("서울시 강남구", "삼성로 408","06185"))
+                .address(new Address("서울시 강남구", "삼성로 408", "06185"))
                 .build());
         bankRepository.save(Bank.builder()
                 .name("국민은행")
-                .address(new Address("서울시 강남구", "삼성로 409","06185"))
+                .address(new Address("서울시 강남구", "삼성로 409", "06185"))
                 .build());
 
         List<BankDto> bankDtoList = exchangeService.bankList();
@@ -130,8 +134,42 @@ class ExchangeServiceImplTest {
     @Test
     @DisplayName("walletBalance")
     void selectedWalletBalance() {
-        System.out.println(exchangeService.selectedWalletBalance(141L, WalletType.GROUP_WALLET));
-        System.out.println(exchangeService.selectedWalletBalance(41L, WalletType.PERSONAL_WALLET));
+
+        Address address = new Address("서울특별시", "국회대로54길 10", "07246");
+        Member member1 = Member.builder()
+                .id("qwer")
+                .password("qwer")
+                .name("김진형")
+                .address(address)
+                .phoneNumber("010-1111-1111")
+                .email("qwer@example.com")
+                .payPassword("qwer")
+                .bankAccount("111-111-111111")
+                .build();
+
+        memberRepository.save(member1);
+
+        PersonalWallet personalWallet1 = PersonalWallet.builder().balance(1000000L).member(member1).build();
+
+        personalWalletRepository.save(personalWallet1);
+
+        GroupWallet groupWallet1 = GroupWallet.builder()
+                .nickname("모임지갑 1")
+                .balance(100000L) // 초기 잔액 설정
+                .dueCondition(false)
+                .dueAccumulation(0L)
+                .dueDate(0)
+                .due(0L)
+                .member(member1)
+                .build();
+
+        groupWalletRespository.save(groupWallet1);
+
+        assertThat(exchangeService.selectedWalletBalance(groupWallet1.getGroupWalletId(), WalletType.GROUP_WALLET))
+                .isEqualTo(groupWallet1.getBalance());
+        assertThat(exchangeService.selectedWalletBalance(personalWallet1.getPersonalWalletId(), WalletType.PERSONAL_WALLET))
+                .isEqualTo(personalWallet1.getBalance());
+
     }
 
     @Test
@@ -142,9 +180,9 @@ class ExchangeServiceImplTest {
         map.put(140L, Role.GENERAL);
         List<OfflineReceiptDto> list = exchangeService.offlineReceiptHistory(41L, map);
         System.out.println("=========================================");
-        for(OfflineReceiptDto o : list){
+        for (OfflineReceiptDto o : list) {
             System.out.println("지갑 타입: " + o.getWalletType());
-            System.out.println("환전 내역: " +o.getAmount());
+            System.out.println("환전 내역: " + o.getAmount());
             System.out.println("은행: " + o.getBankName());
         }
     }
@@ -152,14 +190,62 @@ class ExchangeServiceImplTest {
     @Test
     @DisplayName("requestOfflineReceipt")
     void requestOfflineReceipt() {
+
+        Address address = new Address("서울특별시", "국회대로54길 10", "07246");
+        Member member1 = Member.builder()
+                .id("qwer")
+                .password("qwer")
+                .name("김진형")
+                .address(address)
+                .phoneNumber("010-1111-1111")
+                .email("qwer@example.com")
+                .payPassword("qwer")
+                .bankAccount("111-111-111111")
+                .build();
+
+        memberRepository.save(member1);
+
+        PersonalWallet personalWallet1 = PersonalWallet.builder().balance(1000000L).member(member1).build();
+        personalWalletRepository.save(personalWallet1);
+
+
+        GroupWallet groupWallet1 = GroupWallet.builder()
+                .nickname("모임지갑 1")
+                .balance(100000L) // 초기 잔액 설정
+                .dueCondition(false)
+                .dueAccumulation(0L)
+                .dueDate(0)
+                .due(0L)
+                .member(member1)
+                .build();
+
+        groupWalletRespository.save(groupWallet1);
+        Address bankAddr1 = new Address("서울특별시", "어쩌구저쩌구1길 99", "11111");
+
+        Bank bank1 = bankRepository.save(Bank.builder()
+                .name("국민은행 시청점")
+                .address(bankAddr1)
+                .build());
+
+
+        offlineReceiptRepository.save(OfflineReceipt.builder()
+                .currencyCode(CurrencyCode.USD)
+                .amount(500L)
+                .receiptState(ReceiptState.WAITING)
+                .bank(bank1)
+                .personalWallet(null)
+                .groupWallet(groupWallet1)
+                .build());
+
         OfflineReceiptDto offlineReceiptDto = OfflineReceiptDto.builder()
                 .receiptDate(LocalDateTime.now())
                 .currencyCode(CurrencyCode.USD)
                 .amount(1L)
                 .receiptState(ReceiptState.WAITING)
-                .bankId(5L)
-                .groupWalletId(141L)
+                .bankId(bank1.getBankId())
+                .groupWalletId(groupWallet1.getGroupWalletId())
                 .walletType(WalletType.GROUP_WALLET).build();
+
         int res = exchangeService.requestOfflineReceipt(offlineReceiptDto);
         System.out.println(res);
 
@@ -179,17 +265,112 @@ class ExchangeServiceImplTest {
     @Test
     @DisplayName("cancelOfflineReceipt")
     void cancelOfflineReceipt() {
-        int res = exchangeService.cancelOfflineReceipt(121L);
+        Address address = new Address("서울특별시", "국회대로54길 10", "07246");
+        Member member1 = Member.builder()
+                .id("qwer")
+                .password("qwer")
+                .name("김진형")
+                .address(address)
+                .phoneNumber("010-1111-1111")
+                .email("qwer@example.com")
+                .payPassword("qwer")
+                .bankAccount("111-111-111111")
+                .build();
+
+        memberRepository.save(member1);
+
+        PersonalWallet personalWallet1 = PersonalWallet.builder().balance(1000000L).member(member1).build();
+        personalWalletRepository.save(personalWallet1);
+
+
+        GroupWallet groupWallet1 = GroupWallet.builder()
+                .nickname("모임지갑 1")
+                .balance(100000L) // 초기 잔액 설정
+                .dueCondition(false)
+                .dueAccumulation(0L)
+                .dueDate(0)
+                .due(0L)
+                .member(member1)
+                .build();
+
+        groupWalletRespository.save(groupWallet1);
+        Address bankAddr1 = new Address("서울특별시", "어쩌구저쩌구1길 99", "11111");
+
+        Bank bank1 = bankRepository.save(Bank.builder()
+                .name("국민은행 시청점")
+                .address(bankAddr1)
+                .build());
+        OfflineReceipt offlineReceipt = offlineReceiptRepository.save(OfflineReceipt.builder()
+                .currencyCode(CurrencyCode.USD)
+                .amount(500L)
+                .receiptState(ReceiptState.WAITING)
+                .bank(bank1)
+                .personalWallet(null)
+                .groupWallet(groupWallet1)
+                .build());
+        int res = exchangeService.cancelOfflineReceipt(offlineReceipt.getOfflineReceiptId());
         System.out.println(res);
     }
 
     @Test
     @DisplayName("requestExchangeOnline")
     void requestExchangeOnline() {
+        Address address = new Address("서울특별시", "국회대로54길 10", "07246");
+        Member member1 = Member.builder()
+                .id("qwer")
+                .password("qwer")
+                .name("김진형")
+                .address(address)
+                .phoneNumber("010-1111-1111")
+                .email("qwer@example.com")
+                .payPassword("qwer")
+                .bankAccount("111-111-111111")
+                .build();
+
+        memberRepository.save(member1);
+
+        PersonalWallet personalWallet1 = PersonalWallet.builder().balance(1000000L).member(member1).build();
+        personalWalletRepository.save(personalWallet1);
+
+
+        GroupWallet groupWallet1 = GroupWallet.builder()
+                .nickname("모임지갑 1")
+                .balance(100000L) // 초기 잔액 설정
+                .dueCondition(false)
+                .dueAccumulation(0L)
+                .dueDate(0)
+                .due(0L)
+                .member(member1)
+                .build();
+
+        groupWalletRespository.save(groupWallet1);
+        Address bankAddr1 = new Address("서울특별시", "어쩌구저쩌구1길 99", "11111");
+
+        Bank bank1 = bankRepository.save(Bank.builder()
+                .name("국민은행 시청점")
+                .address(bankAddr1)
+                .build());
+
+
+        offlineReceiptRepository.save(OfflineReceipt.builder()
+                .currencyCode(CurrencyCode.USD)
+                .amount(500L)
+                .receiptState(ReceiptState.WAITING)
+                .bank(bank1)
+                .personalWallet(null)
+                .groupWallet(groupWallet1)
+                .build());
+
+        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
+                .currencyCode(CurrencyCode.USD)
+                .balance(100L)
+                .personalWallet(personalWallet1)
+                .build());
+
         ExchangeDto dto = new ExchangeDto();
-       dto.setBuyAmount(1L);
+        dto.setBuyAmount(1L);
         dto.setBuyCurrencyCode(CurrencyCode.USD);
-        dto.setWalletId(41L);
+        dto.setWalletId(personalWallet1.getPersonalWalletId());
         dto.setWalletType(WalletType.PERSONAL_WALLET);
 
         int res = exchangeService.requestExchangeOnline(dto);

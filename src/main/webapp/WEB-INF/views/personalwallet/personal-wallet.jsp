@@ -12,6 +12,9 @@
     <title>깨비의 요술 지갑 - 개인지갑</title>
 
     <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 
 </head>
 <body>
@@ -20,40 +23,46 @@
     <div class="pageWrap">
 
         <div class="center">
-
-            <div class="walletCard">
-                <div class="walletForm">
-                    <span class="walletName">개인 지갑</span>
-                    <button class="walletFormBtn" onclick="location.href='/personal-wallet/deposit'">채우기</button>
-                    <button class="walletFormBtn" onclick="location.href='/personal-wallet/withdraw'">꺼내기</button>
-                </div>
-                <div class="walletBalance">
-                    <span>통화별 잔액</span>
-                    <span><%--${walletDetailDto.balance("won")}--%>원</span>
-                    <span><%--${walletDetailDto.balance("doller")}--%>달러</span>
-                    <span><%--${walletDetailDto.balance("en")}--%>엔</span>
-                </div>
-
-
-            </div>
-
-            <div class="walletUsingList">
-                <div class="walletUsingHistory">
-                    <span><%--${list.dateTime}--%>날짜</span><br>
-                    <span><%--${list.detail}--%>결제처</span><br>
-                    <span><%--${list.type}--%>구분</span><br>
-                    <span><%--${list.balance}--%>금액</span><br>
-                </div>
-<%--
-                <c:forEach var="list" items="${walletDetailDto.list}" varStatus="status">
-                    <div class="walletUsingHistory">
-                        <span>&lt;%&ndash;${list.dateTime}&ndash;%&gt;날짜</span><br>
-                        <span>&lt;%&ndash;${list.detail}&ndash;%&gt;결제처</span><br>
-                        <span>&lt;%&ndash;${list.type}&ndash;%&gt;구분</span><br>
-                        <span>&lt;%&ndash;${list.balance}&ndash;%&gt;금액</span><br>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">개인 지갑</h5>
+                            <br><br>
+                            <a href="/personalwallet/depositForm" class="btn btn-primary">채우기</a>
+                            <a href="/personalwallet/withdraw" class="btn btn-primary">꺼내기</a>
+                        </div>
                     </div>
-                </c:forEach>--%>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">외화별 잔액</h5>
+                            <br>
+                            <h5 class="card-title">달러 ${walletDetailDto.getBalance().get("USD")}</h5>
+                            <h5 class="card-title">엔 ${walletDetailDto.getBalance().get("JPY")}</h5>
+
+
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <c:forEach var="list" items="${walletDetailDto.getList()}" varStatus="status">
+                <div class="card" style="margin-top: 5px;">
+                    <div class="card-header">
+                            ${list.getAmount()}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">${list.getDetail()}</h5>
+
+                    </div>
+                </div>
+            </c:forEach>
+
+
+
+
         </div>
 
 

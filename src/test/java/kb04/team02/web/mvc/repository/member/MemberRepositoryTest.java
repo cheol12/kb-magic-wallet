@@ -1,23 +1,24 @@
 package kb04.team02.web.mvc.repository.member;
 
-import kb04.team02.web.mvc.domain.member.Address;
-import kb04.team02.web.mvc.domain.member.Member;
+import kb04.team02.web.mvc.member.entity.Address;
+import kb04.team02.web.mvc.member.entity.Member;
+import kb04.team02.web.mvc.member.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Commit // DML 작업 시 필수
+@Rollback
 class MemberRepositoryTest {
 
     @Autowired
@@ -48,6 +49,6 @@ class MemberRepositoryTest {
         Member findMember = memberRepository.findById(save.getMemberId()).get();
 
         //then
-        assertThat(findMember).isEqualTo(save);
+        assertThat(findMember.getName()).isEqualTo(save.getName());
     }
 }

@@ -1,18 +1,20 @@
 package kb04.team02.web.mvc.repository.wallet.group;
 
-import kb04.team02.web.mvc.domain.common.CurrencyCode;
-import kb04.team02.web.mvc.domain.member.Address;
-import kb04.team02.web.mvc.domain.member.Member;
-import kb04.team02.web.mvc.domain.wallet.group.GroupWallet;
-import kb04.team02.web.mvc.domain.wallet.group.GroupWalletForeignCurrencyBalance;
-import kb04.team02.web.mvc.repository.member.MemberRepository;
-import org.aspectj.lang.annotation.After;
+import kb04.team02.web.mvc.common.entity.CurrencyCode;
+import kb04.team02.web.mvc.group.repository.GroupWalletForeignCurrencyBalanceRepository;
+import kb04.team02.web.mvc.group.repository.GroupWalletRespository;
+import kb04.team02.web.mvc.member.entity.Address;
+import kb04.team02.web.mvc.member.entity.Member;
+import kb04.team02.web.mvc.group.entity.GroupWallet;
+import kb04.team02.web.mvc.group.entity.GroupWalletForeignCurrencyBalance;
+import kb04.team02.web.mvc.member.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 
@@ -20,7 +22,7 @@ import java.util.List;
 
 @SpringBootTest
 @Transactional
-@Commit
+@Rollback
 class GroupWalletForeignCurrencyBalanceRepositoryTest {
 
     @Autowired

@@ -1,43 +1,44 @@
 package kb04.team02.web.mvc.service.groupwallet;
 
-import kb04.team02.web.mvc.domain.card.CardIssuance;
-import kb04.team02.web.mvc.domain.card.CardState;
-import kb04.team02.web.mvc.domain.common.CurrencyCode;
-import kb04.team02.web.mvc.domain.member.Address;
-import kb04.team02.web.mvc.domain.member.Member;
-import kb04.team02.web.mvc.domain.member.Role;
-import kb04.team02.web.mvc.domain.saving.InstallmentSaving;
-import kb04.team02.web.mvc.domain.saving.Saving;
-import kb04.team02.web.mvc.domain.wallet.common.*;
-import kb04.team02.web.mvc.domain.wallet.group.*;
-import kb04.team02.web.mvc.dto.*;
-import kb04.team02.web.mvc.repository.card.CardIssuanceRepository;
-import kb04.team02.web.mvc.repository.member.MemberRepository;
-import kb04.team02.web.mvc.repository.saving.InstallmentSavingRepository;
-import kb04.team02.web.mvc.repository.saving.SavingRepository;
-import kb04.team02.web.mvc.repository.wallet.group.*;
-import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletForeignCurrencyBalanceRepository;
-import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletRepository;
-import kb04.team02.web.mvc.repository.wallet.personal.PersonalWalletTransferRepository;
+import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
+import kb04.team02.web.mvc.common.entity.*;
+import kb04.team02.web.mvc.exchange.dto.RuleDto;
+import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
+import kb04.team02.web.mvc.group.dto.GroupMemberDto;
+import kb04.team02.web.mvc.group.dto.InstallmentDto;
+import kb04.team02.web.mvc.group.entity.*;
+import kb04.team02.web.mvc.group.repository.*;
+import kb04.team02.web.mvc.group.service.GroupWalletTabService;
+import kb04.team02.web.mvc.mypage.entity.CardIssuance;
+import kb04.team02.web.mvc.mypage.entity.CardState;
+import kb04.team02.web.mvc.member.entity.Address;
+import kb04.team02.web.mvc.member.entity.Member;
+import kb04.team02.web.mvc.member.entity.Role;
+import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
+import kb04.team02.web.mvc.saving.entity.Saving;
+import kb04.team02.web.mvc.mypage.repository.CardIssuanceRepository;
+import kb04.team02.web.mvc.member.repository.MemberRepository;
+import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
+import kb04.team02.web.mvc.saving.repository.SavingRepository;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletForeignCurrencyBalanceRepository;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
+import kb04.team02.web.mvc.personal.repository.PersonalWalletTransferRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Commit
+@Rollback
 class GroupWalletTabServiceImplTest {
 
     @Autowired
