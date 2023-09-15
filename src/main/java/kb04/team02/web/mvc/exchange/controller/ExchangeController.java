@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.exchange.controller;
 
+import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.WalletDto;
 import kb04.team02.web.mvc.exchange.dto.BankDto;
@@ -44,12 +45,11 @@ public class ExchangeController {
      */
     @GetMapping("/offline")
     public String exchangeOfflineIndex(HttpSession session, Model model) {
-        // session에서 모임지갑 seq, 개인지갑 seq 가져와야 함
-        // Map<Long, Role> groupWalletIdList
-        Map<Long, Role> map = new HashMap<>(); // getSession
-        Long personalWalletId = 0L; // getSession
-
-        exchangeService.offlineReceiptHistory(personalWalletId, map);
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        Map<Long, Role> map = loggedIn.getGroupWalletIdList();
+        Long personalWalletId = loggedIn.getPersonalWalletId();
+        List<OfflineReceiptDto> offlineExchangeHistoryList = exchangeService.offlineReceiptHistory(personalWalletId, map);
+        model.addAttribute("offlineExchangeHistoryList", offlineExchangeHistoryList);
         return "exchange/offlineExchange";
     }
 

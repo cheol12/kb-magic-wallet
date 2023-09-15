@@ -116,7 +116,6 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     @Override
     public List<OfflineReceiptDto> offlineReceiptHistory(Long personalWalletId, Map<Long, Role> map) {
-
         // 개인지갑 -> 환전 내역
         PersonalWallet personalWallet = personalWalletRepository.findById(personalWalletId).orElseThrow(() -> new NoSuchElementException("개인 지갑 조회 실패"));
         List<OfflineReceiptDto> pwReceiptHistory = offlineReceiptRepository.findAllByPersonalWallet(personalWallet).stream()
