@@ -102,6 +102,13 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
         <!-- Spring AOP dependency START -->
+
+        <!-- logging dependency START -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <!-- logging dependency END -->
     </dependencies>
 
     <build>
