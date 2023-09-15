@@ -7,6 +7,7 @@ import kb04.team02.web.mvc.exchange.dto.BankDto;
 import kb04.team02.web.mvc.exchange.dto.ExchangeCalDto;
 import kb04.team02.web.mvc.exchange.dto.ExchangeDto;
 import kb04.team02.web.mvc.exchange.dto.OfflineReceiptDto;
+import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.member.entity.Role;
 import kb04.team02.web.mvc.common.entity.WalletType;
 import kb04.team02.web.mvc.exchange.exception.ExchangeException;
@@ -81,9 +82,10 @@ public class ExchangeController {
      * API 명세서 ROWNUM:45
      */
     @DeleteMapping("/offline/form")
-    public String exchangeOfflineCancel(Long receipt_id) {
-        int res = exchangeService.cancelOfflineReceipt(receipt_id);
-        return "redirect:/exchange/offline";
+    @ResponseBody
+    public String exchangeOfflineCancel(@RequestParam String offlineReceiptId) {
+        int res = exchangeService.cancelOfflineReceipt(Long.parseLong(offlineReceiptId));
+        return "success";
     }
 
     /**

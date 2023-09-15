@@ -193,6 +193,10 @@ public class ExchangeServiceImpl implements ExchangeService {
         OfflineReceipt offlineReceipt = offlineReceiptRepository.findById(receipt_id)
                 .orElseThrow(() -> new NoSuchElementException("오프라인 환전 내역 조회 실패"));
 
+        if(! offlineReceipt.getReceiptState().equals(ReceiptState.WAITING)){
+            throw new ExchangeException("취소할 수 없습니다.");
+        }
+
         offlineReceipt.setReceiptState(ReceiptState.CANCEL);
         return 1;
     }

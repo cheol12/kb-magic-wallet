@@ -32,14 +32,14 @@
         </tr>
         <c:forEach items="${offlineExchangeHistoryList}" var="receipt" varStatus="loop">
             <tr>
-                <td>${receipt.offlineReceiptId}</td>
+                <td id="reciptId${loop.index + 1}">${receipt.offlineReceiptId}</td>
                 <td>${receipt.receiptDate}</td>
                 <td>${receipt.currencyCode}</td>
                 <td>${receipt.address.city}</td>
                 <td>${receipt.bankName}</td>
                 <td>${receipt.receiptState}</td>
                 <td>
-                    <button id="cancelBtn${loop.index + 1}">취소</button>
+                    <button onclick="cancelEvent(${loop.index + 1});" id="cancelBtn${loop.index + 1}">취소</button>
                 </td>
             </tr>
         </c:forEach>
@@ -50,32 +50,31 @@
 <footer></footer>
 
 <script>
-    $(document).ready(function () {
-        $("#cancelBtn").click(function () {
-            // 보낼 데이터를 객체로 생성
-            var dataToSend = {
-                offlineReceiptId: 'value1',
-                receiptState: 'value2',
-                // 원하는 데이터 추가 가능
-            };
 
-            // AJAX POST 요청
-            $.ajax({
-                type: "${pageContext.request.contextPath}/group-wallet/new",
-                url: "your_server_url_here", // 실제 서버 URL로 변경
-                data: dataToSend,
-                dataType: "json", // 예상되는 응답 형식(JSON 등)
-                success: function (response) {
-                    // 성공 시 실행할 코드
-                    console.log("성공: " + response);
-                },
-                error: function (error) {
-                    // 오류 발생 시 실행할 코드
-                    console.error("오류: " + error);
-                }
-            });
+    let cancelEvent = (rowIndex) => {
+        console.log("ck")
+        // 추출한 값을 사용하여 데이터 생성 (예: JSON 형식)
+        var receiptId = $("#reciptId" + rowIndex).text();
+
+        // AJAX POST 요청
+        $.ajax({
+            type: "delete",
+            url: "${pageContext.request.contextPath}/exchange/offline/form", // 실제 서버 URL로 변경
+            data: {offlineReceiptId: receiptId},
+            dataType: "text", // 예상되는 응답 형식(JSON 등)
+            success: function (response) {
+                // 성공 시 실행할 코드
+                alert("성공")
+                location.reload();
+            },
+            error: function (error) {
+                // 오류 발생 시 실행할 코드
+                console.error("오류: " + error);
+            }
         });
-    });
+    }
+
 </script>
+
 </body>
 </html>
