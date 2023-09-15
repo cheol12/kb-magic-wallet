@@ -10,43 +10,167 @@
 <html>
 <head>
     <title>깨비의 요술 지갑 - 환전</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="../../../assets/vendor/fonts/boxicons.css"/>
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../../../assets/vendor/css/core.css" class="template-customizer-core-css"/>
+    <link rel="stylesheet" href="../../../assets/vendor/css/theme-default.css" class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="../../../assets/css/demo.css"/>
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="../../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"/>
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="../../../assets/vendor/js/helpers.js"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="../../../assets/js/config.js"></script>
 </head>
 <body>
-    오프라인 수령 폼
-    <div>
-        <form action="${pageContext.request.contextPath}/offline/form" method="post">
-            <label for="amount">환전신청금액:</label>
-            <input type="text" id="amount" name="amount" required><br><br>
+<jsp:include page="../common/navbar.jsp"></jsp:include>
+오프라인 수령 폼
+<body>
+<div class="pageWrap">
+    <div class="center">
 
-            <label for="currency">통화 선택:</label>
-            <select id="currency" name="currency" required>
-                <option value="USD">미국 달러 (USD)</option>
-                <option value="EUR">유로 (EUR)</option>
-                <option value="JPY">일본 엔 (JPY)</option>
-                <!-- 원하는 통화를 추가할 수 있습니다. -->
-            </select><br><br>
+        <div class="content-wrapper">
+            <!-- Content -->
+            <div class="container-xxl flex-grow-1 container-p-y">
+                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">환전/</span>오프라인</h4>
+                <!-- Basic Layout -->
+                <form>
+                    <div class="row">
+                        <div class="row align-items-start">
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">환전 정보</h5>
+                                    <small class="text-muted float-end"></small>
+                                </div>
+                                <div class="card-body">
 
-            <label for="wallet">지갑 선택:</label>
-            <select id="wallet" name="wallet" required>
-                <c:forEach items="${WalletList}" var="wallet" varStatus="loop">
-                    <option value="">${wallet.nickname} : </option>
-                </c:forEach>
-            </select>
-            <!-- 필요에 따라 지갑 옵션을 추가/수정할 수 있습니다. --><br><br>
+                                    <div class="row gx-3 gy-2 align-items-center">
+                                        <div class="col-2">
+                                            환전 신청 금액
+                                        </div>
+                                        <div class="col-2">
+                                            <select class="form-select color-dropdown" name="currencyCode">
+                                                <option selected>통화선택</option>
+                                                <option value="1">USD</option>
+                                                <option value="2">JPY</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-5">
+                                            <input type="number" class="form-control" placeholder="금액을 입력하세요" name="amount">
+                                        </div>
+                                        <div class="col-3">
+                                            <button type="button" class="btn btn-outline-warning">환전 예상 금액 확인</button>
+                                        </div>
+                                        <div id="">
+                                            <label class="form-label">출금금액</label>
+                                            <input type="text" class="form-control" placeholder="" readonly/>
 
-            <label for="bank">은행 선택:</label>
-            <select id="bank" name="bank" required>
-                <option value="bank1">은행 1</option>
-                <option value="bank2">은행 2</option>
-                <option value="bank3">은행 3</option>
-                <!-- 원하는 은행을 추가할 수 있습니다. -->
-            </select><br><br>
+                                            <label class="form-label">현재 고시 환율</label>
+                                            <input type="text" class="form-control" placeholder="" readonly/>
 
-            <label for="date">환전날짜 선택:</label>
-            <input type="date" id="date" name="date" required><br><br>
+                                            <label class="form-label">적용 환율</label>
+                                            <input type="text" class="form-control" placeholder="" readonly/>
+                                        </div>
+                                        <div class="col-2">
+                                            환전 사유
+                                        </div>
+                                        <div class="col-10">
+                                            <select class="form-select color-dropdown">
+                                                <option selected>관광, 친지방문 등 일반 해외경비</option>
+                                            </select>
+                                        </div>
 
-            <input type="submit" value="신청">
-        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center">
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">출금 지갑 선택</h5>
+                                    <small class="text-muted float-end"></small>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row gx-3 gy-2 align-items-center">
+                                        <div class="col-10">
+                                            <select class="form-select color-dropdown" name="walletId">
+                                                <option selected>지갑을 선택하세요</option>
+                                                <c:forEach items="${walletList}" var="wallet" varStatus="loop">
+                                                    <option value="${wallet.walletId};${wallet.walletType}">${wallet.nickname}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                        <div class="col-2">
+                                            <button type="button" class="btn btn-outline-warning">지갑 잔액 확인</button>
+                                        </div>
+                                        <div id="##">
+                                            <label class="form-label">지갑잔액</label>
+                                            <input type="text" class="form-control" placeholder="지갑 잔액을 확인하세요" readonly/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-end">
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">수령 정보</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        수령희망지점
+                                        <label class="form-label"></label>
+                                        <div class="input-group input-group-merge">
+                                            <select id="#" class="form-select color-dropdown" name="bankId">
+                                                <option selected>수령 지점을 선택하세요</option>
+                                                <c:forEach items="${bankList}" var="bank" varStatus="loop">
+                                                <option value="${bank.bankId}">${bank.name}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        은행 위치 마크
+                                    </div>
+
+                                    <div class="mb-3">
+                                        수령희망날짜
+                                        <label class="form-label"></label>
+                                        <div class="input-group input-group-merge">
+                                            <input class="form-control form-label" type="datetime-local" min="2023-09-16" name="receiptDate">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <button type="submit" class="btn btn-primary">수령 신청</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- / Content -->
+
     </div>
+</div>
+</div>
 </body>
 </html>
