@@ -35,7 +35,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">금리 : ${saving.getInterestRate()}</h5>
                                 <h5 class="card-title">최대 한도 : ${saving.getAmountLimit()}</h5>
-                                <a href="#" class="btn btn-primary">상세보기</a>
+                                <a href="${pageContext.request.contextPath}/saving/${saving.getSavingId()}" class="btn btn-primary">상세보기</a>
                             </div>
                         </div>
                     </div>

@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: jiwon
@@ -17,14 +18,23 @@
 <nav class="navbar">
     <div class="navbar-container container">
         <ul class="menu-items">
-            <li><a href="${pageContext.request.contextPath}/personalwallet/main">개인 지갑</a></li>
-            <li><a href="${pageContext.request.contextPath}/group-wallet/">모임 지갑</a></li>
-            <li><a href="${pageContext.request.contextPath}/exchange/">환전</a></li>
-            <li><a href="${pageContext.request.contextPath}/saving/">적금</a></li>
-            <li><a href="${pageContext.request.contextPath}/">마이페이지</a></li>
-            <li><a href="${pageContext.request.contextPath}/register">회원가입</a></li>
-            <li><a href="${pageContext.request.contextPath}/">로그아웃</a></li>
+            <c:if test="${empty sessionScope.member}">
+
+
+                <li><a href="${pageContext.request.contextPath}/register">회원가입</a></li>
+
+            </c:if>
+
+            <c:if test="${not empty sessionScope.member}">
+                <li><a href="${pageContext.request.contextPath}/personalwallet/main">개인 지갑</a></li>
+                <li><a href="${pageContext.request.contextPath}/group-wallet/">모임 지갑</a></li>
+                <li><a href="${pageContext.request.contextPath}/exchange/">환전</a></li>
+                <li><a href="${pageContext.request.contextPath}/saving/">적금</a></li>
+                <li><a href="${pageContext.request.contextPath}/mypage/main">마이페이지</a></li>
+                <li><a href="${pageContext.request.contextPath}/logout">로그아웃</a></li>
+            </c:if>
         </ul>
+
         <h1 class="logo">요술지갑</h1>
     </div>
 </nav>
