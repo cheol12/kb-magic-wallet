@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.group.service;
 
+import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.*;
@@ -50,29 +51,43 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     private final PersonalWalletService personalWalletService;
 
     @Override
-    public List<GroupWallet> selectAllMyGroupWallet(Member member) {
+    public List<GroupWallet> selectAllMyGroupWallet(LoginMemberDto loginMemberDto) {
 
-        List<GroupWallet> groupWalletList = groupWalletRep.findAllByMemberOrderByGroupWalletId(member);
+        Long memberId = loginMemberDto.getMemberId();
+//        List<Participation> participationList = groupWalletRep.findByMember_MemberId(memberId);
+        List<Participation> participationList = participationRep.findParticipationByMemberIdAndParticipationStateEquals(memberId, ParticipationState.PARTICIPATED);
 
-        //
+        System.out.println("participationList : " + participationList);
 
-        //groupWalletList 를 for문으로 돌리면서 하나 하나를 WalletDto에 알맞는 객체로 set or save 해서 리턴하도록 하기
+        // 참가자 리스트 테이블에서 현재 memberid 에 맞는 데이터만 불러오기
+        List<GroupWallet> groupWalletList = new ArrayList<>();
+
+        for(Participation participation : participationList){
+            GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(participation.getGroupWallet().getGroupWalletId());
+            groupWalletList.add(groupWallet);
+        }
+        System.out.println(groupWalletList);
 
         return groupWalletList;
     }
 
     @Override
-    public int createGroupWallet(Member member, String nickname) {
+    public int createGroupWallet(Long memberId, String nickname) {
 
 //        GroupWallet groupWallet = groupWalletRep.findByMember(member);
 
         GroupWallet groupWalletSave;
+        List<Member> member = memberRepository.findByMemberId(memberId);
 
         groupWalletSave = groupWalletRep.save(
                 GroupWallet.builder()
+                        .balance(0L)
+                        .due(0L)
+                        .dueAccumulation(0L)
                         .dueCondition(false)
-                        .member(member)
+                        .dueDate(0)
                         .nickname(nickname)
+                        .member(member.get(0))
                         .build()
 
         );
@@ -84,7 +99,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         participation = participationRep.save(
                 Participation.builder()
                         .participationState(ParticipationState.PARTICIPATED)
-                        .memberId(member.getMemberId())
+                        .memberId(member.get(0).getMemberId())
                         .role(Role.CHAIRMAN)
                         .groupWallet(groupWalletSave)
                         .build()

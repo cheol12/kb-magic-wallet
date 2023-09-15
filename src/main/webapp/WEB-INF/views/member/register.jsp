@@ -103,9 +103,9 @@
                     <input type="text" name="bankAccount"><span class="highlight"></span><span class="bar"></span>
                     <label>은행 계좌번호</label>
                 </div>
-                <button type="ripples buttonRipples" class="button buttonBlue">회원 가입
-                    <div class="ripplesCircle"><span class="bar"></span></div>
-                </button>
+                <input type="submit" class="button buttonBlue" value="회원가입">
+                    <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                </input>
             </form>
             <!--/회원가입 폼-->
         </div>

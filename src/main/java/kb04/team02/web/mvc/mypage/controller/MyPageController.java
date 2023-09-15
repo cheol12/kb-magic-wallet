@@ -67,7 +67,7 @@ public class MyPageController {
      * API 명세서 ROWNUM:54
      */
     @PostMapping("/bank")
-    public String bankLink(@RequestBody String account, HttpSession session) {
+    public String bankLink(@RequestParam("account") String account, HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.linkAccount(loggedIn, account);
         return "mypage/main";
