@@ -19,7 +19,7 @@ public class GroupWalletFormController {
     @GetMapping("/new")
     public String groupWalletCreateForm() {
 	
-        return "group/groupWalletCreateForm";
+        return "groupwallet/groupWalletCreateForm";
     }
 
     /**
@@ -29,8 +29,8 @@ public class GroupWalletFormController {
      * @param id 모임지갑에서 꺼내기 할 모임지갑 id
      */
     @GetMapping("/{id}/withdraw")
-    public String groupWalletWithdrawForm() {
-        return "group/groupWalletWithdrawForm";
+    public String groupWalletWithdrawForm(@PathVariable Long id) {
+        return "groupwallet/groupWalletWithdrawForm";
     }
 
     /**
@@ -41,7 +41,7 @@ public class GroupWalletFormController {
      */
     @GetMapping("/{id}/settle")
     public String groupWalletSettleForm() {
-        return "group/groupWalletSettleForm";
+        return "groupwallet/groupWalletSettleForm";
     }
 
     /**
@@ -51,8 +51,8 @@ public class GroupWalletFormController {
      * @param id 입금할 모임지갑 id
      */
     @GetMapping("/{id}/deposit")
-    public String groupWalletDepositForm() {
-        return "group/groupWalletDepositForm";
+    public String groupWalletDepositForm(@PathVariable Long id) {
+        return "groupwallet/groupWalletDepositForm";
     }
 
     /**
@@ -64,7 +64,7 @@ public class GroupWalletFormController {
      */
     @GetMapping("/{id}/rule/form")
     public String groupWalletRuleForm(@PathVariable String id) {
-        return "group/groupWalletRuleForm";
+        return "groupwallet/groupWalletRuleForm";
     }
 
 

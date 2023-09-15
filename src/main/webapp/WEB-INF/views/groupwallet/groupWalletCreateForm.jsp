@@ -9,9 +9,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>생성</title>
 
     <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 </head>
 <body>
 <header>
@@ -22,11 +25,16 @@
 <main>
     <div class="pageWrap">
         <div class="center">
-<%-- 닉네임 받고 전송하도록 form --%>
-<form id="createForm" method="post" action="${pageContext.request.contextPath}/group-wallet/new">
-    <input type="text" name="nickname" id="nickname">
-    <input type="submit" value="생성">
-</form>
+            <div>
+                <%-- 닉네임 받고 전송하도록 form --%>
+                <form id="createForm" method="post" action="${pageContext.request.contextPath}/group-wallet/new">
+                    <input type="text" name="nickname" id="nickname">
+                    <button type="submit" value="생성" class="btn btn-primary">생성</button>
+                </form>
+
+
+            </div>
+
         </div>
 
     </div>
