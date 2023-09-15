@@ -18,14 +18,14 @@ public class WalletDto {
      *  - 지갑 이름
      *  - 지갑 구분?
      */
-    private Long WalletId;
+    private Long walletId;
     private String nickname;
     private Role role;
     private WalletType walletType;
 
     public static WalletDto toPersoanlDto(PersonalWallet personalWallet){
         return WalletDto.builder()
-                .WalletId(personalWallet.getPersonalWalletId())
+                .walletId(personalWallet.getPersonalWalletId())
                 .nickname("개인지갑")
                 .role(Role.CHAIRMAN)
                 .walletType(WalletType.PERSONAL_WALLET)
@@ -34,7 +34,7 @@ public class WalletDto {
 
     public static WalletDto toGroupDto(GroupWallet groupWallet){
         return WalletDto.builder()
-                .WalletId(groupWallet.getGroupWalletId())
+                .walletId(groupWallet.getGroupWalletId())
                 .nickname(groupWallet.getNickname())
                 .role(null)
                 .walletType(WalletType.GROUP_WALLET)

@@ -29,16 +29,16 @@
             <label for="wallet">지갑 선택:</label>
             <select id="wallet" name="wallet" required>
                 <c:forEach items="${WalletList}" var="wallet" varStatus="loop">
-                    <option value="">${wallet.nickname} : </option>
+                    <option value="">${wallet.nickname} : ${wallet.walletId}</option>
                 </c:forEach>
             </select>
             <!-- 필요에 따라 지갑 옵션을 추가/수정할 수 있습니다. --><br><br>
 
             <label for="bank">은행 선택:</label>
             <select id="bank" name="bank" required>
-                <option value="bank1">은행 1</option>
-                <option value="bank2">은행 2</option>
-                <option value="bank3">은행 3</option>
+                <c:forEach items="${bankList}" var="bank" varStatus="loop">
+                <option value="bank1">${bank.name}</option>
+                </c:forEach>
                 <!-- 원하는 은행을 추가할 수 있습니다. -->
             </select><br><br>
 
