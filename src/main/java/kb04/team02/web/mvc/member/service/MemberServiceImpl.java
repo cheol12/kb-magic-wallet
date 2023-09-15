@@ -43,9 +43,13 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void register(MemberRegisterDto memberRegisterDto) throws RegisterException {
         // 아이디 중복 체크
-        memberRepository.findById(memberRegisterDto.getId()).orElseThrow(
-                () -> new RegisterException("아이디는 중복될 수 없습니다.")
+        memberRepository.findById(memberRegisterDto.getId()).ifPresent(
+                member -> {
+                    throw new RegisterException("아이디는 중복될 수 없습니다.");
+                }
         );
+
+
 
         // 회원 가입
         Member member = Member.builder()
@@ -59,24 +63,27 @@ public class MemberServiceImpl implements MemberService {
                 .bankAccount(memberRegisterDto.getBankAccount())
                 .build();
 
+        System.out.println("member = " + member);
+
         Member saved = memberRepository.save(member);
+        System.out.println("saved = " + saved);
 
-        // 지갑 생성
-        PersonalWallet personalWallet = PersonalWallet.builder()
-                .member(saved)
-                .build();
-
-        PersonalWallet savedWallet = personalWalletRepository.save(personalWallet);
-
-        // 카드 발급
-        CardIssuance card = CardIssuance.builder()
-                .cardNumber(generateRandomCardNumber())
-                .cardState(CardState.OK)
-                .walletId(savedWallet.getPersonalWalletId())
-                .walletType(WalletType.PERSONAL_WALLET)
-                .build();
-
-        CardIssuance savedCard = cardIssuanceRepository.save(card);
+//        // 지갑 생성
+//        PersonalWallet personalWallet = PersonalWallet.builder()
+//                .member(saved)
+//                .build();
+//
+//        PersonalWallet savedWallet = personalWalletRepository.save(personalWallet);
+//
+//        // 카드 발급
+//        CardIssuance card = CardIssuance.builder()
+//                .cardNumber(generateRandomCardNumber())
+//                .cardState(CardState.OK)
+//                .walletId(savedWallet.getPersonalWalletId())
+//                .walletType(WalletType.PERSONAL_WALLET)
+//                .build();
+//
+//        CardIssuance savedCard = cardIssuanceRepository.save(card);
     }
 
     @Override
