@@ -31,7 +31,7 @@ public class MemberController {
             return "forward:/";
         }
 
-        return "index";
+        return "mypage/main";
     }
 
     /**
@@ -40,7 +40,10 @@ public class MemberController {
     @RequestMapping("/logout")
     public String logout(HttpSession session) {
         //모든 세션의 정보를 삭제한다.
-        session.invalidate();
+        System.out.println("로그아웃 전 session = " + session);
+//        session.invalidate();
+        session.setMaxInactiveInterval(0);
+        System.out.println("로그아웃 후 session = " + session);
         return "redirect:/";
     }
 
