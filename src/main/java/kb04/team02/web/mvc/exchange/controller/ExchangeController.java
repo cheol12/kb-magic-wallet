@@ -120,11 +120,11 @@ public class ExchangeController {
     public String exchangeOnline(ExchangeDto exchangeDto) {
         exchangeService.requestExchangeOnline(exchangeDto);
         // 어디로 가야 하죠...
-        return null;
+        return "index";
     }
 
     /**
-     * 선택한 지갑의 잔액 요청
+     * 선택한 지갑의 원화 잔액 요청
      * API 명세서 ROWNUM: 55
      * @param walletId
      * @return
@@ -151,4 +151,29 @@ public class ExchangeController {
         System.out.println(e.getMessage());
         return "error";
     }
+
+    /**
+     * 온라인 재환전 폼
+     * API 명세서 ROWNUM:47
+     */
+    @GetMapping("/online/re-form")
+    public String reExchangeOnlineForm(HttpSession session, Model model) {
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        Long memberId = loggedIn.getMemberId();
+        List<WalletDto> walletList = exchangeService.WalletList(memberId);
+        model.addAttribute("walletList", walletList);
+        return "exchange/reExchangeOnlineForm";
+    }
+
+    /**
+     * 온라인 재환전 요청
+     * API 명세서 ROWNUM:48
+     */
+    @PostMapping("/online/re-form")
+    public String reExchangeOnline(ExchangeDto exchangeDto) {
+
+        // 어디로 가야 하죠...
+        return "index";
+    }
+
 }

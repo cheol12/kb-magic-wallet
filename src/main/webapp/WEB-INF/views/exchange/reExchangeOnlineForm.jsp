@@ -1,15 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
-  User: jiwon
-  Date: 2023-09-11
-  Time: 오후 11:31
+  User: 여메정
+  Date: 2023-09-16
+  Time: 오후 1:34
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>깨비의 요술 지갑 - 환전</title>
+    <title>깨비의 요술 지갑 - 재환전</title>
     <link rel="stylesheet" type="text/css" href="/css/common.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -39,13 +39,12 @@
 </head>
 <body>
 <jsp:include page="../common/navbar.jsp"></jsp:include>
-
 <div class="pageWrap">
     <div class="center">
         <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
-                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">환전/</span> 온라인</h4>
+                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">재환전/</span> 온라인</h4>
                 <!-- Basic Layout -->
                 <form>
                     <div class="row">
@@ -71,11 +70,11 @@
                                             <button type="button" class="btn btn-outline-warning">잔액 조회</button>
                                         </div>
                                         <div id="hide-balance">
-                                            <label class="form-label">출금가능잔액</label>
-                                            <input type="text" class="form-control" placeholder="3,000,000" readonly/>
+                                            <label class="form-label">USD</label>
+                                            <input type="text" class="form-control" placeholder="잔액을 조회하세요" readonly/>
 
-                                            <label class="form-label">총잔액</label>
-                                            <input type="text" class="form-control" placeholder="3,000,000" readonly/>
+                                            <label class="form-label">JPY</label>
+                                            <input type="text" class="form-control" placeholder="잔액을 조회하세요" readonly/>
                                         </div>
                                     </div>
                                 </div>
@@ -90,7 +89,7 @@
 
                                     <div class="row gx-3 gy-2 align-items-center">
                                         <div class="col-mb-2">
-                                            신청 금액
+                                            판매 신청 금액
                                         </div>
                                         <div class="col-3">
                                             <select class="form-select color-dropdown" name="currencyCode">
@@ -106,7 +105,7 @@
                                             <button type="button" class="btn btn-outline-warning">환전 예상 금액 조회</button>
                                         </div>
                                         <div>
-                                            <label class="form-label">출금금액</label>
+                                            <label class="form-label">입금금액</label>
                                             <input type="text" class="form-control" placeholder="" readonly/>
 
                                             <label class="form-label">현재 고시 환율</label>
@@ -117,11 +116,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                        <button type="submit" class="btn btn-primary">환전하기</button>
+                                <button type="submit" class="btn btn-primary">환전하기</button>
                             </div>
-
-
-
                         </div>
                     </div>
                 </form>

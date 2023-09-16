@@ -41,7 +41,6 @@
 <body>
 <jsp:include page="../common/navbar.jsp"></jsp:include>
 오프라인 수령 폼
-<body>
 <div class="pageWrap">
     <div class="center">
 
@@ -113,7 +112,7 @@
                                             <select class="form-select color-dropdown" name="walletId">
                                                 <option selected>지갑을 선택하세요</option>
                                                 <c:forEach items="${walletList}" var="wallet" varStatus="loop">
-                                                    <option value="${wallet.walletId};${wallet.walletType}">${wallet.nickname}</option>
+                                                    <option value="${wallet.walletId}">${wallet.nickname}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
