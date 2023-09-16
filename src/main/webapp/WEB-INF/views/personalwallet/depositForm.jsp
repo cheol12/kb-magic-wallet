@@ -135,7 +135,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        받는 통장 메모
+                                        받는 지갑 메모
                                         <div class="input-group input-group-merge">
                                             <input
                                                     type="text"
@@ -147,7 +147,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        받는 통장 메모
+                                        내 통장 메모
                                         <div class="input-group input-group-merge">
                                             <input
                                                     type="text"

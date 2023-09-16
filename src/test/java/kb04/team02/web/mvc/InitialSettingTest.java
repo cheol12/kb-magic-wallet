@@ -11,6 +11,7 @@ import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.member.entity.Address;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.member.entity.Role;
+import kb04.team02.web.mvc.personal.entity.PersonalWalletTransfer;
 import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
 import kb04.team02.web.mvc.saving.entity.Saving;
 import kb04.team02.web.mvc.common.entity.TargetType;
@@ -519,6 +520,31 @@ public class InitialSettingTest {
                 .personalWallet(null)
                 .groupWallet(groupWallet1)
                 .build());
+
+        personalWalletTransferRepository.save(PersonalWalletTransfer.builder()
+                .transferType(TransferType.DEPOSIT)
+                .fromType(TargetType.ACCOUNT)
+                .toType(TargetType.PERSONAL_WALLET)
+                .src("국민은행")
+                .dest(personalWallet2.getMember().getName()) // 수신자 이름 또는 정보
+                .amount(1100000L)
+                .afterBalance(1100000L) // 이체 후 잔액 계산
+                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
+                .personalWallet(personalWallet2)
+                .build());
+
+        personalWalletTransferRepository.save(PersonalWalletTransfer.builder()
+                .transferType(TransferType.WITHDRAW)
+                .fromType(TargetType.PERSONAL_WALLET)
+                .toType(TargetType.GROUP_WALLET)
+                .src(personalWallet2.getMember().getName())
+                .dest("모임지갑") // 수신자 이름 또는 정보
+                .amount(100000L)
+                .afterBalance(1000000L) // 이체 후 잔액 계산
+                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
+                .personalWallet(personalWallet2)
+                .build());
+
     }
 
 }

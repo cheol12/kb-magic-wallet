@@ -2,6 +2,7 @@ package kb04.team02.web.mvc.common.dto;
 
 import lombok.*;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,4 +19,5 @@ public class WalletHistoryDto {
     private String detail;
     private String amount;
     private String balance;
+    private Date date;
 }
