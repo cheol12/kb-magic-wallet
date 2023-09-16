@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.exchange.service;
 
+import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.WalletDto;
 import kb04.team02.web.mvc.exchange.dto.BankDto;
@@ -114,4 +115,19 @@ public interface ExchangeService {
      * @return ExchangeDto
      */
     ExchangeCalDto expectedExchangeAmount(CurrencyCode currencyCode, Long amount);
+
+    /**
+     * 선택한 지갑의 외화 잔액을 리스트로 반환
+     * @param walletId
+     * @param walletType
+     * @return
+     */
+    WalletDetailDto selectedWalletFCBalance(Long walletId, WalletType walletType);
+
+    /**
+     * 온라인 재환전 요청
+     * @param exchangeDto
+     * @return
+     */
+    int requestReExchangeOnline(ExchangeDto exchangeDto);
 }

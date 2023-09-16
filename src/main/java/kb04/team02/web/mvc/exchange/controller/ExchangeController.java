@@ -171,7 +171,7 @@ public class ExchangeController {
      */
     @PostMapping("/online/re-form")
     public String reExchangeOnline(ExchangeDto exchangeDto) {
-
+        exchangeService.requestReExchangeOnline(exchangeDto);
         // 어디로 가야 하죠...
         return "index";
     }
