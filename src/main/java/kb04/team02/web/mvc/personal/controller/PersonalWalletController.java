@@ -7,6 +7,7 @@ import kb04.team02.web.mvc.common.exception.InsufficientBalanceException;
 import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -66,8 +67,12 @@ public class PersonalWalletController {
      * 개인지갑 환불 폼
      * API 명세서 ROWNUM:8
      */
-    @GetMapping("/withdraw")
-    public void personalwalletWithdrawForm() {
+    @GetMapping("/withdrawForm")
+    public void personalwalletWithdrawForm(Model model, HttpSession session) {
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        WalletDetailDto walletDetailDto = personalWalletService.personalWallet(member);
+
+        model.addAttribute("balance", walletDetailDto.getBalance());
     }
 
     /**
@@ -75,8 +80,9 @@ public class PersonalWalletController {
      * API 명세서 ROWNUM:9
      */
     @PostMapping("/withdraw")
-    public String personalwalletWithdraw(PersonalWalletTransferDto transferDto) {
-
+    public String personalwalletWithdraw(PersonalWalletTransferDto transferDto, HttpSession session) {
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        transferDto.setMemberId(member.getMemberId());
         try {
             personalWalletService.personalWalletWithdraw(transferDto);
         } catch (NoSuchElementException e) {
@@ -84,6 +90,6 @@ public class PersonalWalletController {
             // TODO 개인지갑 환불 실패시 어디가지?
         }
 
-        return "personalwallet/main";
+        return "redirect:/personalwallet/main";
     }
 }

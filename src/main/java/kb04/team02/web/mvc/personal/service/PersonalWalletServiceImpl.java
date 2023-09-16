@@ -17,10 +17,7 @@ import kb04.team02.web.mvc.personal.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -56,14 +53,16 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
             dto.getBalance().put(balance.getCurrencyCode().name(), balance.getBalance());
         }
 
+        dto.getBalance().put("KRW", personalWallet.getBalance());
+
         dto.setList(new ArrayList<>());
         for (Transfer transfer : personalWalletTransfers) {
             WalletHistoryDto historyDto = new WalletHistoryDto();
             historyDto.setDateTime(transfer.getInsertDate());
             if (transfer.getTransferType() == TransferType.DEPOSIT) {
-                historyDto.setType("출금");
-            } else {
                 historyDto.setType("입금");
+            } else {
+                historyDto.setType("출금");
             }
             String detail = transfer.getSrc() + " > " + transfer.getDest();
             historyDto.setDetail(detail);
@@ -84,12 +83,12 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
             String detail = exchange.getSellCurrencyCode().name() + " > " + exchange.getBuyCurrencyCode().name();
 
             historyDto.setDetail(detail);
-            historyDto.setAmount(exchange.getSellAmount()+" > "+exchange.getBuyAmount());
+            historyDto.setAmount(exchange.getSellAmount() + " > " + exchange.getBuyAmount());
             historyDto.setBalance(exchange.getAfterSellBalance() + " : " + exchange.getAfterBuyBalance());
 
             dto.getList().add(historyDto);
         }
-        
+
         for (PersonalWalletPayment payment : personalWalletPayments) {
             WalletHistoryDto historyDto = new WalletHistoryDto();
             historyDto.setDateTime(payment.getInsertDate());
@@ -106,6 +105,13 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
 
             dto.getList().add(historyDto);
         }
+        dto.getList().sort(new Comparator<WalletHistoryDto>() {
+            @Override
+            public int compare(WalletHistoryDto o1, WalletHistoryDto o2) {
+                return o2.getDateTime().compareTo(o1.getDateTime());
+            }
+        });
+
         return dto;
     }
 
@@ -128,12 +134,12 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
                 .fromType(TargetType.ACCOUNT)
                 .toType(TargetType.PERSONAL_WALLET)
                 .src(bankAccount)
-                .dest(String.valueOf(walletId))
+                .dest(personalWallet.getMember().getName()+"의 개인지갑")
                 .amount(amount)
                 .afterBalance(afterBalance)
                 .currencyCode(CurrencyCode.KRW)
                 .build();
-
+        personalWallet.setBalance(afterBalance);
         transferRepository.save(deposit);
     }
 
@@ -148,7 +154,10 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
         Long walletId = personalWallet.getPersonalWalletId();
         Long KRW = personalWallet.getBalance();
         Long amount = personalWalletTransferDto.getAmount();
+        System.out.println("KRW = " + KRW);
+        System.out.println("amount = " + amount);
         Long afterBalance = KRW - amount;
+        System.out.println("afterBalance = " + afterBalance);
         if (afterBalance < 0) {
             throw new InsufficientBalanceException("개인지갑의 잔액이 부족합니다.");
         }
@@ -164,7 +173,7 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
                 .afterBalance(afterBalance)
                 .currencyCode(CurrencyCode.KRW)
                 .build();
-
+        personalWallet.setBalance(afterBalance);
         transferRepository.save(withdraw);
     }
 }
