@@ -37,19 +37,55 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../../../assets/js/config.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+
+<script>
+    let expectedAmountCK = () => {
+        console.log("ck")
+        // 추출한 값을 사용하여 데이터 생성 (예: JSON 형식)
+        var code = $('select[name="currencyCode"]').val();
+        var amount = $('input[name="amount"]').val();
+
+        let data = {
+            code: code,
+            amount : amount
+        }
+
+        // AJAX POST 요청
+        $.ajax({
+            type: "post",
+            url: "/exchange/expectedAmount",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            dataType: "json", // 예상되는 응답 형식(JSON 등)
+            success: function (response) {
+                // 성공 시 실행할 코드
+                alert("성공")
+                console.log(response)
+                $('#expectedAmount').attr('placeholder', response.expectedAmount.toLocaleString());
+                $('#tradingBaseRate').attr('placeholder', response.tradingBaseRate.toLocaleString());
+                $('#applicableExchangeRate').attr('placeholder', response.applicableExchangeRate.toLocaleString());
+            },
+            error: function (error) {
+                // 오류 발생 시 실행할 코드
+                console.error("오류: " + error);
+            }
+        });
+    }
+</script>
+
 <jsp:include page="../common/navbar.jsp"></jsp:include>
 오프라인 수령 폼
 <div class="pageWrap">
     <div class="center">
-
         <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
                 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">환전/</span>오프라인</h4>
                 <!-- Basic Layout -->
-                <form>
+                <form action="${pageContext.request.contextPath}/offline/form" method="post">
                     <div class="row">
                         <div class="row align-items-start">
                             <div class="card mb-4">
@@ -74,17 +110,17 @@
                                             <input type="number" class="form-control" placeholder="금액을 입력하세요" name="amount">
                                         </div>
                                         <div class="col-3">
-                                            <button type="button" class="btn btn-outline-warning">환전 예상 금액 확인</button>
+                                            <button type="button" class="btn btn-outline-warning" onclick="expectedAmountCK();">환전 예상 금액 확인</button>
                                         </div>
                                         <div id="">
                                             <label class="form-label">출금금액</label>
-                                            <input type="text" class="form-control" placeholder="" readonly/>
+                                            <input type="text" id="expectedAmount" class="form-control" placeholder="" readonly/>
 
                                             <label class="form-label">현재 고시 환율</label>
-                                            <input type="text" class="form-control" placeholder="" readonly/>
+                                            <input type="text" id="tradingBaseRate" class="form-control" placeholder="" readonly/>
 
                                             <label class="form-label">적용 환율</label>
-                                            <input type="text" class="form-control" placeholder="" readonly/>
+                                            <input type="text" id="applicableExchangeRate" class="form-control" placeholder="" readonly/>
                                         </div>
                                         <div class="col-2">
                                             환전 사유
@@ -115,6 +151,7 @@
                                                     <option value="${wallet.walletId}">${wallet.nickname}</option>
                                                 </c:forEach>
                                             </select>
+                                            <input type="hidden" name="walletType" value="">
                                         </div>
                                         <div class="col-2">
                                             <button type="button" class="btn btn-outline-warning">지갑 잔액 확인</button>

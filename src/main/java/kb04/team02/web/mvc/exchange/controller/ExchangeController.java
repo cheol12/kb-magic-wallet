@@ -19,10 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Controller
 @RequestMapping("/exchange")
@@ -141,8 +138,11 @@ public class ExchangeController {
      */
     @ResponseBody
     @PostMapping("/expectedAmount")
-    public ExchangeCalDto expectedAmount(){
-        return exchangeService.expectedExchangeAmount(CurrencyCode.USD, 1000L);
+    public ExchangeCalDto expectedAmount(@RequestBody HashMap<String, Integer> param){
+        Long amount = Long.valueOf(param.get("amount"));
+        CurrencyCode foundCurrency = CurrencyCode.findByValue(param.get("code"));
+        ExchangeCalDto dto = exchangeService.expectedExchangeAmount(foundCurrency, amount);
+        return dto;
     }
 
     //== 예외 처리 ==/
