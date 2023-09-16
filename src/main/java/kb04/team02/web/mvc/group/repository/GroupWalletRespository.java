@@ -28,7 +28,7 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      * 모임지갑 메인화면
      * 나의 모임지갑 전부 검색
      * */
-    List<GroupWallet> findAllByMemberOrderByGroupWalletId(Member member);
+    List<GroupWallet> findAllByMember_MemberId(Long memberId);
 
 
     /**

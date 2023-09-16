@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.group.controller;
 
+import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
@@ -32,24 +33,20 @@ public class GroupWalletController {
     @GetMapping("/")
     public String groupWalletIndex(Model model, HttpSession session) {
 
-        Member member = (Member) session.getAttribute("member_id");
-
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
 
         System.out.println("------------------------");
 //        Member member = memberRep.findById(1L).get();     // 테스트용 임시코드
-        System.out.println("--------------------------");
 
-        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(member);
-
-        member.setGroupWallets(gWalletList);
+        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(loginMemberDto);
 
         model.addAttribute("gWalletList", gWalletList);
 //        model.addAttribute("member", member);             // 테스트용 임시코드
 
 //        session.setAttribute("member", member);           // 테스트용 임시코드
-        System.out.println("member" + member);
+        System.out.println("loginMemberDto : " + loginMemberDto);
 
-        return "group/groupIndex";
+        return "groupwallet/groupWalletIndex";
     }
 
     /**
@@ -60,17 +57,13 @@ public class GroupWalletController {
     public String groupWalletCreate(GroupWallet gWallet, Model model, HttpSession session, @RequestParam String nickname) {
 	    // 모임장의 회원 식별번호 불러오기,
 	    // 뷰에서 입력한 별칭 필요
-        // 멤버 컬럼 : memberid, id, password, name, address, phonenumber, email, insertDate, payPassword, bankaccount
 
-        Member member = (Member) session.getAttribute("member_id");
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
 
-//        Member member = memberRep.findById(1L).get();     // 테스트용 임시코드
-//        model.addAttribute("member", member);             // 테스트용 임시코드
+        groupWalletService.createGroupWallet(loginMemberDto.getMemberId(), nickname);
 
-	    groupWalletService.createGroupWallet(member, nickname);
-
-	    // 생성되었습니다 알림 띄우고 group-wallet으로 이동
-	    return "redirect:/group-wallet";		// "redirect:/"; 인가?
+        // 생성 실행 후 컨트롤러에서 /group-wallet/ 을 호출하는 메소드 실행
+        return "redirect:/group-wallet/";
     }
 
     /**
@@ -80,11 +73,12 @@ public class GroupWalletController {
      * @param id 조회할 모임지갑 id
      */
     @GetMapping("/{id}")
-    public String getGroupWalletDetail(@PathVariable Long id, Model model) {
+    public String getGroupWalletDetail(@PathVariable Long id, Model model, HttpSession session) {
 	// id = 내 모임지갑의 id중 하나임.
+
         WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
         model.addAttribute("walletDetailDto", walletDetailDto);
-        return "group/groupWalletDetail";
+        return "groupwallet/groupWalletDetail";
     }
 
     /**
@@ -112,7 +106,7 @@ public class GroupWalletController {
 	// 메시지 api 불러오기
 	    groupWalletService.inviteMember(id);
 	//json으로 데이터 전달하기
-	    return "redirect:/group-wallet/{id}/member-list";
+	    return "redirect:/group-wallet/" + id + "/member-list";
     }
 
     /**
@@ -143,7 +137,7 @@ public class GroupWalletController {
 
         // member로 꺼내기하는 사람을 불러오고, {id}로 모임지갑 id를 불러오고, amount로 폼에서의 입력값을 부른다.
 //	    groupWalletService.groupWalleWithdraw(member, id, amount);
-	return "redirect:/group-wallet/{id}";
+	return "redirect:/group-wallet/" + id;
     }
 
     /**
@@ -156,7 +150,7 @@ public class GroupWalletController {
     public String groupWalletSettle(@PathVariable String id, int amount) {
 	// {id} 로 현재 모임지갑 부르고, 폼 입력값을 amount로 부른다.
 //	groupWalletService.settle(id, amount);
-	return "redirect:/group-wallet/{id}";
+	return "redirect:/group-wallet/" + id;
     }
 
     /**
@@ -180,7 +174,7 @@ public class GroupWalletController {
 	// 이를 service.deposit 에서 한 번에 트랜잭션 처리
 //	groupWalletService.groupWalletDeposit(id, amount, memberId );
 
-	return "redirect:/group-wallet/{id}";
+	return "redirect:/group-wallet/" + id;
     }
 
 }

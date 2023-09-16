@@ -10,9 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-@SessionAttributes("member")
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
@@ -24,14 +24,19 @@ public class MemberController {
      */
     @PostMapping("/login")
     public String login(MemberLoginDto memberLoginDto, HttpSession session) {
+//    public String login(MemberLoginDto memberLoginDto, HttpServletRequest request) {
         try {
+//            System.out.println("로그인 전 session = " + session);
             LoginMemberDto loggedIn = memberService.login(memberLoginDto);
+//            HttpSession session = request.getSession();
             session.setAttribute("member", loggedIn);
+//            System.out.println("로그인 후 session = " + session);
+//            System.out.println("session.getAttribute(\"member\") = " + session.getAttribute("member"));
         } catch (LoginException e) {
             return "forward:/";
         }
 
-        return "index";
+        return "mypage/main";
     }
 
     /**
@@ -49,7 +54,7 @@ public class MemberController {
      */
     @GetMapping("/register")
     public String registerForm() {
-        return "/member/register";
+        return "member/register";
     }
 
     /**
@@ -58,8 +63,9 @@ public class MemberController {
      * @return /로 이동
      */
     @PostMapping("/register")
-    public String register(@RequestBody MemberRegisterDto memberRegisterDto) {
-
+//    public String register(@RequestBody MemberRegisterDto memberRegisterDto) {
+    public String register(MemberRegisterDto memberRegisterDto) {
+        System.out.println("memberRegisterDto = " + memberRegisterDto);
         try {
             memberService.register(memberRegisterDto);
         } catch (RegisterException e) {

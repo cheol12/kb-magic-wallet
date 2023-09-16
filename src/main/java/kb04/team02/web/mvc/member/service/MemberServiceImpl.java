@@ -43,9 +43,13 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void register(MemberRegisterDto memberRegisterDto) throws RegisterException {
         // 아이디 중복 체크
-        memberRepository.findById(memberRegisterDto.getId()).orElseThrow(
-                () -> new RegisterException("아이디는 중복될 수 없습니다.")
+        memberRepository.findById(memberRegisterDto.getId()).ifPresent(
+                member -> {
+                    throw new RegisterException("아이디는 중복될 수 없습니다.");
+                }
         );
+
+
 
         // 회원 가입
         Member member = Member.builder()
@@ -59,7 +63,10 @@ public class MemberServiceImpl implements MemberService {
                 .bankAccount(memberRegisterDto.getBankAccount())
                 .build();
 
+        System.out.println("member = " + member);
+
         Member saved = memberRepository.save(member);
+        System.out.println("saved = " + saved);
 
         // 지갑 생성
         PersonalWallet personalWallet = PersonalWallet.builder()

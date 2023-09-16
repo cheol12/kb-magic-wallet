@@ -54,6 +54,7 @@ public class SavingServiceImpl implements SavingService {
                 .interestRate(saving.getInterestRate())
                 .period(saving.getPeriod())
                 .amountLimit(saving.getAmountLimit())
+                .savingComment(saving.getSavingComment())
                 .build();
         if (dto == null) {
             throw new NoSavingDetailException("해당 적금 상품이 없습니다");
