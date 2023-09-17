@@ -39,9 +39,99 @@
 
     <div class="pageWrap">
             <div class="center">
-                <h1 class="titDep1">모임지갑 목록</h1>
-                <h5>${SavingInstallmentDto.getGroupWalletId}</h5>
-                <div>
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        <h4 class="fw-bold py-3 mb-4">적금 가입하기</h4>
+                        <!-- 폼 레이아웃 -->
+                        <div class="row">
+                            <div class="col-xxl">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <form method="post" action="${pageContext.request.contextPath}/saving/${id}/form">
+                                            <!--적금 상품 아이디-->
+                                            <input type="hidden" name="savingId" value=${id}>
+                                            <!-- 모임지갑 선택 -->
+                                            <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label">모임지갑 선택</label>
+                                                <div class="col-sm-10">
+                                                    <select name="groupWalletId" required>
+                                                        <!-- 개인이 가지고 있는 그룹 통장 중에서 선택 -->
+                                                        <c:forEach var="wallet" items="${gWalletList}">
+                                                            <option value="${wallet.getGroupWalletId()}">${wallet.getNickname()}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!-- 납입 금액 -->
+                                            <div class="row mb-3">
+                                                <label class="col-sm-2 col-form-label" >납부 금액(/월)</label>
+                                                <div class="col-sm-10">
+                                                    <input
+                                                            type="text"
+                                                            class="form-control"
+                                                            name="savingAmount"
+                                                            placeholder="(원)"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <!-- 납부일-->
+                                            <div class="mb-3 row">
+                                                <label for="html5-date-input" class="col-md-2 col-form-label">납부일</label>
+                                                <div class="col-md-10">
+                                                    <select name="savingDate" class="form-control" id="html5-date-input">
+                                                        <option value="">일 선택</option>
+                                                        <c:forEach var="day" begin="1" end="28">
+                                                            <option value="${day}">${day}일</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!-- 적금 가입하기 -->
+                                            <div class="row justify-content-end">
+                                                <div class="col-sm-10">
+                                                    <button type="submit" class="btn btn-primary">가입하기</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+<%--                &lt;%&ndash;가입 금액, 출금 지갑 정보 받고 전송하도록 form&ndash;%&gt;--%>
+<%--                <form method="post" action="${pageContext.request.contextPath}/saving/${id}/form">--%>
+<%--                    <div class="row g-3 align-items-center">--%>
+<%--                        <input type="text" name="savingAmount"><span class="highlight"></span><span class="bar"></span>--%>
+<%--                        <label>가입 금액</label>--%>
+<%--                    </div>--%>
+<%--                    <div class="group">--%>
+<%--                        <select name="groupWalletId" required>--%>
+<%--                            <!-- 개인이 가지고 있는 그룹 통장 중에서 선택 -->--%>
+<%--                            <c:forEach var="wallet" items="${gWalletList}">--%>
+<%--                                <option value="${wallet.getGroupWalletId()}">${wallet.getNickname()}</option>--%>
+<%--                            </c:forEach>--%>
+<%--                        </select>--%>
+
+<%--                        <input type="text" name="groupWalletId"><span class="highlight"></span><span class="bar"></span>--%>
+<%--                        <label>출금 지갑 선택(모임 지갑 별칭으로)</label>--%>
+<%--                    </div>--%>
+
+<%--                    <input type="submit" class="button buttonBlue" value="가입하기">--%>
+<%--                    <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>--%>
+<%--                    </input>--%>
+<%--                </form>--%>
+
+<%--&lt;%&ndash;                    &ndash;%&gt;--%>
+
+
+<%--                <h1 class="titDep1">모임지갑 목록</h1>--%>
+<%--                <h5>${SavingInstallmentDto.getGroupWalletId}</h5>--%>
+<%--                <div>--%>
 <%--                    <c:forEach var="list" varStatus="status" items="${gWalletList}">--%>
 <%--                        <div style="margin-top: 5px">--%>
 <%--                            <div class="card">--%>
@@ -55,30 +145,31 @@
 <%--                            </div>--%>
 <%--                        </div>--%>
 <%--                    </c:forEach>--%>
-                </div>
-                <%--가입 금액, 출금 지갑 정보 받고 전송하도록 form--%>
-                <form method="post" action="${pageContext.request.contextPath}/saving/${id}/form">
-                    <div class="group">
-                        <input type="text" name="savingAmount"><span class="highlight"></span><span class="bar"></span>
-                        <label>가입 금액</label>
-                    </div>
-                    <div class="group">
-<%--                        <select name="groupWalletId" name="groupWalletId">--%>
-<%--                            <option value="1">두근두근 외화적금</option>--%>
-<%--                            <option value="2">쿵쾅쿵쾅 외화적금</option>--%>
-<%--                            <option value="3">근두근두 외화적금</option>--%>
-<%--                            <option value="4">허겁지겁 외화적금</option>--%>
-<%--                        </select>--%>
-                        <input type="text" name="groupWalletId"><span class="highlight"></span><span class="bar"></span>
-                        <label>출금 지갑 선택(모임 지갑 별칭으로)</label>
-                    </div>
+<%--                </div>--%>
+<%--                &lt;%&ndash;가입 금액, 출금 지갑 정보 받고 전송하도록 form&ndash;%&gt;--%>
+<%--                <form method="post" action="${pageContext.request.contextPath}/saving/${id}/form">--%>
+<%--                    <div class="group">--%>
+<%--                        <input type="text" name="savingAmount"><span class="highlight"></span><span class="bar"></span>--%>
+<%--                        <label>가입 금액</label>--%>
+<%--                    </div>--%>
+<%--                    <div class="group">--%>
+<%--                            <select name="groupWalletId" required>--%>
+<%--                                <!-- 개인이 가지고 있는 그룹 통장 중에서 선택 -->--%>
+<%--                                <c:forEach var="wallet" items="${gWalletList}">--%>
+<%--                                    <option value="${wallet.getGroupWalletId()}">${wallet.getNickname()}</option>--%>
+<%--                                </c:forEach>--%>
+<%--                            </select>--%>
 
-                    <input type="submit" class="button buttonBlue" value="가입하기">
-                    <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
-                    </input>
-                </form>
+<%--                        <input type="text" name="groupWalletId"><span class="highlight"></span><span class="bar"></span>--%>
+<%--                        <label>출금 지갑 선택(모임 지갑 별칭으로)</label>--%>
+<%--                    </div>--%>
 
-            </div>
-    </div>
+<%--                    <input type="submit" class="button buttonBlue" value="가입하기">--%>
+<%--                    <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>--%>
+<%--                    </input>--%>
+<%--                </form>--%>
+
+<%--            </div>--%>
+<%--    </div>--%>
 </body>
 </html>

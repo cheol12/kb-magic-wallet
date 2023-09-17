@@ -65,6 +65,7 @@ public class SavingController {
 
     @GetMapping("/{id}/form")
     public String savingJoinForm(@PathVariable String id, HttpSession session, Model model) {
+        System.out.println("GetMapping 실행.............");
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
         List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(loginMemberDto);
         model.addAttribute("gWalletList", gWalletList);
@@ -80,11 +81,19 @@ public class SavingController {
      *
      * @param id 가입 할 적금 상품 id
      */
+//    @PostMapping("/{id}/form")
     @PostMapping("/{id}/form")
+//    public String savingJoin(@PathVariable String id, SavingInstallmentDto installmentDto) {
     public String savingJoin(@PathVariable String id, SavingInstallmentDto installmentDto) {
+        System.out.println("PostMapping 실행.............");
         int result = savingService.insertInstallmentSaving(installmentDto);
+        System.out.println("result = " + result);
 
-        return "redirect:/saving/";
+        if (result == 1) {
+            return "redirect:/mypage/main";
+        } else {
+            return "redirect:/saving/";
+        }
     }
 
     //== 예외 처리 ==/
