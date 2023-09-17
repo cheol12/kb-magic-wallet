@@ -1,5 +1,9 @@
 package kb04.team02.web.mvc.saving.controller;
 
+import kb04.team02.web.mvc.common.dto.LoginMemberDto;
+import kb04.team02.web.mvc.exchange.dto.WalletDto;
+import kb04.team02.web.mvc.group.entity.GroupWallet;
+import kb04.team02.web.mvc.group.service.GroupWalletService;
 import kb04.team02.web.mvc.saving.dto.SavingDto;
 import kb04.team02.web.mvc.saving.dto.SavingInstallmentDto;
 import kb04.team02.web.mvc.common.exception.InsertException;
@@ -7,9 +11,11 @@ import kb04.team02.web.mvc.saving.exception.NoSavingDetailException;
 import kb04.team02.web.mvc.saving.service.SavingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -17,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SavingController {
 
+    private final GroupWalletService groupWalletService;
     private final SavingService savingService;
 
     /**
@@ -48,9 +55,24 @@ public class SavingController {
      *
      * @param id 가입 할 적금 상품 id
      */
+//    @GetMapping("/{id}/form")
+//    public void savingJoinForm(@PathVariable String id) {}
+
+//    @GetMapping("/{id}/form")
+//    public ModelAndView savingJoinForm(@PathVariable String id) {
+//        return new ModelAndView("saving/savingForm", "id", id);
+//    }
+
     @GetMapping("/{id}/form")
-    public void savingJoinForm(@PathVariable String id) {
+    public String savingJoinForm(@PathVariable String id, HttpSession session, Model model) {
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(loginMemberDto);
+        model.addAttribute("gWalletList", gWalletList);
+        model.addAttribute("userId", id);
+        return "saving/savingForm";
     }
+
+
 
     /**
      * 적금 상품 가입
@@ -61,6 +83,7 @@ public class SavingController {
     @PostMapping("/{id}/form")
     public String savingJoin(@PathVariable String id, SavingInstallmentDto installmentDto) {
         int result = savingService.insertInstallmentSaving(installmentDto);
+
         return "redirect:/saving/";
     }
 
