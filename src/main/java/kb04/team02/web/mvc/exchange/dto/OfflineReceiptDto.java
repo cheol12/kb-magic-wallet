@@ -55,4 +55,9 @@ public class OfflineReceiptDto {
                 .build();
     }
 
+    // 임시
+    public LocalDateTime getReceiptDate() {
+        return receiptDate != null ? receiptDate : LocalDateTime.MIN; // null인 경우 LocalDateTime.MIN을 반환
+    }
+
 }

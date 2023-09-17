@@ -43,6 +43,23 @@
 
 <script>
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const walletSelect = document.getElementById("walletSelect");
+
+        walletSelect.addEventListener("change", function () {
+            const selectedOption = walletSelect.options[walletSelect.selectedIndex];
+            const selectedRole = selectedOption.getAttribute("data-role");
+
+            // "CHAIRMAN"이 아닌 경우 선택을 비활성화
+            if (selectedRole !== "CHAIRMAN") {
+                walletSelect.selectedIndex = 0; // 기본 선택 옵션으로 돌아감
+                selectedOption.disabled = true; // 옵션을 비활성화
+                selectedOption.style.color = "#D8D8D8";
+                selectedOption.style.backgroundColor = "#F2F2F2";
+            }
+        });
+    });
+
     function validateForm() {
         // 모든 요소가 입력되었는지 검사
         const currencyCode = document.forms["offlineReceiptForm"]["currencyCode"].value;
@@ -210,20 +227,22 @@ let expectedAmountCK = () => {
                                     <small class="text-muted float-end"></small>
                                 </div>
                                 <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-2 form-check">
+                                                <input class="form-check-input" type="radio" name="walletType" value="0" checked>
+                                                <label class="form-check-label">개인지갑</label>
+                                            </div>
+                                            <div class="col-2 form-check">
+                                                <input class="form-check-input" type="radio" name="walletType" value="1">
+                                                <label class="form-check-label">모임지갑</label>
+                                            </div>
+                                        </div>
                                     <div class="row gx-3 gy-2 align-items-center">
-                                        <div class="col-2 form-check">
-                                            <input class="form-check-input" type="radio" name="walletType" value="0" checked>
-                                            <label class="form-check-label">개인지갑</label>
-                                        </div>
-                                        <div class="col-2 form-check">
-                                            <input class="form-check-input" type="radio" name="walletType" value="1">
-                                            <label class="form-check-label">모임지갑</label>
-                                        </div>
                                         <div class="col-10">
-                                            <select class="form-select color-dropdown" name="walletId">
+                                            <select id="walletSelect" class="form-select color-dropdown" name="walletId">
                                                 <option selected>지갑을 선택하세요</option>
                                                 <c:forEach items="${walletList}" var="wallet" varStatus="loop">
-                                                    <option value="${wallet.walletId}">${wallet.nickname}</option>
+                                                    <option value="${wallet.walletId}" data-role="${wallet.role}">${wallet.nickname}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>

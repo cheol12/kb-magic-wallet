@@ -135,6 +135,7 @@ public class ExchangeServiceImpl implements ExchangeService {
         List<OfflineReceiptDto> resList = new ArrayList<>();
         resList.addAll(pwReceiptHistory);
         resList.addAll(gwReceiptHistory);
+        Collections.sort(resList, Comparator.comparing(OfflineReceiptDto::getReceiptDate).reversed());
 
         return resList;
     }
@@ -193,8 +194,10 @@ public class ExchangeServiceImpl implements ExchangeService {
         if(! offlineReceipt.getReceiptState().equals(ReceiptState.WAITING)){
             throw new ExchangeException("취소할 수 없습니다.");
         }
-
         offlineReceipt.setReceiptState(ReceiptState.CANCEL);
+
+        // 취소했을 때 바로 환불..?
+
         return 1;
     }
 
