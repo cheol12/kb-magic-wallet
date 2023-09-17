@@ -364,18 +364,18 @@ class ExchangeServiceImplTest {
 
         ExchangeDto dto = new ExchangeDto();
         dto.setBuyAmount(1L);
-        dto.setBuyCurrencyCode(CurrencyCode.USD);
+        dto.setBuyCurrencyCode(CurrencyCode.USD.getValue());
         dto.setWalletId(personalWallet1.getPersonalWalletId());
-        dto.setWalletType(WalletType.PERSONAL_WALLET);
+        dto.setWalletType(WalletType.PERSONAL_WALLET.getValue());
 
         int res = exchangeService.requestExchangeOnline(dto);
         System.out.println(res);
 
         ExchangeDto dto2 = new ExchangeDto();
         dto2.setBuyAmount(1L);
-        dto2.setBuyCurrencyCode(CurrencyCode.USD);
+        dto2.setBuyCurrencyCode(CurrencyCode.USD.getValue());
         dto2.setWalletId(140L);
-        dto2.setWalletType(WalletType.GROUP_WALLET);
+        dto2.setWalletType(WalletType.GROUP_WALLET.getValue());
 
         int res2 = exchangeService.requestExchangeOnline(dto2);
         System.out.println(res2);

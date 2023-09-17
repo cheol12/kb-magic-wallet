@@ -201,11 +201,11 @@ public class ExchangeServiceImpl implements ExchangeService {
     @Override
     public int requestExchangeOnline(ExchangeDto exchangeDto) {
         // 원화 -> 외화일 경우만
-        exchangeDto.setSellCurrencyCode(CurrencyCode.KRW);
+        exchangeDto.setSellCurrencyCode(CurrencyCode.KRW.getValue());
 
         Long walletId = exchangeDto.getWalletId();
-        CurrencyCode buyCode = exchangeDto.getBuyCurrencyCode();
-        WalletType type = exchangeDto.getWalletType();
+        CurrencyCode buyCode = CurrencyCode.findByValue(exchangeDto.getBuyCurrencyCode());
+        WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
         Long buyAmount = exchangeDto.getBuyAmount();
 
         // 선택한 지갑의 balance
@@ -348,11 +348,11 @@ public class ExchangeServiceImpl implements ExchangeService {
     @Override
     public int requestReExchangeOnline(ExchangeDto exchangeDto) {
         // 재환전
-        exchangeDto.setBuyCurrencyCode(CurrencyCode.KRW);
+        exchangeDto.setBuyCurrencyCode(CurrencyCode.KRW.getValue());
 
         Long walletId = exchangeDto.getWalletId();
-        CurrencyCode sellCode = exchangeDto.getBuyCurrencyCode();
-        WalletType type = exchangeDto.getWalletType();
+        CurrencyCode sellCode = CurrencyCode.findByValue(exchangeDto.getBuyCurrencyCode());
+        WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
         Long sellAmount = exchangeDto.getSellAmount();
         Long fcBalance = selectedWalletFCBalance(walletId, type).getBalance().get(sellCode); // 외화 잔액
 

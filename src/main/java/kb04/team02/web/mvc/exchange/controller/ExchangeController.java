@@ -113,8 +113,10 @@ public class ExchangeController {
     @PostMapping("/online/form")
     public String exchangeOnline(ExchangeDto exchangeDto) {
         exchangeService.requestExchangeOnline(exchangeDto);
-        // 어디로 가야 하죠...
-        return "index";
+
+        WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
+        if(type.equals(WalletType.PERSONAL_WALLET)) return "redirect:/personalwallet/main";
+        else return "redirect:/group-wallet/";
     }
 
     /**
