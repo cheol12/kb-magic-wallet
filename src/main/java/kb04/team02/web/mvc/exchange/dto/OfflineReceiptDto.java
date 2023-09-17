@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.exchange.dto;
 
+import kb04.team02.web.mvc.exchange.entity.Bank;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.exchange.entity.ReceiptState;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;

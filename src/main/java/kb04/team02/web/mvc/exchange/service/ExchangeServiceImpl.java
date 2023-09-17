@@ -1,11 +1,7 @@
 package kb04.team02.web.mvc.exchange.service;
 
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
-import kb04.team02.web.mvc.exchange.dto.WalletDto;
-import kb04.team02.web.mvc.exchange.dto.BankDto;
-import kb04.team02.web.mvc.exchange.dto.ExchangeCalDto;
-import kb04.team02.web.mvc.exchange.dto.ExchangeDto;
-import kb04.team02.web.mvc.exchange.dto.OfflineReceiptDto;
+import kb04.team02.web.mvc.exchange.dto.*;
 import kb04.team02.web.mvc.exchange.entity.Bank;
 import kb04.team02.web.mvc.exchange.entity.ExchangeRate;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
@@ -144,12 +140,12 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     @Override
-    public int requestOfflineReceipt(OfflineReceiptDto offlineReceiptDto) {
+    public int requestOfflineReceipt(OfflineReceiptRequestDto offlineReceiptRequestDto) {
 
-        WalletType type = offlineReceiptDto.getWalletType();
-        Long walletId = offlineReceiptDto.getWalletId();
-        CurrencyCode currencyCode = offlineReceiptDto.getCurrencyCode();
-        Long amount = offlineReceiptDto.getAmount();
+        WalletType type = WalletType.findByValue(offlineReceiptRequestDto.getWalletType());
+        Long walletId = offlineReceiptRequestDto.getWalletId();
+        CurrencyCode currencyCode = CurrencyCode.findByValue(offlineReceiptRequestDto.getCurrencyCode());
+        Long amount = offlineReceiptRequestDto.getAmount();
 
         // 선택한 지갑의 balance
         Long balance = selectedWalletBalance(walletId, type);
@@ -158,21 +154,22 @@ public class ExchangeServiceImpl implements ExchangeService {
         Long expectedAmount = expectedExchangeAmount(currencyCode, amount).getExpectedAmount();
         if (expectedAmount > balance) throw new ExchangeException("잔액이 부족합니다.");
 
-        Bank bank = bankRepository.findById(offlineReceiptDto.getBankId()).orElseThrow(() -> new NoSuchElementException("은행 조회 실패"));
-        GroupWallet groupWallet = new GroupWallet();
-        PersonalWallet personalWallet = new PersonalWallet();
-        if (walletId != null) {
+        Bank bank = bankRepository.findById(offlineReceiptRequestDto.getBankId()).orElseThrow(() -> new NoSuchElementException("은행 조회 실패"));
+        GroupWallet groupWallet = null;
+        PersonalWallet personalWallet = null;
+
+        if(type.equals(WalletType.PERSONAL_WALLET)){
+            personalWallet = personalWalletRepository.findById(walletId).orElseThrow(() -> new NoSuchElementException("개인지갑 조회 실패"));
+        } else if (type.equals(WalletType.GROUP_WALLET)) {
             groupWallet = groupWalletRespository.findById(walletId).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         }
-        if (walletId != null) {
-            personalWallet = personalWalletRepository.findById(walletId).orElseThrow(() -> new NoSuchElementException("개인지갑 조회 실패"));
-        }
+
         offlineReceiptRepository.save(
                 OfflineReceipt.builder()
-                        .receiptDate(offlineReceiptDto.getReceiptDate())
-                        .currencyCode(offlineReceiptDto.getCurrencyCode())
-                        .amount(offlineReceiptDto.getAmount())
-                        .receiptState(offlineReceiptDto.getReceiptState())
+                        .receiptDate(offlineReceiptRequestDto.getReceiptDate())
+                        .currencyCode(currencyCode)
+                        .amount(amount)
+                        .receiptState(ReceiptState.WAITING)
                         .bank(bank)
                         .personalWallet(personalWallet)
                         .groupWallet(groupWallet)
@@ -180,7 +177,7 @@ public class ExchangeServiceImpl implements ExchangeService {
         );
 
         // 선택한 지갑의 balance update
-        Long minus = expectedExchangeAmount(offlineReceiptDto.getCurrencyCode(), offlineReceiptDto.getAmount()).getExpectedAmount();
+        Long minus = expectedExchangeAmount(currencyCode, amount).getExpectedAmount();
 
         if (type.equals(WalletType.PERSONAL_WALLET)) personalWallet.setBalance(balance - minus);
         else if (type.equals(WalletType.GROUP_WALLET)) groupWallet.setBalance(balance - minus);

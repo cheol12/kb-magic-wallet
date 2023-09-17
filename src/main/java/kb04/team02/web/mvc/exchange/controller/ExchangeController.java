@@ -2,11 +2,7 @@ package kb04.team02.web.mvc.exchange.controller;
 
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
-import kb04.team02.web.mvc.exchange.dto.WalletDto;
-import kb04.team02.web.mvc.exchange.dto.BankDto;
-import kb04.team02.web.mvc.exchange.dto.ExchangeCalDto;
-import kb04.team02.web.mvc.exchange.dto.ExchangeDto;
-import kb04.team02.web.mvc.exchange.dto.OfflineReceiptDto;
+import kb04.team02.web.mvc.exchange.dto.*;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.member.entity.Role;
 import kb04.team02.web.mvc.common.entity.WalletType;
@@ -72,8 +68,9 @@ public class ExchangeController {
      * API 명세서 ROWNUM:44
      */
     @PostMapping("/offline/form")
-    public String exchangeOffline(OfflineReceiptDto offlineReceiptDto) {
-        int result = exchangeService.requestOfflineReceipt(offlineReceiptDto);
+    public String exchangeOffline(OfflineReceiptRequestDto offlineReceiptRequestDto) {
+        System.out.println("ExchangeController.exchangeOffline");
+        int result = exchangeService.requestOfflineReceipt(offlineReceiptRequestDto);
         return "redirect:/exchange/offline";
     }
 
@@ -123,12 +120,16 @@ public class ExchangeController {
     /**
      * 선택한 지갑의 원화 잔액 요청
      * API 명세서 ROWNUM: 55
-     * @param walletId
+     * @param
      * @return
      */
     @ResponseBody
     @PostMapping("/walletBalance")
-    public Long selectedWalletBalance(Long walletId, WalletType walletType){
+    public Long selectedWalletBalance(@RequestBody HashMap<String, Integer> param){
+        Long walletId = Long.valueOf(param.get("walletId"));
+        WalletType walletType = WalletType.findByValue(param.get("walletType"));
+        System.out.println(walletType);
+        System.out.println(walletId);
         return exchangeService.selectedWalletBalance(walletId, walletType);
     }
 
