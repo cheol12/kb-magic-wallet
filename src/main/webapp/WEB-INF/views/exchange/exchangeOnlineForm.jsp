@@ -174,7 +174,7 @@
                                         <div class="col-mb-3">
                                             <button type="button" class="btn btn-outline-warning" onclick="balanceCK();">잔액 조회</button>
                                         </div>
-                                        <div id="hide-balance">
+                                        <div>
                                             <label class="form-label">출금가능잔액</label>
                                             <input id="withdrawableBalance" type="text" class="form-control" placeholder="잔액을 조회하세요" readonly/>
 

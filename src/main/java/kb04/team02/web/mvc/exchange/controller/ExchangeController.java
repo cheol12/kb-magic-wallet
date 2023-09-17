@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.exchange.controller;
 
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
+import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.*;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
@@ -113,7 +114,6 @@ public class ExchangeController {
     @PostMapping("/online/form")
     public String exchangeOnline(ExchangeDto exchangeDto) {
         exchangeService.requestExchangeOnline(exchangeDto);
-
         WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
         if(type.equals(WalletType.PERSONAL_WALLET)) return "redirect:/personalwallet/main";
         else return "redirect:/group-wallet/";
@@ -130,8 +130,6 @@ public class ExchangeController {
     public Long selectedWalletBalance(@RequestBody HashMap<String, Integer> param){
         Long walletId = Long.valueOf(param.get("walletId"));
         WalletType walletType = WalletType.findByValue(param.get("walletType"));
-        System.out.println(walletType);
-        System.out.println(walletId);
         return exchangeService.selectedWalletBalance(walletId, walletType);
     }
 
@@ -175,8 +173,23 @@ public class ExchangeController {
     @PostMapping("/online/re-form")
     public String reExchangeOnline(ExchangeDto exchangeDto) {
         exchangeService.requestReExchangeOnline(exchangeDto);
-        // 어디로 가야 하죠...
-        return "index";
+        WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
+        if(type.equals(WalletType.PERSONAL_WALLET)) return "redirect:/personalwallet/main";
+        else return "redirect:/group-wallet/";
+    }
+
+    /**
+     * 선택한 지갑의 외화 잔액 목록 요청
+     * API 명세서 ROWNUM:
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/walletFCBalance")
+    public WalletDetailDto selectedWalletFCBalance(@RequestBody HashMap<String, Integer> param){
+        Long walletId = Long.valueOf(param.get("walletId"));
+        WalletType walletType = WalletType.findByValue(param.get("walletType"));
+        return exchangeService.selectedWalletFCBalance(walletId, walletType);
     }
 
 }
