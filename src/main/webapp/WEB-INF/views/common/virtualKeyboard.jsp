@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: yebin
-  Date: 2023/09/17
-  Time: 1:30 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -37,7 +30,6 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../../../assets/js/config.js"></script>
-
 </head>
 
 <body>
@@ -58,13 +50,35 @@
 <script>
     let Keyboard = window.SimpleKeyboard.default;
 
+    // 숫자 0부터 9까지의 배열 생성
+    let numbers = [...Array(10).keys()];
+
+    // 숫자를 랜덤하게 섞기
+    for (let i = numbers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+    }
+
+    // 키보드 레이아웃 생성
+    let layout = [
+        numbers[0].toString() + " " + numbers[3].toString() + " " + numbers[6].toString(),
+        numbers[1].toString() + " " + numbers[4].toString() + " " + numbers[7].toString(),
+        numbers[2].toString() + " " + numbers[5].toString() + " " + numbers[8].toString(),
+        "{bksp} " + numbers[9].toString() + " {enter}"
+    ];
+
     let keyboard = new Keyboard({
         onChange: input => onChange(input),
         onKeyPress: button => onKeyPress(button),
         layout: {
-            default: ["1 2 3", "4 5 6", "7 8 9", "{bksp} 0 {enter}"]
+            default: layout
         },
-        theme: "hg-theme-default hg-layout-numeric numeric-theme"
+        theme: "hg-theme-default hg-layout-numeric numeric-theme",
+        display: {
+            '{bksp}': '지우기',
+            '{enter}': '확인'
+        },
+        maxLength: 6
     });
 
     /**
