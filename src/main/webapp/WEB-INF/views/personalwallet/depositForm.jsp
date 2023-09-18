@@ -44,31 +44,12 @@
 
 <div class="pageWrap">
     <div class="center">
-
-
-        <form action="/personalwallet/deposit" method="post">
-            <div class="row g-3 align-items-center">
-                <div class="col-auto">
-                    <label for="amount" class="col-form-label">충전하실 금액</label>
-                </div>
-                <div class="col-auto">
-
-                    <input type="text" id="amount" class="form-control" aria-describedby="passwordHelpInline"
-                           name="amount">
-
-
-                </div>
-
-            </div>
-            <input type="submit" value="충전하기">
-        </form>
-
         <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
                 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">개인지갑/</span> 충전</h4>
                 <!-- Basic Layout -->
-                <form action="/personalwallet/deposit" method="post">
+                <form id="depositForm" action="/personalwallet/deposit" method="post">
                     <div class="row">
                         <div class="col-xl">
                             <div class="card mb-4">
@@ -122,7 +103,8 @@
                                     <div class="mb-3">
                                         이체금액
                                         <div class="input-group input-group-merge">
-                                            <input type="number" id="basic-icon-default-company" class="form-control" name="amount"/>원
+                                            <input type="number" id="basic-icon-default-company" class="form-control"
+                                                   name="amount"/>원
                                         </div>
 
                                         <div class="mb-auto">
@@ -157,7 +139,36 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Send</button>
+                                <%--                                <button type="submit" class="btn btn-primary">Send</button>--%>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" id="depositButton" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">
+                                    충전하기
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">결제 비밀번호 확인</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close">
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <jsp:include page="../common/virtualKeyboard.jsp"/>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    닫기
+                                                </button>
+                                                <button type="button" id="saveChangesButton" class="btn btn-primary">비밀번호 확인</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -168,8 +179,16 @@
 
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $("#saveChangesButton").click(function () {
+            handleEnter()
+        });
+    });
 
-
-</div>
+    function summitForm() {
+        $("#depositForm").submit();
+    }
+</script>
 </body>
 </html>

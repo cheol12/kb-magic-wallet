@@ -95,7 +95,7 @@
                 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">개인지갑/</span> 꺼내기</h4>
                 <!-- Basic Layout -->
 
-                <form id="frm" method="post" action="/personalwallet/withdraw">
+                <form id="withdrawForm" method="post" action="/personalwallet/withdraw">
                     <div class="row">
                         <div class="col-xl">
                             <div class="card mb-4">
@@ -186,7 +186,35 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" id="withdrawSubmitBtn" class="btn btn-primary">Send</button>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" id="withdrawButton" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">
+                                    환불하기
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">결제 비밀번호 확인</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close">
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <jsp:include page="../common/virtualKeyboard.jsp"/>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    닫기
+                                                </button>
+                                                <button type="button" id="saveChangesButton" class="btn btn-primary">비밀번호 확인</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -197,7 +225,16 @@
 
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $("#saveChangesButton").click(function () {
+            handleEnter()
+        });
+    });
 
-
+    function summitForm() {
+        $("#withdrawForm").submit();
+    }
+</script>
 </body>
 </html>
