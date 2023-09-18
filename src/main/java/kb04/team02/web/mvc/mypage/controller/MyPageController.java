@@ -1,13 +1,19 @@
 package kb04.team02.web.mvc.mypage.controller;
 
+import kb04.team02.web.mvc.common.dto.WalletDetailDto;
+import kb04.team02.web.mvc.group.entity.GroupWallet;
+import kb04.team02.web.mvc.group.service.GroupWalletService;
 import kb04.team02.web.mvc.mypage.dto.CardNumberDto;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.mypage.service.MyPageService;
+import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("mypage")
@@ -16,12 +22,28 @@ public class MyPageController {
 
     private final MyPageService myPageService;
 
+    private final PersonalWalletService personalWalletService;
+    private final GroupWalletService groupWalletService;
+
+
+
     /**
      * 마이 페이지
      * API 명세서 ROWNUM:49
      */
     @GetMapping("/main")
-    public void mypageIndex() {
+    public ModelAndView mypageIndex(HttpSession session) {
+
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        WalletDetailDto walletDetailDto = personalWalletService.personalWallet(member);
+
+        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(member);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("mypage/main");
+        modelAndView.addObject("walletDetailDto", walletDetailDto);
+        modelAndView.addObject("gWalletList", gWalletList);
+
+        return modelAndView;
     }
 
     /**
@@ -36,9 +58,10 @@ public class MyPageController {
      * 마이 페이지 - 카드 신청
      * API 명세서 ROWNUM:51
      */
-    @PostMapping("/card")
+    @GetMapping("/card/new")
     public String cardCreate(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        System.out.println("================");
         myPageService.createCard(loggedIn);
         return "mypage/main";
     }
@@ -47,7 +70,7 @@ public class MyPageController {
      * 마이 페이지 - 카드 분실
      * API 명세서 ROWNUM:52
      */
-    @DeleteMapping("/card")
+    @GetMapping("/card/delete")
     public String cardInvalidate(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.invalidateCard(loggedIn);
@@ -88,7 +111,7 @@ public class MyPageController {
      * 마이페이지 - 카드 다시 시작
      * TODO API 명세서 추가
      */
-    @PatchMapping("/card/restart")
+    @GetMapping("/card/restart")
     public String cardResume(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.resumeCard(loggedIn);
@@ -101,9 +124,10 @@ public class MyPageController {
      */
     @GetMapping("/mycard")
     @ResponseBody
-    public CardNumberDto cardNumber(HttpSession session) {
+    public ModelAndView cardNumber(HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
-        return myPageService.getCardNumber(member);
+        CardNumberDto cardNumber = myPageService.getCardNumber(member);
+        return new ModelAndView("mypage/cardForm", "cardNumber", cardNumber);
     }
 
     /**

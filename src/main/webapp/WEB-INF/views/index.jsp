@@ -11,57 +11,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깨비의 요술 지갑 - 메인</title>
-    <link rel="stylesheet" type="text/css" href="../../css/loginform.css" /><!--로그인 폼 css-->
     <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
     <link rel="stylesheet" type="text/css" href="../../css/index.css"/>
+
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/fonts/boxicons.css"/>
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/core.css" class="template-customizer-core-css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/theme-default.css" class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/demo.css"/>
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"/>
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="${pageContext.request.contextPath}/assets/vendor/js/helpers.js"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
 
 </head>
 <body>
 <!--네비게이션 바-->
 <jsp:include page="common/navbar.jsp"/>
 
-<div class ="pageWrap">
+<div >
 
-    <div class="mainBanner">
-        <div class="bannerImg">
-            <h3>모두의 여행 통장!</h3>
-            <h1>깨비의 요술 지갑</h1>
+
+    <div class="center">
+        <div class="row mb-5">
+            <div class="col-md">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img class="card-img card-img-left" src="../assets/img/elements/11.jpg" alt="Card image" />
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">개인 지갑 기능</h5>
+                                <p class="card-text">
+                                    무려 카드를 같이 드려요!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!--로그인 폼-->
-        <form method="post" action="/login">
-            <div class="group">
-                <input type="text" name="id"><span class="highlight"></span><span class="bar"></span>
-                <label>아이디</label>
+        <div class="row mb-5">
+
+            <div class="col-md">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">모임 지갑 기능</h5>
+                                <p class="card-text">
+                                    돈 같이 넣고 같이 쓰자!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <img class="card-img card-img-right" src="../assets/img/elements/17.jpg" alt="Card image" />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="group">
-                <input type="password" name="password"><span class="highlight"></span><span class="bar"></span>
-                <label>비밀번호</label>
+        </div>
+        <div class="row mb-5">
+            <div class="col-md">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img class="card-img card-img-left" src="../assets/img/elements/12.jpg" alt="Card image" />
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">환전 기능</h5>
+                                <p class="card-text">
+                                    외국 갈 꺼니까~~!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <input type="submit" class="button buttonBlue" value="로그인">
-                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
-            </input>
-        </form>
-        <!--/로그인 폼-->
+        </div>
+        <div class="row mb-5">
+
+            <div class="col-md">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">적금 혜택</h5>
+                                <p class="card-text">
+                                    돈 모아서 적금 들고, 그 돈으로 여행 갈래?
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <img class="card-img card-img-right" src="../assets/img/elements/19.jpg" alt="Card image" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md">
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img class="card-img card-img-left" src="../assets/img/elements/4.jpg" alt="Card image" />
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">활용성 높은 카드</h5>
+                                <p class="card-text">
+                                    자신의 지갑 목록 중 원하는 지갑을 선택해서 사용 가능한 카드!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
 
     </div>
 
-    <!--메인 버튼 4개-->
-    <div id="mainPageTab">
-        <button class="mainTabButton">
-            개인 지갑
-        </button>
-        <button class="mainTabButton">
-            모임 지갑
-        </button>
-        <button class="mainTabButton">
-            환전
-        </button>
-        <button class="mainTabButton" onclick="location.href='saving/savingMain.html'">
-            적금
-        </button>
 
-    </div>
-    <!--/메인 버튼 4개-->
 
 </div>
 

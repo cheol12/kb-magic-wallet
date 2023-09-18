@@ -9,104 +9,167 @@
 <html>
 <head>
     <title>회원 가입</title>
-    <link rel="stylesheet" type="text/css" href="../../css/loginform.css" /><!--로그인 폼 css-->
-    <link rel="stylesheet"type="text/css" href="/css/common.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/common.css"/>
+
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/fonts/boxicons.css"/>
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/core.css" class="template-customizer-core-css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/theme-default.css" class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/demo.css"/>
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"/>
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="${pageContext.request.contextPath}/assets/vendor/js/helpers.js"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
 </head>
 <body>
     <jsp:include page="../common/navbar.jsp"/>
 
 
     <div class="pageWrap">
-        <h1 class="titDep1">회원가입 - 개인</h1>
-<%--            <div class="contentArea">--%>
-<%--                <div class="stepType stepCol4"></div>--%>
-<%--                    <div class="inner">--%>
-<%--                        <strong class="step01">--%>
-<%--                            ::before--%>
-<%--                            <span>--%>
-<%--                                ::before--%>
-<%--                                "현재"--%>
-<%--                                ::after--%>
-<%--                            </span>--%>
-<%--                            "1. KBPay 인증"--%>
-<%--                        </strong>--%>
-<%--                        <span class="step02">--%>
-<%--                            ::before--%>
-<%--                            <span>--%>
-<%--                                ::before--%>
-<%--                                "현재"--%>
-<%--                                ::after--%>
-<%--                            </span>--%>
-<%--                            "2. 약관동의"--%>
-<%--                        </span>--%>
-<%--                        <span class="step03">--%>
-<%--                            ::before--%>
-<%--                            <span>--%>
-<%--                                ::before--%>
-<%--                                "현재"--%>
-<%--                                ::after--%>
-<%--                            </span>--%>
-<%--                            "3. 약관동의"--%>
-<%--                        </span>--%>
-<%--                        <span class="step04">--%>
-<%--                            ::before--%>
-<%--                            <span>--%>
-<%--                                ::before--%>
-<%--                                "현재"--%>
-<%--                                ::after--%>
-<%--                            </span>--%>
-<%--                            "4. 완료"--%>
-<%--                        </span>--%>
-<%--                    </div>--%>
 
-<%--            </div>--%>
         <div class="center">
-            <!--회원가입 폼-->
-            <form method="post" action="/register">
-                <div class="group">
-                    <input type="text" name="id"><span class="highlight"></span><span class="bar"></span>
-                    <label>아이디</label>
+            <div class="col-xxl">
+                <div class="card mb-4">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">회원가입</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="/register">
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="register_id">아이디</label>
+                                <div class="col-sm-10">
+                                    <input name="id" type="text" class="form-control" id="register_id" placeholder="gildong1234" />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="basic-default-company">비밀번호</label>
+                                <div class="col-sm-10">
+                                    <input
+                                            name="password"
+                                            type="password"
+                                            class="form-control"
+                                            id="basic-default-company"
+                                    />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="register_name">이름</label>
+                                <div class="col-sm-10">
+                                    <input name="name" type="text" class="form-control" id="register_name" placeholder="홍길동" />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="basic-default-email">이메일</label>
+                                <div class="col-sm-10">
+                                    <div class="input-group input-group-merge">
+                                        <input
+                                                name="email"
+                                                type="text"
+                                                id="basic-default-email"
+                                                class="form-control"
+                                                placeholder="gildong@gmail.com"
+                                                aria-describedby="basic-default-email2"
+                                        />
+                                    </div>
+                                    <div class="form-text">You can use letters, numbers & periods</div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="basic-default-phone">연락처</label>
+                                <div class="col-sm-10">
+                                    <input
+                                            name="phoneNumber"
+                                            type="text"
+                                            id="basic-default-phone"
+                                            class="form-control phone-mask"
+                                            placeholder="010-41234-5678"
+                                            aria-describedby="basic-default-phone"
+                                    />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="register_address">주소</label>
+                                <div class="col-sm-3">
+                                    <input
+                                            name="city"
+                                            type="text"
+                                            id="register_address"
+                                            class="form-control phone-mask"
+                                            placeholder="시/도/군"
+                                            aria-describedby="basic-default-phone"
+                                    />
+                                </div>
+                                <div class="col-sm-7">
+                                    <input
+                                            name="zipcode"
+                                            type="text"
+                                            id="register_zipcode"
+                                            class="form-control phone-mask"
+                                            placeholder="우편번호"
+                                            aria-describedby="basic-default-phone"
+                                    />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label"></label>
+                                <div class="col-sm-10">
+                                    <input
+                                            name="street"
+                                            type="text"
+                                            id="register_address2"
+                                            class="form-control phone-mask"
+                                            placeholder="상세주소"
+                                            aria-describedby="basic-default-phone"
+                                    />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="pay_password">결제 비밀번호</label>
+                                <div class="col-sm-10">
+                                    <input
+                                            name="payPassword"
+                                            type="password"
+                                            id="pay_password"
+                                            class="form-control phone-mask"
+                                            aria-describedby="basic-default-phone"
+                                    />
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="register_account">계좌번호</label>
+                                <div class="col-sm-10">
+                                    <input
+                                            name="bankAccount"
+                                            type="text"
+                                            id="register_account"
+                                            class="form-control phone-mask"
+                                            placeholder="942902-00-291438"
+                                            aria-describedby="basic-default-phone"
+                                    />
+                                </div>
+                            </div>
+                            <div class="row justify-content-end">
+                                <div class="col-sm-10">
+                                    <button type="submit" class="btn btn-primary">회원 가입</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="group">
-                    <input type="password" name="password"><span class="highlight"></span><span class="bar"></span>
-                    <label>비밀번호</label>
-                </div>
-                <div class="group">
-                    <input type="text" name="name"><span class="highlight"></span><span class="bar"></span>
-                    <label>이름</label>
-                </div>
-                <div class="group">
-                    <input type="text" name="city"><span class="highlight"></span><span class="bar"></span>
-                    <label>시/도/군</label>
-                </div>
-                <div class="group">
-                    <input type="text" name="street"><span class="highlight"></span><span class="bar"></span>
-                    <label>도로명</label>
-                </div>
-                <div class="group">
-                    <input type="text" name="zipcode"><span class="highlight"></span><span class="bar"></span>
-                    <label>우편번호</label>
-                </div>
-                <div class="group">
-                    <input type="text" name="phoneNumber"><span class="highlight"></span><span class="bar"></span>
-                    <label>전화번호</label>
-                </div>
-                <div class="group">
-                    <input type="text" name="email"><span class="highlight"></span><span class="bar"></span>
-                    <label>이메일</label>
-                </div>
-                <div class="group">
-                    <input type="text" name="payPassword"><span class="highlight"></span><span class="bar"></span>
-                    <label>kb페이 비밀번호</label>
-                </div>
-                <div class="group">
-                    <input type="text" name="bankAccount"><span class="highlight"></span><span class="bar"></span>
-                    <label>은행 계좌번호</label>
-                </div>
-                <input type="submit" class="button buttonBlue" value="회원가입">
-                    <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
-                </input>
-            </form>
+            </div>
+
             <!--/회원가입 폼-->
         </div>
     </div>
