@@ -1,8 +1,10 @@
 package kb04.team02.web.mvc.group.controller;
 
+import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -40,7 +42,7 @@ public class GroupWalletFormController {
      * @param id 정산을 진행할 모임지갑 id
      */
     @GetMapping("/{id}/settle")
-    public String groupWalletSettleForm() {
+    public String groupWalletSettleForm(@PathVariable Long id) {
         return "groupwallet/groupWalletSettleForm";
     }
 
@@ -52,7 +54,7 @@ public class GroupWalletFormController {
      */
     @GetMapping("/{id}/deposit")
     public String groupWalletDepositForm(@PathVariable Long id) {
-        return "groupwallet/groupWalletDepositForm";
+        return "groupwallet/depositForm";
     }
 
     /**
@@ -62,8 +64,10 @@ public class GroupWalletFormController {
      * API 명세서에 없음
      * @param id 회비 규칙을 만들 모임지갑 id
      */
-    @GetMapping("/{id}/rule/form")
-    public String groupWalletRuleForm(@PathVariable String id) {
+    @GetMapping("/{id}/rule")
+    public String groupWalletRuleForm(@PathVariable Long id, Model model) {
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+        model.addAttribute("groupWallet", groupWallet);
         return "groupwallet/groupWalletRuleForm";
     }
 

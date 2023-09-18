@@ -71,6 +71,22 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     // 해당 모임 지갑의 모임장, 공동 모임장 회원 리스트 찾기
     List<Participation> findByGroupWalletAndRoleIn(GroupWallet groupWallet, Collection<Role> role);
 
-    // 매개변수 memberId와 state가 동시에 일치하는 멤버찾기
+    /**
+     * @author 김철
+     * 매개변수 memberId와 state가 동시에 일치하는 데이터 찾기
+     * = 모임지갑 메인화면 : 나의 모임지갑 리스트 조회에 필요
+     * */
     List<Participation> findParticipationByMemberIdAndParticipationStateEquals(Long memberId, ParticipationState state);
+
+    /**
+     * @author 김철
+     * 매개변수 groupWalletId와 state가 동시에 일치하는 데이터 찾기
+     * = 모임지갑 상세화면 = 모임지갑의 모임원 리스트 조회에 필요
+     * */
+    List<Participation> findParticipationByGroupWallet_GroupWalletIdAndParticipationState(Long groupWalletId, ParticipationState state);
+
+    /**
+     * @author 김철
+     * */
+    Participation findByMemberIdAndRoleAndGroupWallet_GroupWalletId(Long memberId, Role role, Long groupWalletId);
 }
