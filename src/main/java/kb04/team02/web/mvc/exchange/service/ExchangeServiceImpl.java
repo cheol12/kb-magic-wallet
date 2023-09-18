@@ -7,11 +7,14 @@ import kb04.team02.web.mvc.exchange.entity.ExchangeRate;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.exchange.entity.ReceiptState;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
-import kb04.team02.web.mvc.group.entity.*;
+import kb04.team02.web.mvc.group.entity.Participation;
 import kb04.team02.web.mvc.group.repository.ParticipationRepository;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.member.entity.Role;
 import kb04.team02.web.mvc.common.entity.WalletType;
+import kb04.team02.web.mvc.group.entity.GroupWallet;
+import kb04.team02.web.mvc.group.entity.GroupWalletExchange;
+import kb04.team02.web.mvc.group.entity.GroupWalletForeignCurrencyBalance;
 import kb04.team02.web.mvc.personal.entity.PersonalWallet;
 import kb04.team02.web.mvc.personal.entity.PersonalWalletExchange;
 import kb04.team02.web.mvc.personal.entity.PersonalWalletForeignCurrencyBalance;
@@ -76,15 +79,21 @@ public class ExchangeServiceImpl implements ExchangeService {
         PersonalWallet pw = personalWalletRepository.findByMember(member);
         pWalletList.add(WalletDto.toPersoanlDto(pw));
         // 모임 지갑
-        List<GroupWallet> groupWallet = groupWalletRespository.findByMember(member);
-
-        //List<Participation> list = participationRepository.findByGroupWalletAndParticipationState(groupWallet, ParticipationState.PARTICIPATED);
-
-        if (groupWallet != null) {
-            List<WalletDto> gWalletList = groupWallet.stream()
-                    .map(WalletDto::toGroupDto)
-                    .collect(Collectors.toList());
-
+        List<WalletDto> gWalletList = new ArrayList<>();
+        List<GroupWallet> groupWalletList = groupWalletRespository.findAllByMember_MemberId(memberId);
+        System.out.println(groupWalletList.size());
+        if (groupWalletList != null) {
+            for (GroupWallet g : groupWalletList) {
+                System.out.println(g.getGroupWalletId());
+                WalletDto walletDto = new WalletDto();
+                walletDto.setWalletId(g.getGroupWalletId());
+                walletDto.setNickname(g.getNickname());
+                walletDto.setWalletType(WalletType.GROUP_WALLET);
+                walletDto.setRole(participationRepository.findByGroupWalletAndMemberId(g, memberId).getRole());
+                gWalletList.add(walletDto);
+                System.out.println("=========================");
+                System.out.println(participationRepository.findByGroupWalletAndMemberId(g, memberId).getRole());
+            }
             resList.addAll(gWalletList);
         }
 
