@@ -3,6 +3,7 @@ package kb04.team02.web.mvc.exchange.entity;
 
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Builder
 public class ExchangeRate {
 
     @Id
@@ -31,6 +33,5 @@ public class ExchangeRate {
     private Double buyingRate;
     private Double sellingRate;
 
-    @CreationTimestamp
     private LocalDateTime insertDate;
 }
