@@ -308,7 +308,7 @@ public class ExchangeServiceImpl implements ExchangeService {
 
         // 적용 환율 구하기
         Double applicableExchangeRate = 0.0;
-        ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurrencyCode(currencyCode)
+        ExchangeRate exchangeRate = exchangeRateRepository.findFirstByCurrencyCodeOrderByInsertDateDesc(currencyCode)
                 .orElseThrow(() -> new NoSuchElementException("환율 조회 실패"));
         if (!currencyCode.equals(CurrencyCode.KRW)) {
             // 원화 -> 외화
