@@ -61,9 +61,10 @@ public class MyPageController {
     @GetMapping("/card/new")
     public String cardCreate(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
-        System.out.println("================");
         myPageService.createCard(loggedIn);
-        return "mypage/main";
+        session.setAttribute("alertMessage", "카드 신청이 완료 되었습니다");
+
+        return "redirect:/mypage/mycard";
     }
 
     /**
@@ -74,7 +75,9 @@ public class MyPageController {
     public String cardInvalidate(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.invalidateCard(loggedIn);
-        return "mypage/main";
+        session.setAttribute("alertMessage", "카드 정지 신청이 완료되었습니다");
+
+        return "redirect:/mypage/mycard";
     }
 
     /**
@@ -100,11 +103,13 @@ public class MyPageController {
      * 마이페이지 - 카드 일시 정지, 재개
      * TODO API 명세서 추가
      */
-    @PatchMapping("/card/stop")
+    @GetMapping("/card/stop")
     public String cardPause(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.pauseCard(loggedIn);
-        return "mypage/main";
+        session.setAttribute("alertMessage", "카드 일시정지 신청이 완료 되었습니다");
+
+        return "redirect:/mypage/mycard";
     }
 
     /**
@@ -115,7 +120,9 @@ public class MyPageController {
     public String cardResume(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.resumeCard(loggedIn);
-        return "mypage/main";
+        session.setAttribute("alertMessage", "카드 사용이 재개 되었습니다");
+
+        return "redirect:/mypage/mycard";
     }
 
     /**
@@ -126,8 +133,12 @@ public class MyPageController {
     @ResponseBody
     public ModelAndView cardNumber(HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        System.out.println("------------");
         CardNumberDto cardNumber = myPageService.getCardNumber(member);
-        return new ModelAndView("mypage/cardForm", "cardNumber", cardNumber);
+        System.out.println(cardNumber.getCardState());
+
+
+        return new ModelAndView("forward:/mypage/cardForm", "cardNumber", cardNumber);
     }
 
     /**
