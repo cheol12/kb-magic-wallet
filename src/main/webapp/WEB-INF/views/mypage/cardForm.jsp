@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html>
 <head>
     <title>KB 모임지갑 - 카드 페이지</title>
@@ -36,6 +38,19 @@
 
 </head>
 <body>
+
+<script type="text/javascript">
+    <%
+        String alertMessage = (String) session.getAttribute("alertMessage");
+        if (alertMessage != null) {
+    %>
+    alert('<%= alertMessage %>');
+    <% session.removeAttribute("alertMessage"); %>
+    <%
+        }
+    %>
+</script>
+
 <jsp:include page="${pageContext.request.contextPath}/WEB-INF/views/common/navbar.jsp"/>
 <div class="pageWrap">
     <div class="center">
@@ -54,8 +69,15 @@
                             </div>
 
                             <div class="col-xl">
-                               <h3 style="margin: 10%"> 카드 번호 : ${cardNumber.getCardNumber}</h3>
-                                <h3 style="margin: 10%">카드 상태 : ${cardNumber.getCardState()}</h3>
+                               <h3 style="margin: 10%"> 카드 번호 : ${cardNumber.cardNumber}</h3>
+                                <h3 style="margin: 10%">카드 상태 :
+                                    <c:choose>
+                                        <c:when test="${cardNumber.cardState == 'OK'}">사용 가능</c:when>
+                                        <c:when test="${cardNumber.cardState == 'TEMPORAL_STOP'}">일시정지</c:when>
+                                        <c:when test="${cardNumber.cardState == 'STOP'}">사용정지</c:when>
+                                        <c:otherwise>알 수 없는 상태</c:otherwise>
+                                    </c:choose>
+                                </h3>
                             </div>
                         </div>
                     </div>
@@ -90,7 +112,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">카드 일시정지</h5>
                                 <p class="card-text">현재 카드가 분실상태이지만 찾을 수 있을 경우</p>
-                                <a href="mypage/card/stop" class="btn btn-primary">신청하기</a>
+                                <a href="${pageContext.request.contextPath}/mypage/card/stop" class="btn btn-primary">신청하기</a>
                             </div>
                         </div>
                     </div>
@@ -104,7 +126,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">카드 정지 해제</h5>
                                 <p class="card-text">일시정지 상태인 카드 정지 해제</p>
-                                <a href="mypage/card/restart" class="btn btn-primary">신청하기</a>
+                                <a href="${pageContext.request.contextPath}/mypage/card/restart" class="btn btn-primary">신청하기</a>
                             </div>
                         </div>
                     </div>
@@ -118,7 +140,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">카드 영구정지</h5>
                                 <p class="card-text">카드를 분실하여 찾을 수 없을 경우</p>
-                                <a href="mypage/card/delete" class="btn btn-primary">신청하기</a>
+                                <a href="${pageContext.request.contextPath}/mypage/card/delete" class="btn btn-primary">신청하기</a>
                             </div>
                         </div>
                     </div>

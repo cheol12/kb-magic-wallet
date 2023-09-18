@@ -69,13 +69,13 @@
                 <div class="card mb-3">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img src="${pageContext.request.contextPath}/assets/img/icons/people.png" alt="Card image" class="card-img">
+                            <img src="${pageContext.request.contextPath}/assets/img/icons/card.png" alt="Card image" class="card-img">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
                                 <h5 class="card-title">카드 관리</h5>
                                 <p class="card-text">개인 카드 관리 서비스</p>
-                                <a href="${pageContext.request.contextPath}/mypage/cardForm" class="btn btn-primary">카드 신청 페이지</a>
+                                <a href="${pageContext.request.contextPath}/mypage/mycard" class="btn btn-primary">카드 신청 페이지</a>
                             </div>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                 <div class="card mb-3">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img src="${pageContext.request.contextPath}/assets/img/icons/people.png" alt="Card image" class="card-img">
+                            <img src="${pageContext.request.contextPath}/assets/img/icons/account.png" alt="Card image" class="card-img" style="padding : 7%;">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">

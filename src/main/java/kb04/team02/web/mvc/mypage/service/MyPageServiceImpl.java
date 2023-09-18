@@ -46,6 +46,8 @@ public class MyPageServiceImpl implements MyPageService {
             throw new NoSuchElementException();
         }
 
+
+        System.out.println(generateRandomCardNumber());
         // 카드 생성
         CardIssuance card = CardIssuance.builder()
                 .cardNumber(generateRandomCardNumber())

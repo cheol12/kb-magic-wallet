@@ -19,7 +19,7 @@ public class CardNumberIssuance {
         for (int i = 1; i < 16; i++) {
             int digit = rand.nextInt(10); // 0부터 9까지의 난수 생성
             cardNumber.append(digit);
-            if (i % 4 == 3) {
+            if ((i % 4 == 3) && i!=15) {
                 cardNumber.append('-');
             }
         }
