@@ -55,21 +55,16 @@ public class SavingController {
      *
      * @param id 가입 할 적금 상품 id
      */
-//    @GetMapping("/{id}/form")
-//    public void savingJoinForm(@PathVariable String id) {}
-
-//    @GetMapping("/{id}/form")
-//    public ModelAndView savingJoinForm(@PathVariable String id) {
-//        return new ModelAndView("saving/savingForm", "id", id);
-//    }
-
     @GetMapping("/{id}/form")
     public String savingJoinForm(@PathVariable String id, HttpSession session, Model model) {
         System.out.println("GetMapping 실행.............");
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
         List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(loginMemberDto);
+        SavingDto saving = savingService.selectSavingDetail(Long.parseLong(id));
+
         model.addAttribute("gWalletList", gWalletList);
         model.addAttribute("userId", id);
+        model.addAttribute("saving", saving);
         return "saving/savingForm";
     }
 
@@ -83,7 +78,6 @@ public class SavingController {
      */
 //    @PostMapping("/{id}/form")
     @PostMapping("/{id}/form")
-//    public String savingJoin(@PathVariable String id, SavingInstallmentDto installmentDto) {
     public String savingJoin(@PathVariable String id, SavingInstallmentDto installmentDto) {
         System.out.println("PostMapping 실행.............");
         int result = savingService.insertInstallmentSaving(installmentDto);
