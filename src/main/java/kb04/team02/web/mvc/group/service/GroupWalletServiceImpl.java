@@ -140,8 +140,11 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         // 외화 잔액 내역 설정
         for (GroupWalletForeignCurrencyBalance foreignCurrencyBalance : foreignCurrencyBalanceList) {
-            dto.getBalance().put(foreignCurrencyBalance.getCurrencyCode().name(), foreignCurrencyBalance.getBalance());
+            dto.getBalance().put(foreignCurrencyBalance.getCurrencyCode().name(),
+                    foreignCurrencyBalance.getBalance());
         }
+
+        dto.getBalance().put("KRW", groupWallet.getBalance());
 
         dto.setList(new ArrayList<>());
 

@@ -1,6 +1,8 @@
 package kb04.team02.web.mvc.group.controller;
 
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
+import kb04.team02.web.mvc.common.entity.CurrencyCode;
+import kb04.team02.web.mvc.exchange.dto.ExchangeRateDto;
 import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
 import kb04.team02.web.mvc.group.dto.GroupMemberDto;
 import kb04.team02.web.mvc.group.dto.InstallmentDto;
@@ -79,9 +81,15 @@ public class GroupWalletController {
         // 내 모임지갑 내역 조회
         WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
         model.addAttribute("walletDetailDto", walletDetailDto);
-//        mv.setViewName("groupwallet/groupWalletDetail");
-//        mv.addObject("walletDetailDto", walletDetailDto);
-//        mv.addObject("groupWallet", groupWallet);
+        ExchangeRateDto usdExchangeRateDto = ExchangeRateDto.builder()
+                .currencyCode(CurrencyCode.USD)
+                .tradingBaseRate(1324.0)
+                .build();
+        ExchangeRateDto jpyExchangeRateDto = ExchangeRateDto.builder()
+                .currencyCode(CurrencyCode.JPY)
+                .tradingBaseRate(9.08).build();
+        model.addAttribute("usdExchangeRateDto", usdExchangeRateDto);
+        model.addAttribute("jpyExchangeRateDto", jpyExchangeRateDto);
 
         // 내 모임지갑 모임원 리스트
         List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
@@ -107,7 +115,7 @@ public class GroupWalletController {
         List<CardIssuanceDto> cardIssuanceDtoList = groupWalletService.getCardIssuanceDto(id);
         model.addAttribute("cardIssuanceDtoList", cardIssuanceDtoList);
 
-        return "groupwallet/groupWalletDetail";
+        return "groupwallet/groupWalletDetail01";
     }
 
     @ResponseBody
