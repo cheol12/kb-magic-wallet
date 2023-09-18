@@ -83,14 +83,13 @@ public class MemberController {
 
     @ResponseBody
     @PostMapping("/verification")
-    public ResponseEntity<?> PayPasswordVerification(String payPassword) {
-        System.out.println(payPassword);
-//        try {
-//            memberService.verify(payPassword);
-//            return ResponseEntity.ok("비밀 번호 확인 완료");
-//        } catch (RuntimeException e) {
-//            return ResponseEntity.internalServerError().body("비밀 번호 불일치");
-//        }
-        return ResponseEntity.ok("password verified");
+    public ResponseEntity<?> PayPasswordVerification(String payPassword, HttpSession session) {
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        try {
+            memberService.verify(member, payPassword);
+            return ResponseEntity.ok("비밀 번호 확인 완료");
+        } catch (RuntimeException e) {
+            return ResponseEntity.internalServerError().body("비밀 번호 불일치");
+        }
     }
 }
