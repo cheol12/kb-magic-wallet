@@ -32,13 +32,13 @@ public class WalletDto {
                 .build();
     }
 
-    public static WalletDto toGroupDto(GroupWallet groupWallet){
-        return WalletDto.builder()
-                .walletId(groupWallet.getGroupWalletId())
-                .nickname(groupWallet.getNickname())
-                .role(null)
-                .walletType(WalletType.GROUP_WALLET)
-                .build();
-    }
+//    public static WalletDto toGroupDto(GroupWallet groupWallet, Role role){
+//        return WalletDto.builder()
+//                .walletId(groupWallet.getGroupWalletId())
+//                .nickname(groupWallet.getNickname())
+//                .role(role)
+//                .walletType(WalletType.GROUP_WALLET)
+//                .build();
+//    }
 
 }

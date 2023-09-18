@@ -27,8 +27,7 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
 
-    <!--배너용 css-->
-    <script src="${pageContext.request.contextPath}/css/heroBanner.css"></script>
+
 
 
 <%--    <link rel="stylesheet" type="text/css" href="/css/common.css">--%>
@@ -62,7 +61,11 @@
                     가입 기한 : ${saving.getPeriod()} 개월
                 </h5>
                 <h2 class="card-text text-dark">${saving.getSavingComment()}</h2>
-                <a href="${pageContext.request.contextPath}/saving/${saving.getSavingId()}/form" class="btn btn-primary">신청하기</a>
+                <c:if test="${isChairmanGroupWalletList}">
+                    <a href="${pageContext.request.contextPath}/saving/${saving.getSavingId()}/form" class="btn btn-primary">신청하기</a>
+                </c:if>
+
+<%--                <a href="${pageContext.request.contextPath}/saving/${saving.getSavingId()}/form" class="btn btn-primary">신청하기</a>--%>
             </div>
         </div>
     </div>
