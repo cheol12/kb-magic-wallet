@@ -25,7 +25,7 @@
     <div class="center">
 
 
-        <form action="${pageContext.request.contextPath}/group-wallet/{id}/withdraw" method="post">
+        <form id="withdrawForm" action="${pageContext.request.contextPath}/group-wallet/{id}/withdraw" method="post">
             <div class="row g-3 align-items-center" >
                 <div class="col-auto">
                     <label for="amount" class="col-form-label">환불하실 금액</label>
@@ -38,14 +38,50 @@
                 </div>
 
             </div>
-            <input type="submit" value="환불하기">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" id="withdrawButton" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">
+                꺼내기
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1"
+                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">결제 비밀번호 확인</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <jsp:include page="../common/virtualKeyboard.jsp"/>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                닫기
+                            </button>
+                            <button type="button" id="saveChangesButton" class="btn btn-primary">비밀번호 확인</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
 
 
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $("#saveChangesButton").click(function () {
+            handleEnter()
+        });
+    });
 
-
-
+    function summitForm() {
+        $("#withdrawForm").submit();
+    }
+</script>
 </body>
 </html>
