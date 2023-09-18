@@ -61,8 +61,8 @@ public class GroupWalletTabController {
     }
 
     // 모임지갑 내역 조회 함수
-    @ResponseBody
-    @GetMapping("/{id}/history")
+//    @ResponseBody
+//    @PostMapping("/{id}/history")
     public HashMap<String, Object> createHistoryMap(int nowPage, String id) {
         Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
         Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
@@ -393,20 +393,20 @@ public class GroupWalletTabController {
      * @param id        상세 내역 조회할 모임지갑 id
      * @param historyid 상세 내역 조회할 내역 id
      */
-    @ResponseBody
-    @GetMapping("/{id}/{historyid}")
-    // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미?
-    // 3개 다 합친 것? 대응되는 개념?
-    public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
-        WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id), Long.parseLong(historyid), (String) model.getAttribute("type"));
-
-        if (historyDetail != null) {
-            return historyDetail;
-        } else {
-            return null;
-//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
-    }
+//    @ResponseBody
+//    @GetMapping("/{id}/{historyid}")
+//    // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미?
+//    // 3개 다 합친 것? 대응되는 개념?
+//    public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
+//        WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id), Long.parseLong(historyid), (String) model.getAttribute("type"));
+//
+//        if (historyDetail != null) {
+//            return historyDetail;
+//        } else {
+//            return null;
+////            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+//        }
+//    }
 
     //== 내역 탭 END ==//
 }
