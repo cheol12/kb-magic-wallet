@@ -68,7 +68,7 @@
             <div class="container-xxl flex-grow-1 container-p-y">
                 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">개인지갑/</span> 충전</h4>
                 <!-- Basic Layout -->
-                <form>
+                <form action="/personalwallet/deposit" method="post">
                     <div class="row">
                         <div class="col-xl">
                             <div class="card mb-4">
@@ -122,7 +122,7 @@
                                     <div class="mb-3">
                                         이체금액
                                         <div class="input-group input-group-merge">
-                                            <input type="number" id="basic-icon-default-company" class="form-control"/>원
+                                            <input type="number" id="basic-icon-default-company" class="form-control" name="amount"/>원
                                         </div>
 
                                         <div class="mb-auto">
