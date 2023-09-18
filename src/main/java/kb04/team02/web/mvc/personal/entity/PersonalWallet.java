@@ -4,6 +4,8 @@ import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.member.entity.Member;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import java.util.List;
 @Getter
 @Builder
 @Setter
+@DynamicInsert
+@DynamicUpdate
 public class PersonalWallet {
 
     @Id
@@ -27,7 +31,7 @@ public class PersonalWallet {
     private Long balance;
 
     //== 연관관계 설정 START==//
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
     private Member member;
 

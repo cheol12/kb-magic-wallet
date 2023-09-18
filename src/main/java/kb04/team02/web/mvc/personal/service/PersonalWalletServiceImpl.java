@@ -67,7 +67,7 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
                 historyDto.setType("출금");
                 detail = loginMemberDto.getName()+"의 개인지갑" + " > " + transfer.getDest();
             }
-
+            historyDto.setCurrencyCode(CurrencyCode.KRW);
             historyDto.setDetail(detail);
             historyDto.setAmount(transfer.getAmount().toString());
             historyDto.setBalance(transfer.getAfterBalance().toString());
@@ -85,6 +85,7 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
             }
             String detail = exchange.getSellCurrencyCode().name() + " > " + exchange.getBuyCurrencyCode().name();
 
+            historyDto.setCurrencyCode(exchange.getBuyCurrencyCode());
             historyDto.setDetail(detail);
             historyDto.setAmount(exchange.getSellAmount() + " > " + exchange.getBuyAmount());
             historyDto.setBalance(exchange.getAfterSellBalance() + " : " + exchange.getAfterBuyBalance());
@@ -102,6 +103,7 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
             }
             String detail = payment.getAmount() + payment.getCurrencyCode().name();
 
+            historyDto.setCurrencyCode(payment.getCurrencyCode());
             historyDto.setDetail(detail);
             historyDto.setAmount(payment.getAmount().toString());
             historyDto.setBalance(payment.getAfterPayBalance().toString());
@@ -129,6 +131,8 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
         Long walletId = personalWallet.getPersonalWalletId();
         Long KRW = personalWallet.getBalance();
         Long amount = personalWalletTransferDto.getAmount();
+        System.out.println("KRW = " + KRW);
+        System.out.println("amount = " + amount);
         Long afterBalance = KRW + amount;
 
         PersonalWalletTransfer deposit = PersonalWalletTransfer.builder()
