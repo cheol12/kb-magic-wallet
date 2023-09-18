@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,23 +33,36 @@ public class GroupWalletTabController {
     private final static int BLOCK_SIZE = 5;
 
     // 모임원 조회 함수
-    public HashMap<String, Object> createMemberMap(int nowPage, String id) {
+//    @ResponseBody
+//    @GetMapping("/{id}/member-list")
+    public HashMap<String, Object> createMemberMap(int nowPage, Long id) {
         Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
-        Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(Long.parseLong(id), page);
+//        Page<GroupMemberDto> memberPageList = (Page<GroupMemberDto>) groupWalletTabService.getMembersByGroupId(id, page);
+
+        List<GroupMemberDto> groupMemberDto = groupWalletTabService.getMembersByGroupId(id, page);
 
         int temp = (nowPage - 1) % BLOCK_SIZE;
         int startPage = nowPage - temp;
 
         HashMap<String, Object> memberMap = new HashMap<>();
-        memberMap.put("memberPageList", memberPageList); // 뷰에서 ${memberPageList.content}
+        memberMap.put("memberPageList", groupMemberDto); // 뷰에서 ${memberPageList.content}
         memberMap.put("blockCount", BLOCK_SIZE); // [1][2].. 몇개 사용
         memberMap.put("startPage", startPage);
         memberMap.put("nowPage", nowPage);
+
+        System.out.println(groupMemberDto.get(0).getName());
+
+//        ModelAndView modelAndView = new ModelAndView();
+
+//        modelAndView.setViewName("groupwallet/groupWalletDetail");
+//        modelAndView.addObject(memberMap);
 
         return memberMap;
     }
 
     // 모임지갑 내역 조회 함수
+    @ResponseBody
+    @GetMapping("/{id}/history")
     public HashMap<String, Object> createHistoryMap(int nowPage, String id) {
         Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
         Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
@@ -82,11 +96,18 @@ public class GroupWalletTabController {
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         return groupWalletService.getMembersByGroupId(id, pageable);
     }*/
+
     // 2. 여러 개의 페이지로 나누는 방식
-    @ResponseBody
-    @GetMapping("/{id}/member-list")
-    public HashMap<String, Object> groupWalletMemberList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
+//    @ResponseBody
+//    @GetMapping("/{id}/member-list")
+    public HashMap<String, Object> groupWalletMemberList(@PathVariable Long id, @RequestParam(defaultValue = "1") int nowPage) {
         HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
+
+        ModelAndView modelAndView = new ModelAndView();
+
+//        modelAndView.setViewName("groupwallet/groupWalletDetail");
+//        modelAndView.addObject(memberMap);
+
         return memberMap;
     }
 
@@ -106,14 +127,14 @@ public class GroupWalletTabController {
 
         // 2. 멤버가 성공적으로 삭제되었을 경우 멤버를 삭제한 후의 페이지 리턴
         if (isMemberDeleted) {
-            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
-            return memberMap;
+//            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
+//            return memberMap;
             // 멤버가 없거나 삭제에 실패했을 경우 에러페이지로 이동
         } else {
             return null;
 //            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
-
+        return null;
     }
 
     /**
@@ -132,13 +153,14 @@ public class GroupWalletTabController {
 
         // 2. 멤버 권한이 성공적으로 삭제되었을 경우 멤버 페이지 리턴
         if (isAuthGranted) {
-            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
-            return memberMap;
+//            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
+//            return memberMap;
             // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
         } else {
             return null;
 //            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
+        return null;
     }
 
 
@@ -159,13 +181,14 @@ public class GroupWalletTabController {
 
         // 2. 멤버 권한이 성공적으로 삭제되었을 경우 멤버 페이지 리턴
         if (isAuthRevoked) {
-            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
-            return memberMap;
+//            HashMap<String, Object> memberMap = createMemberMap(nowPage, id);
+//            return memberMap;
             // 멤버가 없거나 권한 삭제에 실패했을 경우 에러페이지로 이동
         } else {
             return null;
 //            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
+        return null;
     }
 
 
@@ -180,7 +203,7 @@ public class GroupWalletTabController {
      * @param id 회비 규칙을 조회할 모임지갑 id
      */
     @ResponseBody
-    @GetMapping("/{id}/rule")
+//    @GetMapping("/{id}/rule")
     // 회비 테이블과 객체 필요해 보임, 회비 객체를 Rule.java로 가정함
     public RuleDto groupWalletRule(@PathVariable String id) {
         RuleDto ruleDto = groupWalletTabService.getRuleById(Long.parseLong(id));
@@ -201,7 +224,7 @@ public class GroupWalletTabController {
      *
      * @param id 회비 규칙을 생성할 모임지갑 id
      */
-    @PostMapping("{id}/rule")
+//    @PostMapping("{id}/rule")
     public String groupWalletCreateRule(@PathVariable String id, RuleDto ruleDto) {
         boolean isRuleCreated = groupWalletTabService.createRule(Long.parseLong(id), ruleDto);
 
@@ -353,14 +376,14 @@ public class GroupWalletTabController {
      *
      * @param id 내역 조회할 모임지갑 id
      */
-    @ResponseBody
-    @GetMapping("/{id}/history")
-    public HashMap<String, Object> groupWalletHistoryList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
-        HashMap<String, Object> historyMap = createHistoryMap(nowPage, id);
-        return historyMap;
-
-
-    }
+//    @ResponseBody
+//    @GetMapping("/{id}/history")
+//    public HashMap<String, Object> groupWalletHistoryList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
+//        HashMap<String, Object> historyMap = createHistoryMap(nowPage, id);
+//        return historyMap;
+//
+//
+//    }
 
 
     /**
@@ -372,7 +395,7 @@ public class GroupWalletTabController {
      */
     @ResponseBody
     @GetMapping("/{id}/{historyid}")
-    // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미? 
+    // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미?
     // 3개 다 합친 것? 대응되는 개념?
     public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
         WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id), Long.parseLong(historyid), (String) model.getAttribute("type"));

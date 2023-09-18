@@ -1,15 +1,13 @@
 package kb04.team02.web.mvc.exchange.dto;
 
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ExchangeRateDto {
     private CurrencyCode currencyCode;
     private Double tradingBaseRate;

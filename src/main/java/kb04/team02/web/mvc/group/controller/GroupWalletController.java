@@ -1,6 +1,10 @@
 package kb04.team02.web.mvc.group.controller;
 
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
+import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
+import kb04.team02.web.mvc.group.dto.GroupMemberDto;
+import kb04.team02.web.mvc.group.dto.InstallmentDto;
+import kb04.team02.web.mvc.group.service.GroupWalletTabService;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
@@ -8,23 +12,24 @@ import kb04.team02.web.mvc.group.exception.WalletDeleteException;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
 import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping("/group-wallet")
 @RequiredArgsConstructor
 public class GroupWalletController {
 
     private final GroupWalletService groupWalletService;
+    private final GroupWalletTabService groupWalletTabService;
     private final PersonalWalletService personalWalletService;
-
-//    private final GroupWalletRespository groupWalletRep;  -- 테스트용 임시코드
-//    private final MemberRepository memberRep;             -- 테스트용 임시코드
 
     /**
      * 모임지갑 메인 페이지
@@ -34,17 +39,8 @@ public class GroupWalletController {
     public String groupWalletIndex(Model model, HttpSession session) {
 
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
-
-        System.out.println("------------------------");
-//        Member member = memberRep.findById(1L).get();     // 테스트용 임시코드
-
         List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(loginMemberDto);
-
         model.addAttribute("gWalletList", gWalletList);
-//        model.addAttribute("member", member);             // 테스트용 임시코드
-
-//        session.setAttribute("member", member);           // 테스트용 임시코드
-        System.out.println("loginMemberDto : " + loginMemberDto);
 
         return "groupwallet/groupWalletIndex";
     }
@@ -72,13 +68,65 @@ public class GroupWalletController {
      *
      * @param id 조회할 모임지갑 id
      */
+//    @ResponseBody
     @GetMapping("/{id}")
-    public String getGroupWalletDetail(@PathVariable Long id, Model model, HttpSession session) {
+    public String getGroupWalletDetail(@PathVariable Long id, ModelAndView mv, Model model, HttpSession session) {
 	// id = 내 모임지갑의 id중 하나임.
 
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+        log.info(String.valueOf(loginMemberDto.getMemberId()));
+
+        // 내 모임지갑 내역 조회
         WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
         model.addAttribute("walletDetailDto", walletDetailDto);
+//        mv.setViewName("groupwallet/groupWalletDetail");
+//        mv.addObject("walletDetailDto", walletDetailDto);
+//        mv.addObject("groupWallet", groupWallet);
+
+        // 내 모임지갑 모임원 리스트
+        List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
+        model.addAttribute("groupMemberDtoList", groupMemberDtoList);
+
+        // 회비규칙 조회하기
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+        model.addAttribute("groupWallet", groupWallet);
+
+        // 회비 규칙 없을 경우, 모임장 권한을 판단하고 생성하기 버튼 보여주기
+        boolean isChairman = groupWalletService.groupMemberIsChairman(groupWallet.getGroupWalletId(), loginMemberDto.getMemberId());
+        model.addAttribute("isChairman", isChairman);
+
+
+        // 회비 규칙에서 누적 회비 미구현 : 모임원들이 모임지갑에 이체한 내역 전부 더하기
+
+
+        // 적금 조회하기
+        InstallmentDto installmentDto = groupWalletService.getInstallmentDtoSaving(groupWallet);
+        model.addAttribute("installmentDto", installmentDto);
+
+        // 연결 카드 조회하기
+        List<CardIssuanceDto> cardIssuanceDtoList = groupWalletService.getCardIssuanceDto(id);
+        model.addAttribute("cardIssuanceDtoList", cardIssuanceDtoList);
+
         return "groupwallet/groupWalletDetail";
+    }
+
+    @ResponseBody
+    @GetMapping("/{id}/member-list")
+    public List<GroupMemberDto> getGroupWalletMembers(@PathVariable Long id, ModelAndView mv, HttpSession session) {
+        // id = 내 모임지갑의 id중 하나임.
+
+        List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+
+        log.info("groupMemberDtoList = " + String.valueOf(groupMemberDtoList));
+        log.info("groupMemberDtoListSize = " + groupMemberDtoList.size());
+        System.out.println(groupMemberDtoList);
+
+//        mv.setViewName("groupwallet/groupWalletDetail");
+//        mv.addObject("groupMemberDtoList", groupMemberDtoList);
+//        mv.addObject("groupWallet", groupWallet);
+
+        return groupMemberDtoList;
     }
 
     /**
@@ -147,7 +195,7 @@ public class GroupWalletController {
      * @param id 정산을 진행할 모임지갑 id
      */
     @PostMapping("/{id}/settle")
-    public String groupWalletSettle(@PathVariable String id, int amount) {
+    public String groupWalletSettle(@PathVariable Long id, int amount) {
 	// {id} 로 현재 모임지갑 부르고, 폼 입력값을 amount로 부른다.
 //	groupWalletService.settle(id, amount);
 	return "redirect:/group-wallet/" + id;
@@ -176,5 +224,23 @@ public class GroupWalletController {
 
 	return "redirect:/group-wallet/" + id;
     }
+
+//    @ResponseBody
+    @PostMapping("/{id}/rule/create")
+    public ModelAndView groupWalletRuleCreate(@PathVariable Long id, @RequestParam int dueDate, @RequestParam Long due, Model model, ModelAndView mv){
+        GroupWallet groupWallet = groupWalletService.setGroupWalletDueRule(id, dueDate, due);
+
+        log.info("groupWallet result = " + groupWallet);
+        model.addAttribute("groupWallet", groupWallet);
+        mv.setViewName("redirect:/group-wallet/" + id);
+        mv.addObject("groupWallet", groupWallet);
+//        if(result > 0){
+//            return "redirect:/group-wallet/" + id;
+//        }
+
+//        return "redirect:/group-wallet/" + id;
+        return mv;
+    }
+
 
 }

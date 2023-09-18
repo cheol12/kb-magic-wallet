@@ -39,7 +39,7 @@
                             <h5 class="card-title">재환전</h5>
                             <p class="card-text">다시 한국으로!</p>
                             <p class="card-text">외화에서 원화로!!</p>
-                            <a href="/exchange/online/form" class="btn btn-primary">재환전하러 가기</a>
+                            <a href="/exchange/online/re-form" class="btn btn-primary">재환전하러 가기</a>
                         </div>
                     </div>
                 </div>

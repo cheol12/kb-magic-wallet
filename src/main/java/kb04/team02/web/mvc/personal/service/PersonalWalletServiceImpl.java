@@ -59,12 +59,15 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
         for (Transfer transfer : personalWalletTransfers) {
             WalletHistoryDto historyDto = new WalletHistoryDto();
             historyDto.setDateTime(transfer.getInsertDate());
+            String detail = "";
             if (transfer.getTransferType() == TransferType.DEPOSIT) {
                 historyDto.setType("입금");
+                detail = transfer.getSrc() + " > " + transfer.getDest();
             } else {
                 historyDto.setType("출금");
+                detail = loginMemberDto.getName()+"의 개인지갑" + " > " + transfer.getDest();
             }
-            String detail = transfer.getSrc() + " > " + transfer.getDest();
+
             historyDto.setDetail(detail);
             historyDto.setAmount(transfer.getAmount().toString());
             historyDto.setBalance(transfer.getAfterBalance().toString());

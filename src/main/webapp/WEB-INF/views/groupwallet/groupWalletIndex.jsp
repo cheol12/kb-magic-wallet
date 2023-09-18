@@ -38,7 +38,7 @@
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">원화 잔액 : ${list.getBalance()}</h5>
-                                <a href="/group-wallet/${list.getGroupWalletId()}" class="btn btn-primary">상세보기</a>
+                                <a href="${pageContext.request.contextPath}/group-wallet/${list.getGroupWalletId()}" class="btn btn-primary">상세보기</a>
                             </div>
                         </div>
                     </div>

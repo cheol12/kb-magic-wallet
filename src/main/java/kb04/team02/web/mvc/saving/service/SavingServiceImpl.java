@@ -35,6 +35,7 @@ public class SavingServiceImpl implements SavingService {
             SavingDto savingDto = SavingDto.builder()
                     .savingId(saving.getSavingId())
                     .name(saving.getName())
+                    .savingComment(saving.getSavingComment())
                     .interestRate(saving.getInterestRate())
                     .period(saving.getPeriod())
                     .amountLimit(saving.getAmountLimit())

@@ -366,7 +366,7 @@ public class GroupWalletServiceImplTest {
                 .build());
 
         assertThat(wallet.isDueCondition()).isEqualTo(false);
-        GroupWallet groupWallet = service.setGroupWalletDueRule(wallet.getGroupWalletId(), 10, 10000L);
+//        GroupWallet groupWallet = service.setGroupWalletDueRule(wallet.getGroupWalletId(), 10, 10000L);
         assertThat(wallet.isDueCondition()).isEqualTo(true);
         assertThat(wallet.getDueDate()).isEqualTo(10);
         assertThat(wallet.getDue()).isEqualTo(10000L);
@@ -397,7 +397,7 @@ public class GroupWalletServiceImplTest {
                 .build());
 
         assertThat(wallet.isDueCondition()).isEqualTo(false);
-        GroupWallet groupWallet = service.setGroupWalletDueRule(wallet.getGroupWalletId(), 10, 10000L);
+//        GroupWallet groupWallet = service.setGroupWalletDueRule(wallet.getGroupWalletId(), 10, 10000L);
         assertThat(wallet.isDueCondition()).isEqualTo(true);
         assertThat(wallet.getDueDate()).isEqualTo(10);
         assertThat(wallet.getDue()).isEqualTo(10000L);

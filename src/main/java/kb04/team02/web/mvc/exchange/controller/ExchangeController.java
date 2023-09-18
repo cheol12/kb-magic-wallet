@@ -1,12 +1,9 @@
 package kb04.team02.web.mvc.exchange.controller;
 
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
+import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
-import kb04.team02.web.mvc.exchange.dto.WalletDto;
-import kb04.team02.web.mvc.exchange.dto.BankDto;
-import kb04.team02.web.mvc.exchange.dto.ExchangeCalDto;
-import kb04.team02.web.mvc.exchange.dto.ExchangeDto;
-import kb04.team02.web.mvc.exchange.dto.OfflineReceiptDto;
+import kb04.team02.web.mvc.exchange.dto.*;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.member.entity.Role;
 import kb04.team02.web.mvc.common.entity.WalletType;
@@ -19,10 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Controller
 @RequestMapping("/exchange")
@@ -75,8 +69,9 @@ public class ExchangeController {
      * API 명세서 ROWNUM:44
      */
     @PostMapping("/offline/form")
-    public String exchangeOffline(OfflineReceiptDto offlineReceiptDto) {
-        int result = exchangeService.requestOfflineReceipt(offlineReceiptDto);
+    public String exchangeOffline(OfflineReceiptRequestDto offlineReceiptRequestDto) {
+        System.out.println("ExchangeController.exchangeOffline");
+        int result = exchangeService.requestOfflineReceipt(offlineReceiptRequestDto);
         return "redirect:/exchange/offline";
     }
 
@@ -119,19 +114,22 @@ public class ExchangeController {
     @PostMapping("/online/form")
     public String exchangeOnline(ExchangeDto exchangeDto) {
         exchangeService.requestExchangeOnline(exchangeDto);
-        // 어디로 가야 하죠...
-        return null;
+        WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
+        if(type.equals(WalletType.PERSONAL_WALLET)) return "redirect:/personalwallet/main";
+        else return "redirect:/group-wallet/";
     }
 
     /**
-     * 선택한 지갑의 잔액 요청
+     * 선택한 지갑의 원화 잔액 요청
      * API 명세서 ROWNUM: 55
-     * @param walletId
+     * @param
      * @return
      */
     @ResponseBody
     @PostMapping("/walletBalance")
-    public Long selectedWalletBalance(Long walletId, WalletType walletType){
+    public Long selectedWalletBalance(@RequestBody HashMap<String, Integer> param){
+        Long walletId = Long.valueOf(param.get("walletId"));
+        WalletType walletType = WalletType.findByValue(param.get("walletType"));
         return exchangeService.selectedWalletBalance(walletId, walletType);
     }
 
@@ -141,8 +139,11 @@ public class ExchangeController {
      */
     @ResponseBody
     @PostMapping("/expectedAmount")
-    public ExchangeCalDto expectedAmount(){
-        return exchangeService.expectedExchangeAmount(CurrencyCode.USD, 1000L);
+    public ExchangeCalDto expectedAmount(@RequestBody HashMap<String, Integer> param){
+        Long amount = Long.valueOf(param.get("amount"));
+        CurrencyCode foundCurrency = CurrencyCode.findByValue(param.get("code"));
+        ExchangeCalDto dto = exchangeService.expectedExchangeAmount(foundCurrency, amount);
+        return dto;
     }
 
     //== 예외 처리 ==/
@@ -151,4 +152,44 @@ public class ExchangeController {
         System.out.println(e.getMessage());
         return "error";
     }
+
+    /**
+     * 온라인 재환전 폼
+     * API 명세서 ROWNUM:47
+     */
+    @GetMapping("/online/re-form")
+    public String reExchangeOnlineForm(HttpSession session, Model model) {
+        LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
+        Long memberId = loggedIn.getMemberId();
+        List<WalletDto> walletList = exchangeService.WalletList(memberId);
+        model.addAttribute("walletList", walletList);
+        return "exchange/reExchangeOnlineForm";
+    }
+
+    /**
+     * 온라인 재환전 요청
+     * API 명세서 ROWNUM:48
+     */
+    @PostMapping("/online/re-form")
+    public String reExchangeOnline(ExchangeDto exchangeDto) {
+        exchangeService.requestReExchangeOnline(exchangeDto);
+        WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
+        if(type.equals(WalletType.PERSONAL_WALLET)) return "redirect:/personalwallet/main";
+        else return "redirect:/group-wallet/";
+    }
+
+    /**
+     * 선택한 지갑의 외화 잔액 목록 요청
+     * API 명세서 ROWNUM:
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/walletFCBalance")
+    public WalletDetailDto selectedWalletFCBalance(@RequestBody HashMap<String, Integer> param){
+        Long walletId = Long.valueOf(param.get("walletId"));
+        WalletType walletType = WalletType.findByValue(param.get("walletType"));
+        return exchangeService.selectedWalletFCBalance(walletId, walletType);
+    }
+
 }

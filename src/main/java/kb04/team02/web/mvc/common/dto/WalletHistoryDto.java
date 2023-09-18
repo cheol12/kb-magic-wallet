@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.common.dto;
 
+import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import lombok.*;
 
 import java.sql.Date;
@@ -20,4 +21,6 @@ public class WalletHistoryDto {
     private String amount;
     private String balance;
     private Date date;
+
+    private CurrencyCode currencyCode;
 }

@@ -36,7 +36,12 @@ public class MemberController {
             return "forward:/";
         }
 
-        return "mypage/main";
+        return "/index";
+    }
+
+    @GetMapping("/login")
+    public String login(){
+        return "mypage/loginForm";
     }
 
     /**
