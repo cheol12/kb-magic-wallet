@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.personal.controller;
 
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
+import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.ExchangeRateDto;
 import kb04.team02.web.mvc.personal.dto.PersonalWalletTransferDto;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -105,13 +107,15 @@ public class PersonalWalletController {
         return "redirect:/personalwallet/main";
     }
 
+    @ResponseBody
     @PostMapping("/selectDate")
-    public String selectDate(HttpSession session, Model model) {
+    public List<WalletHistoryDto> selectDate(HttpSession session, Model model) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         WalletDetailDto walletDetailDto = personalWalletService.personalWallet(member);
         model.addAttribute("walletDetailDto", walletDetailDto);
-
+        System.out.println(model.getAttribute("startDate"));
+        System.out.println(model.getAttribute("endDate"));
         System.out.println("===============");
-        return "/personalwallet/test";
+        return walletDetailDto.getList();
     }
 }

@@ -47,23 +47,111 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script type="text/javascript">
+
+        // 모달창을 띄우는 function
+        function PopupDetail(clicked_element, content) {
+            var row_td = clicked_element.getElementsByTagName("td");
+            var modal = document.getElementById("detail-modal");
+
+            document.getElementById("detail-date").innerHTML = row_td[0].innerHTML;
+            document.getElementById("detail-time").innerHTML = row_td[1].innerHTML;
+            if (row_td[2].innerHTML === "입금액: -") {
+                document.getElementById("detail-amount").innerHTML = row_td[3].innerHTML;
+            } else {
+                document.getElementById("detail-amount").innerHTML = row_td[2].innerHTML;
+            }
+            document.getElementById("detail-content").innerHTML = content;
+            document.getElementById("detail-balance").innerHTML = row_td[5].innerHTML;
+            modal.style.display = 'block';
+        }
+
+        // AJAX READY
         $(document).ready(function () {
+
+            // 로딩 되자마자 거래 내역 리스트 비동기화 통신
+            $.ajax({
+                url: "/personalwallet/selectDate",
+                type: "post",
+                dataType: "json",
+                success: function (result, status) {
+                    // 화면에 갱신
+                    var str = "";
+                    $.each(result, function (i) {
+                        str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
+                        // 날짜 시간 처리
+                        str += '<TD>' + result[i].dateTime + '</TD>';
+                        str += '<TD>' + result[i].dateTime + '</TD>';
+                        // 입금액 출금액 처리
+                        if (result[i].type === '입금') {
+                            str += '<TD> 입금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> 출금액: -</TD>';
+                        } else {
+                            str += '<TD> 입금액: -</TD>' + '<TD> 출금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
+                        }
+                        str += '<TD>' + result[i].type + '</TD>';
+                        str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
+                        str += '</TR>';
+                    });
+                    $("#dateSelectHistory").append(str);
+                },
+                error: function (result, status) {
+
+                },
+            })
+
+            // 조회기간 설정 조회 버튼 누를 시 비동기화 통싱
             $("#selectDateForm").on("submit", function (e) {
+                e.preventDefault()
+                var formValues = $("form[name=selectDateForm]").serialize();
                 $.ajax({
                     url: "/personalwallet/selectDate",
                     type: "post",
-                    dataType: "text",
+                    dataType: "json",
+                    data: formValues,
                     success: function (result, status) {
+                        $("#dateSelectHistory").empty();
                         // 화면에 갱신
-                        alert(11);
-                        var contents = html.find("div#indexListAjax").html();
-                        $("#tabl1").html(contents);
+                        var str = "";
+                        $.each(result, function (i) {
+                            str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
+                            // 날짜 시간 처리
+                            str += '<TD>' + result[i].dateTime + '</TD>';
+                            str += '<TD>' + result[i].dateTime + '</TD>';
+                            // 입금액 출금액 처리
+                            if (result[i].type === '입금') {
+                                str += '<TD> 입금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> 출금액: -</TD>';
+                            } else {
+                                str += '<TD> 입금액: -</TD>' + '<TD> 출금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
+                            }
+                            str += '<TD>' + result[i].type + '</TD>';
+                            str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
+                            str += '</TR>';
+                        });
+                        $("#dateSelectHistory").append(str);
                     },
                     error: function (result, status) {
 
                     },
                 })
             });
+
+            // 모달 닫기 (조회기간 설정 버튼 누른 후)
+            $("#submitButton").on("click", function () {
+                $("#basicModal").modal("hide");
+            });
+
+            // 모달 닫힌 후에 스크롤, 배경색 관련 처리
+            $("#basicModal").on("hidden.bs.modal", function () {
+
+                // 모달이 완전히 사라진 후에 배경색 변경 및 스크롤 관련 처리
+                $("body").removeClass("modal-open");
+                $(".modal-backdrop").remove();
+
+                // 필요한 스크롤 관련 설정
+                $("body").css("overflow", "auto");
+                // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
+            });
+
+
         });
     </script>
 
@@ -100,11 +188,6 @@
             </div>
         </div>
         <br>
-
-
-        <script>
-
-        </script>
 
         <div class="row">
             <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
@@ -249,8 +332,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <ul class="p-0 m-0">
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
@@ -378,17 +459,20 @@
                                                     aria-label="Close"
                                             ></button>
                                         </div>
-                                        <form action="/personalwallet/selectDate" method="post" id="selectDateForm">
+                                        <form action="/personalwallet/selectDate" method="post" id="selectDateForm"
+                                              name="selectDateForm">
                                             <div class="modal-body">
                                                 <div class="row g-2">
                                                     <div class="col mb-0">
                                                         <label for="startDate" class="form-label">시작일</label>
                                                         <input type="date" id="startDate" class="form-control"
+                                                               name="startDate"
                                                                placeholder="DD / MM / YY"/>
                                                     </div>
                                                     <div class="col mb-0">
                                                         <label for="endDate" class="form-label">종료일</label>
                                                         <input type="date" id="endDate" class="form-control"
+                                                               name="endDate"
                                                                placeholder="DD / MM / YY"/>
                                                     </div>
                                                 </div>
@@ -398,7 +482,7 @@
                                                         data-bs-dismiss="modal">
                                                     취소
                                                 </button>
-                                                <button type="submit" class="btn btn-primary">조회</button>
+                                                <button type="submit" class="btn btn-primary" id="submitButton">조회</button>
                                             </div>
                                         </form>
                                     </div>
@@ -421,34 +505,8 @@
                         <th><i class="fab fa-angular fa-lg text-danger me-3"></i>잔액()</th>
                     </tr>
                     </thead>
-                    <tbody class="table-border-bottom-0">
-                    <c:forEach var="list" items="${walletDetailDto.getList()}" varStatus="status">
-                        <tr id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal"
-                            data-bs-target="#detailModal">
+                    <tbody class="table-border-bottom-0" id="dateSelectHistory">
 
-                            <fmt:parseDate value="${ list.getDateTime() }" pattern="yyyy-MM-dd'T'HH:mm"
-                                           var="parsedDateTime" type="both"/>
-                            <td> <fmt:formatDate
-                                    value="${parsedDateTime}" pattern="yyyy-MM-dd"/></td>
-                            <td><fmt:formatDate
-                                    value="${parsedDateTime}" pattern="hh:mm:ss"/></td>
-
-                            <c:choose>
-                                <c:when test="${list.type eq '입금'}">
-                                    <td>입금액: ${list.amount}</td>
-                                    <td>출금액: -</td>
-                                </c:when>
-                                <c:when test="${list.type eq '출금'}">
-                                    <td>입금액: -</td>
-                                    <td>출금액: ${list.amount}</td>
-                                </c:when>
-                            </c:choose>
-
-                            <td>${list.type}</td>
-                            <td>${list.balance}</td>
-
-                        </tr>
-                    </c:forEach>
                     </tbody>
                 </table>
 
@@ -468,27 +526,27 @@
                                     </div>
                                     <hr>
                                     <div>
-                                    <p>거래 시간</p>
-                                    <p class="col mb-0" style="height: 50px" id="detail-time"
-                                       readonly>
+                                        <p>거래 시간</p>
+                                        <p class="col mb-0" style="height: 50px" id="detail-time"
+                                           readonly>
                                     </div>
                                     <hr>
                                     <div>
-                                    <p>금액</p>
-                                    <p class="col mb-0" style="height: 50px" id="detail-amount"
-                                       readonly>
+                                        <p>금액</p>
+                                        <p class="col mb-0" style="height: 50px" id="detail-amount"
+                                           readonly>
                                     </div>
                                     <hr>
                                     <div>
-                                    <p>상세 내용</p>
-                                    <p class="col mb-0" style="height: 50px" id="detail-content"
-                                       readonly>
+                                        <p>상세 내용</p>
+                                        <p class="col mb-0" style="height: 50px" id="detail-content"
+                                           readonly>
                                     </div>
                                     <hr>
                                     <div>
-                                    <p>거래후 잔액</p>
-                                    <p class="col mb-0" style="height: 50px" id="detail-balance"
-                                       readonly>
+                                        <p>거래후 잔액</p>
+                                        <p class="col mb-0" style="height: 50px" id="detail-balance"
+                                           readonly>
                                     </div>
                                 </div>
                             </div>
@@ -506,25 +564,5 @@
 
 
 </div>
-
-
-<script>
-    function PopupDetail(clicked_element, content) {
-        var row_td = clicked_element.getElementsByTagName("td");
-        var modal = document.getElementById("detail-modal");
-
-        document.getElementById("detail-date").innerHTML = row_td[0].innerHTML;
-        document.getElementById("detail-time").innerHTML = row_td[1].innerHTML;
-        if (row_td[2].innerHTML === "입금액: -") {
-            document.getElementById("detail-amount").innerHTML = row_td[3].innerHTML;
-        } else {
-            document.getElementById("detail-amount").innerHTML = row_td[2].innerHTML;
-        }
-        document.getElementById("detail-content").innerHTML = content;
-        document.getElementById("detail-balance").innerHTML = row_td[5].innerHTML;
-        // 사원 정보 보기 모달을 보이게 합니다.
-        modal.style.display = 'block';
-    }
-</script>
 </body>
 </html>
