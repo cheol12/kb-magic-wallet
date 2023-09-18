@@ -41,6 +41,63 @@
 <body>
 <script>
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const walletSelect = document.getElementById("walletSelect");
+        const walletOptions = walletSelect.querySelectorAll('option');
+        const personalWalletRadio = document.querySelector('input[value="0"]');
+        const groupWalletRadio = document.querySelector('input[value="1"]');
+
+        // 초기화 함수
+        function initializeSelectOptions() {
+            const selectedRadio = document.querySelector('input[name="walletType"]:checked');
+            const selectedValue = selectedRadio ? selectedRadio.value : "0"; // 기본값은 개인지갑
+            walletOptions.forEach((option) => {
+                const optionType = option.getAttribute("data-type");
+                if ((selectedValue === "0" && optionType !== "PERSONAL_WALLET") ||
+                    (selectedValue === "1" && optionType !== "GROUP_WALLET")) {
+                    option.style.display = 'none'; // 옵션 숨기기
+                } else {
+                    option.style.display = 'block'; // 옵션 표시
+                }
+            });
+        }
+
+        // 초기화 함수 호출
+        initializeSelectOptions();
+
+        // 라디오 버튼 변경 이벤트 처리
+        personalWalletRadio.addEventListener("change", initializeSelectOptions);
+        groupWalletRadio.addEventListener("change", initializeSelectOptions);
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const walletSelect = document.getElementById("walletSelect");
+
+        // 초기 스타일 설정
+        for (let i = 0; i < walletSelect.options.length; i++) {
+            const option = walletSelect.options[i];
+            const role = option.getAttribute("data-role");
+
+            if (role !== "CHAIRMAN") {
+                option.style.color = "#D8D8D8"; // 텍스트 색상 변경
+                option.style.backgroundColor = "#F2F2F2"; // 배경 색상 변경
+            }
+        }
+
+        walletSelect.addEventListener("change", function () {
+            const selectedOption = walletSelect.options[walletSelect.selectedIndex];
+            const selectedRole = selectedOption.getAttribute("data-role");
+
+            // "CHAIRMAN"이 아닌 경우 선택을 비활성화
+            if (selectedRole !== "CHAIRMAN") {
+                walletSelect.selectedIndex = 0; // 기본 선택 옵션으로 돌아감
+                selectedOption.disabled = true; // 옵션을 비활성화
+                selectedOption.style.color = "#D8D8D8"; // 비활성화된 텍스트 색상
+                selectedOption.style.backgroundColor = "#F2F2F2"; // 비활성화된 배경 색상
+            }
+        });
+    });
+
     function validateForm() {
         // 1. 모든 값을 입력했는지 검사
         const walletType = document.querySelector('input[name="walletType"]:checked');
@@ -164,10 +221,11 @@
                                             <label class="form-check-label">모임지갑</label>
                                         </div>
                                         </div>
-                                            <select id="selectedWallet" class="form-select color-dropdown" name="walletId">
+                                            <select id="walletSelect" class="form-select color-dropdown" name="walletId">
                                                 <option selected>지갑을 선택하세요</option>
                                                 <c:forEach items="${walletList}" var="wallet" varStatus="loop">
-                                                    <option value="${wallet.walletId}">${wallet.nickname}</option>
+                                                    <option value="${wallet.walletId}" data-role="${wallet.role}"
+                                                            data-type="${wallet.walletType}">${wallet.nickname}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>

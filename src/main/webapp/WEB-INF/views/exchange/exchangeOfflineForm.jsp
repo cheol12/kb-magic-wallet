@@ -45,6 +45,46 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         const walletSelect = document.getElementById("walletSelect");
+        const walletOptions = walletSelect.querySelectorAll('option');
+        const personalWalletRadio = document.querySelector('input[value="0"]');
+        const groupWalletRadio = document.querySelector('input[value="1"]');
+
+        // 초기화 함수
+        function initializeSelectOptions() {
+            const selectedRadio = document.querySelector('input[name="walletType"]:checked');
+            const selectedValue = selectedRadio ? selectedRadio.value : "0"; // 기본값은 개인지갑
+            walletOptions.forEach((option) => {
+                const optionType = option.getAttribute("data-type");
+                if ((selectedValue === "0" && optionType !== "PERSONAL_WALLET") ||
+                    (selectedValue === "1" && optionType !== "GROUP_WALLET")) {
+                    option.style.display = 'none'; // 옵션 숨기기
+                } else {
+                    option.style.display = 'block'; // 옵션 표시
+                }
+            });
+        }
+
+        // 초기화 함수 호출
+        initializeSelectOptions();
+
+        // 라디오 버튼 변경 이벤트 처리
+        personalWalletRadio.addEventListener("change", initializeSelectOptions);
+        groupWalletRadio.addEventListener("change", initializeSelectOptions);
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const walletSelect = document.getElementById("walletSelect");
+
+        // 초기 스타일 설정
+        for (let i = 0; i < walletSelect.options.length; i++) {
+            const option = walletSelect.options[i];
+            const role = option.getAttribute("data-role");
+
+            if (role !== "CHAIRMAN") {
+                option.style.color = "#D8D8D8"; // 텍스트 색상 변경
+                option.style.backgroundColor = "#F2F2F2"; // 배경 색상 변경
+            }
+        }
 
         walletSelect.addEventListener("change", function () {
             const selectedOption = walletSelect.options[walletSelect.selectedIndex];
@@ -54,8 +94,8 @@
             if (selectedRole !== "CHAIRMAN") {
                 walletSelect.selectedIndex = 0; // 기본 선택 옵션으로 돌아감
                 selectedOption.disabled = true; // 옵션을 비활성화
-                selectedOption.style.color = "#D8D8D8";
-                selectedOption.style.backgroundColor = "#F2F2F2";
+                selectedOption.style.color = "#D8D8D8"; // 비활성화된 텍스트 색상
+                selectedOption.style.backgroundColor = "#F2F2F2"; // 비활성화된 배경 색상
             }
         });
     });
@@ -98,13 +138,13 @@
         return true;
     }
 
-let expectedAmountCK = () => {
+    let expectedAmountCK = () => {
         var code = $('select[name="currencyCode"]').val();
         var amount = $('input[name="amount"]').val();
 
         let data = {
             code: code,
-            amount : amount
+            amount: amount
         }
 
         // AJAX POST 요청
@@ -134,7 +174,7 @@ let expectedAmountCK = () => {
 
         let data = {
             walletId: walletId,
-            walletType : walletType
+            walletType: walletType
         }
 
         // AJAX POST 요청
@@ -167,7 +207,8 @@ let expectedAmountCK = () => {
             <div class="container-xxl flex-grow-1 container-p-y">
                 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">환전/</span>오프라인</h4>
                 <!-- Basic Layout -->
-                <form id="offlineReceiptForm" action="${pageContext.request.contextPath}/exchange/offline/form" method="post" onsubmit="return validateForm();">
+                <form id="offlineReceiptForm" action="${pageContext.request.contextPath}/exchange/offline/form"
+                      method="post" onsubmit="return validateForm();">
                     <div class="row">
                         <div class="row align-items-start">
                             <div class="card mb-4">
@@ -189,20 +230,26 @@ let expectedAmountCK = () => {
                                             </select>
                                         </div>
                                         <div class="col-5">
-                                            <input type="number" class="form-control" placeholder="최소금액 50" name="amount">
+                                            <input type="number" class="form-control" placeholder="최소금액 50"
+                                                   name="amount">
                                         </div>
                                         <div class="col-3">
-                                            <button type="button" class="btn btn-outline-warning" onclick="expectedAmountCK();">환전 예상 금액 확인</button>
+                                            <button type="button" class="btn btn-outline-warning"
+                                                    onclick="expectedAmountCK();">환전 예상 금액 확인
+                                            </button>
                                         </div>
                                         <div id="">
                                             <label class="form-label">출금금액</label>
-                                            <input type="text" id="expectedAmount" class="form-control" placeholder="" readonly/>
+                                            <input type="text" id="expectedAmount" class="form-control" placeholder=""
+                                                   readonly/>
 
                                             <label class="form-label">현재 고시 환율</label>
-                                            <input type="text" id="tradingBaseRate" class="form-control" placeholder="" readonly/>
+                                            <input type="text" id="tradingBaseRate" class="form-control" placeholder=""
+                                                   readonly/>
 
                                             <label class="form-label">적용 환율</label>
-                                            <input type="text" id="applicableExchangeRate" class="form-control" placeholder="" readonly/>
+                                            <input type="text" id="applicableExchangeRate" class="form-control"
+                                                   placeholder="" readonly/>
                                             <div class="form-text">* 환율 변동에 따라 예상 원화금액과 실제 출금금액 간에 차이가 발생할 수 있습니다.
                                             </div>
                                         </div>
@@ -227,31 +274,37 @@ let expectedAmountCK = () => {
                                     <small class="text-muted float-end"></small>
                                 </div>
                                 <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-2 form-check">
-                                                <input class="form-check-input" type="radio" name="walletType" value="0" checked>
-                                                <label class="form-check-label">개인지갑</label>
-                                            </div>
-                                            <div class="col-2 form-check">
-                                                <input class="form-check-input" type="radio" name="walletType" value="1">
-                                                <label class="form-check-label">모임지갑</label>
-                                            </div>
+                                    <div class="row">
+                                        <div class="col-2 form-check">
+                                            <input class="form-check-input" type="radio" name="walletType" value="0"
+                                                   checked>
+                                            <label class="form-check-label">개인지갑</label>
                                         </div>
+                                        <div class="col-2 form-check">
+                                            <input class="form-check-input" type="radio" name="walletType" value="1">
+                                            <label class="form-check-label">모임지갑</label>
+                                        </div>
+                                    </div>
                                     <div class="row gx-3 gy-2 align-items-center">
                                         <div class="col-10">
-                                            <select id="walletSelect" class="form-select color-dropdown" name="walletId">
+                                            <select id="walletSelect" class="form-select color-dropdown"
+                                                    name="walletId">
                                                 <option selected>지갑을 선택하세요</option>
                                                 <c:forEach items="${walletList}" var="wallet" varStatus="loop">
-                                                    <option value="${wallet.walletId}" data-role="${wallet.role}">${wallet.nickname}</option>
+                                                    <option value="${wallet.walletId}" data-role="${wallet.role}"
+                                                            data-type="${wallet.walletType}">${wallet.nickname}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-outline-warning" onclick="balanceCK();">지갑 잔액 확인</button>
+                                            <button type="button" class="btn btn-outline-warning"
+                                                    onclick="balanceCK();">지갑 잔액 확인
+                                            </button>
                                         </div>
                                         <div id="##">
                                             <label class="form-label">지갑잔액</label>
-                                            <input id="walletBalance" type="text" class="form-control" placeholder="지갑 잔액을 확인하세요" readonly/>
+                                            <input id="walletBalance" type="text" class="form-control"
+                                                   placeholder="지갑 잔액을 확인하세요" readonly/>
                                         </div>
                                     </div>
                                 </div>
@@ -267,10 +320,10 @@ let expectedAmountCK = () => {
                                         수령희망지점
                                         <label class="form-label"></label>
                                         <div class="input-group input-group-merge">
-                                            <select id="#" class="form-select color-dropdown" name="bankId">
+                                            <select id="bankSelect" class="form-select color-dropdown" name="bankId">
                                                 <option selected>수령 지점을 선택하세요</option>
                                                 <c:forEach items="${bankList}" var="bank" varStatus="loop">
-                                                <option value="${bank.bankId}">${bank.name}</option>
+                                                    <option value="${bank.bankId}">${bank.name}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
@@ -284,7 +337,8 @@ let expectedAmountCK = () => {
                                         수령희망날짜
                                         <label class="form-label"></label>
                                         <div class="input-group input-group-merge">
-                                            <input id="receiptDate" class="form-control form-label" type="datetime-local" name="receiptDate">
+                                            <input id="receiptDate" class="form-control form-label"
+                                                   type="datetime-local" name="receiptDate">
                                         </div>
                                     </div>
 
@@ -296,8 +350,6 @@ let expectedAmountCK = () => {
                 </form>
             </div>
         </div>
-        <!-- / Content -->
-
     </div>
 </div>
 </div>
