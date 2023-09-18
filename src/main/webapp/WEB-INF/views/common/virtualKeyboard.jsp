@@ -70,7 +70,7 @@
         theme: "hg-theme-default hg-layout-numeric numeric-theme",
         display: {
             '{bksp}': '지우기',
-            '{enter}': '전체 지우기'
+            '{enter}': '확인'
         },
         maxLength: 6
     });
@@ -96,7 +96,9 @@
          */
         if (button === "{shift}" || button === "{lock}") handleShift();
         if (button === "{enter}") {
-            document.querySelector("#exampleFormControlReadOnlyInputPlain1").value = "";
+            // document.querySelector("#exampleFormControlReadOnlyInputPlain1").value = "";
+            // document.querySelector("#exampleFormControlReadOnlyInputPlain1").focus();
+            handleEnter();
         }
     }
 
@@ -129,7 +131,7 @@
             },
             error: function() {
                 // AJAX 요청 실패 시 처리
-                alert("서버와의 통신 중 오류가 발생했습니다.");
+                alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
             }
         });
     }
