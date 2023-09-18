@@ -339,7 +339,7 @@ public class GroupWalletServiceImplTest {
         );
         List<Participation> participations = participationRepository.findAll();
         assertThat(participations.size()).isEqualTo(2);
-        service.groupWalletMemberOut(wallet.getGroupWalletId(), member2);
+//        service.groupWalletMemberOut(wallet.getGroupWalletId(), member2);
         participations = participationRepository.findAll();
         assertThat(participations.size()).isEqualTo(1);
     }

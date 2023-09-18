@@ -95,6 +95,8 @@ public class GroupWalletController {
         // 내 모임지갑 모임원 리스트
         List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
         model.addAttribute("groupMemberDtoList", groupMemberDtoList);
+        int countMember = groupWalletService.countGroupWalletMember(id);
+        model.addAttribute("countMember", countMember);
 
         // 회비규칙 조회하기
         GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
@@ -127,13 +129,24 @@ public class GroupWalletController {
     }
 
     @ResponseBody
+    @PostMapping("{id}/history")
+    public List<WalletHistoryDto> getHistory(@PathVariable Long id, HttpSession session, Model model) {
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
+        model.addAttribute("walletDetailDto", walletDetailDto);
+        System.out.println(model.getAttribute("startDate"));
+        System.out.println(model.getAttribute("endDate"));
+        System.out.println("===============");
+        return walletDetailDto.getList();
+    }
+
+    @ResponseBody
     @PostMapping("/{id}/member-list")
     public List<GroupMemberDto> getGroupWalletMembers(@PathVariable Long id, ModelAndView mv, HttpSession session) {
         // id = 내 모임지갑의 id중 하나임.
 
         List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
         GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
-
         log.info("groupMemberDtoList = " + String.valueOf(groupMemberDtoList));
         log.info("groupMemberDtoListSize = " + groupMemberDtoList.size());
         System.out.println(groupMemberDtoList);
@@ -152,9 +165,9 @@ public class GroupWalletController {
      * @param id 삭제할 모임지갑 id
      */
     @DeleteMapping("/{id}") // 매핑값이 /{id} 가 맞는지?
-    public String groupWalletDelete(@PathVariable Long id) throws WalletDeleteException {
-	// 삭제할때 카드비밀번호 입력해서 삭제하기?
+    public String groupWalletDelete(@PathVariable Long id, Model model) throws WalletDeleteException {
 	    groupWalletService.deleteGroupWallet(id);
+
 	    return "redirect:/group-wallet";
     }
 
@@ -179,13 +192,13 @@ public class GroupWalletController {
      *
      * @param id 자진 탈퇴 요청 모임지갑 id
      */
-    @DeleteMapping("/{id}/out")
-    public String groupWalletMemberOut(@PathVariable Long id, HttpSession session) {
+    @GetMapping("/{id}/out")
+    public String groupWalletMemberOut(@PathVariable Long id, HttpSession session, Model model) {
         // 모임지갑 id
-	    Member member = (Member) session.getAttribute("member_id");
-
+//	    Member member = (Member) session.getAttribute("member_id");
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
 	    // id=모임지갑에서 memberId=내가 탈퇴한다.
-	    groupWalletService.groupWalletMemberOut(id, member);
+	    groupWalletService.groupWalletMemberOut(id, loginMemberDto.getMemberId());
 	    return "redirect:/group-wallet";
     }
 

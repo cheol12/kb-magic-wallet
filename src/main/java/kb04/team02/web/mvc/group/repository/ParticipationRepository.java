@@ -55,6 +55,12 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
 
     List<Participation> findByMemberIdAndParticipationState(Long memberId, ParticipationState state);
 
+    /**
+     * @author 김철
+     * 현재 모임원 몇 명인지 count
+     * */
+    int countByGroupWalletGroupWalletId(Long groupWalletId);
+
 
 
 

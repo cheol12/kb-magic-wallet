@@ -237,12 +237,12 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     }
 
     @Override
-    public int groupWalletMemberOut(Long groupWalletId, Member member) {
+    public int groupWalletMemberOut(Long groupWalletId, Long memberId) {
 
         // 모임원 내보내기 or 탈퇴
 //        int result = groupWalletRep.deleteByGroupWalletIdAndMember(groupWalletId, memberId);
         GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElseThrow(()->new NoSuchElementException("멤버 조회 실패"));
-        Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, member.getMemberId());
+        Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, memberId);
         participationRep.delete(participation);
         return 1;
     }
@@ -811,5 +811,11 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         return groupWalletList;
 
+    }
+
+    @Override
+    public int countGroupWalletMember(Long groupWalletId) {
+        int result = participationRep.countByGroupWalletGroupWalletId(groupWalletId);
+        return result;
     }
 }

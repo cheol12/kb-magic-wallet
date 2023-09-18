@@ -78,7 +78,7 @@ public interface GroupWalletService {
      * @param groupWalletId,memberId 탈퇴 요청 모임지갑 id, 탈퇴할 사람의 식별번호
      * @return int
      */
-    int groupWalletMemberOut(Long groupWalletId, Member member);
+    int groupWalletMemberOut(Long groupWalletId, Long memberId);
 
 
     /**
@@ -218,4 +218,10 @@ public interface GroupWalletService {
      * 내가 모임장 혹은 공동모임장인 모임지갑 조회
      */
     List<GroupWallet> getChairmanGroupWalletList(LoginMemberDto loginMemberDto);
+
+    /**
+     * @author 김철
+     *
+     * */
+    int countGroupWalletMember(Long groupWalletId);
 }
