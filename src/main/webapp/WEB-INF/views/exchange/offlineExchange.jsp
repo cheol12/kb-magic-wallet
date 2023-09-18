@@ -41,7 +41,7 @@
 <body>
 <script>
 
-    // 페이지가 로드될 때 실행되는 함수
+    // 취소 버튼 비활성화
     window.onload = function() {
 
         var receiptStates = document.querySelectorAll('.badge.bg-label-primary');
@@ -125,7 +125,7 @@
                                 <td>${receipt.bankName}</td>
                                 <td>${receipt.currencyCode} ${receipt.amount}</td>
                                 <td>${receipt.receiptDate}</td>
-                                <td><span class="badge bg-label-primary me-1">${receipt.receiptState}</span></td>
+                                <td><span class="badge bg-label-primary me-1 receiptState" data-receipt-state="${receipt.receiptState}">${receipt.receiptState}</span></td>
                                 <td><button onclick="cancelEvent(${loop.index + 1});" id="cancelBtn${loop.index + 1}" class="btn btn-outline-secondary">취소하기</button></td>
                             </tr>
                                 <input id="receiptId${loop.index + 1}" type="hidden" value="${receipt.offlineReceiptId}">
