@@ -45,7 +45,7 @@
     <script src="../../../assets/js/config.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script type="text/javascript">
 
         // 모달창을 띄우는 function
@@ -151,7 +151,112 @@
                 // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
             });
 
+            function formatNumber(number) {
+                return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+        });
 
+        document.addEventListener("DOMContentLoaded", function () {
+            var options = {
+                // 추후 매개변수로 변경 필요
+                series: [1010000, 100*1300, 100000],
+                chart: {
+                    type: 'donut',
+                },
+                labels:['KRW', 'USD', 'JPY'],
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var options = {
+                series: [
+                    {
+                        name: "KRW",
+                        data: [0, 100000, 200000, 900000, 600000, 800000, 1010000]
+                    },
+                    {
+                        name: "USD",
+                        data: [0, 0, 0, 0, 0, 50*1300, 100*1300]
+                    },
+                    {
+                        name: "JPY",
+                        data: [100000, 100000, 100000, 100000, 100000, 100000, 100000]
+                    }
+                ],
+                chart: {
+                    height: 490,
+                    type: 'line',
+                    dropShadow: {
+                        enabled: true,
+                        color: '#000',
+                        top: 18,
+                        left: 7,
+                        blur: 10,
+                        opacity: 0.2
+                    },
+                    toolbar: {
+                        show: false
+                    }
+                },
+                colors: ['#77B6EA', '#545454', '#900000'],
+                dataLabels: {
+                    enabled: true,
+                },
+                stroke: {
+                    curve: 'smooth'
+                },
+                title: {
+                    text: '자산 현황 (KRW)',
+                    align: 'left'
+                },
+                grid: {
+                    borderColor: '#e7e7e7',
+                    row: {
+                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                        opacity: 0.5
+                    },
+                },
+                markers: {
+                    size: 1
+                },
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    title: {
+                        text: '월'
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: '자산'
+                    },
+                    min: 0,
+                    max: 1500000
+                },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'right',
+                    floating: true,
+                    offsetY: -25,
+                    offsetX: -5
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#totalBalance"), options);
+            chart.render();
         });
     </script>
 
@@ -162,35 +267,9 @@
 <div class="pageWrap">
     <div class="center">
         <div class="row">
-            <div class="col-sm-6">
-                <div class="card d-flex flex-column h-100">
-                    <div class="card-body">
-                        <h3 class="card-title">개인 지갑</h3>
-                        <br>
-                        <h4>  ${walletDetailDto.balance.get("KRW")}₩ </h4>
-                        <br><br>
-                        <a href="/personalwallet/depositForm" class="btn btn-primary">채우기</a>
-                        <a href="/personalwallet/withdrawForm" class="btn btn-primary">꺼내기</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="card d-flex flex-column h-100">
-                    <div class="card-body">
-                        <h3 class="card-title">외화별 잔액</h3>
-                        <br>
-                        <h4 class="card-title"><img src="https://oimg1.kbstar.com/img/obank/2015/fund/icn_usd.png"
-                                                    alt="USD"> ${walletDetailDto.getBalance().get("USD")} $</h4>
-                        <h4 class="card-title"><img src="https://oimg1.kbstar.com/img/obank/2015/fund/icn_jpy.png"
-                                                    alt="JPY"> ${walletDetailDto.getBalance().get("JPY")} ￥</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br>
-
-        <div class="row">
-            <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
+            <%-- 지갑 정보 --%>
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
+                <%--            <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">--%>
                 <h6 class="text-muted">지갑 정보</h6>
                 <div class="card h-20">
                     <div class="card-header d-flex align-items-center justify-content-between pb-0">
@@ -210,127 +289,7 @@
                                 <span>총 보유금</span>
                             </div>
 
-                            <div id="orderStatisticsChart" style="min-height: 137.55px;">
-                                <div id="apexchartsyqrmetfxj"
-                                     class="apexcharts-canvas apexchartsyqrmetfxj apexcharts-theme-light"
-                                     style="width: 130px; height: 137.55px;">
-                                    <svg id="SvgjsSvg2585" width="130" height="137.55"
-                                         xmlns="http://www.w3.org/2000/svg"
-                                         version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
-
-                                         transform="translate(0, 0)" style="background: transparent;">
-                                        <g id="SvgjsG2587" class="apexcharts-inner apexcharts-graphical"
-                                           transform="translate(-7, 0)">
-                                            <defs id="SvgjsDefs2586">
-                                                <clipPath id="gridRectMaskyqrmetfxj">
-                                                    <rect id="SvgjsRect2589" width="150" height="173" x="-4.5" y="-2.5"
-                                                          rx="0" ry="0" opacity="1" stroke-width="0" stroke="none"
-                                                          stroke-dasharray="0" fill="#fff"></rect>
-                                                </clipPath>
-                                                <clipPath id="forecastMaskyqrmetfxj"></clipPath>
-                                                <clipPath id="nonForecastMaskyqrmetfxj"></clipPath>
-                                                <clipPath id="gridRectMarkerMaskyqrmetfxj">
-                                                    <rect id="SvgjsRect2590" width="145" height="172" x="-2" y="-2"
-                                                          rx="0"
-                                                          ry="0" opacity="1" stroke-width="0" stroke="none"
-                                                          stroke-dasharray="0" fill="#fff"></rect>
-                                                </clipPath>
-                                            </defs>
-                                            <g id="SvgjsG2591" class="apexcharts-pie">
-                                                <g id="SvgjsG2592" transform="translate(0, 0) scale(1)">
-                                                    <circle id="SvgjsCircle2593" r="44.835365853658544" cx="70.5"
-                                                            cy="70.5"
-                                                            fill="transparent"></circle>
-                                                    <g id="SvgjsG2594" class="apexcharts-slices">
-                                                        <g id="SvgjsG2595"
-                                                           class="apexcharts-series apexcharts-pie-series"
-                                                           seriesName="Electronic" rel="1" data:realIndex="0">
-                                                            <path id="SvgjsPath2596"
-                                                                  d="
-                                                                  M 70.5 10.71951219512195
-                                                                  A 59.78048780487805 59.78048780487805 0 0 1 97.63977353321047 123.7648046533095
-                                                                  L 90.85483014990785 110.44860348998213
-                                                                  A 44.835365853658544 44.835365853658544 0 0 0 70.5 25.664634146341456
-                                                                  L 70.5 10.71951219512195
-                                                                  z"
-                                                                  fill="rgba(105,108,255,1)" fill-opacity="1"
-                                                                  stroke-opacity="1" stroke-linecap="butt"
-                                                                  stroke-width="5"
-                                                                  stroke-dasharray="0"
-                                                                  class="apexcharts-pie-area apexcharts-donut-slice-0"
-                                                                  index="0" j="0" data:angle="153" data:startAngle="0"
-                                                                  data:strokeWidth="5" data:value="85"
-                                                                  data:pathOrig="M 70.5 10.71951219512195 A 59.78048780487805 59.78048780487805 0 0 1 97.63977353321047 123.7648046533095 L 90.85483014990785 110.44860348998213 A 44.835365853658544 44.835365853658544 0 0 0 70.5 25.664634146341456 L 70.5 10.71951219512195 z"
-                                                                  stroke="#ffffff"></path>
-                                                        </g>
-                                                        <g id="SvgjsG2599"
-                                                           class="apexcharts-series apexcharts-pie-series"
-                                                           seriesName="Decor" rel="2" data:realIndex="1">
-                                                            <path id="SvgjsPath2600"
-                                                                  d="
-                                                                  M 70.5 130.28048780487805
-                                                                  A 59.78048780487805 59.78048780487805 0 0 1 10.71951219512195 70.50000000000001
-                                                                  L 25.664634146341456 70.5 A 44.835365853658544 44.835365853658544 0 0 0 70.5 115.33536585365854
-                                                                  L 70.5 130.28048780487805
-                                                                  z"
-                                                                  fill="rgba(3,195,236,1)" fill-opacity="1"
-                                                                  stroke-opacity="1" stroke-linecap="butt"
-                                                                  stroke-width="5"
-                                                                  stroke-dasharray="0"
-                                                                  class="apexcharts-pie-area apexcharts-donut-slice-2"
-                                                                  index="0" j="1" data:angle="90" data:startAngle="180"
-                                                                  data:strokeWidth="5" data:value="50"
-                                                                  data:pathOrig="M 70.5 130.28048780487805 A 59.78048780487805 59.78048780487805 0 0 1 10.71951219512195 70.50000000000001 L 25.664634146341456 70.5 A 44.835365853658544 44.835365853658544 0 0 0 70.5 115.33536585365854 L 70.5 130.28048780487805 z"
-                                                                  stroke="#ffffff"></path>
-                                                        </g>
-                                                        <g id="SvgjsG2601"
-                                                           class="apexcharts-series apexcharts-pie-series"
-                                                           seriesName="Fashion" rel="3" data:realIndex="2">
-                                                            <path id="SvgjsPath2602"
-                                                                  d="M 10.71951219512195 70.50000000000001 A 59.78048780487805 59.78048780487805 0 0 1 70.48956633664653 10.719513105630845 L 70.4921747524849 25.664634829223125 A 44.835365853658544 44.835365853658544 0 0 0 25.664634146341456 70.5 L 10.71951219512195 70.50000000000001 z"
-                                                                  fill="rgba(113,221,55,1)" fill-opacity="1"
-                                                                  stroke-opacity="1" stroke-linecap="butt"
-                                                                  stroke-width="5"
-                                                                  stroke-dasharray="0"
-                                                                  class="apexcharts-pie-area apexcharts-donut-slice-3"
-                                                                  index="0" j="2" data:angle="90" data:startAngle="270"
-                                                                  data:strokeWidth="5" data:value="50"
-                                                                  data:pathOrig="M 10.71951219512195 70.50000000000001 A 59.78048780487805 59.78048780487805 0 0 1 70.48956633664653 10.719513105630845 L 70.4921747524849 25.664634829223125 A 44.835365853658544 44.835365853658544 0 0 0 25.664634146341456 70.5 L 10.71951219512195 70.50000000000001 z"
-                                                                  stroke="#ffffff"></path>
-                                                        </g>
-                                                    </g>
-                                                </g>
-                                                <g id="SvgjsG2603" class="apexcharts-datalabels-group"
-                                                   transform="translate(0, 0) scale(1)" style="opacity: 1;">
-                                                    <text id="SvgjsText2604" font-family="Helvetica, Arial, sans-serif"
-                                                          x="70.5" y="90.5" text-anchor="middle"
-                                                          dominant-baseline="auto"
-                                                          font-size="0.8125rem" font-weight="400" fill="#373d3f"
-                                                          class="apexcharts-text apexcharts-datalabel-label"
-                                                          style="font-family: Helvetica, Arial, sans-serif; fill: rgb(113, 221, 55);">
-                                                        Weekly
-                                                    </text>
-                                                    <text id="SvgjsText2605" font-family="Public Sans" x="70.5" y="71.5"
-                                                          text-anchor="middle" dominant-baseline="auto"
-                                                          font-size="1.5rem"
-                                                          font-weight="400" fill="#566a7f"
-                                                          class="apexcharts-text apexcharts-datalabel-value"
-                                                          style="font-family: &quot;Public Sans&quot;;">38%
-                                                    </text>
-                                                </g>
-                                            </g>
-                                            <line id="SvgjsLine2606" x1="0" y1="0" x2="141" y2="0" stroke="#b6b6b6"
-                                                  stroke-dasharray="0" stroke-width="1" stroke-linecap="butt"
-                                                  class="apexcharts-ycrosshairs"></line>
-                                            <line id="SvgjsLine2607" x1="0" y1="0" x2="141" y2="0" stroke-dasharray="0"
-                                                  stroke-width="0" stroke-linecap="butt"
-                                                  class="apexcharts-ycrosshairs-hidden"></line>
-                                        </g>
-                                        <g id="SvgjsG2588" class="apexcharts-annotations"></g>
-                                    </svg>
-                                    <div class="apexcharts-legend"></div>
-                                </div>
-                            </div>
+                            <div id="chart"></div>
                         </div>
                         <ul class="p-0 m-0">
                             <li class="d-flex mb-4 pb-1">
@@ -378,50 +337,20 @@
                                     </div>
                                 </div>
                             </li>
+                            <a href="/personalwallet/depositForm" class="btn btn-primary">채우기</a>
+                            <a href="/personalwallet/withdrawForm" class="btn btn-primary">꺼내기</a>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-6">
-                <h6 class="text-muted">환율 정보</h6>
+            <%-- 자산 정보 --%>
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
+                <%--            <div class="col-md-6">--%>
+                <h6 class="text-muted">자산 정보</h6>
                 <div class="nav-align-top d-flex mb-8">
-                    <ul class="nav nav-tabs flex-fill" role="tablist">
-                        <li class="nav-item">
-                            <button
-                                    type="button"
-                                    class="nav-link active"
-                                    role="tab"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#navs-top-home"
-                                    aria-controls="navs-top-home"
-                                    aria-selected="true"
-                            >
-                                USD
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button
-                                    type="button"
-                                    class="nav-link"
-                                    role="tab"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#navs-top-messages"
-                                    aria-controls="navs-top-messages"
-                                    aria-selected="false"
-                            >
-                                JPY
-                            </button>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
-                            <canvas id="usdExchangeRateChart" width="400" height="200"></canvas>
-                        </div>
-
-                        <div class="tab-pane fade" id="navs-top-messages" role="tabpanel">
-                            <canvas id="jpyExchangeRateChart" width="400" height="200"></canvas>
-                        </div>
+                    <div class="card h-20">
+                        <div id="totalBalance"></div>
                     </div>
                 </div>
             </div>
@@ -482,7 +411,8 @@
                                                         data-bs-dismiss="modal">
                                                     취소
                                                 </button>
-                                                <button type="submit" class="btn btn-primary" id="submitButton">조회</button>
+                                                <button type="submit" class="btn btn-primary" id="submitButton">조회
+                                                </button>
                                             </div>
                                         </form>
                                     </div>
