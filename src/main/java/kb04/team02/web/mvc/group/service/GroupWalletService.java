@@ -4,13 +4,13 @@ import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.RuleDto;
-import kb04.team02.web.mvc.group.dto.DepositDto;
-import kb04.team02.web.mvc.group.dto.SettleDto;
-import kb04.team02.web.mvc.group.dto.WithDrawDto;
+import kb04.team02.web.mvc.exchange.dto.WalletDto;
+import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.group.exception.NotEnoughBalanceException;
 import kb04.team02.web.mvc.group.exception.WalletDeleteException;
+import kb04.team02.web.mvc.member.entity.Role;
 
 import java.util.List;
 
@@ -84,20 +84,20 @@ public interface GroupWalletService {
 
 
     /**
-     * 모임지갑 회비 규칙 불러오기
+     * 모임지갑 회비 규칙 설정하기
      * API 명세서 ROWNUM:19
      *
-     * @param groupWalletId
+     * @param groupWalletId,dueDate,due
      * @return GroupWallet
      * */
     GroupWallet setGroupWalletDueRule(Long groupWalletId, int dueDate, Long due);
 
 
     /**
-     * 모임지갑 회비 규칙 설정하기
+     * 모임지갑 회비 규칙 불러오기
      * API 명세서 ROWNUM:20
      *
-     * @param groupWalletId,groupWallet
+     * @param groupWalletId
      * @return
      * */
     RuleDto getGroupWalletDueRule(Long groupWalletId);
@@ -180,5 +180,34 @@ public interface GroupWalletService {
      */
     int groupWalletToPersonalWallet(GroupWallet groupWallet, Member member, Long amount, CurrencyCode currencyCode) throws NotEnoughBalanceException;
 
+    /**
+     * @author 김철
+     * 내 모임지갑의 정보
+     * 회비 규칙 불러오는 데에 사용
+     * */
+    GroupWallet getGroupWallet(Long groupWalletId);
 
+    /**
+     * @author 김철
+     * 내 모임지갑의 모임원 리스트 조회
+     */
+    List<GroupMemberDto> getGroupMemberList(Long groupWalletId);
+
+    /**
+     * @author 김철
+     * 나의 모임지갑 권한 확인
+     */
+    boolean groupMemberIsChairman(Long groupWalletId, Long memberId);
+
+    /**
+     * @author 김철
+     * 나의 모임지갑 적금 조회
+     * */
+    InstallmentDto getInstallmentDtoSaving(GroupWallet groupWallet);
+
+    /**
+     * @author 김철
+     * 나의 모임지갑에 연결된 카드 리스트 조회
+     * */
+    List<CardIssuanceDto> getCardIssuanceDto(Long walletId);
 }

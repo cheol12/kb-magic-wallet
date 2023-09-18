@@ -5,13 +5,15 @@ import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.*;
 import kb04.team02.web.mvc.exchange.dto.RuleDto;
-import kb04.team02.web.mvc.group.dto.DepositDto;
-import kb04.team02.web.mvc.group.dto.SettleDto;
-import kb04.team02.web.mvc.group.dto.WithDrawDto;
+import kb04.team02.web.mvc.exchange.dto.WalletDto;
+import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.group.entity.*;
 import kb04.team02.web.mvc.group.repository.*;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.member.entity.Role;
+import kb04.team02.web.mvc.mypage.entity.CardIssuance;
+import kb04.team02.web.mvc.mypage.entity.CardState;
+import kb04.team02.web.mvc.mypage.repository.CardIssuanceRepository;
 import kb04.team02.web.mvc.personal.entity.PersonalWallet;
 import kb04.team02.web.mvc.personal.entity.PersonalWalletForeignCurrencyBalance;
 import kb04.team02.web.mvc.personal.entity.PersonalWalletTransfer;
@@ -23,7 +25,12 @@ import kb04.team02.web.mvc.personal.repository.PersonalWalletForeignCurrencyBala
 import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletTransferRepository;
 import kb04.team02.web.mvc.personal.service.PersonalWalletService;
+import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
+import kb04.team02.web.mvc.saving.entity.Saving;
+import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
+import kb04.team02.web.mvc.saving.repository.SavingRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -44,11 +52,13 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     private final GroupWalletPaymentRepository groupPaymentRep;
     private final GroupWalletTransferRepository groupTransferRep;
     private final ParticipationRepository participationRep;
-    private final PersonalWalletRepository personalWalletRepository;
-    private final MemberRepository memberRepository;
+    private final PersonalWalletRepository personalWalletRep;
+    private final MemberRepository memberRep;
     private final PersonalWalletTransferRepository personalTransferRep;
+    private final InstallmentSavingRepository installmentSavingRep;
+    private final SavingRepository savingRep;
+    private final CardIssuanceRepository cardIssuanceRep;
 
-    private final PersonalWalletService personalWalletService;
 
     @Override
     public List<GroupWallet> selectAllMyGroupWallet(LoginMemberDto loginMemberDto) {
@@ -77,7 +87,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 //        GroupWallet groupWallet = groupWalletRep.findByMember(member);
 
         GroupWallet groupWalletSave;
-        List<Member> member = memberRepository.findByMemberId(memberId);
+        List<Member> member = memberRep.findByMemberId(memberId);
 
         groupWalletSave = groupWalletRep.save(
                 GroupWallet.builder()
@@ -234,19 +244,34 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         return 1;
     }
 
+    @Transactional
     @Override
     public GroupWallet setGroupWalletDueRule(Long groupWalletId, int dueDate, Long due) {
         GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElseThrow(()->new NoSuchElementException("모임 지갑 조회 실패"));
+
+
+//        groupWallet = groupWalletRep.save(
+//                GroupWallet.builder()
+//                        .groupWalletId(groupWalletId)
+//                        .dueCondition(true)
+//                        .dueDate(dueDate)
+//                        .due(due)
+//                        .build()
+//        );
         groupWallet.setDueCondition(true);
         groupWallet.setDueDate(dueDate);
         groupWallet.setDue(due);
+        log.info("ServiceImpl단 : setGroupWalletDueRule = " + groupWallet.getDueDate());
+        if (groupWallet == null) {
+            throw new InsertException("모임 지갑 회비 규칙 생성에 실패했습니다");
+        }
         return groupWallet;
     }
 
+    @Transactional
     @Override
     public RuleDto getGroupWalletDueRule(Long groupWalletId) {
         // 모임 회비 규칙 생성은 모임장만!
-        // 모임장 권한 확인은 어디서 할지 생각
         GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
         RuleDto ruleDto = new RuleDto();
         if (groupWallet.isDueCondition()) {
@@ -272,9 +297,9 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     public int groupWalletWithdraw(WithDrawDto withDrawDto) throws NotEnoughBalanceException {
         Long walletId = withDrawDto.getSrcWalletId();
         GroupWallet groupWallet = groupWalletRep.findById(walletId).orElseThrow(()->new NoSuchElementException("모임 지갑 조회 실패"));
-        Member member = memberRepository.findById(withDrawDto.getDestMemberId()).orElseThrow(()->new NoSuchElementException("멤버 조회 실패"));
+        Member member = memberRep.findById(withDrawDto.getDestMemberId()).orElseThrow(()->new NoSuchElementException("멤버 조회 실패"));
 
-        PersonalWallet personalWallet = personalWalletRepository.findByMember(member);
+        PersonalWallet personalWallet = personalWalletRep.findByMember(member);
 
         List<GroupWalletForeignCurrencyBalance> foreignCurrencyBalances
                 = groupForeignBalanceRep.findByGroupWallet(groupWallet);
@@ -392,7 +417,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                         System.out.println("divideAmount = " + divideAmount);
                         System.out.println("chairmanDivideAmount = " + chairmanDivideAmount);
                         for (Participation participation : memberList) {
-                            Member mem = memberRepository.findById(participation.getMemberId()).orElseThrow(()->new NoSuchElementException("회원 조회 실패"));
+                            Member mem = memberRep.findById(participation.getMemberId()).orElseThrow(()->new NoSuchElementException("회원 조회 실패"));
 
                             if(participation.getRole()==Role.CHAIRMAN)
                                 this.groupWalletToPersonalWallet(groupWallet, mem, chairmanDivideAmount, CurrencyCode.KRW);
@@ -424,7 +449,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                         Long chairmanDivideAmount = divideAmount + settleDto.getTotalAmout() % memberList.size();
 
                         for (Participation participation : memberList) {
-                            Member mem = memberRepository.findById(participation.getMemberId()).orElseThrow(()->new NoSuchElementException("회원 조회 실패"));
+                            Member mem = memberRep.findById(participation.getMemberId()).orElseThrow(()->new NoSuchElementException("회원 조회 실패"));
 
                             if(participation.getRole()==Role.CHAIRMAN)
                                 this.groupWalletToPersonalWallet(groupWallet, mem, chairmanDivideAmount, settleDto.getCurrencyCode());
@@ -448,8 +473,8 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         Long walletId = depositDto.getDestWalletId();
         GroupWallet groupWallet = groupWalletRep.findById(walletId).orElseThrow(()->new NoSuchElementException("모임 지갑 조회 실패"));
-        Member member = memberRepository.findById(depositDto.getSrcMemberId()).orElseThrow(()->new NoSuchElementException("회원 조회 실패"));
-        PersonalWallet personalWallet = personalWalletRepository.findByMember(member);
+        Member member = memberRep.findById(depositDto.getSrcMemberId()).orElseThrow(()->new NoSuchElementException("회원 조회 실패"));
+        PersonalWallet personalWallet = personalWalletRep.findByMember(member);
 
         List<GroupWalletForeignCurrencyBalance> foreignCurrencyBalances
                 = groupForeignBalanceRep.findByGroupWallet(groupWallet);
@@ -554,7 +579,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     @Override
     public int groupWalletToPersonalWallet(GroupWallet groupWallet, Member member, Long amount, CurrencyCode currencyCode) throws NotEnoughBalanceException {
 
-        PersonalWallet personalWallet = personalWalletRepository.findByMember(member);
+        PersonalWallet personalWallet = personalWalletRep.findByMember(member);
 
         List<GroupWalletForeignCurrencyBalance> foreignCurrencyBalances
                 = groupForeignBalanceRep.findByGroupWallet(groupWallet);
@@ -652,5 +677,98 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         }
 
         return 1;
+    }
+
+    @Override
+    @Transactional
+    public GroupWallet getGroupWallet(Long groupWalletId){
+        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
+
+        return groupWallet;
+    }
+
+    @Override
+    @Transactional
+    public List<GroupMemberDto> getGroupMemberList(Long groupWalletId) {
+        List<GroupMemberDto> groupMemberDtoList = new ArrayList<>();
+
+        List<Participation> participationList = participationRep
+                .findParticipationByGroupWallet_GroupWalletIdAndParticipationState(groupWalletId, ParticipationState.PARTICIPATED);
+
+        log.info("participationList.size = " + participationList.size());
+
+        GroupMemberDto groupMemberDto;
+        for(int i=0; i<participationList.size(); i++){
+            Participation p = participationList.get(i);
+            Member member = memberRep.findByMemberId(p.getMemberId()).get(0);
+
+            log.info("member = " + member);
+
+            groupMemberDto = new GroupMemberDto();
+            groupMemberDto.setName(member.getName());
+            groupMemberDto.setRole(p.getRole());
+
+            String roleName = String.valueOf(p.getRole());
+
+            if(roleName.equals("CHAIRMAN")) groupMemberDto.setRoleToString("모임장");
+            else if(roleName.equals("CO_CHAIRMAN")) groupMemberDto.setRoleToString("공동모임장");
+            else groupMemberDto.setRoleToString("모임원");
+
+            groupMemberDtoList.add(groupMemberDto);
+        }
+
+        log.info("groupMemberDtoList.size" + groupMemberDtoList.size());
+
+        return groupMemberDtoList;
+    }
+
+    @Transactional
+    @Override
+    public boolean groupMemberIsChairman(Long groupWalletId, Long memberId) {
+        Participation participation = participationRep.findByMemberIdAndRoleAndGroupWallet_GroupWalletId(memberId, Role.CHAIRMAN, groupWalletId);
+        if(participation != null)
+            return true;
+
+        return false;
+    }
+
+    @Override
+    public InstallmentDto getInstallmentDtoSaving(GroupWallet groupWallet) {
+        InstallmentSaving installmentSaving = installmentSavingRep.findByGroupWalletAndDone(groupWallet, false);
+        Saving saving = savingRep.findBySavingId(installmentSaving.getInstallmentId());
+
+        InstallmentDto installmentDto = new InstallmentDto();
+
+        // dto로 변환
+        installmentDto.setSavingName(saving.getName());
+        installmentDto.setInterestRate(saving.getInterestRate());
+        installmentDto.setPeriod(saving.getPeriod());
+
+        installmentDto.setInsertDate(installmentSaving.getInsertDate());
+        installmentDto.setMaturityDate(installmentSaving.getMaturityDate());
+        installmentDto.setTotalAmount(installmentSaving.getTotalAmount());
+        installmentDto.setSavingDate(installmentSaving.getSavingDate());
+        installmentDto.setSavingAmount(installmentSaving.getSavingAmount());
+
+        return installmentDto;
+    }
+
+    @Override
+    public List<CardIssuanceDto> getCardIssuanceDto(Long walletId) {
+        List<CardIssuanceDto> cardIssuanceDtoList = new ArrayList<>();
+        List<CardIssuance> cardIssuanceList = cardIssuanceRep.findByWalletIdAndWalletTypeAndCardState(walletId, WalletType.GROUP_WALLET, CardState.OK);
+
+        int i = 0;
+        for(CardIssuance c : cardIssuanceList){
+            CardIssuanceDto cdto = new CardIssuanceDto();
+            cdto.setCardNumber(c.getCardNumber());
+            cdto.setCardState(c.getCardState());
+            cdto.setWalletId(c.getWalletId());
+            cdto.setWalletType(c.getWalletType());
+
+            cardIssuanceDtoList.add(cdto);
+        }
+
+        return cardIssuanceDtoList;
     }
 }

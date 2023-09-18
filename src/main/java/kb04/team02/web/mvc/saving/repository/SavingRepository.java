@@ -26,4 +26,11 @@ public interface SavingRepository extends JpaRepository<Saving, Long> {
 
       JPA: InstallmentSavingRepository.findById(id)
      */
+
+    /**
+     * @author 김철
+     * 적금 정보 select
+     * */
+    Saving findBySavingId(Long savingId);
+
 }

@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.mypage.repository;
 
+import kb04.team02.web.mvc.common.entity.WalletType;
 import kb04.team02.web.mvc.mypage.entity.CardIssuance;
 import kb04.team02.web.mvc.mypage.entity.CardState;
 import kb04.team02.web.mvc.member.entity.Member;
@@ -44,4 +45,10 @@ public interface CardIssuanceRepository extends JpaRepository<CardIssuance, Long
     List<CardIssuance> findAllByWalletId(Long walletId);
 
     CardIssuance findByMemberAndCardState(Member member, CardState cardState);
+
+    /**
+     * @author 김철
+     * 모임지갑 연결 카드 조회
+     * */
+    List<CardIssuance> findByWalletIdAndWalletTypeAndCardState(Long walletId, WalletType type, CardState state);
 }

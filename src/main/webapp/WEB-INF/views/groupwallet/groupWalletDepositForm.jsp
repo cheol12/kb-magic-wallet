@@ -25,7 +25,7 @@
         <div class="center">
 
 
-            <form action="${pageContext.request.contextPath}/group-wallet/{id}/deposit" method="post">
+            <form action="${pageContext.request.contextPath}/group-wallet/${id}/deposit" method="post">
                 <div class="row g-3 align-items-center" >
                     <div class="col-auto">
                         <label for="amount" class="col-form-label">충전하실 금액</label>
