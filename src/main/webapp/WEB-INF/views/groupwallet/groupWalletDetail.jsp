@@ -11,6 +11,98 @@
 <head>
     <title>Title</title>
 
+    <style>
+        /* 노란색 테마 스타일 */
+        body {
+            background-color: #ffffcc; /* 배경색을 노란색으로 설정 */
+        }
+
+        .tab-button {
+            background-color: #ffcc00; /* 탭 버튼 배경색을 노란색으로 설정 */
+            color: #000; /* 글자색을 검은색으로 설정 */
+        }
+
+        .tab-button.active {
+            background-color: #ff9900; /* 활성화된 탭 버튼 배경색을 주황색으로 설정 */
+            color: #fff; /* 활성화된 탭 버튼 글자색을 흰색으로 설정 */
+        }
+
+        html, body {
+            width: 100%;
+        }
+
+        body, div, ul, li {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul, li {
+            list-style: none;
+        }
+
+        /*tab css*/
+        .tab {
+            float: left;
+            width: 600px;
+            height: 290px;
+        }
+
+        .tabnav {
+            font-size: 0;
+            width: 600px;
+            border: 1px solid #ddd;
+        }
+
+        .tabnav li {
+            display: inline-block;
+            height: 46px;
+            text-align: center;
+            border-right: 1px solid #ddd;
+        }
+
+        .tabnav li a:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0px;
+            width: 100%;
+            height: 3px;
+        }
+
+        .tabnav li a.active:before {
+            background: #ffaa03;
+        }
+
+        .tabnav li a.active {
+            border-bottom: 1px solid #fff;
+        }
+
+        .tabnav li a {
+            position: relative;
+            display: block;
+            background: #f8f8f8;
+            color: #000;
+            padding: 0 30px;
+            line-height: 46px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .tabnav li a:hover,
+        .tabnav li a.active {
+            background: #fff;
+            color: #ffaa03;
+        }
+
+        .tabcontent {
+            padding: 20px;
+            height: 244px;
+            border: 1px solid #ddd;
+            border-top: none;
+        }
+
+    </style>
+
     <link rel="stylesheet" type="text/css" href="/css/common.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -43,26 +135,16 @@
     <script src="../../../js/jquery-3.6.1.js"></script>
 
     <script>
-        $(document).ready(function () {
-            let nav = $('#tab-button-nav');
-            let sections = $('.tab-section');
 
-            nav.on('click', '.tab-button', function () {
-                let $clickedButton = $(this);
-                let focusedTabId = $clickedButton.data('tab-section');
-
-                sections.each(function () {
-                    let section = $(this);
-                    if (section.attr('id') === focusedTabId) {
-                        section.removeAttr('hidden');
-                    } else {
-                        section.attr('hidden', true);
-                    }
-                });
-            });
+        $(function () {
+            $('.tabcontent > div').hide();
+            $('.tabnav a').click(function () {
+                $('.tabcontent > div').hide().filter(this.hash).fadeIn();
+                $('.tabnav a').removeClass('active');
+                $(this).addClass('active');
+                return false;
+            }).filter(':eq(0)').click();
         });
-
-
     </script>
 
 
@@ -76,11 +158,8 @@
 
 <main>
     <div class="pageWrap">
-
         <div class="center">
-
             <div class="row">
-
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
@@ -100,103 +179,87 @@
                             <br>
                             <h5 class="card-title">달러 ${walletDetailDto.getBalance().get("USD")}</h5>
                             <h5 class="card-title">엔 ${walletDetailDto.getBalance().get("JPY")}</h5>
-
-
                         </div>
                     </div>
                 </div>
 
-                <div>
-                    <div class="allmenu_cont_wp">
-                        <nav id="tab-button-nav">
-                            <button class="tab-button" data-tab-section="tab-section-1">
-                                모임지갑 내역
-                            </button>
-                            <button class="tab-button" data-tab-section="tab-section-2"
-                                    datasrc="">
-                                모임원 정보
-                            </button>
-                            <button class="tab-button" data-tab-section="tab-section-3" datasrc="">
-                                모임 회비 규칙
-                            </button>
-                            <button class="tab-button" data-tab-section="tab-section-4" datasrc="">
-                                모임 적금 조회
-                            </button>
-                            <button class="tab-button" data-tab-section="tab-section-5" datasrc="">
-                                모임 연결 카드 조회
-                            </button>
+                <p>
+                </p>
+                <br>
+                <br>
 
+                <main>
+                    <div class="col-sm-12" style="">
+                        <ul class="tabnav" style="border: none; width: auto">
+                            <li><a href="#tab01">모임지갑 내역</a></li>
+                            <li><a href="#tab02">모임원 조회</a></li>
+                            <li><a href="#tab03">모임 회비 규칙</a></li>
+                            <li><a href="#tab04">모임 적금 조회</a></li>
+                            <li><a href="#tab05">모임 연결 카드 조회</a></li>
+                        </ul>
 
-                        </nav>
-                    </div>
+                        <div class="tabcontent" style="border: none">
+                            <div id="tab01">
+                                <c:forEach var="list" items="${walletDetailDto.getList()}" varStatus="status">
+                                    <div class="card" style="margin-top: 5px;">
+                                        <div class="card-header">
+                                                ${list.getAmount()}, ${list.type}
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">${list.getDetail()}</h5>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
 
-                    <main>
-                        <br>
+                            <div id="tab02">
+                                <c:forEach var="memberList" items="${groupMemberDtoList}" varStatus="status">
+                                    <div class="card" style="margin-top: 5px;">
+                                        <div class="card-header">
+                                                ${memberList.name}, ${memberList.roleToString}
+                                        </div>
+                                        <div class="card-body">
 
-                        <section id="tab-section-1" class="tab-section">
-                            <c:forEach var="list" items="${walletDetailDto.getList()}" varStatus="status">
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+
+                            <div id="tab03">
                                 <div class="card" style="margin-top: 5px;">
                                     <div class="card-header">
-                                            ${list.getAmount()}, ${list.type}
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">${list.getDetail()}</h5>
-
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </section>
-
-                        <section id="tab-section-2" class="tab-section" hidden>
-                            <c:forEach var="memberList" items="${groupMemberDtoList}" varStatus="status">
-                                <div class="card" style="margin-top: 5px;">
-                                    <div class="card-header">
-                                            ${memberList.name}, ${memberList.roleToString}
-                                    </div>
-                                    <div class="card-body">
-
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </section>
-
-
-                        <section id="tab-section-3" class="tab-section" hidden>
-                            <div class="card" style="margin-top: 5px;">
-                                <div class="card-header">
-                                    <c:choose>
+                                        <c:choose>
                                         <c:when test="${groupWallet.dueCondition}">
-                                            회비 규칙 ${groupWallet.dueCondition},
-                                            <p></p>
-                                            매월 : ${groupWallet.dueDate}일, ${groupWallet.due}원
-                                            <br>
-                                            현재 누적 회비 : ${groupWallet.dueAccumulation}원
-                                            <c:choose>
-                                                <c:when test="${isChairman == true}">
-                                                    <p>
-                                                    <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
-                                                       class="btn btn-primary">회비 규칙 수정</a>
-                                                </c:when>
+                                        회비 규칙 ${groupWallet.dueCondition},
+                                        <p></p>
+                                        매월 : ${groupWallet.dueDate}일, ${groupWallet.due}원
+                                        <br>
+                                        현재 누적 회비 : ${groupWallet.dueAccumulation}원
+                                        <c:choose>
+                                        <c:when test="${isChairman == true}">
+                                        <p>
+                                            <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
+                                               class="btn btn-primary">회비 규칙 수정</a>
+                                            </c:when>
                                             </c:choose>
-                                        </c:when>
-                                        <c:otherwise>
+                                            </c:when>
+                                            <c:otherwise>
                                             회비가 없습니다.
                                             <c:choose>
-                                                <c:when test="${isChairman == true}">
-                                                    <!-- 모임장 일 때만 -->
-                                                    <!-- 회비 규칙 생성 폼으로 넘어가는 버튼 -->
-                                                    <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
-                                                       class="btn btn-primary">회비 규칙 생성</a>
-                                                </c:when>
+                                            <c:when test="${isChairman == true}">
+                                            <!-- 모임장 일 때만 -->
+                                            <!-- 회비 규칙 생성 폼으로 넘어가는 버튼 -->
+                                            <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
+                                               class="btn btn-primary">회비 규칙 생성</a>
+                                            </c:when>
                                             </c:choose>
-                                        </c:otherwise>
-                                    </c:choose>
+                                            </c:otherwise>
+                                            </c:choose>
+                                    </div>
                                 </div>
-
                             </div>
-                        </section>
 
-                        <section id="tab-section-4" class="tab-section" hidden>
+                            <div id="tab04">
                                 <div class="card" style="margin-top: 5px;">
                                     <div class="card-header">
 
@@ -226,34 +289,30 @@
                                                 납입금 : ${installmentDto.savingAmount}원
                                             </c:otherwise>
                                         </c:choose>
-
                                     </div>
                                 </div>
-                        </section>
+                            </div>
 
-                        <section id="tab-section-5" class="tab-section" hidden>
-                            <c:forEach var="cardList" items="${cardIssuanceDtoList}" varStatus="status">
-                                <div class="card" style="margin-top: 5px;">
-                                    <div class="card-header">
-                                            ${cardList.cardNumber}
+                            <div id="tab05">
+                                <c:forEach var="cardList" items="${cardIssuanceDtoList}" varStatus="status">
+                                    <div class="card" style="margin-top: 5px;">
+                                        <div class="card-header">
+                                                ${cardList.cardNumber}
+                                        </div>
+                                        <div class="card-body">
+
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </section>
-
-                    </main>
-                </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                    <!--tab-->
+                </main>
             </div>
-
         </div>
-
     </div>
-
 </main>
-
 
 <footer>
 
