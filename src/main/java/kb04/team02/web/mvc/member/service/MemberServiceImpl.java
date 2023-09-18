@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import static kb04.team02.web.mvc.common.module.CardNumberIssuance.generateRandomCardNumber;
 
@@ -120,5 +122,16 @@ public class MemberServiceImpl implements MemberService {
                         .put(wallet.getGroupWallet().getGroupWalletId(), wallet.getRole()));
 
         return loggedIn;
+    }
+
+    @Override
+    public void verify(LoginMemberDto loginMemberDto, String payPassword) {
+        Member member = memberRepository.findById(loginMemberDto.getMemberId()).orElseThrow(
+                () -> new NoSuchElementException("멤버 조회 오류")
+        );
+
+        if (!Objects.equals(member.getPayPassword(), payPassword)) {
+            throw new IllegalArgumentException("비밀 번호 불일치");
+        }
     }
 }

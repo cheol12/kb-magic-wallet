@@ -25,4 +25,6 @@ public interface MemberService {
      * @return 로그인 되면 LoginMemberDto 정보 채워서 반환, 안되면 null 반환
      */
     LoginMemberDto login(MemberLoginDto memberLoginDto) throws LoginException;
+
+    void verify(LoginMemberDto loginMemberDto, String payPassword);
 }
