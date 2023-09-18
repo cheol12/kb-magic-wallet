@@ -77,6 +77,7 @@ public class SavingServiceImpl implements SavingService {
                         .savingAmount(installmentDto.getSavingAmount())
                         .savingDate(installmentDto.getSavingDate())
                         .maturityDate(installmentDto.getMaturityDate())
+                        .totalAmount(installmentDto.getTotalAmount())
                         .build()
         );
         if (save == null) {

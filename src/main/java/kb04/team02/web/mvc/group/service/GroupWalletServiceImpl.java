@@ -774,4 +774,41 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         return cardIssuanceDtoList;
     }
+
+    @Override
+    public boolean isChairmanGroupWalletList(LoginMemberDto loginMemberDto) {
+        Long memberId = loginMemberDto.getMemberId();
+        List<Role> roles = new ArrayList<Role>();
+        roles.add(Role.CHAIRMAN);
+        roles.add(Role.CO_CHAIRMAN);
+        ParticipationState participationState = ParticipationState.PARTICIPATED;
+
+        List<Participation> chairmanList = participationRep.findByMemberIdAndRoleInAndParticipationState(memberId, roles, participationState);
+        if (chairmanList.isEmpty()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public List<GroupWallet> getChairmanGroupWalletList(LoginMemberDto loginMemberDto) {
+        Long memberId = loginMemberDto.getMemberId();
+        List<Role> roles = new ArrayList<Role>();
+        roles.add(Role.CHAIRMAN);
+        roles.add(Role.CO_CHAIRMAN);
+        ParticipationState participationState = ParticipationState.PARTICIPATED;
+
+        List<Participation> chairmanList = participationRep.findByMemberIdAndRoleInAndParticipationState(memberId, roles, participationState);
+        List<GroupWallet> groupWalletList = new ArrayList<GroupWallet>();
+
+        for (Participation participation : chairmanList) {
+            GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(participation.getGroupWallet().getGroupWalletId());
+            groupWalletList.add(groupWallet);
+        }
+        System.out.println(groupWalletList);
+
+        return groupWalletList;
+
+    }
 }

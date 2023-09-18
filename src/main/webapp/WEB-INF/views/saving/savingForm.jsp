@@ -49,52 +49,85 @@
                             <div class="col-xxl">
                                 <div class="card mb-4">
                                     <div class="card-body">
+                                        <!--이용 약관-->
+                                        <div class="alert alert-warning">
+                                            <h5 class="clert-heading fw-bold mb-1"><이용 약관></h5>
+                                            <h6 class="alert-heading fw-bold mb-1">약관을 주의깊게 읽어주세요</h6>
+                                            <p class="mb-0">제1조 적용 범위<br>
+                                                1. 이 적금의 거래과정에서 발생하는 전자금융거래에 관한 사항은 전자금융거래기본약관을 적용합니다.</p>
+                                        </div>
+                                        <!--약관 동의-->
+                                        <div class="form-check mb-3">
+                                            <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    name="accountActivation"
+                                                    id="accountActivation"
+                                            />
+                                            <label class="form-check-label" for="accountActivation">약관에 동의합니다.</label>
+                                        </div>
+                                        <!--폼 입력-->
                                         <form method="post" action="${pageContext.request.contextPath}/saving/${id}/form">
+                                            <!--적금 상품 이름 read-onlu-->
+                                            <div class="row mb-3">
+<%--                                                <div class="col-sm-10">--%>
+                                                    <label for="exampleFormControlReadOnlyInput1" class="form-label">적금 이름</label>
+                                                    <input
+                                                            class="form-control"
+                                                            type="text"
+                                                            id="exampleFormControlReadOnlyInput1"
+                                                            placeholder="${saving.getName()}"
+                                                            readonly
+                                                    />
+<%--                                                </div>--%>
+                                            </div>
                                             <!--적금 상품 아이디-->
                                             <input type="hidden" name="savingId" value=${id}>
                                             <!-- 모임지갑 선택 -->
                                             <div class="row mb-3">
-                                                <label class="col-sm-2 col-form-label">모임지갑 선택</label>
-                                                <div class="col-sm-10">
-                                                    <select name="groupWalletId" required>
+                                                <label for="largeSelect" class="form-label">모임지갑 선택</label>
+<%--                                                <div class="col-sm-10">--%>
+                                                    <select id="largeSelect" class="form-select form-select-lg" name="groupWalletId" required>
                                                         <!-- 개인이 가지고 있는 그룹 통장 중에서 선택 -->
                                                         <c:forEach var="wallet" items="${gWalletList}">
                                                             <option value="${wallet.getGroupWalletId()}">${wallet.getNickname()}</option>
                                                         </c:forEach>
                                                     </select>
-                                                </div>
+
+<%--                                                </div>--%>
                                             </div>
                                             <!--만기일-->
                                             <input type="hidden" name="maturityDate" id="maturityDateField">
                                             <!-- 납입 금액 -->
                                             <div class="row mb-3">
-                                                <label class="col-sm-2 col-form-label" >납부 금액(/월)</label>
-                                                <div class="col-sm-10">
+                                                <label for="largeInput" class="form-label">납부 금액(/월)</label>
+<%--                                                <div class="col-sm-10">--%>
                                                     <input
-                                                            type="text"
-                                                            class="form-control"
+                                                            id="largeInput"
+                                                            class="form-control form-control-lg"
                                                             name="savingAmount"
+                                                            type="text"
                                                             placeholder="(원)"
                                                     />
-                                                </div>
+<%--                                                </div>--%>
                                             </div>
                                             <!-- 납부일-->
-                                            <div class="mb-3 row">
-                                                <label for="html5-date-input" class="col-md-2 col-form-label">납부일</label>
-                                                <div class="col-md-10">
-                                                    <select name="savingDate" class="form-control" id="html5-date-input">
-                                                        <option value="">일 선택</option>
+                                            <div class="row mb-3">
+                                                <label for="largeSelect" class="form-label">납부일</label>
+<%--                                                <div class="col-md-10">--%>
+                                                    <select name="savingDate" class="form-select form-select-lg" id="largeSelect">
+                                                        <option value="">날짜(일) 선택</option>
                                                         <c:forEach var="day" begin="1" end="28">
                                                             <option value="${day}">${day}일</option>
                                                         </c:forEach>
                                                     </select>
-                                                </div>
+<%--                                                </div>--%>
                                             </div>
                                             <!-- 적금 가입하기 -->
-                                            <div class="row justify-content-end">
-                                                <div class="col-sm-10">
+                                            <div class="row mb-3">
+<%--                                                <div class="col-sm-10">--%>
                                                     <button type="submit" class="btn btn-primary">가입하기</button>
-                                                </div>
+<%--                                                </div>--%>
                                             </div>
                                         </form>
                                         <script>
