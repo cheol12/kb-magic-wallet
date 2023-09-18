@@ -76,10 +76,11 @@ public class GroupWalletController {
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
         log.info(String.valueOf(loginMemberDto.getMemberId()));
 
+        // 내 모임지갑 내역 조회
         WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
+        model.addAttribute("walletDetailDto", walletDetailDto);
 //        mv.setViewName("groupwallet/groupWalletDetail");
 //        mv.addObject("walletDetailDto", walletDetailDto);
-        model.addAttribute("walletDetailDto", walletDetailDto);
 //        mv.addObject("groupWallet", groupWallet);
 
         // 내 모임지갑 모임원 리스트
