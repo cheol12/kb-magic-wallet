@@ -30,21 +30,15 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../../../assets/js/config.js"></script>
+
+
 </head>
 
 <body>
-<%--<input class="input" placeholder="Tap on the virtual keyboard to start" />--%>
-<div class="card" style="width: 18rem;">
-    <div class="card-body">
-        <div class="mb-3">
-            <label for="exampleFormControlReadOnlyInputPlain1" class="form-label">Read plain</label>
-            <input type="text" readonly class="input form-control-plaintext" id="exampleFormControlReadOnlyInputPlain1"
-                   value="결제 비밀번호"/>
-        </div>
-        <div class="simple-keyboard"></div>
-    </div>
-</div>
+<input type="text" readonly class="input form-control-plaintext" id="exampleFormControlReadOnlyInputPlain1" value="결제 비밀번호"/>
+<div class="simple-keyboard"></div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.js"></script>
 <script src="src/index.js"></script>
 <script>
@@ -76,7 +70,7 @@
         theme: "hg-theme-default hg-layout-numeric numeric-theme",
         display: {
             '{bksp}': '지우기',
-            '{enter}': '확인'
+            '{enter}': '전체 지우기'
         },
         maxLength: 6
     });
@@ -88,20 +82,22 @@
         keyboard.setInput(event.target.value);
     });
 
-    console.log(keyboard);
 
     function onChange(input) {
         document.querySelector(".input").value = input;
-        console.log("Input changed", input);
+        // console.log("Input changed", input);
     }
 
     function onKeyPress(button) {
-        console.log("Button pressed", button);
+        // console.log("Button pressed", button);
 
         /**
          * If you want to handle the shift and caps lock buttons
          */
         if (button === "{shift}" || button === "{lock}") handleShift();
+        if (button === "{enter}") {
+            document.querySelector("#exampleFormControlReadOnlyInputPlain1").value = "";
+        }
     }
 
     function handleShift() {
@@ -113,6 +109,30 @@
         });
     }
 
+    function handleEnter() {
+        // 모달 내의 입력 필드에서 6자리 숫자를 추출
+        var paymentPassword = $("#exampleFormControlReadOnlyInputPlain1").val();
+        // AJAX 요청을 통해 서버로 데이터 전송
+        $.ajax({
+            type: "POST",
+            url: "${pageContext.request.contextPath}/verification",
+            data: { payPassword: paymentPassword },
+            success: function(data, textStatus, xhr) {
+                // 비밀번호 확인 결과에 따라 동작 결정
+                if (xhr.status === 200) {
+                    // 비밀번호 확인 완료 시 폼을 제출
+                    summitForm();
+                } else {
+                    // 비밀번호 불일치 시 알림 등을 표시
+                    alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+                }
+            },
+            error: function() {
+                // AJAX 요청 실패 시 처리
+                alert("서버와의 통신 중 오류가 발생했습니다.");
+            }
+        });
+    }
 </script>
 </body>
 </html>
