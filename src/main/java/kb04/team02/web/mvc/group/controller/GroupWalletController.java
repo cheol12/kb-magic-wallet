@@ -199,7 +199,7 @@ public class GroupWalletController {
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
 	    // id=모임지갑에서 memberId=내가 탈퇴한다.
 	    groupWalletService.groupWalletMemberOut(id, loginMemberDto.getMemberId());
-	    return "redirect:/group-wallet";
+	    return "redirect:/group-wallet/";
     }
 
     /**
