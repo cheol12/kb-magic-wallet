@@ -5,8 +5,10 @@ import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -28,4 +30,7 @@ public class ExchangeRate {
     private Double telegraphicTransferSellingRate;
     private Double buyingRate;
     private Double sellingRate;
+
+    @CreationTimestamp
+    private LocalDateTime insertDate;
 }
