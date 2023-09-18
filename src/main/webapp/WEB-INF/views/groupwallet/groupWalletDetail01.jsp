@@ -69,8 +69,37 @@
         $(document).ready(function () {
 
             // 로딩 되자마자 거래 내역 리스트 비동기화 통신
+            // $.ajax({
+            //     url: "/personalwallet/selectDate",
+            //     type: "post",
+            //     dataType: "json",
+            //     success: function (result, status) {
+            //         // 화면에 갱신
+            //         var str = "";
+            //         $.each(result, function (i) {
+            //             str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
+            //             // 날짜 시간 처리
+            //             str += '<TD>' + result[i].dateTime + '</TD>';
+            //             str += '<TD>' + result[i].dateTime + '</TD>';
+            //             // 입금액 출금액 처리
+            //             if (result[i].type === '입금') {
+            //                 str += '<TD> 입금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> 출금액: -</TD>';
+            //             } else {
+            //                 str += '<TD> 입금액: -</TD>' + '<TD> 출금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
+            //             }
+            //             str += '<TD>' + result[i].type + '</TD>';
+            //             str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
+            //             str += '</TR>';
+            //         });
+            //         $("#dateSelectHistory").append(str);
+            //     },
+            //     error: function (result, status) {
+            //
+            //     },
+            // })
+
             $.ajax({
-                url: "/personalwallet/selectDate",
+                url: "${pageContext.request.contextPath}/group-wallet/${id}}",
                 type: "post",
                 dataType: "json",
                 success: function (result, status) {
@@ -97,6 +126,7 @@
 
                 },
             })
+
 
             // 조회기간 설정 조회 버튼 누를 시 비동기화 통싱
             $("#selectDateForm").on("submit", function (e) {
@@ -525,6 +555,52 @@
                         </div>
 
                         <div class="tab-pane fade" id="navs-top-member" role="tabpanel">
+
+                            <div class="card">
+                                <h5 class="card-header">
+                                    <div class="row g-2">
+                                        <div class="col mb-0">
+                                            거래 내역
+                                        </div>
+                                        <div class="col mb-0">
+                                            <div class="col mb-0 col-lg-5 col-md-auto">
+                                                <!-- Button trigger modal -->
+                                                <button
+                                                        type="button"
+                                                        class="btn btn-primary"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#basicModal"
+                                                >
+                                                    조회 기간 설정
+                                                </button>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </h5>
+
+                                <div class="table-responsive text-nowrap">
+                                    <table class="table table">
+                                        <thead>
+                                        <tr>
+                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>거래일자</th>
+                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>거래시간</th>
+                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>입금()</th>
+                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>출금()</th>
+                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>내용</th>
+                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>잔액()</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="table-border-bottom-0" id="dateSelctHistory">
+
+                                        </tbody>
+                                    </table>
+
+
+                                </div>
+
+                            </div>
                             <c:forEach var="memberList" items="${groupMemberDtoList}" varStatus="status">
                                 <div class="card" style="margin-top: 5px;">
                                     <div class="card-header">
@@ -572,9 +648,66 @@
                         </div>
 
                         <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
+                            <div class="card" style="margin-top: 5px;">
+                                <div class="card-header">
+
+                                </div>
+                                <div class="card-body">
+                                    <c:choose>
+                                        <c:when test="${installmentDto == null}">
+                                            <c:choose>
+                                                <c:when test="${isChairman == null}">
+                                                    적금을 가입하세요!
+                                                    <a href="${pageContext.request.contextPath}/saving"
+                                                       class="btn btn-primary">적금 보러가기</a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    적금이 없어요ㅜㅜ 모임장에게 적금 가입 조르기!
+                                                </c:otherwise>
+                                            </c:choose>
+
+                                        </c:when>
+                                        <c:otherwise>
+                                            적금명 : ${installmentDto.savingName},
+                                            <br>
+                                            금리 : ${installmentDto.interestRate}%,
+                                            <br>
+                                            기간 : ${installmentDto.period}개월,
+                                            <br>
+                                            가입일 : ${installmentDto.insertDate},
+                                            <br>
+                                            만기일 : ${installmentDto.maturityDate}
+                                            <br>
+                                            현재까지 : ${installmentDto.totalAmount}원
+                                            <br>
+                                            납입일 : 매월 ${installmentDto.savingDate}일
+                                            <br>
+                                            납입금 : ${installmentDto.savingAmount}원
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="tab-pane fade" id="navs-top-card" role="tabpanel">
+                            <c:forEach var="cardList" items="${cardIssuanceDtoList}" varStatus="status">
+                                <div class="card" style="margin-top: 5px;">
+                                    <div class="card-header">
+
+                                    </div>
+                                    <div class="card-body">
+                                        <c:choose>
+                                            <c:when test="${cardList == null}">
+                                                연결된 카드가 없어요!
+                                                연결 버튼
+                                            </c:when>
+                                            <c:otherwise>
+                                                ${cardList.cardNumber}
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </div>
+                            </c:forEach>
                         </div>
                     </div>
                 </div>
@@ -591,6 +724,9 @@
 
 
 </div>
+
+<form action="${pageContext.request.contextPath}/group-wallet/${id}/member-list" method="post" id="memberListForm"
+      name="memberListForm">
 
 <!-- Modal -->
 <div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
@@ -679,5 +815,17 @@
         </div>
     </div>
 </div>
+
+<p></p>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<footer>
+
+</footer>
 </body>
 </html>

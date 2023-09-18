@@ -267,9 +267,17 @@
                                     <div class="card-body">
                                         <c:choose>
                                             <c:when test="${installmentDto == null}">
-                                                적금을 가입하세요!
-                                                <a href="${pageContext.request.contextPath}/saving"
-                                                   class="btn btn-primary">적금 보러가기</a>
+                                                <c:choose>
+                                                    <c:when test="${isChairman == null}">
+                                                        적금을 가입하세요!
+                                                        <a href="${pageContext.request.contextPath}/saving"
+                                                           class="btn btn-primary">적금 보러가기</a>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        적금이 없어요ㅜㅜ 모임장에게 적금 가입 조르기!
+                                                    </c:otherwise>
+                                                </c:choose>
+
                                             </c:when>
                                             <c:otherwise>
                                                 적금명 : ${installmentDto.savingName},
