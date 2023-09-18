@@ -738,7 +738,8 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     @Override
     public InstallmentDto getInstallmentDtoSaving(GroupWallet groupWallet) {
         InstallmentSaving installmentSaving = installmentSavingRep.findByGroupWalletAndDone(groupWallet, false);
-        Saving saving = savingRep.findBySavingId(installmentSaving.getInstallmentId());
+        Saving saving = savingRep.findById(installmentSaving.getInstallmentId())
+                .orElseThrow(()->new NoSuchElementException("가입된 적금이 없습니다."));
 
         InstallmentDto installmentDto = new InstallmentDto();
 

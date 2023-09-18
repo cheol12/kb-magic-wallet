@@ -1,6 +1,7 @@
 package kb04.team02.web.mvc.group.controller;
 
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
+import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.ExchangeRateDto;
 import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
@@ -106,20 +107,27 @@ public class GroupWalletController {
 
         // 회비 규칙에서 누적 회비 미구현 : 모임원들이 모임지갑에 이체한 내역 전부 더하기
 
+        try {
+            // 적금 조회하기
+            InstallmentDto installmentDto = groupWalletService.getInstallmentDtoSaving(groupWallet);
+            model.addAttribute("installmentDto", installmentDto);
 
-        // 적금 조회하기
-        InstallmentDto installmentDto = groupWalletService.getInstallmentDtoSaving(groupWallet);
-        model.addAttribute("installmentDto", installmentDto);
+            // 연결 카드 조회하기
+            List<CardIssuanceDto> cardIssuanceDtoList = groupWalletService.getCardIssuanceDto(id);
+            model.addAttribute("cardIssuanceDtoList", cardIssuanceDtoList);
 
-        // 연결 카드 조회하기
-        List<CardIssuanceDto> cardIssuanceDtoList = groupWalletService.getCardIssuanceDto(id);
-        model.addAttribute("cardIssuanceDtoList", cardIssuanceDtoList);
+            return "groupwallet/groupWalletDetail01";
+        } catch (RuntimeException e) {
+            model.addAttribute("installmentDto", null);
+            model.addAttribute("cardIssuanceDtoList", null);
 
-        return "groupwallet/groupWalletDetail01";
+            return "groupwallet/groupWalletDetail01";
+        }
+
     }
 
     @ResponseBody
-    @GetMapping("/{id}/member-list")
+    @PostMapping("/{id}/member-list")
     public List<GroupMemberDto> getGroupWalletMembers(@PathVariable Long id, ModelAndView mv, HttpSession session) {
         // id = 내 모임지갑의 id중 하나임.
 
