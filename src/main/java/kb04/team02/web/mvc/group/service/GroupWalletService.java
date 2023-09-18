@@ -4,13 +4,11 @@ import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.RuleDto;
-import kb04.team02.web.mvc.exchange.dto.WalletDto;
 import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.group.exception.NotEnoughBalanceException;
 import kb04.team02.web.mvc.group.exception.WalletDeleteException;
-import kb04.team02.web.mvc.member.entity.Role;
 
 import java.util.List;
 
@@ -210,4 +208,14 @@ public interface GroupWalletService {
      * 나의 모임지갑에 연결된 카드 리스트 조회
      * */
     List<CardIssuanceDto> getCardIssuanceDto(Long walletId);
+
+    /**
+     * 내가 모임장 혹은 공동모임장인 모임지갑을 가지고 있는지 여부
+     */
+    boolean isChairmanGroupWalletList(LoginMemberDto loginMemberDto);
+
+    /**
+     * 내가 모임장 혹은 공동모임장인 모임지갑 조회
+     */
+    List<GroupWallet> getChairmanGroupWalletList(LoginMemberDto loginMemberDto);
 }

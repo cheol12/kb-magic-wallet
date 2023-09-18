@@ -44,10 +44,21 @@ public class SavingController {
      * @param id 상세 조회 할 적금 상품 id
      */
     @GetMapping("/{id}")
-    public ModelAndView savingDetail(@PathVariable String id) throws Exception {
+    public ModelAndView savingDetail(@PathVariable String id, HttpSession session) throws Exception {
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+//        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(loginMemberDto);
+//        List<GroupWallet> groupWalletList = groupWalletService.getChairmanGroupWalletList(loginMemberDto);
+        boolean isChairmanGroupWalletList = groupWalletService.isChairmanGroupWalletList(loginMemberDto);
+
         SavingDto saving = savingService.selectSavingDetail(Long.parseLong(id));
 
-        return new ModelAndView("saving/savingDetail", "saving", saving);
+
+        ModelAndView view = new ModelAndView();
+        view.setViewName("saving/savingDetail");
+
+        view.addObject("saving", saving);
+        view.addObject("isChairmanGroupWalletList", isChairmanGroupWalletList);
+        return view;
     }
 
     /**
@@ -60,7 +71,8 @@ public class SavingController {
     public String savingJoinForm(@PathVariable String id, HttpSession session, Model model) {
         System.out.println("GetMapping 실행.............");
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
-        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(loginMemberDto);
+//        List<GroupWallet> gWalletList = groupWalletService.selectAllMyGroupWallet(loginMemberDto);
+        List<GroupWallet> gWalletList = groupWalletService.getChairmanGroupWalletList(loginMemberDto);
         SavingDto saving = savingService.selectSavingDetail(Long.parseLong(id));
 
         model.addAttribute("gWalletList", gWalletList);
