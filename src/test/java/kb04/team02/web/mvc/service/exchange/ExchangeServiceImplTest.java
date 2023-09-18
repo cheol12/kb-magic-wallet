@@ -1,9 +1,6 @@
 package kb04.team02.web.mvc.service.exchange;
 
-import kb04.team02.web.mvc.exchange.dto.WalletDto;
-import kb04.team02.web.mvc.exchange.dto.BankDto;
-import kb04.team02.web.mvc.exchange.dto.ExchangeDto;
-import kb04.team02.web.mvc.exchange.dto.OfflineReceiptDto;
+import kb04.team02.web.mvc.exchange.dto.*;
 import kb04.team02.web.mvc.exchange.entity.Bank;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.exchange.entity.ReceiptState;
@@ -237,26 +234,24 @@ class ExchangeServiceImplTest {
                 .groupWallet(groupWallet1)
                 .build());
 
-        OfflineReceiptDto offlineReceiptDto = OfflineReceiptDto.builder()
+        OfflineReceiptRequestDto offlineReceiptDto = OfflineReceiptRequestDto.builder()
                 .receiptDate(LocalDateTime.now())
-                .currencyCode(CurrencyCode.USD)
+                .currencyCode(1)
                 .amount(1L)
-                .receiptState(ReceiptState.WAITING)
                 .bankId(bank1.getBankId())
                 .walletId(groupWallet1.getGroupWalletId())
-                .walletType(WalletType.GROUP_WALLET).build();
+                .walletType(1).build();
 
         int res = exchangeService.requestOfflineReceipt(offlineReceiptDto);
         System.out.println(res);
 
-        OfflineReceiptDto offlineReceiptDto2 = OfflineReceiptDto.builder()
+        OfflineReceiptRequestDto offlineReceiptDto2 = OfflineReceiptRequestDto.builder()
                 .receiptDate(LocalDateTime.now())
-                .currencyCode(CurrencyCode.USD)
+                .currencyCode(1)
                 .amount(1L)
-                .receiptState(ReceiptState.WAITING)
                 .bankId(5L)
                 .walletId(41L)
-                .walletType(WalletType.PERSONAL_WALLET).build();
+                .walletType(2).build();
         int res2 = exchangeService.requestOfflineReceipt(offlineReceiptDto2);
         System.out.println(res2);
 
@@ -369,18 +364,18 @@ class ExchangeServiceImplTest {
 
         ExchangeDto dto = new ExchangeDto();
         dto.setBuyAmount(1L);
-        dto.setBuyCurrencyCode(CurrencyCode.USD);
+        dto.setBuyCurrencyCode(CurrencyCode.USD.getValue());
         dto.setWalletId(personalWallet1.getPersonalWalletId());
-        dto.setWalletType(WalletType.PERSONAL_WALLET);
+        dto.setWalletType(WalletType.PERSONAL_WALLET.getValue());
 
         int res = exchangeService.requestExchangeOnline(dto);
         System.out.println(res);
 
         ExchangeDto dto2 = new ExchangeDto();
         dto2.setBuyAmount(1L);
-        dto2.setBuyCurrencyCode(CurrencyCode.USD);
+        dto2.setBuyCurrencyCode(CurrencyCode.USD.getValue());
         dto2.setWalletId(140L);
-        dto2.setWalletType(WalletType.GROUP_WALLET);
+        dto2.setWalletType(WalletType.GROUP_WALLET.getValue());
 
         int res2 = exchangeService.requestExchangeOnline(dto2);
         System.out.println(res2);

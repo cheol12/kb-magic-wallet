@@ -11,6 +11,7 @@
 //import kb04.team02.web.mvc.member.entity.Address;
 //import kb04.team02.web.mvc.member.entity.Member;
 //import kb04.team02.web.mvc.member.entity.Role;
+//import kb04.team02.web.mvc.personal.entity.PersonalWalletTransfer;
 //import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
 //import kb04.team02.web.mvc.saving.entity.Saving;
 //import kb04.team02.web.mvc.common.entity.TargetType;
@@ -541,7 +542,7 @@
 //                .afterBalance(1000000L) // 이체 후 잔액 계산
 //                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
 //                .personalWallet(personalWallet2)
-//                .build())
+//                .build());
 //    }
 //
 //}

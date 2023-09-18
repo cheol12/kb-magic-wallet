@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.exchange.dto;
 
+import kb04.team02.web.mvc.exchange.entity.Bank;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.exchange.entity.ReceiptState;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
@@ -52,6 +53,11 @@ public class OfflineReceiptDto {
                 .receiptState(offlineReceipt.getReceiptState())
                 .walletType(WalletType.GROUP_WALLET)
                 .build();
+    }
+
+    // 임시
+    public LocalDateTime getReceiptDate() {
+        return receiptDate != null ? receiptDate : LocalDateTime.MIN; // null인 경우 LocalDateTime.MIN을 반환
     }
 
 }

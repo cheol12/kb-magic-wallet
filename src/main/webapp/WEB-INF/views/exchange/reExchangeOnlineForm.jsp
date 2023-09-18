@@ -1,15 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
-  User: jiwon
-  Date: 2023-09-11
-  Time: 오후 11:31
+  User: 여메정
+  Date: 2023-09-16
+  Time: 오후 1:34
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>깨비의 요술 지갑 - 환전</title>
+    <title>깨비의 요술 지갑 - 재환전</title>
     <link rel="stylesheet" type="text/css" href="/css/common.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -42,42 +42,48 @@
 <script>
 
     function validateForm() {
-        // 1. 모든 값을 입력했는지 검사
+        // 필수 입력값을 가져옵니다.
         const walletType = document.querySelector('input[name="walletType"]:checked');
-        const walletId = document.getElementById('selectedWallet');
-        const amount = document.querySelector('input[name="buyAmount"]');
+        const sellCurrency = document.querySelector('select[name="sellCurrencyCode"]');
+        const sellAmount = document.querySelector('input[name="sellAmount"]');
 
-        if (!walletType || !walletId || !amount.value) {
-            alert("모든 필드를 입력해주세요.");
+        // 잔액 조회 결과를 가져옵니다.
+        const usdBalance = document.getElementById('USDBalance').value;
+        const jpyBalance = document.getElementById('JPYBalance').value;
+
+        // 필수 입력값 확인
+        if (!walletType || walletType.value === "") {
+            alert("지갑 종류를 선택하세요.");
             return false;
         }
 
-        // 2. amount가 50 이상인지 검사
-        const amountValue = parseFloat(amount.value);
-        if (amountValue < 50) {
-            alert("환전 신청 금액은 50 이상이어야 합니다.");
+        if (sellCurrency.value === "통화선택") {
+            alert("통화를 선택하세요.");
             return false;
         }
 
-        // 지갑 잔액 확인 여부 검사
-        const walletBalance = document.getElementById("walletBalance").value;
-        if (walletBalance === "") {
-            alert("지갑 잔액을 확인해주세요.");
+        if (sellAmount.value === "") {
+            alert("금액을 입력하세요.");
             return false;
         }
 
+        // 잔액 조회 확인
+        if (usdBalance === "" || jpyBalance === "") {
+            alert("잔액 조회를 먼저 수행하세요.");
+            return false;
+        }
 
-        // 모든 유효성 검사를 통과한 경우 true 반환
+        // 모든 조건이 충족되면 true 반환하여 폼 제출을 허용합니다.
         return true;
     }
 
     let expectedAmountCK = () => {
-        var code = $('select[name="buyCurrencyCode"]').val();
-        var amount = $('input[name="buyAmount"]').val();
+        var code = $('select[name="sellCurrencyCode"]').val();
+        var amount = $('input[name="sellAmount"]').val();
 
         let data = {
             code: code,
-            amount : amount
+            amount: amount
         }
 
         // AJAX POST 요청
@@ -101,28 +107,29 @@
         });
     }
 
-    let balanceCK = () => {
+    let fcBalanceCK = () => {
         let walletId = $('select[name="walletId"]').val();
         let walletType = $('input[name="walletType"]:checked').val();
 
         let data = {
             walletId: walletId,
-            walletType : walletType
+            walletType: walletType
         }
 
         // AJAX POST 요청
         $.ajax({
             type: "post",
-            url: "/exchange/walletBalance",
+            url: "/exchange/walletFCBalance",
             data: JSON.stringify(data),
             contentType: "application/json",
             dataType: "json", // 예상되는 응답 형식(JSON 등)
             success: function (response) {
                 // 성공 시 실행할 코드
                 alert("성공")
-                $('#withdrawableBalance').attr('placeholder', response.toLocaleString());
-                $('#walletBalance').attr('placeholder', response.toLocaleString());
-                $('#walletBalance').val(response.toLocaleString());
+                $('#USDBalance').attr('placeholder', response.balance.USD.toLocaleString());
+                $('#USDBalance').val(response.balance.USD);
+                $('#JPYBalance').attr('placeholder', response.balance.JPY.toLocaleString());
+                $('#JPYBalance').val(response.balance.JPY);
             },
             error: function (error) {
                 // 오류 발생 시 실행할 코드
@@ -130,18 +137,16 @@
             }
         });
     }
-
 </script>
-
 <jsp:include page="../common/navbar.jsp"></jsp:include>
 <div class="pageWrap">
     <div class="center">
         <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
-                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">환전/</span> 온라인</h4>
+                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">재환전/</span> 온라인</h4>
                 <!-- Basic Layout -->
-                <form action="${pageContext.request.contextPath}/exchange/online/form" method="post" id="exchangeOnlineForm" onsubmit="return validateForm();">
+                <form action="${pageContext.request.contextPath}/exchange/online/re-form" method="post" id="reExchangeOnlineForm" onsubmit="return validateForm();">
                     <div class="row">
                         <div class="col-xl">
                             <div class="card mb-4">
@@ -154,17 +159,18 @@
                                     <div class="row gx-3 gy-2 align-items-center">
                                         <div class="mb-3">
                                             출금 지갑 선택
-                                        <div class="row">
-                                        <div class="col-3 form-check">
-                                            <input class="form-check-input" type="radio" name="walletType" value="0" checked>
-                                            <label class="form-check-label">개인지갑</label>
-                                        </div>
-                                        <div class="col-3 form-check">
-                                            <input class="form-check-input" type="radio" name="walletType" value="1">
-                                            <label class="form-check-label">모임지갑</label>
-                                        </div>
-                                        </div>
-                                            <select id="selectedWallet" class="form-select color-dropdown" name="walletId">
+                                            <div class="row">
+                                                <div class="col-3 form-check">
+                                                    <input class="form-check-input" type="radio" name="walletType" value="0" checked>
+                                                    <label class="form-check-label">개인지갑</label>
+                                                </div>
+                                                <div class="col-3 form-check">
+                                                    <input class="form-check-input" type="radio" name="walletType" value="1">
+                                                    <label class="form-check-label">모임지갑</label>
+                                                </div>
+                                            </div>
+                                            <select id="selectedWallet" class="form-select color-dropdown"
+                                                    name="walletId">
                                                 <option selected>지갑을 선택하세요</option>
                                                 <c:forEach items="${walletList}" var="wallet" varStatus="loop">
                                                     <option value="${wallet.walletId}">${wallet.nickname}</option>
@@ -172,14 +178,18 @@
                                             </select>
                                         </div>
                                         <div class="col-mb-3">
-                                            <button type="button" class="btn btn-outline-warning" onclick="balanceCK();">잔액 조회</button>
+                                            <button type="button" class="btn btn-outline-warning"
+                                                    onclick="fcBalanceCK();">잔액 조회
+                                            </button>
                                         </div>
                                         <div>
-                                            <label class="form-label">출금가능잔액</label>
-                                            <input id="withdrawableBalance" type="text" class="form-control" placeholder="잔액을 조회하세요" readonly/>
+                                            <label class="form-label">USD</label>
+                                            <input id="USDBalance" type="text" class="form-control"
+                                                   placeholder="잔액을 조회하세요" readonly/>
 
-                                            <label class="form-label">총잔액</label>
-                                            <input id="walletBalance" type="text" class="form-control" placeholder="잔액을 조회하세요" readonly/>
+                                            <label class="form-label">JPY</label>
+                                            <input id="JPYBalance" type="text" class="form-control"
+                                                   placeholder="잔액을 조회하세요" readonly/>
                                         </div>
                                     </div>
                                 </div>
@@ -194,23 +204,24 @@
 
                                     <div class="row gx-3 gy-2 align-items-center">
                                         <div class="col-mb-2">
-                                            신청 금액
+                                            판매 신청 금액
                                         </div>
                                         <div class="col-3">
-                                            <select class="form-select color-dropdown" name="buyCurrencyCode">
+                                            <select class="form-select color-dropdown" name="sellCurrencyCode">
                                                 <option selected>통화선택</option>
                                                 <option value="1">USD</option>
                                                 <option value="2">JPY</option>
                                             </select>
                                         </div>
                                         <div class="col-6">
-                                            <input type="number" class="form-control" placeholder="금액을 입력하세요" name="buyAmount">
+                                            <input type="number" class="form-control" placeholder="금액을 입력하세요"
+                                                   name="sellAmount">
                                         </div>
                                         <div class="col-3">
                                             <button type="button" class="btn btn-outline-warning" onclick="expectedAmountCK();">환전 예상 금액 조회</button>
                                         </div>
                                         <div>
-                                            <label class="form-label">출금금액</label>
+                                            <label class="form-label">입금금액</label>
                                             <input id="expectedAmount" type="text" class="form-control" placeholder="" readonly/>
 
                                             <label class="form-label">현재 고시 환율</label>
@@ -221,11 +232,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                        <button type="submit" class="btn btn-primary">환전하기</button>
+                                <button type="submit" class="btn btn-primary">환전하기</button>
                             </div>
-
-
-
                         </div>
                     </div>
                 </form>

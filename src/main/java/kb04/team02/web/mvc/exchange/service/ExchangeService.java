@@ -1,11 +1,8 @@
 package kb04.team02.web.mvc.exchange.service;
 
+import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
-import kb04.team02.web.mvc.exchange.dto.WalletDto;
-import kb04.team02.web.mvc.exchange.dto.BankDto;
-import kb04.team02.web.mvc.exchange.dto.ExchangeCalDto;
-import kb04.team02.web.mvc.exchange.dto.ExchangeDto;
-import kb04.team02.web.mvc.exchange.dto.OfflineReceiptDto;
+import kb04.team02.web.mvc.exchange.dto.*;
 import kb04.team02.web.mvc.member.entity.Role;
 import kb04.team02.web.mvc.common.entity.WalletType;
 
@@ -78,7 +75,7 @@ public interface ExchangeService {
      * - 은행 식별번호
      * - 개인지갑 식별번호 or 모임지갑 식별변호
      */
-    int requestOfflineReceipt(OfflineReceiptDto offlineReceiptDto);
+    int requestOfflineReceipt(OfflineReceiptRequestDto offlineReceiptRequestDto);
 
     /**
      * 오프라인 환전 취소
@@ -114,4 +111,19 @@ public interface ExchangeService {
      * @return ExchangeDto
      */
     ExchangeCalDto expectedExchangeAmount(CurrencyCode currencyCode, Long amount);
+
+    /**
+     * 선택한 지갑의 외화 잔액을 리스트로 반환
+     * @param walletId
+     * @param walletType
+     * @return
+     */
+    WalletDetailDto selectedWalletFCBalance(Long walletId, WalletType walletType);
+
+    /**
+     * 온라인 재환전 요청
+     * @param exchangeDto
+     * @return
+     */
+    int requestReExchangeOnline(ExchangeDto exchangeDto);
 }
