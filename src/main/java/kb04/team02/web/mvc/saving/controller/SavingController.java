@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -78,12 +79,13 @@ public class SavingController {
      */
 //    @PostMapping("/{id}/form")
     @PostMapping("/{id}/form")
-    public String savingJoin(@PathVariable String id, SavingInstallmentDto installmentDto) {
+    public String savingJoin(@PathVariable String id, SavingInstallmentDto installmentDto, RedirectAttributes redirectAttributes) {
         System.out.println("PostMapping 실행.............");
         int result = savingService.insertInstallmentSaving(installmentDto);
         System.out.println("result = " + result);
 
         if (result == 1) {
+            redirectAttributes.addFlashAttribute("successMessage", "적금 가입에 성공했습니다.");
             return "redirect:/mypage/main";
         } else {
             return "redirect:/saving/";
