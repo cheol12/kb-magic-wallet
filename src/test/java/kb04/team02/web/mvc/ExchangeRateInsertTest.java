@@ -35,7 +35,7 @@ public class ExchangeRateInsertTest {
         BufferedReader br = null;
 
         try {
-            br = Files.newBufferedReader(Paths.get("C:\\multicamp\\spring\\kb_final\\src\\main\\java\\kb04\\team02\\web\\mvc\\exchange\\service\\result.csv"));
+            br = Files.newBufferedReader(Paths.get("src/main/java/kb04/team02/web/mvc/exchange/service/result.csv"));
             //Charset.forName("UTF-8");
             String line = "";
             int cnt = 0;
