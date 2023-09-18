@@ -43,7 +43,7 @@
 
 <script>
 
-    document.addEventListener("DOMContentLoaded", function () {
+/*    document.addEventListener("DOMContentLoaded", function () {
         const walletSelect = document.getElementById("walletSelect");
         const walletOptions = walletSelect.querySelectorAll('option');
         const personalWalletRadio = document.querySelector('input[value="0"]');
@@ -53,13 +53,14 @@
         function initializeSelectOptions() {
             const selectedRadio = document.querySelector('input[name="walletType"]:checked');
             const selectedValue = selectedRadio ? selectedRadio.value : "0"; // 기본값은 개인지갑
+
             walletOptions.forEach((option) => {
                 const optionType = option.getAttribute("data-type");
-                if ((selectedValue === "0" && optionType !== "PERSONAL_WALLET") ||
-                    (selectedValue === "1" && optionType !== "GROUP_WALLET")) {
-                    option.style.display = 'none'; // 옵션 숨기기
+                if ((selectedValue === "0" && optionType === "PERSONAL_WALLET") ||
+                    (selectedValue === "1" && optionType === "GROUP_WALLET")) {
+                    option.style.display = 'block'; // 해당 지갑 유형의 옵션 표시
                 } else {
-                    option.style.display = 'block'; // 옵션 표시
+                    option.style.display = 'none'; // 해당 지갑 유형이 아닌 옵션 숨기기
                 }
             });
         }
@@ -74,31 +75,83 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         const walletSelect = document.getElementById("walletSelect");
+        const walletOptions = walletSelect.querySelectorAll('option');
+        const personalWalletRadio = document.querySelector('input[value="0"]');
+        const groupWalletRadio = document.querySelector('input[value="1"]');
 
-        // 초기 스타일 설정
-        for (let i = 0; i < walletSelect.options.length; i++) {
-            const option = walletSelect.options[i];
-            const role = option.getAttribute("data-role");
+        // 초기화 함수
+        function initializeSelectOptions() {
+            const selectedRadio = document.querySelector('input[name="walletType"]:checked');
+            const selectedValue = selectedRadio ? selectedRadio.value : "0"; // 기본값은 개인지갑
 
-            if (role !== "CHAIRMAN") {
-                option.style.color = "#D8D8D8"; // 텍스트 색상 변경
-                option.style.backgroundColor = "#F2F2F2"; // 배경 색상 변경
-            }
+            walletOptions.forEach((option) => {
+                const optionType = option.getAttribute("data-type");
+                const optionRole = option.getAttribute("data-role");
+
+                if ((selectedValue === "0" && optionType === "PERSONAL_WALLET") ||
+                    (selectedValue === "1" && optionType === "GROUP_WALLET")) {
+                    option.style.display = 'block'; // 해당 지갑 유형의 옵션 표시
+                } else {
+                    option.style.display = 'none'; // 해당 지갑 유형이 아닌 옵션 숨기기
+                }
+
+                if (optionRole === "GENERAL") {
+                    option.disabled = true; // "GENERAL" 역할의 옵션 비활성화
+                    option.style.color = "#D8D8D8"; // 비활성화된 텍스트 색상
+                    option.style.backgroundColor = "#F2F2F2"; // 비활성화된 배경 색상
+                }
+            });
         }
 
-        walletSelect.addEventListener("change", function () {
-            const selectedOption = walletSelect.options[walletSelect.selectedIndex];
-            const selectedRole = selectedOption.getAttribute("data-role");
+        // 초기화 함수 호출
+        initializeSelectOptions();
 
-            // "CHAIRMAN"이 아닌 경우 선택을 비활성화
-            if (selectedRole !== "CHAIRMAN") {
-                walletSelect.selectedIndex = 0; // 기본 선택 옵션으로 돌아감
-                selectedOption.disabled = true; // 옵션을 비활성화
-                selectedOption.style.color = "#D8D8D8"; // 비활성화된 텍스트 색상
-                selectedOption.style.backgroundColor = "#F2F2F2"; // 비활성화된 배경 색상
+        // 라디오 버튼 변경 이벤트 처리
+        personalWalletRadio.addEventListener("change", initializeSelectOptions);
+        groupWalletRadio.addEventListener("change", initializeSelectOptions);
+    });*/
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const walletSelect = document.getElementById("walletSelect");
+    const walletOptions = walletSelect.querySelectorAll('option');
+    const personalWalletRadio = document.querySelector('input[value="0"]');
+    const groupWalletRadio = document.querySelector('input[value="1"]');
+
+    // 초기화 함수
+    function initializeSelectOptions() {
+        const selectedRadio = document.querySelector('input[name="walletType"]:checked');
+        const selectedValue = selectedRadio ? selectedRadio.value : "0"; // 기본값은 개인지갑
+
+        walletOptions.forEach((option) => {
+            const optionType = option.getAttribute("data-type");
+            const optionRole = option.getAttribute("data-role");
+
+            console.log(optionRole)
+
+            if ((selectedValue === "0" && optionType === "PERSONAL_WALLET") ||
+                (selectedValue === "1" && optionType === "GROUP_WALLET")) {
+                option.style.display = 'block'; // 해당 지갑 유형의 옵션 표시
+            } else {
+                option.style.display = 'none'; // 해당 지갑 유형이 아닌 옵션 숨기기
+            }
+
+            if (optionRole === "GENERAL") {
+                option.disabled = true; // "GENERAL" 역할의 옵션 비활성화
+                option.style.color = "#D8D8D8"; // 비활성화된 텍스트 색상
+                option.style.backgroundColor = "#F2F2F2"; // 비활성화된 배경 색상
             }
         });
-    });
+    }
+
+    // 초기화 함수 호출
+    initializeSelectOptions();
+
+    // 라디오 버튼 변경 이벤트 처리
+    personalWalletRadio.addEventListener("change", initializeSelectOptions);
+    groupWalletRadio.addEventListener("change", initializeSelectOptions);
+});
+
 
     function validateForm() {
         // 모든 요소가 입력되었는지 검사

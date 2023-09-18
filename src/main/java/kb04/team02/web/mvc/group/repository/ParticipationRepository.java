@@ -53,6 +53,8 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
      */
     Participation findByGroupWalletAndMemberId(GroupWallet groupWallet, Long memberId);
 
+    List<Participation> findByMemberIdAndParticipationState(Long memberId, ParticipationState state);
+
 
 
 
