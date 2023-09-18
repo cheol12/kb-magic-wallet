@@ -196,7 +196,18 @@ public class ExchangeServiceImpl implements ExchangeService {
         }
         offlineReceipt.setReceiptState(ReceiptState.CANCEL);
 
-        // 취소했을 때 바로 환불..?
+        // 환불
+        Long exchangeAmount
+                = expectedExchangeAmount(offlineReceipt.getCurrencyCode(), offlineReceipt.getAmount()).getExpectedAmount();
+        if(offlineReceipt.getPersonalWallet() != null){
+            PersonalWallet pw = personalWalletRepository.findById(offlineReceipt.getPersonalWallet().getPersonalWalletId())
+                    .orElseThrow(() -> new NoSuchElementException("개인 지갑 내역 조회 실패"));
+            pw.setBalance(pw.getBalance() + exchangeAmount);
+        } else if (offlineReceipt.getGroupWallet() != null) {
+            GroupWallet gw = groupWalletRespository.findById(offlineReceipt.getGroupWallet().getGroupWalletId())
+                    .orElseThrow(() -> new NoSuchElementException("모임 지갑 내역 조회 실패"));
+            gw.setBalance(gw.getBalance() + exchangeAmount);
+        }
 
         return 1;
     }
@@ -297,7 +308,7 @@ public class ExchangeServiceImpl implements ExchangeService {
 
         // 적용 환율 구하기
         Double applicableExchangeRate = 0.0;
-        ExchangeRate exchangeRate = exchangeRateRepository.findExchangeRateByCurrencyCode(currencyCode)
+        ExchangeRate exchangeRate = exchangeRateRepository.findFirstByCurrencyCodeOrderByInsertDateDesc(currencyCode)
                 .orElseThrow(() -> new NoSuchElementException("환율 조회 실패"));
         if (!currencyCode.equals(CurrencyCode.KRW)) {
             // 원화 -> 외화
@@ -405,8 +416,6 @@ public class ExchangeServiceImpl implements ExchangeService {
                     = gFCBalanceRepository.findGroupWalletForeignCurrencyBalanceByCurrencyCodeAndGroupWallet(sellCode, groupWallet).orElseThrow(() -> new NoSuchElementException("해당 통화 내역 조회 실패"));
             bwfcb.setBalance(fcBalance - sellAmount);
             groupWallet.setBalance(kwBalance + buyAmount);
-
-
         }
 
         return 1;

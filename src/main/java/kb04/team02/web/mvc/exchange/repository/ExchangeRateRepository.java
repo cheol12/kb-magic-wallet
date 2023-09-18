@@ -18,6 +18,6 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
             SQL
             select * from exchange_rate where currency_code = ?
          */
-    Optional<ExchangeRate> findExchangeRateByCurrencyCode(CurrencyCode currencyCode);
+    Optional<ExchangeRate> findFirstByCurrencyCodeOrderByInsertDateDesc(CurrencyCode currencyCode);
 
 }
