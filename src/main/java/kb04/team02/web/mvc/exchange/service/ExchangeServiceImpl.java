@@ -80,7 +80,10 @@ public class ExchangeServiceImpl implements ExchangeService {
         // 개인 지갑
         List<WalletDto> pWalletList = new ArrayList<>();
         PersonalWallet pw = personalWalletRepository.findByMember(member);
-        pWalletList.add(WalletDto.toPersoanlDto(pw));
+        WalletDto pwDto = WalletDto.toPersoanlDto(pw);
+        pwDto.setNickname("개인 지갑");
+        pwDto.setWalletType(WalletType.PERSONAL_WALLET);
+        pWalletList.add(pwDto);
         // 모임 지갑
         List<GroupWallet> groupWallet = groupWalletRespository.findByMember(member);
         if (groupWallet != null) {
@@ -97,7 +100,7 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     @Override
     public Long selectedWalletBalance(Long WalletId, WalletType walletType) {
-
+        // 원화 잔액
         Long balance = 0L;
 
         if (walletType.equals(WalletType.PERSONAL_WALLET)) {
@@ -116,7 +119,6 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     @Override
     public List<OfflineReceiptDto> offlineReceiptHistory(Long personalWalletId, Map<Long, Role> map) {
-
         // 개인지갑 -> 환전 내역
         PersonalWallet personalWallet = personalWalletRepository.findById(personalWalletId).orElseThrow(() -> new NoSuchElementException("개인 지갑 조회 실패"));
         List<OfflineReceiptDto> pwReceiptHistory = offlineReceiptRepository.findAllByPersonalWallet(personalWallet).stream()
@@ -147,14 +149,11 @@ public class ExchangeServiceImpl implements ExchangeService {
     public int requestOfflineReceipt(OfflineReceiptDto offlineReceiptDto) {
 
         WalletType type = offlineReceiptDto.getWalletType();
+        Long walletId = offlineReceiptDto.getWalletId();
 
         // 선택한 지갑의 balance
-        Long balance = 0L;
-        if (type.equals(WalletType.PERSONAL_WALLET)) {
-            balance = selectedWalletBalance(offlineReceiptDto.getPersonalWalletId(), type);
-        } else if (type.equals(WalletType.GROUP_WALLET)) {
-            balance = selectedWalletBalance(offlineReceiptDto.getGroupWalletId(), type);
-        }
+        Long balance = selectedWalletBalance(walletId, type);
+
         // balance보다 높은 금액을 신청한 경우 예외 발생
         Long expectedAmount = expectedExchangeAmount(offlineReceiptDto.getCurrencyCode(), offlineReceiptDto.getAmount()).getExpectedAmount();
         if (expectedAmount > balance) throw new ExchangeException("잔액이 부족합니다.");
@@ -162,11 +161,11 @@ public class ExchangeServiceImpl implements ExchangeService {
         Bank bank = bankRepository.findById(offlineReceiptDto.getBankId()).orElseThrow(() -> new NoSuchElementException("은행 조회 실패"));
         GroupWallet groupWallet = new GroupWallet();
         PersonalWallet personalWallet = new PersonalWallet();
-        if (offlineReceiptDto.getGroupWalletId() != null) {
-            groupWallet = groupWalletRespository.findById(offlineReceiptDto.getGroupWalletId()).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
+        if (walletId != null) {
+            groupWallet = groupWalletRespository.findById(walletId).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         }
-        if (offlineReceiptDto.getPersonalWalletId() != null) {
-            personalWallet = personalWalletRepository.findById(offlineReceiptDto.getPersonalWalletId()).orElseThrow(() -> new NoSuchElementException("개인지갑 조회 실패"));
+        if (walletId != null) {
+            personalWallet = personalWalletRepository.findById(walletId).orElseThrow(() -> new NoSuchElementException("개인지갑 조회 실패"));
         }
         offlineReceiptRepository.save(
                 OfflineReceipt.builder()
@@ -193,6 +192,10 @@ public class ExchangeServiceImpl implements ExchangeService {
     public int cancelOfflineReceipt(Long receipt_id) {
         OfflineReceipt offlineReceipt = offlineReceiptRepository.findById(receipt_id)
                 .orElseThrow(() -> new NoSuchElementException("오프라인 환전 내역 조회 실패"));
+
+        if(! offlineReceipt.getReceiptState().equals(ReceiptState.WAITING)){
+            throw new ExchangeException("취소할 수 없습니다.");
+        }
 
         offlineReceipt.setReceiptState(ReceiptState.CANCEL);
         return 1;

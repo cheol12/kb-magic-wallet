@@ -26,7 +26,7 @@ public class CardIssuance {
     @CreationTimestamp
     private LocalDateTime insertDate;
 
-    @Column(unique = true, length = 19)
+    @Column(unique = true, length = 20)
     private String cardNumber;
 
     @Enumerated(EnumType.ORDINAL)

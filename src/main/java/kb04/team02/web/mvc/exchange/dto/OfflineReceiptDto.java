@@ -26,8 +26,7 @@ public class OfflineReceiptDto {
     private WalletType walletType;
 
     private Long bankId;
-    private Long groupWalletId;
-    private Long personalWalletId;
+    private Long walletId;
 
     public static OfflineReceiptDto toPersonalOfflineReceiptDto(OfflineReceipt offlineReceipt){
         return OfflineReceiptDto.builder()
