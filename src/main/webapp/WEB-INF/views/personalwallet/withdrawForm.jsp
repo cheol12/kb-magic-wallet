@@ -42,33 +42,33 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../../../assets/js/config.js"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#frm").on("submit", function (e) {
-                $("input").each(function (index, item) {
-                    if (validateCheck(item)) {
-                        focus(item);
-                        return false;
-                        // each function만 탈출하는 return 문
-                        // => 추가적으로 e.preventDefault();를 통해 막아주어야한다
-                    }
-                });
-                e.preventDefault();
-            });
+<%--    <script type="text/javascript">--%>
+<%--        $(document).ready(function () {--%>
+<%--            $("#frm").on("submit", function (e) {--%>
+<%--                $("input").each(function (index, item) {--%>
+<%--                    if (validateCheck(item)) {--%>
+<%--                        focus(item);--%>
+<%--                        return false;--%>
+<%--                        // each function만 탈출하는 return 문--%>
+<%--                        // => 추가적으로 e.preventDefault();를 통해 막아주어야한다--%>
+<%--                    }--%>
+<%--                });--%>
+<%--                e.preventDefault();--%>
+<%--            });--%>
 
-            function validateCheck(obj) { //obj = item전달
-                if (obj.value === "") {//obj가 이름, 이메일, 연락, 비번....
-                    alert("값을 입력해주세요.");
-                    obj.focus();
-                    return true;
-                } else {
-                    return false;
-                }
-            }
+<%--            function validateCheck(obj) { //obj = item전달--%>
+<%--                if (obj.value === "") {//obj가 이름, 이메일, 연락, 비번....--%>
+<%--                    alert("값을 입력해주세요.");--%>
+<%--                    obj.focus();--%>
+<%--                    return true;--%>
+<%--                } else {--%>
+<%--                    return false;--%>
+<%--                }--%>
+<%--            }--%>
 
 
-        });
-    </script>
+<%--        });--%>
+<%--    </script>--%>
 
 </head>
 <body>
