@@ -69,8 +69,39 @@
         $(document).ready(function () {
 
             // 로딩 되자마자 거래 내역 리스트 비동기화 통신
+            // $.ajax({
+            //     url: "/personalwallet/selectDate",
+            //     type: "post",
+            //     dataType: "json",
+            //     success: function (result, status) {
+            //         // 화면에 갱신
+            //         var str = "";
+            //         $.each(result, function (i) {
+            //             str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
+            //             // 날짜 시간 처리
+            //             str += '<TD>' + result[i].dateTime + '</TD>';
+            //             str += '<TD>' + result[i].dateTime + '</TD>';
+            //             // 입금액 출금액 처리
+            //             if (result[i].type === '입금') {
+            //                 str += '<TD> 입금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> 출금액: -</TD>';
+            //             } else {
+            //                 str += '<TD> 입금액: -</TD>' + '<TD> 출금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
+            //             }
+            //             str += '<TD>' + result[i].type + '</TD>';
+            //             str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
+            //             str += '</TR>';
+            //         });
+            //         $("#dateSelectHistory").append(str);
+            //     },
+            //     error: function (result, status) {
+            //
+            //     },
+            // })
+
             $.ajax({
+
                 url: "${pageContext.request.contextPath}/group-wallet/${id}/history",
+
                 type: "post",
                 dataType: "json",
                 success: function (result, status) {
@@ -121,6 +152,7 @@
 
                 },
             })
+
 
             // 조회기간 설정 조회 버튼 누를 시 비동기화 통싱
             $("#selectDateForm").on("submit", function (e) {
@@ -688,6 +720,7 @@
 
                         </div>
 
+
                         <div class="tab-pane fade show" id="navs-top-member" role="tabpanel">
 
                             <div class="card">
@@ -708,7 +741,6 @@
 
                                         </tbody>
                                     </table>
-
 
                                 </div>
 
@@ -851,8 +883,6 @@
 
 
 </div>
-
-
 
 <!-- Modal -->
 <div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
