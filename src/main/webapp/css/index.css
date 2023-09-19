@@ -50,5 +50,102 @@
 .above-container{
   height: 500px;
   margin-bottom: 100px;
-  background-color: #4a89dc;
+  background-color: #CEECF5;
+  display: flex;
+}
+
+#first-box{
+  flex: 1; /* 자식 요소가 동일한 너비를 가지도록 설정합니다. */
+  padding: 50px; /* 여백 추가 (선택사항) */
+  margin-left: 200px;
+}
+
+#second-box {
+  flex: 1;
+  text-align: center; /* 텍스트를 가운데 정렬합니다. */
+  display: flex;
+  flex-direction: column; /* 내부 컨텐츠를 세로로 정렬하기 위해 컬럼 방향으로 설정합니다. */
+/*  justify-content: center; !* 수직 가운데 정렬 *!*/
+  margin-right: 250px;
+}
+
+.box img {
+  max-width: 100%; /* 이미지의 최대 너비를 부모 요소에 맞게 조절 */
+  height: auto; /* 이미지 높이 자동 조절 */
+  margin: 0 auto; /* 수평 가운데 정렬 */
+  width: 100%; /* 이미지의 너비를 조절 (예: 80%) */
+}
+
+#first-box .first-contents h1 {
+  font-size: 70px; /* 원하는 크기로 조절하세요 */
+  font-weight: bold;
+  color: #2E2E2E;
+}
+
+/* 추가적으로 h1 내의 p 태그(별도의 스타일을 적용하려면)의 크기도 조절할 수 있습니다. */
+#first-box .first-contents h1 p {
+  font-size: 65px; /* 원하는 크기로 조절하세요 */
+  font-weight: bold;
+}
+
+#first-box .first-contents h1 #second-text {
+  font-size: 50px; /* 원하는 크기로 조절하세요 */
+  font-weight: bold;
+}
+
+#first-box .first-contents #second-text{
+  font-size: 48px; /* 원하는 크기로 조절하세요 */
+  color: #2E2E2E;
+}
+
+.btnClass button {
+  margin-right: 5px; /* 원하는 간격 크기로 조절하세요. 예: 5px */
+}
+
+#first-text {
+  background-image: linear-gradient(45deg, #007bff, #87ceeb); /* 그라데이션 색상 및 방향 설정 */
+  background-clip: text; /* 텍스트에만 그라데이션을 적용 */
+  -webkit-background-clip: text; /* 웹킷 브라우저 지원을 위한 설정 (Safari 등) */
+  color: transparent; /* 텍스트 색상을 투명하게 설정하여 텍스트를 보이지 않게 합니다. */
+}
+
+.container{
+  height: 800px;
+}
+
+.rectangles{
+  margin-top: 150px;
+}
+
+.text-above-rectangles {
+  display: flex; /* 내부 요소를 가로로 정렬하기 위해 플렉스 컨테이너로 설정 */
+  flex-direction: column; /* 내부 요소를 세로로 정렬 */
+  justify-content: center; /* 수직 가운데 정렬 */
+  align-items: center; /* 수평 가운데 정렬 */
+}
+
+.text-above-rectangles h2 {
+  font-size: 60px; /* 원하는 크기로 조절하세요 */
+  font-weight: bold; /* 텍스트를 두껍게 만듭니다. */
+  color: #2E2E2E;
+}
+
+.text-above-rectangles p {
+  font-size: 18px; /* 원하는 크기로 조절하세요 */
+}
+
+.explainDiv{
+  margin-top: 10px;
+  display: flex; /* 내부 요소를 가로로 정렬하기 위해 플렉스 컨테이너로 설정 */
+  flex-direction: column; /* 내부 요소를 세로로 정렬 */
+  justify-content: center; /* 수직 가운데 정렬 */
+  align-items: center; /* 수평 가운데 정렬 */
+}
+
+.explainDiv p {
+  margin: 3px; /* 위아래 간격을 없애거나 원하는 크기로 설정하세요 */
+}
+
+.BtnBottomClass{
+  margin-top: 10px;
 }
