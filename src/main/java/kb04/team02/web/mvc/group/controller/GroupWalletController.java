@@ -181,10 +181,10 @@ public class GroupWalletController {
      * @param id 삭제할 모임지갑 id
      */
     @DeleteMapping("/{id}") // 매핑값이 /{id} 가 맞는지?
-    public String groupWalletDelete(@PathVariable Long id, Model model) throws WalletDeleteException {
+    public String groupWalletDelete(@PathVariable Long id) throws WalletDeleteException {
 	    groupWalletService.deleteGroupWallet(id);
 
-	    return "redirect:/group-wallet";
+	    return "redirect:/group-wallet/";
     }
 
     /**
@@ -208,15 +208,16 @@ public class GroupWalletController {
      *
      * @param id 자진 탈퇴 요청 모임지갑 id
      */
-//    @GetMapping("/{id}/out")
-//    public String groupWalletMemberOut(@PathVariable Long id, HttpSession session, Model model) {
-//        // 모임지갑 id
-////	    Member member = (Member) session.getAttribute("member_id");
-//        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
-//	    // id=모임지갑에서 memberId=내가 탈퇴한다.
-//	    groupWalletService.groupWalletMemberOut(id, loginMemberDto.getMemberId());
-//	    return "redirect:/group-wallet/";
-//    }
+    @GetMapping("/{id}/leave")
+    public String groupWalletMemberOut(@PathVariable Long id, HttpSession session, Model model) {
+        // 모임지갑 id
+//	    Member member = (Member) session.getAttribute("member_id");
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+	    // id=모임지갑에서 memberId=내가 탈퇴한다.
+	    groupWalletService.groupWalletMemberOut(id, loginMemberDto.getMemberId());
+	    return "redirect:/group-wallet/";
+    }
+
 
     /**
      * 모임지갑 꺼내기 요청

@@ -475,4 +475,32 @@ public class GroupWalletTabController {
 //    }
 
     //== 내역 탭 END ==//
+
+
+    /**
+     * 모임지갑 권한 부여
+     * */
+    @ResponseBody
+    @PostMapping("/{id}/grant")
+    public int groupWalletAuthGrant(@PathVariable Long id, @RequestParam Long memberId){
+        System.out.println("memberId = " + memberId);
+        boolean result = groupWalletTabService.grantMemberAuth(id, memberId);
+
+        if(result){
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * 모임지갑 권한 철회
+     * */
+    @ResponseBody
+    @PostMapping("/{id}/revoke")
+    public int groupWalletAuthRevoke(@PathVariable Long id, @RequestParam Long memberId){
+        System.out.println("memberId = " + memberId);
+        boolean result = groupWalletTabService.revokeMemberAuth(id, memberId);
+        if(result) return 1;
+        return 0;
+    }
 }
