@@ -100,7 +100,7 @@
 
 
             // 모임지갑 모임원 리스트 조회
-            function memberCall(){
+            function memberCall() {
                 let myMemberId = ${loginMemberDto.memberId};
                 let isChairman = ${isChairman};
 
@@ -116,7 +116,7 @@
                         $.each(result, function (i) {
                             str += '<tr id="searchMemberResult">'
                             str += '<td>' + result[i].name + '</td>';
-                            str += '<td>' + result[i].roleToString + result[i].memberId +'</td>';
+                            str += '<td>' + result[i].roleToString + result[i].memberId + '</td>';
 
                             // memberId가 자신의 memberId와 일치하지 않는 경우에만 강퇴 버튼 생성
                             if (isChairman && (result[i].memberId !== myMemberId)) {
@@ -131,13 +131,14 @@
                         $("#getMemberList").append(str);
 
                         // 강퇴 버튼 클릭 이벤트 핸들러
-                    //    모임장 권한 아직
+                        //    모임장 권한 아직
                     },
                     error: function (result, status) {
                         // 오류 처리
                     },
                 });
             }
+
             memberCall();
 
             // 모임지갑에서 강퇴 버튼 클릭
@@ -145,33 +146,32 @@
             // $(document).on("click", , function(){ }) 형식을 쓰는 이유
             // = 동적 요소에 대한 이벤트 처리: 이 방식을 사용하면 페이지가 로드된 이후에
             // 동적으로 생성되는 요소에 대해서도 이벤트 처리를 할 수 있다
-            $(document).on("click",'.alert-warning',function() {
+            $(document).on("click", '.alert-warning', function () {
                 let memberId = $(this).data("member-id");
                 let memberName = $(this).data("member-name")
 
                 var confirmation = confirm(memberName + "님을 강퇴하시겠습니까?");
 
-                if(confirmation){
+                if (confirmation) {
                     $.ajax({
                         url: "${pageContext.request.contextPath}/group-wallet/${id}/out",
                         type: "post",
-                        data: { memberId: memberId },
-                        success: function(result, response) {
+                        data: {memberId: memberId},
+                        success: function (result, response) {
                             console.log(result);
-                            if(result > 0){
+                            if (result > 0) {
                                 // 강퇴 성공 시 필요한 작업 수행
                                 alert(memberName + "님을 강퇴했어요")
                                 memberCall();
-                            }
-                            else{
+                            } else {
                                 alert("강퇴를 실패했어요");
                             }
                         },
-                        error: function() {
+                        error: function () {
                             // 강퇴 실패 시 필요한 작업 수행
                         }
                     });
-                } else{
+                } else {
                     alert("강퇴를 취소했습니다.");
                 }
 
@@ -213,7 +213,6 @@
                     },
                 })
             });
-
 
 
             // 모달 닫기 (조회기간 설정 버튼 누른 후)
@@ -409,8 +408,11 @@
         });
 
 
-        document.getElementById("deleteButton").addEventListener("click", function(event) {
-            if (${countMember} > 1) {
+        document.getElementById("deleteButton").addEventListener("click", function (event) {
+            if (${countMember} >
+            1
+        )
+            {
                 event.preventDefault();
                 alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
             }
@@ -516,254 +518,254 @@
         </div>
 
 
-            <div class="col-xl-12">
-                <h6 class="text-muted"></h6>
-                <div class="nav-align-top d-flex mb-8">
-                    <ul class="nav nav-tabs flex-fill" role="tablist">
-                        <li class="nav-item">
-                            <button
-                                    type="button"
-                                    class="nav-link active"
-                                    role="tab"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#navs-top-home"
-                                    aria-controls="navs-top-home"
-                                    aria-selected="true"
-                            >
-                                모임 거래 내역
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button
-                                    type="button"
-                                    class="nav-link"
-                                    role="tab"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#navs-top-member"
-                                    aria-controls="navs-top-member"
-                                    aria-selected="false"
-                            >
-                                모임 멤버 조회
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button
-                                    type="button"
-                                    class="nav-link"
-                                    role="tab"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#navs-top-rule"
-                                    aria-controls="navs-top-rule"
-                                    aria-selected="false"
-                            >
-                                모임 회비 규칙
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button
-                                    type="button"
-                                    class="nav-link"
-                                    role="tab"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#navs-top-save"
-                                    aria-controls="navs-top-save"
-                                    aria-selected="false"
-                            >
-                                모임 적금 조회
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button
-                                    type="button"
-                                    class="nav-link"
-                                    role="tab"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#navs-top-card"
-                                    aria-controls="navs-top-card"
-                                    aria-selected="false"
-                            >
-                                모임 연결 카드
-                            </button>
-                        </li>
-                    </ul>
-                    <div class="tab-content" style="padding: 0px">
-                        <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
+        <div class="col-xl-12">
+            <h6 class="text-muted"></h6>
+            <div class="nav-align-top d-flex mb-8">
+                <ul class="nav nav-tabs flex-fill" role="tablist">
+                    <li class="nav-item">
+                        <button
+                                type="button"
+                                class="nav-link active"
+                                role="tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#navs-top-home"
+                                aria-controls="navs-top-home"
+                                aria-selected="true"
+                        >
+                            모임 거래 내역
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button
+                                type="button"
+                                class="nav-link"
+                                role="tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#navs-top-member"
+                                aria-controls="navs-top-member"
+                                aria-selected="false"
+                        >
+                            모임 멤버 조회
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button
+                                type="button"
+                                class="nav-link"
+                                role="tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#navs-top-rule"
+                                aria-controls="navs-top-rule"
+                                aria-selected="false"
+                        >
+                            모임 회비 규칙
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button
+                                type="button"
+                                class="nav-link"
+                                role="tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#navs-top-save"
+                                aria-controls="navs-top-save"
+                                aria-selected="false"
+                        >
+                            모임 적금 조회
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button
+                                type="button"
+                                class="nav-link"
+                                role="tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#navs-top-card"
+                                aria-controls="navs-top-card"
+                                aria-selected="false"
+                        >
+                            모임 연결 카드
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" style="padding: 0px">
+                    <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
 
-                            <div class="card">
-                                <h5 class="card-header">
-                                    <div class="row g-2">
-                                        <div class="col mb-0">
-                                            거래 내역
-                                        </div>
-                                        <div class="col mb-0">
-                                            <div class="col mb-0 col-lg-5 col-md-auto">
-                                                <!-- Button trigger modal -->
-                                                <button
-                                                        type="button"
-                                                        class="btn btn-primary"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#basicModal"
-                                                >
-                                                    조회 기간 설정
-                                                </button>
+                        <div class="card">
+                            <h5 class="card-header">
+                                <div class="row g-2">
+                                    <div class="col mb-0">
+                                        거래 내역
+                                    </div>
+                                    <div class="col mb-0">
+                                        <div class="col mb-0 col-lg-5 col-md-auto">
+                                            <!-- Button trigger modal -->
+                                            <button
+                                                    type="button"
+                                                    class="btn btn-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#basicModal"
+                                            >
+                                                조회 기간 설정
+                                            </button>
 
 
-                                            </div>
                                         </div>
                                     </div>
-                                </h5>
-
-                                <div class="table-responsive text-nowrap">
-                                    <table class="table table">
-                                        <thead>
-                                        <tr>
-                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>거래일자</th>
-                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>거래시간</th>
-                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>입금()</th>
-                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>출금()</th>
-                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>내용</th>
-                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>잔액()</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody class="table-border-bottom-0" id="dateSelectHistory">
-
-                                        </tbody>
-                                    </table>
-
-
                                 </div>
+                            </h5>
+
+                            <div class="table-responsive text-nowrap">
+                                <table class="table table">
+                                    <thead>
+                                    <tr>
+                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>거래일자</th>
+                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>거래시간</th>
+                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>입금()</th>
+                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>출금()</th>
+                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>내용</th>
+                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>잔액()</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="table-border-bottom-0" id="dateSelectHistory">
+
+                                    </tbody>
+                                </table>
+
 
                             </div>
 
                         </div>
 
+                    </div>
 
-                        <div class="tab-pane fade show" id="navs-top-member" role="tabpanel">
 
-                            <div class="card">
-                                <h5 class="card-header">
-                                    모임원 목록
-                                </h5>
+                    <div class="tab-pane fade show" id="navs-top-member" role="tabpanel">
 
-                                <div class="table-responsive text-nowrap">
+                        <div class="card">
+                            <h5 class="card-header">
+                                모임원 목록
+                            </h5>
 
-                                    <table class="table table">
-                                        <thead>
-                                        <tr>
-                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>이름</th>
-                                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>역할</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody class="table-border-bottom-0" id="getMemberList">
+                            <div class="table-responsive text-nowrap">
 
-                                        </tbody>
-                                    </table>
+                                <table class="table table">
+                                    <thead>
+                                    <tr>
+                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>이름</th>
+                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>역할</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="table-border-bottom-0" id="getMemberList">
 
-                                </div>
+                                    </tbody>
+                                </table>
 
                             </div>
 
                         </div>
 
-                        <div class="tab-pane fade" id="navs-top-rule" role="tabpanel">
-                            <div class="card" style="margin-top: 5px;">
-                                <div class="card-header">
-                                    <c:choose>
-                                    <c:when test="${groupWallet.dueCondition}">
-                                    회비 규칙 ${groupWallet.dueCondition},
-                                    <p></p>
-                                    매월 : ${groupWallet.dueDate}일, ${groupWallet.due}원
-                                    <br>
-                                    현재 누적 회비 : ${groupWallet.dueAccumulation}원
+                    </div>
+
+                    <div class="tab-pane fade" id="navs-top-rule" role="tabpanel">
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header">
+                                <c:choose>
+                                <c:when test="${groupWallet.dueCondition}">
+                                회비 규칙 ${groupWallet.dueCondition},
+                                <p></p>
+                                매월 : ${groupWallet.dueDate}일, ${groupWallet.due}원
+                                <br>
+                                현재 누적 회비 : ${groupWallet.dueAccumulation}원
+                                <c:choose>
+                                <c:when test="${isChairman == true}">
+                                <p>
+                                    <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
+                                       class="btn btn-primary">회비 규칙 수정</a>
+                                    </c:when>
+                                    </c:choose>
+                                    </c:when>
+                                    <c:otherwise>
+                                    회비가 없습니다.
                                     <c:choose>
                                     <c:when test="${isChairman == true}">
-                                    <p>
-                                        <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
-                                           class="btn btn-primary">회비 규칙 수정</a>
-                                        </c:when>
-                                        </c:choose>
-                                        </c:when>
-                                        <c:otherwise>
-                                        회비가 없습니다.
-                                        <c:choose>
-                                        <c:when test="${isChairman == true}">
-                                        <!-- 모임장 일 때만 -->
-                                        <!-- 회비 규칙 생성 폼으로 넘어가는 버튼 -->
-                                        <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
-                                           class="btn btn-primary">회비 규칙 생성</a>
-                                        </c:when>
-                                        </c:choose>
-                                        </c:otherwise>
-                                        </c:choose>
-                                </div>
+                                    <!-- 모임장 일 때만 -->
+                                    <!-- 회비 규칙 생성 폼으로 넘어가는 버튼 -->
+                                    <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
+                                       class="btn btn-primary">회비 규칙 생성</a>
+                                    </c:when>
+                                    </c:choose>
+                                    </c:otherwise>
+                                    </c:choose>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
+                    <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header">
+
+                            </div>
+                            <div class="card-body">
+                                <c:choose>
+                                    <c:when test="${installmentDto == null}">
+                                        <c:choose>
+                                            <c:when test="${isChairman == null}">
+                                                적금을 가입하세요!
+                                                <a href="${pageContext.request.contextPath}/saving"
+                                                   class="btn btn-primary">적금 보러가기</a>
+                                            </c:when>
+                                            <c:otherwise>
+                                                적금이 없어요ㅜㅜ 모임장에게 적금 가입 조르기!
+                                            </c:otherwise>
+                                        </c:choose>
+
+                                    </c:when>
+                                    <c:otherwise>
+                                        적금명 : ${installmentDto.savingName},
+                                        <br>
+                                        금리 : ${installmentDto.interestRate}%,
+                                        <br>
+                                        기간 : ${installmentDto.period}개월,
+                                        <br>
+                                        가입일 : ${installmentDto.insertDate},
+                                        <br>
+                                        만기일 : ${installmentDto.maturityDate}
+                                        <br>
+                                        현재까지 : ${installmentDto.totalAmount}원
+                                        <br>
+                                        납입일 : 매월 ${installmentDto.savingDate}일
+                                        <br>
+                                        납입금 : ${installmentDto.savingAmount}원
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="navs-top-card" role="tabpanel">
+                        <c:forEach var="cardList" items="${cardIssuanceDtoList}" varStatus="status">
                             <div class="card" style="margin-top: 5px;">
                                 <div class="card-header">
 
                                 </div>
                                 <div class="card-body">
                                     <c:choose>
-                                        <c:when test="${installmentDto == null}">
-                                            <c:choose>
-                                                <c:when test="${isChairman == null}">
-                                                    적금을 가입하세요!
-                                                    <a href="${pageContext.request.contextPath}/saving"
-                                                       class="btn btn-primary">적금 보러가기</a>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    적금이 없어요ㅜㅜ 모임장에게 적금 가입 조르기!
-                                                </c:otherwise>
-                                            </c:choose>
-
+                                        <c:when test="${cardList == null}">
+                                            연결된 카드가 없어요!
+                                            연결 버튼
                                         </c:when>
                                         <c:otherwise>
-                                            적금명 : ${installmentDto.savingName},
-                                            <br>
-                                            금리 : ${installmentDto.interestRate}%,
-                                            <br>
-                                            기간 : ${installmentDto.period}개월,
-                                            <br>
-                                            가입일 : ${installmentDto.insertDate},
-                                            <br>
-                                            만기일 : ${installmentDto.maturityDate}
-                                            <br>
-                                            현재까지 : ${installmentDto.totalAmount}원
-                                            <br>
-                                            납입일 : 매월 ${installmentDto.savingDate}일
-                                            <br>
-                                            납입금 : ${installmentDto.savingAmount}원
+                                            ${cardList.cardNumber}
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="tab-pane fade" id="navs-top-card" role="tabpanel">
-                            <c:forEach var="cardList" items="${cardIssuanceDtoList}" varStatus="status">
-                                <div class="card" style="margin-top: 5px;">
-                                    <div class="card-header">
-
-                                    </div>
-                                    <div class="card-body">
-                                        <c:choose>
-                                            <c:when test="${cardList == null}">
-                                                연결된 카드가 없어요!
-                                                연결 버튼
-                                            </c:when>
-                                            <c:otherwise>
-                                                ${cardList.cardNumber}
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </div>
+                        </c:forEach>
                     </div>
                 </div>
             </div>
+        </div>
         <br>
         <br>
         <br>
@@ -786,17 +788,15 @@
             </c:choose>
         </div>
 
-        </div>
-
-
-</div>
     </div>
-    <!--/ Striped Rows -->
 
 
 </div>
+</div>
+<!--/ Striped Rows -->
 
 
+</div>
 
 
 </div>
