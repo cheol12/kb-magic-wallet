@@ -1,30 +1,54 @@
-.mainBanner{
-  padding: 5em;
-  width: auto ;
-  height: auto;
-  border: 1px solid black;
+.rectangle {
+  width: calc(33.33% - 20px); /* 3분의 1 너비로 설정하고 간격 고려하여 20px 뺌 */
+  height: 300px; /* 높이 설정 */
+  margin-right: 30px; /* 오른쪽 여백 설정 */
+  float: left; /* 왼쪽으로 부유시킴 */
+  box-sizing: border-box; /* 여백을 포함한 전체 너비 설정 */
 }
 
-#mainPageTab{
-  padding-top: 20px;
-
-}
-
-
-.mainTabButton{
-  background: none;
-  border: black 1px solid;
-  width: 15%;
-  height: 200px;
-  margin-right: 10%;
-}
-.mainTabButton:first-child{
-  margin-left: 5%;
-}
-.mainTabButton:last-child{
+/* 마지막 사각형의 오른쪽 여백 제거 */
+.rectangle:last-child {
   margin-right: 0;
 }
 
-.mainTabButton:hover{
-  background: rgb(228, 228, 228);
+/* 사각형 내부의 요소 스타일 지정 */
+.inner-content {
+  height: 66.66%; /* 높이를 3분의 2로 설정 */
+}
+
+/* 세로로 3분의 1로 나누는 구분선 스타일 지정 */
+.divider {
+  height: 33.33%; /* 높이를 3분의 1로 설정 */
+}
+
+.inner-content img {
+  max-width: 100%; /* 이미지의 최대 너비를 부모 요소에 맞게 조절 */
+  height: auto; /* 이미지 높이 자동 조절 */
+  display: block; /* 블록 요소로 설정하여 가로 정렬 */
+  margin: 0 auto; /* 수평 가운데 정렬 */
+}
+
+/* .divider 내부의 텍스트 가운데 정렬 */
+.divider {
+  text-align: center;
+}
+
+/* "Sign up" 글자 크기 조절 */
+.divider .title {
+  font-size: 24px; /* 원하는 크기로 조절하세요 */
+}
+
+.divider .title {
+  margin-bottom: 10px; /* 원하는 간격 크기로 조절하세요 */
+}
+
+/* inner-content과 divider 사이 간격 조절 */
+.rectangle .inner-content {
+  margin-bottom: 20px; /* 원하는 간격 크기로 조절하세요 */
+}
+
+.above-container{
+  height: 500px;
+  margin-bottom: 100px;
+  background-color: #4a89dc;
 }

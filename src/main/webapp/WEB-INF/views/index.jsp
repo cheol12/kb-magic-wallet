@@ -38,114 +38,55 @@
 <!--네비게이션 바-->
 <jsp:include page="common/navbar.jsp"/>
 
-<div >
+<div>
+    <div class="above-container"></div>
 
-
-    <div class="center">
-        <div class="row mb-5">
-            <div class="col-md">
-                <div class="card mb-3">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img class="card-img card-img-left" src="../assets/img/elements/11.jpg" alt="Card image" />
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">개인 지갑 기능</h5>
-                                <p class="card-text">
-                                    무려 카드를 같이 드려요!
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="container">
+        <!-- 사각형 1 -->
+        <div class="rectangle">
+            <div class="inner-content">
+                <img src="${pageContext.request.contextPath}/assets/img/icons/1.png">
             </div>
-        </div>
-        <div class="row mb-5">
-
-            <div class="col-md">
-                <div class="card mb-3">
-                    <div class="row g-0">
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">모임 지갑 기능</h5>
-                                <p class="card-text">
-                                    돈 같이 넣고 같이 쓰자!
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <img class="card-img card-img-right" src="../assets/img/elements/17.jpg" alt="Card image" />
-                        </div>
-                    </div>
+            <div class="divider">
+                <div class="title">
+                    Sign Up
                 </div>
-            </div>
-        </div>
-        <div class="row mb-5">
-            <div class="col-md">
-                <div class="card mb-3">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img class="card-img card-img-left" src="../assets/img/elements/12.jpg" alt="Card image" />
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">환전 기능</h5>
-                                <p class="card-text">
-                                    외국 갈 꺼니까~~!
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mb-5">
-
-            <div class="col-md">
-                <div class="card mb-3">
-                    <div class="row g-0">
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">적금 혜택</h5>
-                                <p class="card-text">
-                                    돈 모아서 적금 들고, 그 돈으로 여행 갈래?
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <img class="card-img card-img-right" src="../assets/img/elements/19.jpg" alt="Card image" />
-                        </div>
-                    </div>
+                <div class="content">
+                    Sign up for your free NEFA Wallet on web, <br> iOS or Android and follow our easy process to set up your profile
                 </div>
             </div>
         </div>
 
-        <div class="row mb-5">
-            <div class="col-md">
-                <div class="card mb-3">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img class="card-img card-img-left" src="../assets/img/elements/4.jpg" alt="Card image" />
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">활용성 높은 카드</h5>
-                                <p class="card-text">
-                                    자신의 지갑 목록 중 원하는 지갑을 선택해서 사용 가능한 카드!
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+        <!-- 사각형 2 -->
+        <div class="rectangle">
+            <div class="inner-content">
+                <img src="${pageContext.request.contextPath}/assets/img/icons/2.png">
+            </div>
+            <div class="divider">
+                <div class="title">
+                    Fund
+                </div>
+                <div class="content">
+                    Choose your preferred payment method <br>such as bank transfer or credit card to top up your NEFA Wallet
                 </div>
             </div>
         </div>
 
-
-
-
+        <!-- 사각형 3 -->
+        <div class="rectangle">
+            <div class="inner-content">
+                <img src="${pageContext.request.contextPath}/assets/img/icons/3.png">
+            </div>
+            <div class="divider">
+                <div class="title">
+                    Buy Crypto
+                </div>
+                <div class="content">
+                    Buy Bitcoin or Ethereum, then securely store it <br>in your Wallet or send it on easily to your friends anywhere
+                </div>
+            </div>
+        </div>
     </div>
-
 
 
 </div>
