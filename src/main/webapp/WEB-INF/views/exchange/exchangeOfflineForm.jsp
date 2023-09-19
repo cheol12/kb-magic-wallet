@@ -43,7 +43,7 @@
 
 <script>
 
-/*    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         const walletSelect = document.getElementById("walletSelect");
         const walletOptions = walletSelect.querySelectorAll('option');
         const personalWalletRadio = document.querySelector('input[value="0"]');
@@ -109,9 +109,9 @@
         // 라디오 버튼 변경 이벤트 처리
         personalWalletRadio.addEventListener("change", initializeSelectOptions);
         groupWalletRadio.addEventListener("change", initializeSelectOptions);
-    });*/
+    });
 
-document.addEventListener("DOMContentLoaded", function () {
+/*document.addEventListener("DOMContentLoaded", function () {
 
     const walletSelect = document.getElementById("walletSelect");
     const walletOptions = walletSelect.querySelectorAll('option');
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 라디오 버튼 변경 이벤트 처리
     personalWalletRadio.addEventListener("change", initializeSelectOptions);
     groupWalletRadio.addEventListener("change", initializeSelectOptions);
-});
+});*/
 
 
     function validateForm() {
