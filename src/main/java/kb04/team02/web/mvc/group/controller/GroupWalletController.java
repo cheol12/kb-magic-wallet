@@ -77,6 +77,7 @@ public class GroupWalletController {
 	// id = 내 모임지갑의 id중 하나임.
 
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+        model.addAttribute("loginMemberDto", loginMemberDto);
         log.info(String.valueOf(loginMemberDto.getMemberId()));
 
         // 내 모임지갑 내역 조회
@@ -128,6 +129,8 @@ public class GroupWalletController {
 
     }
 
+
+
     @ResponseBody
     @PostMapping("{id}/history")
     public List<WalletHistoryDto> getHistory(@PathVariable Long id, HttpSession session, Model model) {
@@ -147,15 +150,26 @@ public class GroupWalletController {
 
         List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
         GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
-        log.info("groupMemberDtoList = " + String.valueOf(groupMemberDtoList));
         log.info("groupMemberDtoListSize = " + groupMemberDtoList.size());
-        System.out.println(groupMemberDtoList);
+        System.out.println(groupMemberDtoList.get(0).getMemberId());
 
 //        mv.setViewName("groupwallet/groupWalletDetail");
 //        mv.addObject("groupMemberDtoList", groupMemberDtoList);
 //        mv.addObject("groupWallet", groupWallet);
 
         return groupMemberDtoList;
+    }
+
+    /**
+     * @author 김철
+     * 모임지갑에서 모임장이 모임원을 강퇴한다.
+     * */
+    @ResponseBody
+    @PostMapping("{id}/out")
+    public int groupWalletMemberKick(@PathVariable Long id, @RequestParam Long memberId){
+        int result = groupWalletService.groupWalletMemberOut(id, memberId);
+
+        return result;
     }
 
     /**
@@ -192,15 +206,15 @@ public class GroupWalletController {
      *
      * @param id 자진 탈퇴 요청 모임지갑 id
      */
-    @GetMapping("/{id}/out")
-    public String groupWalletMemberOut(@PathVariable Long id, HttpSession session, Model model) {
-        // 모임지갑 id
-//	    Member member = (Member) session.getAttribute("member_id");
-        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
-	    // id=모임지갑에서 memberId=내가 탈퇴한다.
-	    groupWalletService.groupWalletMemberOut(id, loginMemberDto.getMemberId());
-	    return "redirect:/group-wallet/";
-    }
+//    @GetMapping("/{id}/out")
+//    public String groupWalletMemberOut(@PathVariable Long id, HttpSession session, Model model) {
+//        // 모임지갑 id
+////	    Member member = (Member) session.getAttribute("member_id");
+//        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+//	    // id=모임지갑에서 memberId=내가 탈퇴한다.
+//	    groupWalletService.groupWalletMemberOut(id, loginMemberDto.getMemberId());
+//	    return "redirect:/group-wallet/";
+//    }
 
     /**
      * 모임지갑 꺼내기 요청

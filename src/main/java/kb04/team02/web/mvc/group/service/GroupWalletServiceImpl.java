@@ -708,6 +708,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             log.info("member = " + member);
 
             groupMemberDto = new GroupMemberDto();
+            groupMemberDto.setMemberId(p.getMemberId());
             groupMemberDto.setName(member.getName());
             groupMemberDto.setRole(p.getRole());
 

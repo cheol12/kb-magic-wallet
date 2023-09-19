@@ -114,11 +114,11 @@
                         str += '<TD>' + result[i].dateTime + '</TD>';
                         // 입금액 출금액 처리
                         if (result[i].type === '입금') {
-                            str += '<TD> 입금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> 출금액: -</TD>';
+                            str += '<TD> ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> </TD>';
                         } else {
-                            str += '<TD> 입금액: -</TD>' + '<TD> 출금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
+                            str += '<TD> </TD>' + '<TD> ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
                         }
-                        str += '<TD>' + result[i].type + '</TD>';
+                        str += '<TD>  ' + result[i].type + '</TD>';
                         str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
                         str += '</TR>';
                     });
@@ -131,29 +131,105 @@
 
 
             // 로딩 되자마자 모임원 리스트 비동기 통신
-            $.ajax({
-                url: "${pageContext.request.contextPath}/group-wallet/${id}/member-list",
-                type: "post",
-                dataType: "json",
-                success: function (result, status) {
-                    // 화면에 갱신
-                    var str = "";
-                    $.each(result, function (i) {
-                        str += '<TR id="searchMemberResult" onclick="" data-bs-toggle="" data-bs-target="">'
-                        // 날짜 시간 처리
-                        str += '<TD>' + result[i].name + '</TD>';
-                        str += '<TD>' + result[i].roleToString + '</TD>';
+            <%--$.ajax({--%>
+            <%--    url: "${pageContext.request.contextPath}/group-wallet/${id}/member-list",--%>
+            <%--    type: "post",--%>
+            <%--    dataType: "json",--%>
+            <%--    success: function (result, status) {--%>
+            <%--        // 화면에 갱신--%>
+            <%--        var str = "";--%>
+            <%--        $.each(result, function (i) {--%>
+            <%--            str += '<TR id="searchMemberResult" onclick="" data-bs-toggle="" data-bs-target="">'--%>
+            <%--            // 날짜 시간 처리--%>
+            <%--            str += '<TD>' + result[i].name + '</TD>';--%>
+            <%--            str += '<TD>' + result[i].roleToString + '</TD>';--%>
+            <%--            str += '<td><button class="kick-button" data-member-id="' + result[i].id + '">강퇴</button></td>';--%>
+            <%--            str += '</TR>';--%>
+            <%--        });--%>
+            <%--        $("#getMemberList").append(str);--%>
+            <%--    },--%>
+            <%--    error: function (result, status) {--%>
 
-                        str += '</TR>';
+            <%--    },--%>
+            <%--})--%>
+
+
+
+            function memberCall(){
+                let myMemberId = ${loginMemberDto.memberId};
+                let isChairman = ${isChairman};
+
+                // 이후 JavaScript 코드에서 myMemberId 변수를 사용할 수 있음
+
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/group-wallet/${id}/member-list",
+                    type: "post",
+                    dataType: "json",
+                    success: function (result, status) {
+                        // 화면에 갱신
+                        var str = "";
+                        $.each(result, function (i) {
+                            str += '<tr id="searchMemberResult">'
+                            str += '<td>' + result[i].name + '</td>';
+                            str += '<td>' + result[i].roleToString + result[i].memberId +'</td>';
+
+                            // memberId가 자신의 memberId와 일치하지 않는 경우에만 강퇴 버튼 생성
+                            if (isChairman && (result[i].memberId !== myMemberId)) {
+                                str += '<td><button class="alert-warning" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">강퇴</button></td>';
+                            } else {
+                                str += '<td></td>'; // 자신의 memberId와 일치하면 빈 칸 생성
+                            }
+
+                            str += '</tr>';
+                        });
+                        $("#getMemberList").empty();
+                        $("#getMemberList").append(str);
+
+                        // 강퇴 버튼 클릭 이벤트 핸들러
+                    //    모임장 권한 아직
+                    },
+                    error: function (result, status) {
+                        // 오류 처리
+                    },
+                });
+            }
+            memberCall();
+            ////////강퇴버튼 클릭///////////////////////////////////////////////////////////////////////
+            $(document).on("click",'.alert-warning',function() {
+                let memberId = $(this).data("member-id");
+                let memberName = $(this).data("member-name")
+
+                var confirmation = confirm(memberName + "님을 강퇴하시겠습니까?");
+
+                if(confirmation){
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/group-wallet/${id}/out",
+                        type: "post",
+                        data: { memberId: memberId },
+                        success: function(result, response) {
+                            console.log(result);
+                            if(result > 0){
+                                // 강퇴 성공 시 필요한 작업 수행
+                                alert(memberName + "님을 강퇴했어요")
+                                memberCall();
+                            }
+                            else{
+                                alert("강퇴를 실패했어요");
+                            }
+                        },
+                        error: function() {
+                            // 강퇴 실패 시 필요한 작업 수행
+                        }
                     });
-                    $("#getMemberList").append(str);
-                },
-                error: function (result, status) {
+                } else{
+                    alert("강퇴를 취소했습니다.");
+                }
 
-                },
-            })
+            });
 
 
+
+    /////////////////////////////////////////////////////////////
             // 조회기간 설정 조회 버튼 누를 시 비동기화 통싱
             $("#selectDateForm").on("submit", function (e) {
                 e.preventDefault()
