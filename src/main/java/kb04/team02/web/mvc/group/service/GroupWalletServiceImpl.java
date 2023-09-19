@@ -155,18 +155,18 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             walletHistoryDto.setDateTime(exchange.getInsertDate());
 
             if(exchange.getSellCurrencyCode() == CurrencyCode.KRW){
-                walletHistoryDto.setType("재환전");
+                walletHistoryDto.setType("환전");
             }
             else{
-                walletHistoryDto.setType("환전");
+                walletHistoryDto.setType("재환전");
             }
 
             String detail = exchange.getSellCurrencyCode() + " > " + exchange.getBuyCurrencyCode();
 
             walletHistoryDto.setDetail(detail);
             walletHistoryDto.setAmount(exchange.getSellAmount().toString());
-            walletHistoryDto.setBalance(exchange.getAfterSellBalance().toString() + ":" + exchange.getAfterBuyBalance());
-
+            walletHistoryDto.setBalance(exchange.getAfterSellBalance().toString() + " : " + exchange.getAfterBuyBalance());
+            walletHistoryDto.setCurrencyCode(exchange.getBuyCurrencyCode());
             dto.getList().add(walletHistoryDto);
         }
 
