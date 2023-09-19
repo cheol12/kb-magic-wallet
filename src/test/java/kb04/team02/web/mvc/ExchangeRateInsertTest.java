@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,13 +65,17 @@ public class ExchangeRateInsertTest {
                 if (curr.get(1).equals("USD")) {
                     System.out.println(curr.get(2));
                     System.out.println(curr.get(2).replaceAll(",", ""));
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
+                    System.out.println("curr.get(0) = " + curr.get(0));
+                    LocalDateTime time = LocalDateTime.parse(curr.get(0), formatter);
+                    System.out.println("time = " + time);
                     Double tradingBaseRate = Double.parseDouble(curr.get(2).replaceAll(",", ""));
                     Double telegraphic_transfer_buying_rate = Double.parseDouble(curr.get(3).replaceAll(",", ""));
                     Double telegraphic_transfer_selling_rate = Double.parseDouble(curr.get(4).replaceAll(",", ""));
                     Double buying_rate = Double.parseDouble(curr.get(5).replaceAll(",", ""));
                     Double selling_rate = Double.parseDouble(curr.get(6).replaceAll(",", ""));
                     repository.save(ExchangeRate.builder()
-                            .insertDate(nowUSD.atStartOfDay())
+                            .insertDate(time)
                             .currencyCode(CurrencyCode.USD)
                             .tradingBaseRate(tradingBaseRate)
                             .telegraphicTransferBuyingRate(telegraphic_transfer_buying_rate)
@@ -77,26 +83,29 @@ public class ExchangeRateInsertTest {
                             .buyingRate(buying_rate)
                             .sellingRate(selling_rate)
                             .build());
-                    nowUSD = nowUSD.minusDays(1);
+//                    nowUSD = nowUSD.minusDays(1);
                 }
                 if (curr.get(1).equals("JPY")) {
                     System.out.println(curr.get(2));
                     System.out.println(curr.get(2).replaceAll(",", ""));
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
+                    System.out.println("curr.get(0) = " + curr.get(0));
+                    LocalDateTime time = LocalDateTime.parse(curr.get(0), formatter);
                     Double tradingBaseRate = Double.parseDouble(curr.get(2).replaceAll(",", ""));
                     Double telegraphic_transfer_buying_rate = Double.parseDouble(curr.get(3).replaceAll(",", ""));
                     Double telegraphic_transfer_selling_rate = Double.parseDouble(curr.get(4).replaceAll(",", ""));
                     Double buying_rate = Double.parseDouble(curr.get(5).replaceAll(",", ""));
                     Double selling_rate = Double.parseDouble(curr.get(6).replaceAll(",", ""));
                     repository.save(ExchangeRate.builder()
-                            .insertDate(nowJPY.atStartOfDay())
+                            .insertDate(time)
                             .currencyCode(CurrencyCode.JPY)
-                            .tradingBaseRate(tradingBaseRate)
-                            .telegraphicTransferBuyingRate(telegraphic_transfer_buying_rate)
-                            .telegraphicTransferSellingRate(telegraphic_transfer_selling_rate)
+                            .tradingBaseRate(tradingBaseRate/100)
+                            .telegraphicTransferBuyingRate(telegraphic_transfer_buying_rate/100)
+                            .telegraphicTransferSellingRate(telegraphic_transfer_selling_rate/100)
                             .buyingRate(buying_rate)
                             .sellingRate(selling_rate)
                             .build());
-                    nowJPY = nowJPY.minusDays(1);
+//                    nowJPY = nowJPY.minusDays(1);
                 }
             }
 
