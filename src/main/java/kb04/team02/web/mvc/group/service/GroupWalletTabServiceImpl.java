@@ -94,7 +94,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
     }
 
     @Override
-    public RuleDto getRuleById(Long id) {
+    public RuleDto getRuleById(Long id, Long memberId) {
         GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("모임지갑 조회 실패")
         );
@@ -111,6 +111,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
                 .dueAccumulation(groupWallet.getDueAccumulation())
                 .dueDate(groupWallet.getDueDate())
                 .due(groupWallet.getDue())
+                .isChairman(memberId.equals(groupWallet.getMember().getMemberId()))
                 .build();
     }
 

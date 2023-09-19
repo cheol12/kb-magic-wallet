@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.group.controller;
 
+import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.group.dto.RuleDto;
 import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 
@@ -204,8 +206,10 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/rule")
     // 회비 테이블과 객체 필요해 보임, 회비 객체를 Rule.java로 가정함
-    public RuleDto groupWalletRule(@PathVariable String id) {
-        RuleDto ruleDto = groupWalletTabService.getRuleById(Long.parseLong(id));
+    public RuleDto groupWalletRule(@PathVariable String id, HttpSession session) {
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+
+        RuleDto ruleDto = groupWalletTabService.getRuleById(Long.parseLong(id), member.getMemberId());
         return ruleDto;
     }
 

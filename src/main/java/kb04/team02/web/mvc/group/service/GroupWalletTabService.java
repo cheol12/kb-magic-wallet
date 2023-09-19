@@ -49,7 +49,7 @@ public interface GroupWalletTabService {
      * @param id
      * @return
      */
-    RuleDto getRuleById(Long id);
+    RuleDto getRuleById(Long id, Long memberId);
 
     /**
      * 모임지갑 회비 규칙 생성

@@ -21,6 +21,7 @@ public class RuleDto {
     private Long dueAccumulation;// 누적 회비
     private int dueDate;// 회비 납부일
     private Long due;// 회비
+    private boolean isChairman;// 모임장인지
 }
 
 

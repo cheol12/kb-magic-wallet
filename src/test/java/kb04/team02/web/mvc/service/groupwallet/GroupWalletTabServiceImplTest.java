@@ -365,7 +365,7 @@ class GroupWalletTabServiceImplTest {
                 .due(100L)
                 .build());
 
-        RuleDto rule = service.getRuleById(wallet.getGroupWalletId());
+        RuleDto rule = service.getRuleById(wallet.getGroupWalletId(), member1.getMemberId());
         System.out.println("rule = " + rule);
     }
 
