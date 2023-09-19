@@ -3,7 +3,7 @@ package kb04.team02.web.mvc.group.service;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
-import kb04.team02.web.mvc.exchange.dto.RuleDto;
+import kb04.team02.web.mvc.group.dto.RuleDto;
 import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.group.entity.GroupWallet;

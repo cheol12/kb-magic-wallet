@@ -1,7 +1,7 @@
 package kb04.team02.web.mvc.group.service;
 
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
-import kb04.team02.web.mvc.exchange.dto.RuleDto;
+import kb04.team02.web.mvc.group.dto.RuleDto;
 import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
 import kb04.team02.web.mvc.group.dto.GroupMemberDto;
 import kb04.team02.web.mvc.group.dto.InstallmentDto;

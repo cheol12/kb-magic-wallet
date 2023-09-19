@@ -2,7 +2,7 @@ package kb04.team02.web.mvc.service.groupwallet;
 
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.*;
-import kb04.team02.web.mvc.exchange.dto.RuleDto;
+import kb04.team02.web.mvc.group.dto.RuleDto;
 import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
 import kb04.team02.web.mvc.group.dto.GroupMemberDto;
 import kb04.team02.web.mvc.group.dto.InstallmentDto;
@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
-import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
@@ -403,7 +402,7 @@ class GroupWalletTabServiceImplTest {
         System.out.println("wallet.getDue() = " + wallet.getDue());
         System.out.println("wallet.getDueDate() = " + wallet.getDueDate());
         System.out.println("=============================");
-        service.createRule(wallet.getGroupWalletId(), RuleDto.builder().duePrice(100L).dueDate(1).build());
+        service.createRule(wallet.getGroupWalletId(), RuleDto.builder().due(100L).dueDate(1).build());
         System.out.println("wallet.getDue() = " + wallet.getDue());
         System.out.println("wallet.getDueDate() = " + wallet.getDueDate());
 
