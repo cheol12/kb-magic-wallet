@@ -770,7 +770,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             cdto.setCardState(c.getCardState());
             cdto.setWalletId(c.getWalletId());
             cdto.setWalletType(c.getWalletType());
-
+            cdto.setMember(c.getMember());
             cardIssuanceDtoList.add(cdto);
         }
 

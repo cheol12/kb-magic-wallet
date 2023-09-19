@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -123,6 +124,7 @@ public class GroupWalletController {
         } catch (RuntimeException e) {
             model.addAttribute("installmentDto", null);
             model.addAttribute("cardIssuanceDtoList", null);
+
 
             return "groupwallet/groupWalletDetail01";
         }
