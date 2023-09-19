@@ -65,7 +65,7 @@
                         </div>
                         <div class="row">
                             <div class="col-xl">
-                                <img src="${pageContext.request.contextPath}/assets/img/card/card1.png"  style="padding: 13%; width: 100%; padding-top: 0">
+                                <img src="${pageContext.request.contextPath}/assets/img/card/card${cardDesign}.png"  style="padding: 13%; width: 100%; padding-top: 0">
                             </div>
 
                             <div class="col-xl">

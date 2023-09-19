@@ -88,7 +88,7 @@ public class SavingServiceImpl implements SavingService {
 
     @Override
     public boolean isInstallmentSaving(SavingInstallmentDto installmentDto) {
-        InstallmentSaving installmentSaving = installmentSavingRepository.findInstallmentSavingByGroupWalletGroupWalletId(installmentDto.getGroupWalletId());
+        InstallmentSaving installmentSaving = installmentSavingRepository.findInstallmentSavingByGroupWalletGroupWalletIdAndDone(installmentDto.getGroupWalletId(), false);
 
         if (installmentSaving != null) {
             return true;
