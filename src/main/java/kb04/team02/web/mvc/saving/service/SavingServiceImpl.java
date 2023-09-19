@@ -85,4 +85,15 @@ public class SavingServiceImpl implements SavingService {
         }
         return 1;
     }
+
+    @Override
+    public boolean isInstallmentSaving(SavingInstallmentDto installmentDto) {
+        InstallmentSaving installmentSaving = installmentSavingRepository.findInstallmentSavingByGroupWalletGroupWalletId(installmentDto.getGroupWalletId());
+
+        if (installmentSaving != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
