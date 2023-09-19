@@ -164,7 +164,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             String detail = exchange.getSellCurrencyCode() + " > " + exchange.getBuyCurrencyCode();
 
             walletHistoryDto.setDetail(detail);
-            walletHistoryDto.setAmount(exchange.getSellAmount().toString());
+            walletHistoryDto.setAmount(exchange.getSellAmount().toString() + " > " + exchange.getBuyAmount());
             walletHistoryDto.setBalance(exchange.getAfterSellBalance().toString() + " : " + exchange.getAfterBuyBalance());
             walletHistoryDto.setCurrencyCode(exchange.getBuyCurrencyCode());
             dto.getList().add(walletHistoryDto);
