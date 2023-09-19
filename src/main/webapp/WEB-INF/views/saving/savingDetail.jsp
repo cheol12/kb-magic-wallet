@@ -61,9 +61,11 @@
                     가입 기한 : ${saving.getPeriod()} 개월
                 </h5>
                 <h2 class="card-text text-dark">${saving.getSavingComment()}</h2>
-                <c:if test="${isChairmanGroupWalletList}">
-                    <a href="${pageContext.request.contextPath}/saving/${saving.getSavingId()}/form" class="btn btn-primary">신청하기</a>
-                </c:if>
+                <div class="d-grid gap-1 col-lg-2 mx-auto">
+                    <c:if test="${isChairmanGroupWalletList}">
+                        <a href="${pageContext.request.contextPath}/saving/${saving.getSavingId()}/form" class="btn btn-primary">신청하기</a>
+                    </c:if>
+                </div>
 
 <%--                <a href="${pageContext.request.contextPath}/saving/${saving.getSavingId()}/form" class="btn btn-primary">신청하기</a>--%>
             </div>

@@ -124,7 +124,7 @@
 <%--                                                </div>--%>
                                             </div>
                                             <!-- 적금 가입하기 -->
-                                            <div class="row mb-3">
+                                            <div class="d-grid gap-2 col-lg-2 mx-auto">
 <%--                                                <div class="col-sm-10">--%>
                                                     <button type="submit" class="btn btn-primary">가입하기</button>
 <%--                                                </div>--%>

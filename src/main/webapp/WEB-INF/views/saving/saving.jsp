@@ -70,7 +70,10 @@
                                     <img src="${pageContext.request.contextPath}/images/saving/period.svg">
                                     가입 기한 : ${saving.getPeriod()} 개월
                                 </h5>
+                            </div>
+                            <div class="d-grid gap-1 col-lg-4 mx-auto">
                                 <a href="${pageContext.request.contextPath}/saving/${saving.getSavingId()}" class="btn btn-primary">상세보기</a>
+                                <br>
                             </div>
                         </div>
                     </div>
