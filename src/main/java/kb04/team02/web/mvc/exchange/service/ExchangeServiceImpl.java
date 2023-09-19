@@ -30,7 +30,6 @@ import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -419,5 +418,20 @@ public class ExchangeServiceImpl implements ExchangeService {
         }
 
         return 1;
+    }
+
+    @Override
+    public List<String> selectExchangeRateByCurrencyCode(CurrencyCode currencyCode) {
+        List<String> list = new ArrayList<>();
+        if (currencyCode == CurrencyCode.USD) {
+            List<ExchangeRate> all = exchangeRateRepository.findByCurrencyCodeOrderByInsertDate(CurrencyCode.USD);
+            for (ExchangeRate exchangeRate : all)
+                list.add(String.valueOf(exchangeRate.getTradingBaseRate()));
+        } else if (currencyCode == CurrencyCode.JPY) {
+            List<ExchangeRate> all = exchangeRateRepository.findByCurrencyCodeOrderByInsertDate(CurrencyCode.JPY);
+            for (ExchangeRate exchangeRate : all)
+                list.add(String.valueOf(exchangeRate.getTradingBaseRate()));
+        }
+        return list;
     }
 }

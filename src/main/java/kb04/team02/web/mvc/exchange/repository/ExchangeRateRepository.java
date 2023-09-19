@@ -5,6 +5,8 @@ import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
 
 public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long> {
@@ -20,4 +22,5 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
          */
     Optional<ExchangeRate> findFirstByCurrencyCodeOrderByInsertDateDesc(CurrencyCode currencyCode);
 
+    List<ExchangeRate> findByCurrencyCodeOrderByInsertDate(CurrencyCode currencyCode);
 }
