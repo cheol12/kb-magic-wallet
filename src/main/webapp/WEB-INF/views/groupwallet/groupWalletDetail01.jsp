@@ -784,46 +784,116 @@
 
                         <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
                             <div class="card" style="margin-top: 5px;">
-                                <div class="card-header">
+<%--                                <div class="card-header">--%>
 
-                                </div>
-                                <div class="card-body">
+<%--                                </div>--%>
+<%--                                <div class="card-body">--%>
                                     <c:choose>
                                         <c:when test="${installmentDto == null}">
                                             <c:choose>
-                                                <c:when test="${isChairman == null}">
-                                                    적금을 가입하세요!
-                                                    <a href="${pageContext.request.contextPath}/saving"
-                                                       class="btn btn-primary">적금 보러가기</a>
+                                                <c:when test="${isChairman}">
+                                                    <p><strong>적금을 가입하지 않으셨습니다.</strong></p>
+                                                    <a href="${pageContext.request.contextPath}/saving/" class="btn btn-primary">적금 보러가기</a>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    적금이 없어요ㅜㅜ 모임장에게 적금 가입 조르기!
+                                                    <p><strong>가입된 적금이 없습니다. 모임장에게 적금 가입을 추천하는건 어떨까요?</strong></p>
+                                                    <!--적금 가입 추천 버튼 넣을까?-->
                                                 </c:otherwise>
                                             </c:choose>
 
                                         </c:when>
                                         <c:otherwise>
-                                            적금명 : ${installmentDto.savingName},
-                                            <br>
-                                            금리 : ${installmentDto.interestRate}%,
-                                            <br>
-                                            기간 : ${installmentDto.period}개월,
-                                            <br>
-                                            가입일 : ${installmentDto.insertDate},
-                                            <br>
-                                            만기일 : ${installmentDto.maturityDate}
-                                            <br>
-                                            현재까지 : ${installmentDto.totalAmount}원
-                                            <br>
-                                            납입일 : 매월 ${installmentDto.savingDate}일
-                                            <br>
-                                            납입금 : ${installmentDto.savingAmount}원
+                                            <div class="card">
+                                                <h5 class="card-header">${installmentDto.savingName}</h5>
+                                                <div class="table-responsive text-nowrap">
+                                                    <table class="table table">
+                                                        <thead>
+                                                            <tr class="text-nowrap">
+                                                                <th>정보</th>
+                                                                <th>내용</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th scope="row">금리</th>
+                                                                <td>${installmentDto.interestRate}%</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row">기간</th>
+                                                                <td>${installmentDto.period}개월</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row">가입일</th>
+                                                                <td>${installmentDto.insertDate}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row">만기일</th>
+                                                                <td>${installmentDto.maturityDate}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row">현재까지</th>
+                                                                <td>${installmentDto.totalAmount}원</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row">납입일</th>
+                                                                <td>매월 ${installmentDto.savingDate}일</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row">납입금</th>
+                                                                <td> ${installmentDto.savingAmount}원</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="d-grid gap-2 col-lg-1 mx-auto">
+                                                        <c:choose>
+                                                            <c:when test="${isChairman}">
+<%--                                                                <a href="${pageContext.request.contextPath}/group-wallet/${groupWallet.groupWalletId}/saving" id="cancelSaving" class="btn btn-primary">적금 해지</a>--%>
+                                                                <%----%>
+                                                                <button type="submit" class="btn btn-primary" id="cancelSaving">적금 해지</button>
+                                                                <script>
+                                                                    // 적금 해지 버튼 클릭 시 알림창 띄우기
+                                                                    document.getElementById("cancelSaving").addEventListener("click", function(event) {
+                                                                        event.preventDefault();
+
+                                                                        var confirmation = confirm("적금을 해지하시겠습니까? 해지시 이자도 함께 소멸됩니다.");
+
+                                                                        if (confirmation) {
+                                                                            // 확인 버튼을 눌렀을 때, 적금 해지를 서버에 요청
+                                                                            var groupWalletId = "${groupWallet.groupWalletId}"; // 그룹 월렛 아이디 변수로 설정
+                                                                            var xhr = new XMLHttpRequest();
+                                                                            xhr.open("DELETE", "${pageContext.request.contextPath}/group-wallet/" + groupWalletId + "/saving", true);
+                                                                            xhr.onreadystatechange = function() {
+                                                                                if (xhr.readyState === 4) {
+                                                                                    if (xhr.status === 200) {
+                                                                                        // 적금 해지가 성공적으로 처리되었을 때 알림 메시지 띄우기
+                                                                                        alert("적금이 해지되었습니다.");
+                                                                                        // 페이지 리로드 또는 다른 동작 수행
+                                                                                        window.location.reload(); // 페이지 리로드 예시
+                                                                                    } else {
+                                                                                        // 적금 해지가 실패했을 때 알림 메시지 띄우기
+                                                                                        var errorMessage = xhr.responseText;
+                                                                                        alert(errorMessage);
+                                                                                    }
+                                                                                }
+                                                                            };
+                                                                            xhr.send();
+                                                                        }
+                                                                    });
+                                                                </script>
+
+
+                                                                <%----%>
+                                                            </c:when>
+                                                        </c:choose>
+                                                    </div>
+                                                </div>
+
+                                            </div>
                                         </c:otherwise>
                                     </c:choose>
-                                </div>
+<%--                                </div>--%>
                             </div>
                         </div>
-
                         <div class="tab-pane fade" id="navs-top-card" role="tabpanel">
                             <c:forEach var="cardList" items="${cardIssuanceDtoList}" varStatus="status">
                                 <div class="card" style="margin-top: 5px;">

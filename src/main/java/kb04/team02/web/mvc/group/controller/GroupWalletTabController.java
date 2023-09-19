@@ -11,8 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -308,13 +309,15 @@ public class GroupWalletTabController {
      * @param id 가입 중인 적금 상품 해지를 요청하는 모임지갑 id
      */
     @DeleteMapping("/{id}/saving")
-    public String groupWalletCancelSaving(@PathVariable String id) {
+    public ResponseEntity<String> groupWalletCancelSaving(@PathVariable String id) {
         boolean isSavingCanceled = groupWalletTabService.cancelSaving(Long.parseLong(id));
 
         if (isSavingCanceled) {
-            return "redirect:/group-wallet/{id}/history";
+//            return "redirect:/group-wallet/{id}/history";
+            return ResponseEntity.ok("Success");
         } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("적금 해지에 실패하였습니다.");
         }
     }
 
