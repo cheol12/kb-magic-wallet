@@ -153,7 +153,7 @@
 });*/
 
 
-    function validateForm() {
+ /*   function validateForm() {
         // 모든 요소가 입력되었는지 검사
         const currencyCode = document.forms["offlineReceiptForm"]["currencyCode"].value;
         const amount = document.forms["offlineReceiptForm"]["amount"].value;
@@ -189,7 +189,7 @@
 
         // 모든 검사 통과 시 폼 제출
         return true;
-    }
+    }*/
 
     let expectedAmountCK = () => {
         var code = $('select[name="currencyCode"]').val();

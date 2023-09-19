@@ -98,7 +98,7 @@
         });
     });
 
-    function validateForm() {
+/*    function validateForm() {
         // 1. 모든 값을 입력했는지 검사
         const walletType = document.querySelector('input[name="walletType"]:checked');
         const walletId = document.getElementById('selectedWallet');
@@ -126,7 +126,7 @@
 
         // 모든 유효성 검사를 통과한 경우 true 반환
         return true;
-    }
+    }*/
 
     let expectedAmountCK = () => {
         var code = $('select[name="buyCurrencyCode"]').val();

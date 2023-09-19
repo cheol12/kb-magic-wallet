@@ -6,15 +6,13 @@ import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.group.entity.GroupWalletExchange;
 import kb04.team02.web.mvc.personal.entity.PersonalWallet;
 import kb04.team02.web.mvc.personal.entity.PersonalWalletExchange;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class ExchangeDto {
 
     private int sellCurrencyCode;
