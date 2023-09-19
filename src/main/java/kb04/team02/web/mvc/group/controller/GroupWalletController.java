@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -114,6 +115,7 @@ public class GroupWalletController {
         // 연결 카드 조회하기
         List<CardIssuanceDto> cardIssuanceDtoList = groupWalletService.getCardIssuanceDto(id);
         model.addAttribute("cardIssuanceDtoList", cardIssuanceDtoList);
+
 
         return "groupwallet/groupWalletDetail01";
     }

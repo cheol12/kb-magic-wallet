@@ -1,12 +1,19 @@
 package kb04.team02.web.mvc.group.controller;
 
+import kb04.team02.web.mvc.common.dto.LoginMemberDto;
+import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
+import kb04.team02.web.mvc.common.entity.CurrencyCode;
+import kb04.team02.web.mvc.exchange.dto.ExchangeRateDto;
 import kb04.team02.web.mvc.exchange.dto.RuleDto;
 import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
 import kb04.team02.web.mvc.group.dto.GroupMemberDto;
 import kb04.team02.web.mvc.group.dto.InstallmentDto;
+import kb04.team02.web.mvc.group.entity.GroupWallet;
+import kb04.team02.web.mvc.group.service.GroupWalletService;
 import kb04.team02.web.mvc.group.service.GroupWalletTabService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Fetch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,6 +34,7 @@ import java.util.List;
 public class GroupWalletTabController {
 
     private final GroupWalletTabService groupWalletTabService;
+    private final GroupWalletService groupWalletService;
 
 
     // 페이지당 항목 수
@@ -352,8 +361,10 @@ public class GroupWalletTabController {
      */
     @ResponseBody
     @GetMapping("/{id}/card")
-    public List<CardIssuanceDto> groupWalletCardLink(@PathVariable String id) {
-        boolean isCardLinked = groupWalletTabService.linkCard(Long.parseLong(id), 1L);
+    public List<CardIssuanceDto> groupWalletCardLink(@PathVariable String id, HttpSession session) {
+        LoginMemberDto member = (LoginMemberDto)session.getAttribute("member");
+        boolean isCardLinked = groupWalletTabService.linkCard(Long.parseLong(id), member.getMemberId());
+
 
         List<CardIssuanceDto> cardIssuanceDtoList = groupWalletTabService.getCard(Long.parseLong(id));
 
@@ -364,6 +375,57 @@ public class GroupWalletTabController {
             return null;
 //            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
         }
+    }
+
+    @GetMapping("{id}/card_2")
+    public String tempCardRegi(@PathVariable Long id, Model model, HttpSession session){
+
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+
+        // 내 모임지갑 내역 조회
+        WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
+        model.addAttribute("walletDetailDto", walletDetailDto);
+        ExchangeRateDto usdExchangeRateDto = ExchangeRateDto.builder()
+                .currencyCode(CurrencyCode.USD)
+                .tradingBaseRate(1324.0)
+                .build();
+        ExchangeRateDto jpyExchangeRateDto = ExchangeRateDto.builder()
+                .currencyCode(CurrencyCode.JPY)
+                .tradingBaseRate(9.08).build();
+        model.addAttribute("usdExchangeRateDto", usdExchangeRateDto);
+        model.addAttribute("jpyExchangeRateDto", jpyExchangeRateDto);
+
+        // 내 모임지갑 모임원 리스트
+        List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
+        model.addAttribute("groupMemberDtoList", groupMemberDtoList);
+
+        // 회비규칙 조회하기
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+        model.addAttribute("groupWallet", groupWallet);
+
+        // 회비 규칙 없을 경우, 모임장 권한을 판단하고 생성하기 버튼 보여주기
+        boolean isChairman = groupWalletService.groupMemberIsChairman(groupWallet.getGroupWalletId(), loginMemberDto.getMemberId());
+        model.addAttribute("isChairman", isChairman);
+
+
+        // 회비 규칙에서 누적 회비 미구현 : 모임원들이 모임지갑에 이체한 내역 전부 더하기
+
+
+        // 적금 조회하기
+        InstallmentDto installmentDto = groupWalletService.getInstallmentDtoSaving(groupWallet);
+        model.addAttribute("installmentDto", installmentDto);
+
+        boolean isCardLinked = groupWalletTabService.linkCard(id, loginMemberDto.getMemberId());
+
+        // 연결 카드 조회하기
+        List<CardIssuanceDto> cardIssuanceDtoList = groupWalletService.getCardIssuanceDto(id);
+        model.addAttribute("cardIssuanceDtoList", cardIssuanceDtoList);
+
+
+        return "groupwallet/groupWalletDetail01";
+
+
+
     }
 
     //== 카드 탭 END ==//
