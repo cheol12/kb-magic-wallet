@@ -47,6 +47,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script type="text/javascript">
+        let item = sessionStorage.getItem("member");
+        console.log(item);
 
         // 모달창을 띄우는 function
         function PopupDetail(clicked_element, content) {
@@ -211,6 +213,40 @@
             function formatNumber(number) {
                 return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
+
+            //== 회비 규칙 START ==//
+            let contextPath = "${pageContext.request.contextPath}"
+            $("#createRuleButton").click(function () {
+                console.log("규칙 생성 버튼 누름")
+                let dueDate = $("#dueRuleFormModalSelectDueDate").val();
+                let due = $("#dueRuleFormModalInputDue").val();
+                console.log(dueDate)
+                console.log(due)
+
+                if (!dueDate || !due) {
+                    alert("납부일과 납부금을 모두 입력해야 합니다.");
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: contextPath + "/group-wallet/${id}/rule/create",
+                    data: {
+                        dueDate: dueDate,
+                        due: due
+                    },
+                    success: function (data, response) {
+                        // 서버로부터의 응답을 처리
+                        $("#resultMessage").text(response);
+                        alert("이제부터 모임원들이 매월 " + dueDate + "일에 " + due + "원을 낼 거예요!");
+                        location.href(contextPath + "/group-wallet/${id}");
+                    },
+                    error: function () {
+                        alert("회비 규칙 생성에 실패했습니다.");
+                    }
+                });
+            });
+            //== 회비 규칙 END ==//
         });
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -385,14 +421,13 @@
         });
 
         document.getElementById("deleteButton").addEventListener("click", function (event) {
-            if (${countMember} >
-            1
-        )
+            if (${countMember} > 1)
             {
                 event.preventDefault();
                 alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
             }
         });
+
 
     </script>
 
@@ -2112,7 +2147,7 @@
                                             <c:when test="${isChairman == true}">
                                                 <p>
                                                 <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
-                                                   class="btn btn-primary">회비 규칙 삭제</a>
+                                                   class="btn btn-primary">회비 규칙 수정</a>
                                             </c:when>
                                         </c:choose>
                                     </c:when>
@@ -2341,17 +2376,19 @@
                         <select class="form-select" id="dueRuleFormModalSelectDueDate"
                                 aria-label="Default select example">
                             <option selected>납부일을 선택해주세요!</option>
-                            <c:forEach var="day" begin="1" end="28">
+                            <c:forEach var="day" begin="1" end="31">
                                 <option value="${day}">${day}일</option>
                             </c:forEach>
+                            <option value="32">말일</option>
                         </select>
                     </div>
                 </div>
                 <div class="row">
                     <label for="dueRuleFormModalInputDue" class="form-label">얼마를</label>
-                    <div class="input-group input-group-merge" id="dueRuleFormModalInputDue">
+                    <div class="input-group input-group-merge">
                         <span class="input-group-text">₩</span>
                         <input type="number" class="form-control" placeholder="10000"
+                               id="dueRuleFormModalInputDue"
                                aria-label="Amount (to the nearest dollar)"/>
                         <span class="input-group-text">원</span>
                     </div>
@@ -2359,7 +2396,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" id="createRuleButton">Save changes</button>
             </div>
         </div>
     </div>
