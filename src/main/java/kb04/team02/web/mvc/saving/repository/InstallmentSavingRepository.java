@@ -13,6 +13,6 @@ public interface InstallmentSavingRepository extends JpaRepository<InstallmentSa
     InstallmentSaving findByGroupWalletAndDone(GroupWallet groupWallet, boolean done);
 
     // 모임지갑으로 적금이 가입되어있는지 확인
-    InstallmentSaving findInstallmentSavingByGroupWalletGroupWalletId(Long groupWalletId);
+    InstallmentSaving findInstallmentSavingByGroupWalletGroupWalletIdAndDone(Long groupWalletId, boolean done);
 
 }

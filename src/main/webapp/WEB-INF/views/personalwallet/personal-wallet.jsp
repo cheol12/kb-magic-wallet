@@ -44,7 +44,7 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../../../assets/js/config.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script type="text/javascript">
 
@@ -60,6 +60,7 @@
             } else {
                 document.getElementById("detail-amount").innerHTML = row_td[2].innerHTML;
             }
+            document.getElementById("detail-type").innerHTML = row_td[4].innerHTML;
             document.getElementById("detail-content").innerHTML = content;
             document.getElementById("detail-balance").innerHTML = row_td[5].innerHTML;
             modal.style.display = 'block';
@@ -77,18 +78,27 @@
                     // 화면에 갱신
                     var str = "";
                     $.each(result, function (i) {
-                        str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
+                        console.log(result[i].dateTime)
+                        var dateTime = new Date(result[i].dateTime);
+                        var detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
+                        // 날짜와 시간을 따로 추출
+                        var date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
+                        var time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
+                        console.log(date);
+                        console.log(time);
+
+                        str += '<TR id="searchDateResult" onclick="PopupDetail(this, \'' + detailString  + '\')" data-bs-toggle="modal" data-bs-target="#detailModal">'
                         // 날짜 시간 처리
-                        str += '<TD>' + result[i].dateTime + '</TD>';
-                        str += '<TD>' + result[i].dateTime + '</TD>';
+                        str += '<TD>' + date + '</TD>';
+                        str += '<TD>' + time + '</TD>';
                         // 입금액 출금액 처리
                         if (result[i].type === '입금') {
-                            str += '<TD> 입금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> 출금액: -</TD>';
+                            str += '<TD> 입금액: ' + formatNumberWithCommas(result[i].amount) + ' ' + result[i].currencyCode + '</TD><TD> 출금액: -</TD>';
                         } else {
-                            str += '<TD> 입금액: -</TD>' + '<TD> 출금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
+                            str += '<TD> 입금액: -</TD>' + '<TD> 출금액: ' + formatNumberWithCommas(result[i].amount) + ' ' + result[i].currencyCode + '</TD>';
                         }
                         str += '<TD>' + result[i].type + '</TD>';
-                        str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
+                        str += '<TD>' + formatNumberWithCommas(result[i].balance) + ' ' + result[i].currencyCode + '</TD>';
                         str += '</TR>';
                     });
                     $("#dateSelectHistory").append(str);
@@ -150,16 +160,18 @@
                 $("body").css("overflow", "auto");
                 // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
             });
-
-            function formatNumber(number) {
-                return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
         });
 
         document.addEventListener("DOMContentLoaded", function () {
+            var data = [];
+            data.push(${walletDetailDto.balance.get("KRW")});
+            data.push(${usdDto.expectedAmount});
+            data.push(${jpyDto.expectedAmount});
+            console.log(data);
+
             var options = {
                 // 추후 매개변수로 변경 필요
-                series: [1010000, 100 * 1300, 100000],
+                series: data,
                 chart: {
                     type: 'donut',
                 },
@@ -219,10 +231,6 @@
                 stroke: {
                     curve: 'smooth'
                 },
-                title: {
-                    text: '자산 현황 (KRW)',
-                    align: 'left'
-                },
                 grid: {
                     borderColor: '#e7e7e7',
                     row: {
@@ -260,72 +268,9 @@
         });
 
 
-        // 환율 그래프
-        document.addEventListener("DOMContentLoaded", function () {
-            var options = {
-                series: [{
-                    name: 'XYZ MOTORS',
-                    data: [1, 2, 3, 4, 5]
-                }],
-                chart: {
-                    type: 'area',
-                    stacked: false,
-                    height: 350,
-                    zoom: {
-                        type: 'x',
-                        enabled: true,
-                        autoScaleYaxis: true
-                    },
-                    toolbar: {
-                        autoSelected: 'zoom'
-                    }
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                markers: {
-                    size: 0,
-                },
-                title: {
-                    text: 'USD 환율',
-                    align: 'left'
-                },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shadeIntensity: 1,
-                        inverseColors: false,
-                        opacityFrom: 0.5,
-                        opacityTo: 0,
-                        stops: [0, 90, 100]
-                    },
-                },
-                yaxis: {
-                    labels: {
-                        formatter: function (val) {
-                            return (val / 1000000).toFixed(0);
-                        },
-                    },
-                    title: {
-                        text: 'Price'
-                    },
-                },
-                xaxis: {
-                    type: 'datetime',
-                },
-                tooltip: {
-                    shared: false,
-                    y: {
-                        formatter: function (val) {
-                            return (val / 1000000).toFixed(0)
-                        }
-                    }
-                }
-            };
-
-            var chart = new ApexCharts(document.querySelector("#exchangeChart"), options);
-            chart.render();
-        });
+        function formatNumberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
 
     </script>
 
@@ -352,9 +297,9 @@
                             <div class="d-flex flex-column align-items-center gap-1">
                                 <%--                            여기서 환율 계산해서 총액을 표시--%>
                                 <%--                            환율 정보를 받아오는 DTO 필요--%>
-                                <h2 class="mb-2">${walletDetailDto.balance.get("KRW")
-                                        +usdExchangeRate.tradingBaseRate*walletDetailDto.balance.get("USD")
-                                        +jpyExchangeRate.tradingBaseRate*walletDetailDto.balance.get("JPY")}₩</h2>
+                                <h2 class="mb-2" >
+                                    <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;KRW&quot;) + usdDto.expectedAmount + usdDto.expectedAmount}" type="number" pattern="#,###" />
+                                    ₩</h2>
                                 <span>총 보유금</span>
                             </div>
 
@@ -372,7 +317,7 @@
                                         <small class="text-muted">대한민국 원</small>
                                     </div>
                                     <div class="user-progress">
-                                        ${walletDetailDto.balance.get("KRW")} KRW
+                                        <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;KRW&quot;)}" type="number" pattern="#,###" /> KRW
                                     </div>
                                 </div>
                             </li>
@@ -387,7 +332,8 @@
                                         <small class="text-muted">미 달러</small>
                                     </div>
                                     <div class="user-progress">
-                                        ${walletDetailDto.balance.get("USD")} USD
+                                        <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;USD&quot;)}" type="number" pattern="#,###" /> USD
+                                        USD
                                     </div>
                                 </div>
                             </li>
@@ -402,7 +348,7 @@
                                         <small class="text-muted">일본 엔</small>
                                     </div>
                                     <div class="user-progress">
-                                        ${walletDetailDto.balance.get("JPY")} JPY
+                                        <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;JPY&quot;)}" type="number" pattern="#,###" /> KRW JPY
                                     </div>
                                 </div>
                             </li>
@@ -418,7 +364,12 @@
                 <%--            <div class="col-md-6">--%>
                 <h6 class="text-muted">자산 정보</h6>
                 <div class="nav-align-top d-flex mb-8">
-                    <div class="card h-20">
+                    <div class="card">
+                        <div class="card-header d-flex align-items-center justify-content-between pb-0">
+                            <div class="card-title mb-0">
+                                <h5 class="m-0 me-2">자산현황(KRW)</h5>
+                            </div>
+                        </div>
                         <div id="totalBalance"></div>
                     </div>
                 </div>
@@ -518,34 +469,58 @@
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel11">거래상세내역</h5>
                                     </div>
-                                    <div>
-                                        <p>거래 날짜</p>
-                                        <p class="col mb-0" style="height: 50px" id="detail-date"
-                                           readonly>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="row g-2">
+                                                <div class="col mb-3">
+                                                    <label class="form-label">거래 날짜</label>
+                                                    <div id="detail-date"></div>
+                                                </div>
+
+                                                <div class="col mb-3">
+                                                    <label class="form-label">거래 시간</label>
+                                                    <div id="detail-time"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row g-2">
+                                                <div class="col mb-3">
+                                                    <label class="form-label">거래종류</label>
+                                                    <div id="detail-type"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row g-2">
+                                                <div class="col mb-3">
+                                                    <label class="form-label">상세내용</label>
+                                                    <div id="detail-content"></div>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="row g-2">
+                                                <div class="col mb-0">
+                                                    <label class="form-label">금액</label>
+                                                    <div class="col mb-3">
+                                                        <div id="detail-amount"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col mb-0">
+                                                    <label class="form-label">거래후 잔액</label>
+                                                    <div class="col mb-3">
+                                                        <div id="detail-balance"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
-                                    <hr>
-                                    <div>
-                                        <p>거래 시간</p>
-                                        <p class="col mb-0" style="height: 50px" id="detail-time"
-                                           readonly>
-                                    </div>
-                                    <hr>
-                                    <div>
-                                        <p>금액</p>
-                                        <p class="col mb-0" style="height: 50px" id="detail-amount"
-                                           readonly>
-                                    </div>
-                                    <hr>
-                                    <div>
-                                        <p>상세 내용</p>
-                                        <p class="col mb-0" style="height: 50px" id="detail-content"
-                                           readonly>
-                                    </div>
-                                    <hr>
-                                    <div>
-                                        <p>거래후 잔액</p>
-                                        <p class="col mb-0" style="height: 50px" id="detail-balance"
-                                           readonly>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+                                        <button type="button" class="btn btn-primary">Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -553,12 +528,10 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
     <!--/ Striped Rows -->
-    <div id="exchangeChart">
-    </div>
+
 </div>
 </body>
 </html>

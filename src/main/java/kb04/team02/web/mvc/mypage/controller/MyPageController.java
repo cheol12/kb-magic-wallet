@@ -133,12 +133,15 @@ public class MyPageController {
     @ResponseBody
     public ModelAndView cardNumber(HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
-        System.out.println("------------");
         CardNumberDto cardNumber = myPageService.getCardNumber(member);
-        System.out.println(cardNumber.getCardState());
+        char cardDesign = cardNumber.getCardNumber().charAt(18);
 
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("forward:/mypage/cardForm");
+        modelAndView.addObject("cardNumber", cardNumber);
+        modelAndView.addObject("cardDesign", cardDesign);
 
-        return new ModelAndView("forward:/mypage/cardForm", "cardNumber", cardNumber);
+        return modelAndView;
     }
 
     /**

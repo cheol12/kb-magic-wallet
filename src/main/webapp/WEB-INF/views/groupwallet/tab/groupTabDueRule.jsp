@@ -22,10 +22,10 @@
                         // 성공적으로 응답을 받았을 때 실행되는 함수
                         // data: 서버에서 받은 응답 데이터
                         if (data.dueCondition === true) { // dueCondition이 true일 때
-                            str += '<h5 style="text-align: center">' + data.nickname + ' 회비 규칙</h5>';
-                            str += '<h5 style="text-align: center">' +
-                                '매월 ' + data.dueDate + '일에 모임원들이 ' + data.due + '원 씩 회비를 납부해요!' +
-                                '</h5>';
+                            str += '<h5 style="text-align: center">✈️ <strong>' + data.nickname + '</strong>의 회비 규칙 ✈️</h5>';
+                            str += '<p style="text-align: center">' +
+                                '매 월 <strong>' + data.dueDate + '</strong>일에 모임원들이 <strong>' + data.due + '</strong>원 씩 회비를 납부해요!' +
+                                '</p>';
                             if (data.isChairman) {
                                 str += '<div class="text-end">';
                                 str += '<button type="button" class="btn btn-outline-danger btn-sm" style="align-self: center">회비 규칙 삭제</button>'

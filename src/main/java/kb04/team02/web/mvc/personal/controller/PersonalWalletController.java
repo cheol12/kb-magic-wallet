@@ -3,7 +3,9 @@ package kb04.team02.web.mvc.personal.controller;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
+import kb04.team02.web.mvc.exchange.dto.ExchangeCalDto;
 import kb04.team02.web.mvc.exchange.dto.ExchangeRateDto;
+import kb04.team02.web.mvc.exchange.service.ExchangeService;
 import kb04.team02.web.mvc.personal.dto.PersonalWalletTransferDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.exception.InsufficientBalanceException;
@@ -24,7 +26,7 @@ import java.util.NoSuchElementException;
 public class PersonalWalletController {
 
     private final PersonalWalletService personalWalletService;
-
+    private final ExchangeService exchangeService;
     /**
      * 개인지갑 메인 페이지
      * API 명세서 ROWNUM:5
@@ -33,20 +35,15 @@ public class PersonalWalletController {
     public ModelAndView personalwalletIndex(HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         WalletDetailDto walletDetailDto = personalWalletService.personalWallet(member);
-        ExchangeRateDto usdExchangeRateDto = ExchangeRateDto.builder()
-                .currencyCode(CurrencyCode.USD)
-                .tradingBaseRate(1324.0)
-                .build();
-        ExchangeRateDto jpyExchangeRateDto = ExchangeRateDto.builder()
-                .currencyCode(CurrencyCode.JPY)
-                .tradingBaseRate(9.08).build();
+        ExchangeCalDto usd = exchangeService.expectedExchangeAmount(CurrencyCode.USD, walletDetailDto.getBalance().get("USD"));
+        ExchangeCalDto jpy = exchangeService.expectedExchangeAmount(CurrencyCode.JPY, walletDetailDto.getBalance().get("JPY"));
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("personalwallet/personal-wallet");
         modelAndView.addObject("walletDetailDto", walletDetailDto);
 
-        modelAndView.addObject("usdExchangeRate", usdExchangeRateDto);
-        modelAndView.addObject("jpyExchangeRate", jpyExchangeRateDto);
+        modelAndView.addObject("usdDto", usd);
+        modelAndView.addObject("jpyDto", jpy);
 
         return modelAndView;
     }
