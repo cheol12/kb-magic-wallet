@@ -1,7 +1,7 @@
 package kb04.team02.web.mvc.group.controller;
 
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
-import kb04.team02.web.mvc.exchange.dto.RuleDto;
+import kb04.team02.web.mvc.group.dto.RuleDto;
 import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
 import kb04.team02.web.mvc.group.dto.GroupMemberDto;
 import kb04.team02.web.mvc.group.dto.InstallmentDto;
@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -203,18 +202,11 @@ public class GroupWalletTabController {
      * @param id 회비 규칙을 조회할 모임지갑 id
      */
     @ResponseBody
-//    @GetMapping("/{id}/rule")
+    @GetMapping("/{id}/rule")
     // 회비 테이블과 객체 필요해 보임, 회비 객체를 Rule.java로 가정함
     public RuleDto groupWalletRule(@PathVariable String id) {
         RuleDto ruleDto = groupWalletTabService.getRuleById(Long.parseLong(id));
-
-
-        if (ruleDto != null) {
-            return ruleDto;
-        } else {
-            return null;
-//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
+        return ruleDto;
     }
 
 
