@@ -32,6 +32,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class GroupWalletTabServiceImpl implements GroupWalletTabService {
 
     // 회원 관련 의존성
