@@ -213,40 +213,6 @@
             function formatNumber(number) {
                 return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
-
-            //== 회비 규칙 START ==//
-            let contextPath = "${pageContext.request.contextPath}"
-            $("#createRuleButton").click(function () {
-                console.log("규칙 생성 버튼 누름")
-                let dueDate = $("#dueRuleFormModalSelectDueDate").val();
-                let due = $("#dueRuleFormModalInputDue").val();
-                console.log(dueDate)
-                console.log(due)
-
-                if (!dueDate || !due) {
-                    alert("납부일과 납부금을 모두 입력해야 합니다.");
-                    return;
-                }
-
-                $.ajax({
-                    type: "POST",
-                    url: contextPath + "/group-wallet/${id}/rule/create",
-                    data: {
-                        dueDate: dueDate,
-                        due: due
-                    },
-                    success: function (data, response) {
-                        // 서버로부터의 응답을 처리
-                        $("#resultMessage").text(response);
-                        alert("이제부터 모임원들이 매월 " + dueDate + "일에 " + due + "원을 낼 거예요!");
-                        location.href(contextPath + "/group-wallet/${id}");
-                    },
-                    error: function () {
-                        alert("회비 규칙 생성에 실패했습니다.");
-                    }
-                });
-            });
-            //== 회비 규칙 END ==//
         });
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -438,9 +404,7 @@
 <div class="pageWrap">
     <div class="center">
         <div class="row">
-
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
-
                 <h6 class="text-muted">${groupWallet.nickname}의 지갑 정보</h6>
                 <div class="card h-20">
                     <div class="card-header d-flex align-items-center justify-content-between pb-0">
@@ -2133,47 +2097,7 @@
                     </div>
 
                     <!-- 회비 규칙 START -->
-                    <div class="tab-pane fade" id="navs-top-rule" role="tabpanel">
-                        <div class="card" style="margin-top: 5px;">
-                            <div class="card-header">
-                                <c:choose>
-                                    <c:when test="${groupWallet.dueCondition}">
-                                        회비 규칙 ${groupWallet.dueCondition},
-                                        <p></p>
-                                        매월 : ${groupWallet.dueDate}일, ${groupWallet.due}원
-                                        <br>
-                                        현재 누적 회비 : ${groupWallet.dueAccumulation}원
-                                        <c:choose>
-                                            <c:when test="${isChairman == true}">
-                                                <p>
-                                                <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
-                                                   class="btn btn-primary">회비 규칙 수정</a>
-                                            </c:when>
-                                        </c:choose>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <h4 style="text-align: center">회비 규칙이 없습니다.&nbsp;
-                                            <c:choose>
-                                                <c:when test="${isChairman == true}">
-                                                    <!-- 모임장 일 때만 -->
-                                                    <!-- 회비 규칙 생성 폼으로 넘어가는 버튼 -->
-                                                    회비를 생성 해볼까요?&nbsp;
-                                                    <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
-                                                       class="btn btn-primary">회비 규칙 생성</a>
-                                                    <!-- Button trigger modal -->
-                                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                            data-bs-target="#dueModal">
-                                                        Launch modal
-                                                    </button>
-
-                                                </c:when>
-                                            </c:choose>
-                                        </h4>
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                        </div>
-                    </div>
+                    <jsp:include page="tab/groupTabDueRule.jsp"/>
                     <!-- 회비 규칙 END -->
 
                     <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
@@ -2362,45 +2286,7 @@
 <!-- Detail Modal END -->
 
 <!-- Due Modal START -->
-<div class="modal fade" id="dueModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel3">회비 규칙 정하기</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="mb-3">
-                        <label for="dueRuleFormModalSelectDueDate" class="form-label">언제</label>
-                        <select class="form-select" id="dueRuleFormModalSelectDueDate"
-                                aria-label="Default select example">
-                            <option selected>납부일을 선택해주세요!</option>
-                            <c:forEach var="day" begin="1" end="31">
-                                <option value="${day}">${day}일</option>
-                            </c:forEach>
-                            <option value="32">말일</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <label for="dueRuleFormModalInputDue" class="form-label">얼마를</label>
-                    <div class="input-group input-group-merge">
-                        <span class="input-group-text">₩</span>
-                        <input type="number" class="form-control" placeholder="10000"
-                               id="dueRuleFormModalInputDue"
-                               aria-label="Amount (to the nearest dollar)"/>
-                        <span class="input-group-text">원</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="createRuleButton">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
+<jsp:include page="modal/groupModalDueRule.jsp"/>
 <!-- Due Modal END -->
 </body>
 </html>
