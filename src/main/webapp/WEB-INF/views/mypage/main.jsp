@@ -14,6 +14,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
+    <script>
+        // 페이지 로드 시에 successMessage가 있으면 알림 창을 띄움
+        window.onload = function() {
+            const successMessage = "${successMessage}"; // JSP에서 전달된 메시지를 JavaScript 변수로 가져옴
+            const failMessage = "${failMessage}";
+
+            if (failMessage) {
+                alert(failMessage);
+            }
+
+            if (successMessage) {
+                alert(successMessage); // 알림 창에 메시지 표시
+            }
+        }
+    </script>
 
 </head>
 <body>

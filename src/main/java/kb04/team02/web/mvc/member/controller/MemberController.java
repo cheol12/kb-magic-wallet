@@ -7,6 +7,7 @@ import kb04.team02.web.mvc.member.exception.LoginException;
 import kb04.team02.web.mvc.member.exception.RegisterException;
 import kb04.team02.web.mvc.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,5 +79,17 @@ public class MemberController {
         }
 
         return "redirect:/";
+    }
+
+    @ResponseBody
+    @PostMapping("/verification")
+    public ResponseEntity<?> PayPasswordVerification(String payPassword, HttpSession session) {
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        try {
+            memberService.verify(member, payPassword);
+            return ResponseEntity.ok("비밀 번호 확인 완료");
+        } catch (RuntimeException e) {
+            return ResponseEntity.internalServerError().body("비밀 번호 불일치");
+        }
     }
 }

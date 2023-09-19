@@ -18,8 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -70,8 +71,8 @@ public class GroupWalletTabController {
     }
 
     // 모임지갑 내역 조회 함수
-    @ResponseBody
-    @GetMapping("/{id}/history")
+//    @ResponseBody
+//    @PostMapping("/{id}/history")
     public HashMap<String, Object> createHistoryMap(int nowPage, String id) {
         Pageable page = PageRequest.of((nowPage - 1), PAGE_SIZE, Sort.by(Sort.Order.asc("name")));
         Page<WalletHistoryDto> historyPageList = groupWalletTabService.getHistoryByGroupId(Long.parseLong(id), page);
@@ -317,13 +318,15 @@ public class GroupWalletTabController {
      * @param id 가입 중인 적금 상품 해지를 요청하는 모임지갑 id
      */
     @DeleteMapping("/{id}/saving")
-    public String groupWalletCancelSaving(@PathVariable String id) {
+    public ResponseEntity<String> groupWalletCancelSaving(@PathVariable String id) {
         boolean isSavingCanceled = groupWalletTabService.cancelSaving(Long.parseLong(id));
 
         if (isSavingCanceled) {
-            return "redirect:/group-wallet/{id}/history";
+//            return "redirect:/group-wallet/{id}/history";
+            return ResponseEntity.ok("Success");
         } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("적금 해지에 실패하였습니다.");
         }
     }
 
@@ -455,20 +458,20 @@ public class GroupWalletTabController {
      * @param id        상세 내역 조회할 모임지갑 id
      * @param historyid 상세 내역 조회할 내역 id
      */
-    @ResponseBody
-    @GetMapping("/{id}/{historyid}")
-    // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미?
-    // 3개 다 합친 것? 대응되는 개념?
-    public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
-        WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id), Long.parseLong(historyid), (String) model.getAttribute("type"));
-
-        if (historyDetail != null) {
-            return historyDetail;
-        } else {
-            return null;
-//            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-        }
-    }
+//    @ResponseBody
+//    @GetMapping("/{id}/{historyid}")
+//    // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미?
+//    // 3개 다 합친 것? 대응되는 개념?
+//    public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
+//        WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id), Long.parseLong(historyid), (String) model.getAttribute("type"));
+//
+//        if (historyDetail != null) {
+//            return historyDetail;
+//        } else {
+//            return null;
+////            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+//        }
+//    }
 
     //== 내역 탭 END ==//
 }

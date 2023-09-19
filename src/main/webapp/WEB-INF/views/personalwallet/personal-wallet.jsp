@@ -159,11 +159,11 @@
         document.addEventListener("DOMContentLoaded", function () {
             var options = {
                 // 추후 매개변수로 변경 필요
-                series: [1010000, 100*1300, 100000],
+                series: [1010000, 100 * 1300, 100000],
                 chart: {
                     type: 'donut',
                 },
-                labels:['KRW', 'USD', 'JPY'],
+                labels: ['KRW', 'USD', 'JPY'],
                 responsive: [{
                     breakpoint: 480,
                     options: {
@@ -190,7 +190,7 @@
                     },
                     {
                         name: "USD",
-                        data: [0, 0, 0, 0, 0, 50*1300, 100*1300]
+                        data: [0, 0, 0, 0, 0, 50 * 1300, 100 * 1300]
                     },
                     {
                         name: "JPY",
@@ -258,6 +258,75 @@
             var chart = new ApexCharts(document.querySelector("#totalBalance"), options);
             chart.render();
         });
+
+
+        // 환율 그래프
+        document.addEventListener("DOMContentLoaded", function () {
+            var options = {
+                series: [{
+                    name: 'XYZ MOTORS',
+                    data: [1, 2, 3, 4, 5]
+                }],
+                chart: {
+                    type: 'area',
+                    stacked: false,
+                    height: 350,
+                    zoom: {
+                        type: 'x',
+                        enabled: true,
+                        autoScaleYaxis: true
+                    },
+                    toolbar: {
+                        autoSelected: 'zoom'
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                markers: {
+                    size: 0,
+                },
+                title: {
+                    text: 'USD 환율',
+                    align: 'left'
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        inverseColors: false,
+                        opacityFrom: 0.5,
+                        opacityTo: 0,
+                        stops: [0, 90, 100]
+                    },
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function (val) {
+                            return (val / 1000000).toFixed(0);
+                        },
+                    },
+                    title: {
+                        text: 'Price'
+                    },
+                },
+                xaxis: {
+                    type: 'datetime',
+                },
+                tooltip: {
+                    shared: false,
+                    y: {
+                        formatter: function (val) {
+                            return (val / 1000000).toFixed(0)
+                        }
+                    }
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#exchangeChart"), options);
+            chart.render();
+        });
+
     </script>
 
 </head>
@@ -488,11 +557,8 @@
         </div>
     </div>
     <!--/ Striped Rows -->
-
-
-</div>
-
-
+    <div id="exchangeChart">
+    </div>
 </div>
 </body>
 </html>

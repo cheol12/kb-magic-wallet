@@ -77,11 +77,23 @@ public class SavingServiceImpl implements SavingService {
                         .savingAmount(installmentDto.getSavingAmount())
                         .savingDate(installmentDto.getSavingDate())
                         .maturityDate(installmentDto.getMaturityDate())
+                        .totalAmount(installmentDto.getTotalAmount())
                         .build()
         );
         if (save == null) {
             throw new InsertException("적금 상품에 가입되지 않았습니다");
         }
         return 1;
+    }
+
+    @Override
+    public boolean isInstallmentSaving(SavingInstallmentDto installmentDto) {
+        InstallmentSaving installmentSaving = installmentSavingRepository.findInstallmentSavingByGroupWalletGroupWalletIdAndDone(installmentDto.getGroupWalletId(), false);
+
+        if (installmentSaving != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
