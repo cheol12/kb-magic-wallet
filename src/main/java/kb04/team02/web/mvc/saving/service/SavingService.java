@@ -40,4 +40,9 @@ public interface SavingService {
      */
     int insertInstallmentSaving(SavingInstallmentDto installmentDto);
 
+    /**
+     * 해당 모임지갑으로 적금 상품 가입 여부
+     */
+    boolean isInstallmentSaving(SavingInstallmentDto installmentDto);
+
 }

@@ -84,7 +84,7 @@ public class SavingController {
 
 
     /**
-     * 적금 상품 가입
+     * 적금 상품 가입 폼에서 가입하기 눌렀을 때
      * API 명세서 ROWNUM:40
      *
      * @param id 가입 할 적금 상품 id
@@ -93,6 +93,15 @@ public class SavingController {
     @PostMapping("/{id}/form")
     public String savingJoin(@PathVariable String id, SavingInstallmentDto installmentDto, RedirectAttributes redirectAttributes) {
         System.out.println("PostMapping 실행.............");
+
+        // 해당 모임지갑으로 이미 적금 상품이 가입되어있으면 가입할 수 없음
+        boolean isInstallmentSaving = savingService.isInstallmentSaving(installmentDto);
+        if (isInstallmentSaving) {
+            redirectAttributes.addFlashAttribute("failMessage", "이미 해당 모임지갑으로 적금 가입하셨습니다.");
+            return "redirect:/mypage/main";
+        }
+
+
         int result = savingService.insertInstallmentSaving(installmentDto);
         System.out.println("result = " + result);
 

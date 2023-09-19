@@ -18,6 +18,11 @@
         // 페이지 로드 시에 successMessage가 있으면 알림 창을 띄움
         window.onload = function() {
             const successMessage = "${successMessage}"; // JSP에서 전달된 메시지를 JavaScript 변수로 가져옴
+            const failMessage = "${failMessage}";
+
+            if (failMessage) {
+                alert(failMessage);
+            }
 
             if (successMessage) {
                 alert(successMessage); // 알림 창에 메시지 표시
