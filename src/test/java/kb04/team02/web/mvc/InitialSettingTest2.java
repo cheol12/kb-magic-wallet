@@ -41,7 +41,7 @@ import java.util.List;
 @SpringBootTest
 @Transactional
 @Commit
-public class InitialSettingTest {
+public class InitialSettingTest2 {
 
     @Autowired
     private GroupWalletService service;
@@ -466,7 +466,7 @@ public class InitialSettingTest {
         Saving save5 = savingRepository.save(Saving.builder()
                 .name("KB청년도약계좌")
                 .savingComment("힘찬 미래 높은 도약")
-                .interestRate(6) // Example: Increment interest rate for each saving
+                .interestRate(6.0) // Example: Increment interest rate for each saving
                 .period(3) // Example: Increment period for each saving
                 .amountLimit(700_000L) // Example: Increment amount limit for each saving
                 .build());
@@ -480,7 +480,7 @@ public class InitialSettingTest {
         Saving save7 = savingRepository.save(Saving.builder()
                 .name("온국민 건강적금-골든라이프")
                 .savingComment("시니어 고객의 건강관리와 금융 혜택을 결합한 앱테크형 상품으로, 저소득층 대상 특별 우대이율을 제공하는 적금")
-                .interestRate(10) // Example: Increment interest rate for each saving
+                .interestRate(10.0) // Example: Increment interest rate for each saving
                 .period(6) // Example: Increment period for each saving
                 .amountLimit(200_000L) // Example: Increment amount limit for each saving
                 .build());
