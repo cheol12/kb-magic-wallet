@@ -219,7 +219,6 @@
             dataType: "json", // 예상되는 응답 형식(JSON 등)
             success: function (response) {
                 // 성공 시 실행할 코드
-                alert("성공")
                 $('#expectedAmount').attr('placeholder', response.expectedAmount.toLocaleString());
                 $('#tradingBaseRate').attr('placeholder', response.tradingBaseRate.toLocaleString());
                 $('#applicableExchangeRate').attr('placeholder', response.applicableExchangeRate.toLocaleString());
@@ -249,7 +248,6 @@
             dataType: "json", // 예상되는 응답 형식(JSON 등)
             success: function (response) {
                 // 성공 시 실행할 코드
-                alert("성공")
                 $('#walletBalance').attr('placeholder', response.toLocaleString());
                 $('#walletBalance').val(response.toLocaleString());
             },
