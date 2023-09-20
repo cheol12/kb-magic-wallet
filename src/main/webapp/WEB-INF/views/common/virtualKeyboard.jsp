@@ -35,7 +35,7 @@
 </head>
 
 <body>
-<input type="text" readonly class="input form-control-plaintext" id="exampleFormControlReadOnlyInputPlain1" value="결제 비밀번호"/>
+<input type="password" readonly class="input form-control-plaintext" id="exampleFormControlReadOnlyInputPlain1" value="결제 비밀번호"/>
 <div class="simple-keyboard"></div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

@@ -46,24 +46,6 @@
                 <h1>KB<p id="first-text">MAGIC WALLET</p><p id="second-text">깨비의 요술지갑</p></h1>
                 <p>Experience hassle-free foreign currency top-ups with our Foreign currency recharge wallet service
                 </p>
-                <div class="btnClass">
-                    <div class="BtnAboveClass">
-                    <button type="button" class="btn rounded-pill btn-outline-primary">
-                        <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Primary
-                    </button>
-                    <button type="button" class="btn rounded-pill btn-outline-primary">
-                        <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Primary
-                    </button>
-                    </div>
-                    <div class="BtnBottomClass">
-                    <button type="button" class="btn rounded-pill btn-outline-primary">
-                        <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Primary
-                    </button>
-                    <button type="button" class="btn rounded-pill btn-outline-primary">
-                        <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Primary
-                    </button>
-                    </div>
-                </div>
             </div>
         </div>
         <div id="second-box" class="box">

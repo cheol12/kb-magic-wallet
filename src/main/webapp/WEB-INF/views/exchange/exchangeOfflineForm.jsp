@@ -43,6 +43,16 @@
 
 <script>
 
+    $(document).ready(function () {
+        $("#saveChangesButton").click(function () {
+            handleEnter()
+        });
+    });
+
+    function summitForm() {
+        $("#offlineReceiptForm").submit();
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         const walletSelect = document.getElementById("walletSelect");
         const walletOptions = walletSelect.querySelectorAll('option');
@@ -261,7 +271,7 @@
                 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">환전/</span>오프라인</h4>
                 <!-- Basic Layout -->
                 <form id="offlineReceiptForm" action="${pageContext.request.contextPath}/exchange/offline/form"
-                      method="post" onsubmit="return validateForm();">
+                      method="post" >
                     <div class="row">
                         <div class="row align-items-start">
                             <div class="card mb-4">
@@ -396,7 +406,32 @@
                                     </div>
 
                                 </div>
-                                <button type="submit" class="btn btn-primary">수령 신청</button>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">수령 신청</button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">결제 비밀번호 확인</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close">
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <jsp:include page="../common/virtualKeyboard.jsp"/>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    닫기
+                                                </button>
+                                                <button type="button" id="saveChangesButton" class="btn btn-primary">비밀번호 확인</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

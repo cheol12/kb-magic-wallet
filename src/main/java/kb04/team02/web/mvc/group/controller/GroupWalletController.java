@@ -122,7 +122,7 @@ public class GroupWalletController {
 
         try {
             // 적금 조회하기
-            InstallmentDto installmentDto = groupWalletService.getInstallmentDtoSaving(groupWallet);
+            InstallmentDto installmentDto = groupWalletTabService.getSavingById(groupWallet);
             model.addAttribute("installmentDto", installmentDto);
 
             // 연결 카드 조회하기
