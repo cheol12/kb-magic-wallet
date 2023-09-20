@@ -5,10 +5,7 @@ import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.ExchangeRateDto;
-import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
-import kb04.team02.web.mvc.group.dto.GroupMemberDto;
-import kb04.team02.web.mvc.group.dto.InstallmentDto;
-import kb04.team02.web.mvc.group.dto.RuleDto;
+import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
 import kb04.team02.web.mvc.group.service.GroupWalletTabService;
@@ -89,7 +86,6 @@ public class GroupWalletTabController {
 
         return historyMap;
     }
-
 
 
     //== 모임원 조회 탭 START ==//
@@ -361,7 +357,7 @@ public class GroupWalletTabController {
     @ResponseBody
     @GetMapping("/{id}/card")
     public List<CardIssuanceDto> groupWalletCardLink(@PathVariable String id, HttpSession session) {
-        LoginMemberDto member = (LoginMemberDto)session.getAttribute("member");
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         boolean isCardLinked = groupWalletTabService.linkCard(Long.parseLong(id), member.getMemberId());
 
 
@@ -377,7 +373,7 @@ public class GroupWalletTabController {
     }
 
     @GetMapping("{id}/card_2")
-    public String tempCardRegi(@PathVariable Long id, Model model, HttpSession session){
+    public String tempCardRegi(@PathVariable Long id, Model model, HttpSession session) {
 
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
 
@@ -422,7 +418,6 @@ public class GroupWalletTabController {
 
 
         return "groupwallet/groupWalletDetail01";
-
 
 
     }
@@ -470,4 +465,16 @@ public class GroupWalletTabController {
 //    }
 
     //== 내역 탭 END ==//
+
+    //== 회비 탭 START ==//
+    @ResponseBody
+    @GetMapping("/{id}/rule/list")
+    public List<DuePaymentDto> groupWalletDuePaymentList(@PathVariable("id") Long id) {
+        List<DuePaymentDto> duePaymentList = groupWalletTabService.getDuePaymentList(id);
+
+        duePaymentList.forEach(System.out::println);
+
+        return duePaymentList;
+    }
+    //== 회비 탭 END ==//
 }

@@ -1,10 +1,7 @@
 package kb04.team02.web.mvc.group.service;
 
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
-import kb04.team02.web.mvc.group.dto.RuleDto;
-import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
-import kb04.team02.web.mvc.group.dto.GroupMemberDto;
-import kb04.team02.web.mvc.group.dto.InstallmentDto;
+import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.group.entity.*;
 import kb04.team02.web.mvc.group.repository.*;
 import kb04.team02.web.mvc.mypage.entity.CardIssuance;
@@ -28,6 +25,10 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @Service
@@ -51,6 +52,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
     private final GroupWalletTransferRepository transferRepository;
     private final GroupWalletExchangeRepository exchangeRepository;
     private final GroupWalletPaymentRepository paymentRepository;
+    private final DuePaymentRepository duePaymentRepository;
 
     @Override
 
@@ -352,5 +354,35 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
             default:
                 return null;
         }
+    }
+
+    @Override
+    public List<DuePaymentDto> getDuePaymentList(Long id) {
+        List<DuePaymentDto> duePaymentDtoList = new ArrayList<>();
+
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("모임 지갑 조회 실패")
+        );
+
+        List<Participation> participationList = participationRepository.findByGroupWalletAndParticipationState(groupWallet, ParticipationState.PARTICIPATED);
+
+        for (Participation p :
+                participationList) {
+            Member member = memberRepository.findById(p.getMemberId()).orElseThrow(
+                    () -> new NoSuchElementException("멤버 조회 실패")
+            );
+            DuePaymentDto duePaymentDto = DuePaymentDto.builder()
+                    .memberId(p.getMemberId())
+                    .name(member.getName())
+                    .due(groupWallet.getDue())
+                    .build();
+            duePaymentDto.setDueAccumulation(groupWallet.getDue() * duePaymentRepository.countByGroupWalletAndMember(groupWallet, member));
+            DuePayment payed = duePaymentRepository.findByGroupWalletAndMemberAndInsertDateAfter(groupWallet, member, LocalDateTime.of(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()), LocalTime.MIDNIGHT))
+                    .orElse(null);
+            duePaymentDto.setPayed(payed != null);
+            duePaymentDtoList.add(duePaymentDto);
+        }
+
+        return duePaymentDtoList;
     }
 }
