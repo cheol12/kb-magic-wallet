@@ -229,24 +229,6 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     }
 
     @Override
-    public int inviteMember(String phone, Long groupWalletId) {
-        Member member = memberRep.findByPhoneNumber(phone).orElseThrow(()-> new NoSuchElementException("멤버 조회 실패"));
-
-        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
-
-        Participation participation;
-        participation = participationRep.save(
-                Participation.builder()
-                        .participationState(ParticipationState.WAITING)
-                        .memberId(member.getMemberId())
-                        .role(Role.GENERAL)
-                        .groupWallet(groupWallet)
-                        .build()
-        );
-        return 1;
-    }
-
-    @Override
     public int groupWalletMemberOut(Long groupWalletId, Long memberId) {
 
         // 모임원 내보내기 or 탈퇴
@@ -736,6 +718,8 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         return groupMemberDtoList;
     }
 
+
+
     @Transactional
     @Override
     public boolean groupMemberIsChairman(Long groupWalletId, Long memberId) {
@@ -827,4 +811,45 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         int result = participationRep.countByGroupWalletGroupWalletId(groupWalletId);
         return result;
     }
+
+    // 초대 목록 부르기
+    @Override
+    public List<Participation> getGroupListInvitedMe(Long memberId) {
+        List<Participation> participationList
+                = participationRep.findByMemberIdAndParticipationState(memberId, ParticipationState.WAITING);
+        return participationList;
+    }
+
+    // 초대하기
+    @Override
+    public int inviteMember(String phone, Long groupWalletId) {
+        Member member = memberRep.findByPhoneNumber(phone).orElseThrow(()-> new NoSuchElementException("멤버 조회 실패"));
+
+        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
+        Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, member.getMemberId());
+
+//        Participation participation;
+        // 초대 수정해야함
+        participation = participationRep.save(
+                Participation.builder()
+                        .participationId(participation.getParticipationId())
+                        .participationState(ParticipationState.WAITING)
+                        .memberId(member.getMemberId())
+                        .role(Role.GENERAL)
+                        .groupWallet(groupWallet)
+                        .build()
+        );
+        return 1;
+    }
+
+    // 초대 응답하기
+    @Override
+    public int invitedResponse(Long groupWalletId, Long memberId, boolean confirm) {
+        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
+        Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, memberId);
+
+        return 0;
+    }
+
+
 }
