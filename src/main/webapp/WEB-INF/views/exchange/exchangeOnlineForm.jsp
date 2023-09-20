@@ -98,35 +98,35 @@
         });
     });
 
-    function validateForm() {
-        // 1. 모든 값을 입력했는지 검사
-        const walletType = document.querySelector('input[name="walletType"]:checked');
-        const walletId = document.getElementById('selectedWallet');
-        const amount = document.querySelector('input[name="buyAmount"]');
-
-        if (!walletType || !walletId || !amount.value) {
-            alert("모든 필드를 입력해주세요.");
-            return false;
-        }
-
-        // 2. amount가 50 이상인지 검사
-        const amountValue = parseFloat(amount.value);
-        if (amountValue < 50) {
-            alert("환전 신청 금액은 50 이상이어야 합니다.");
-            return false;
-        }
-
-        // 지갑 잔액 확인 여부 검사
-        const walletBalance = document.getElementById("walletBalance").value;
-        if (walletBalance === "") {
-            alert("지갑 잔액을 확인해주세요.");
-            return false;
-        }
-
-
-        // 모든 유효성 검사를 통과한 경우 true 반환
-        return true;
-    }
+    // function validateForm() {
+    //     // 1. 모든 값을 입력했는지 검사
+    //     const walletType = document.querySelector('input[name="walletType"]:checked');
+    //     const walletId = document.getElementById('selectedWallet');
+    //     const amount = document.querySelector('input[name="buyAmount"]');
+    //
+    //     if (!walletType || !walletId || !amount.value) {
+    //         alert("모든 필드를 입력해주세요.");
+    //         return false;
+    //     }
+    //
+    //     // 2. amount가 50 이상인지 검사
+    //     const amountValue = parseFloat(amount.value);
+    //     if (amountValue < 50) {
+    //         alert("환전 신청 금액은 50 이상이어야 합니다.");
+    //         return false;
+    //     }
+    //
+    //     // 지갑 잔액 확인 여부 검사
+    //     const walletBalance = document.getElementById("walletBalance").value;
+    //     if (walletBalance === "") {
+    //         alert("지갑 잔액을 확인해주세요.");
+    //         return false;
+    //     }
+    //
+    //
+    //     // 모든 유효성 검사를 통과한 경우 true 반환
+    //     return true;
+    // }
 
     let expectedAmountCK = () => {
         var code = $('select[name="buyCurrencyCode"]').val();

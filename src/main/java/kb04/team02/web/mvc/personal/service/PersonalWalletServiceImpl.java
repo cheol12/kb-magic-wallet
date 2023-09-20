@@ -17,6 +17,7 @@ import kb04.team02.web.mvc.personal.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -121,6 +122,7 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
     }
 
     @Override
+    @Transactional
     public void personalWalletDeposit(PersonalWalletTransferDto personalWalletTransferDto) {
         Member member = memberRepository.findById(personalWalletTransferDto.getMemberId())
                 .orElseThrow(() -> new NoSuchElementException("개인지갑 조회 실패"));
@@ -151,6 +153,7 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
     }
 
     @Override
+    @Transactional
     public void personalWalletWithdraw(PersonalWalletTransferDto personalWalletTransferDto) {
         Member member = memberRepository.findById(personalWalletTransferDto.getMemberId())
                 .orElseThrow(() -> new NoSuchElementException("개인지갑 조회 실패"));

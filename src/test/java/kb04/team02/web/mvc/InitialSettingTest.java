@@ -1,8 +1,10 @@
 package kb04.team02.web.mvc;
 
 import kb04.team02.web.mvc.exchange.entity.Bank;
+import kb04.team02.web.mvc.exchange.entity.ExchangeRate;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.exchange.entity.ReceiptState;
+import kb04.team02.web.mvc.exchange.repository.ExchangeRateRepository;
 import kb04.team02.web.mvc.group.entity.*;
 import kb04.team02.web.mvc.group.repository.*;
 import kb04.team02.web.mvc.mypage.entity.CardIssuance;
@@ -29,14 +31,23 @@ import kb04.team02.web.mvc.personal.repository.PersonalWalletForeignCurrencyBala
 import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletTransferRepository;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
@@ -76,24 +87,8 @@ public class InitialSettingTest {
     private BankRepository bankRepository;
     @Autowired
     private OfflineReceiptRepository offlineReceiptRepository;
-
-//    @AfterEach
-//    public void afterEach() {
-//        participationRepository.deleteAll();
-//        installmentSavingRepository.deleteAll();
-//        savingRepository.deleteAll();
-//        cardIssuanceRepository.deleteAll();
-//        transferRepository.deleteAll();
-//        exchangeRepository.deleteAll();
-//        paymentRepository.deleteAll();
-//        groupForeignCurrencyRepository.deleteAll();
-//        personalForeignCurrencyBalanceRepository.deleteAll();
-//        personalWalletTransferRepository.deleteAll();
-//        personalWalletRepository.deleteAll();
-//        groupWalletRespository.deleteAll();
-//        memberRepository.deleteAll();
-//    }
-
+    @Autowired
+    private ExchangeRateRepository repository;
 
     @Test
     public void createSampleMembers() {
@@ -106,8 +101,8 @@ public class InitialSettingTest {
                 .address(address)
                 .phoneNumber("010-1111-1111")
                 .email("qwer@example.com")
-                .payPassword("qwer")
-                .bankAccount("111-111-111111")
+                .payPassword("1234")
+                .bankAccount("110-232-532XXX")
                 .build();
 
         Member member2 = Member.builder()
@@ -117,8 +112,8 @@ public class InitialSettingTest {
                 .address(address)
                 .phoneNumber("010-2222-2222")
                 .email("asdf@example.com")
-                .payPassword("asdf")
-                .bankAccount("222-222-222222")
+                .payPassword("1234")
+                .bankAccount("110-232-531XXX")
                 .build();
 
         Member member3 = Member.builder()
@@ -173,12 +168,12 @@ public class InitialSettingTest {
         memberRepository.save(member6);
 
 
-        PersonalWallet personalWallet1 = PersonalWallet.builder().balance(1000000L).member(member1).build();
-        PersonalWallet personalWallet2 = PersonalWallet.builder().balance(1000000L).member(member2).build();
-        PersonalWallet personalWallet3 = PersonalWallet.builder().balance(1000000L).member(member3).build();
-        PersonalWallet personalWallet4 = PersonalWallet.builder().balance(1000000L).member(member4).build();
-        PersonalWallet personalWallet5 = PersonalWallet.builder().balance(1000000L).member(member5).build();
-        PersonalWallet personalWallet6 = PersonalWallet.builder().balance(1000000L).member(member6).build();
+        PersonalWallet personalWallet1 = PersonalWallet.builder().balance(764000L).member(member1).build();
+        PersonalWallet personalWallet2 = PersonalWallet.builder().balance(1302800L).member(member2).build();
+        PersonalWallet personalWallet3 = PersonalWallet.builder().balance(0L).member(member3).build();
+        PersonalWallet personalWallet4 = PersonalWallet.builder().balance(0L).member(member4).build();
+        PersonalWallet personalWallet5 = PersonalWallet.builder().balance(0L).member(member5).build();
+        PersonalWallet personalWallet6 = PersonalWallet.builder().balance(0L).member(member6).build();
         personalWalletRepository.save(personalWallet1);
         personalWalletRepository.save(personalWallet2);
         personalWalletRepository.save(personalWallet3);
@@ -187,8 +182,8 @@ public class InitialSettingTest {
         personalWalletRepository.save(personalWallet6);
 
         GroupWallet groupWallet1 = GroupWallet.builder()
-                .nickname("모임지갑 1")
-                .balance(100000L) // 초기 잔액 설정
+                .nickname("깨비깨비 모임지갑")
+                .balance(0L) // 초기 잔액 설정
                 .dueCondition(false)
                 .dueAccumulation(0L)
                 .dueDate(0)
@@ -197,7 +192,7 @@ public class InitialSettingTest {
                 .build();
 
         GroupWallet groupWallet2 = GroupWallet.builder()
-                .nickname("모임지갑 2")
+                .nickname("캐비캐비 모임지갑")
                 .balance(0L) // 초기 잔액 설정
                 .dueCondition(true)
                 .dueAccumulation(0L)
@@ -206,19 +201,8 @@ public class InitialSettingTest {
                 .member(member2)
                 .build();
 
-        GroupWallet groupWallet3 = GroupWallet.builder()
-                .nickname("모임지갑 3")
-                .balance(0L) // 초기 잔액 설정
-                .dueCondition(false)
-                .dueAccumulation(0L)
-                .dueDate(0)
-                .due(0L)
-                .member(member3)
-                .build();
-
         groupWalletRespository.save(groupWallet1);
         groupWalletRespository.save(groupWallet2);
-        groupWalletRespository.save(groupWallet3);
 
         // 모임지갑 1 참여 (1, 2, 3, 4, 5, 6 전체)
         participationRepository.save(Participation.builder().groupWallet(groupWallet1).participationState(ParticipationState.PARTICIPATED)
@@ -240,163 +224,87 @@ public class InitialSettingTest {
         participationRepository.save(Participation.builder().groupWallet(groupWallet2).participationState(ParticipationState.PARTICIPATED)
                 .role(Role.CHAIRMAN).memberId(member2.getMemberId()).build());
         participationRepository.save(Participation.builder().groupWallet(groupWallet2).participationState(ParticipationState.PARTICIPATED)
-                .role(Role.GENERAL).memberId(member3.getMemberId()).build());
+                .role(Role.CO_CHAIRMAN).memberId(member3.getMemberId()).build());
         participationRepository.save(Participation.builder().groupWallet(groupWallet2).participationState(ParticipationState.PARTICIPATED)
                 .role(Role.GENERAL).memberId(member4.getMemberId()).build());
 
-        // 모임지갑 3 참여 (3, 4, 5, 6)
-        participationRepository.save(Participation.builder().groupWallet(groupWallet3).participationState(ParticipationState.PARTICIPATED)
-                .role(Role.GENERAL).memberId(member3.getMemberId()).build());
-        participationRepository.save(Participation.builder().groupWallet(groupWallet3).participationState(ParticipationState.PARTICIPATED)
-                .role(Role.GENERAL).memberId(member4.getMemberId()).build());
-        participationRepository.save(Participation.builder().groupWallet(groupWallet3).participationState(ParticipationState.PARTICIPATED)
-                .role(Role.CO_CHAIRMAN).memberId(member5.getMemberId()).build());
-        participationRepository.save(Participation.builder().groupWallet(groupWallet3).participationState(ParticipationState.PARTICIPATED)
-                .role(Role.CHAIRMAN).memberId(member6.getMemberId()).build());
-
-        // 모임지갑 이체 내역
-        transferRepository.save(GroupWalletTransfer.builder()
-                .transferType(TransferType.WITHDRAW)
-                .fromType(TargetType.GROUP_WALLET)
-                .toType(TargetType.PERSONAL_WALLET)
-                .src(groupWallet1.getNickname())
-                .dest("Receiver's Name") // 수신자 이름 또는 정보
-                .amount(10000L)
-                .afterBalance(100000L) // 이체 후 잔액 계산
-                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
-                .groupWallet(groupWallet1)
-                .build());
-
-        transferRepository.save(GroupWalletTransfer.builder()
-                .transferType(TransferType.WITHDRAW)
-                .fromType(TargetType.GROUP_WALLET)
-                .toType(TargetType.PERSONAL_WALLET)
-                .src(groupWallet2.getNickname())
-                .dest("Receiver's Name") // 수신자 이름 또는 정보
-                .amount(10000L)
-                .afterBalance(0L) // 이체 후 잔액 계산
-                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
-                .groupWallet(groupWallet2)
-                .build());
-
-        transferRepository.save(GroupWalletTransfer.builder()
-                .transferType(TransferType.DEPOSIT)
-                .fromType(TargetType.PERSONAL_WALLET)
-                .toType(TargetType.GROUP_WALLET)
-                .src("Receiver's Name")
-                .dest(groupWallet3.getNickname()) // 수신자 이름 또는 정보
-                .amount(50000L)
-                .afterBalance(50000L) // 이체 후 잔액 계산
-                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
-                .groupWallet(groupWallet3)
-                .build());
+//        // 모임지갑 이체 내역
+//        transferRepository.save(GroupWalletTransfer.builder()
+//                .transferType(TransferType.WITHDRAW)
+//                .fromType(TargetType.GROUP_WALLET)
+//                .toType(TargetType.PERSONAL_WALLET)
+//                .src(groupWallet1.getNickname())
+//                .dest("Receiver's Name") // 수신자 이름 또는 정보
+//                .amount(10000L)
+//                .afterBalance(100000L) // 이체 후 잔액 계산
+//                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
+//                .groupWallet(groupWallet1)
+//                .build());
+//
+//        transferRepository.save(GroupWalletTransfer.builder()
+//                .transferType(TransferType.WITHDRAW)
+//                .fromType(TargetType.GROUP_WALLET)
+//                .toType(TargetType.PERSONAL_WALLET)
+//                .src(groupWallet2.getNickname())
+//                .dest("Receiver's Name") // 수신자 이름 또는 정보
+//                .amount(10000L)
+//                .afterBalance(0L) // 이체 후 잔액 계산
+//                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
+//                .groupWallet(groupWallet2)
+//                .build());
+//
 
         // 모임지갑 1 외화
         groupForeignCurrencyRepository.save(GroupWalletForeignCurrencyBalance.builder()
                 .currencyCode(CurrencyCode.USD)
-                .balance(1000L)
+                .balance(210L)
                 .groupWallet(groupWallet1)
                 .build());
         groupForeignCurrencyRepository.save(GroupWalletForeignCurrencyBalance.builder()
                 .currencyCode(CurrencyCode.JPY)
-                .balance(0L)
+                .balance(30000L)
                 .groupWallet(groupWallet1)
                 .build());
 
         // 모임지갑 2 외화
         groupForeignCurrencyRepository.save(GroupWalletForeignCurrencyBalance.builder()
                 .currencyCode(CurrencyCode.USD)
-                .balance(10L)
+                .balance(90L)
                 .groupWallet(groupWallet2)
                 .build());
         groupForeignCurrencyRepository.save(GroupWalletForeignCurrencyBalance.builder()
                 .currencyCode(CurrencyCode.JPY)
-                .balance(500L)
+                .balance(80000L)
                 .groupWallet(groupWallet2)
-                .build());
-
-        // 모임지갑 3 외화
-        groupForeignCurrencyRepository.save(GroupWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.USD)
-                .balance(0L)
-                .groupWallet(groupWallet3)
-                .build());
-        groupForeignCurrencyRepository.save(GroupWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.JPY)
-                .balance(0L)
-                .groupWallet(groupWallet3)
                 .build());
 
         //====================================================================================
-        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.USD)
-                .balance(0L)
-                .personalWallet(personalWallet1)
-                .build());
-        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.JPY)
-                .balance(0L)
-                .personalWallet(personalWallet1)
-                .build());
-
         personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
                 .currencyCode(CurrencyCode.USD)
                 .balance(100L)
+                .personalWallet(personalWallet1)
+                .build());
+        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
+                .currencyCode(CurrencyCode.JPY)
+                .balance(20000L)
+                .personalWallet(personalWallet1)
+                .build());
+
+        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
+                .currencyCode(CurrencyCode.USD)
+                .balance(87L)
                 .personalWallet(personalWallet2)
                 .build());
         personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
                 .currencyCode(CurrencyCode.JPY)
-                .balance(10000L)
+                .balance(9800L)
                 .personalWallet(personalWallet2)
                 .build());
 
-        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.USD)
-                .balance(1L)
-                .personalWallet(personalWallet3)
-                .build());
-        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.JPY)
-                .balance(1L)
-                .personalWallet(personalWallet3)
-                .build());
-
-        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.USD)
-                .balance(900L)
-                .personalWallet(personalWallet4)
-                .build());
-        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.JPY)
-                .balance(10000L)
-                .personalWallet(personalWallet4)
-                .build());
-
-        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.USD)
-                .balance(100000L)
-                .personalWallet(personalWallet5)
-                .build());
-        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.JPY)
-                .balance(99990000L)
-                .personalWallet(personalWallet5)
-                .build());
-
-        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.USD)
-                .balance(70000L)
-                .personalWallet(personalWallet6)
-                .build());
-        personalForeignCurrencyBalanceRepository.save(PersonalWalletForeignCurrencyBalance.builder()
-                .currencyCode(CurrencyCode.JPY)
-                .balance(87000000L)
-                .personalWallet(personalWallet6)
-                .build());
         //====================================================================================
 
         cardIssuanceRepository.save(CardIssuance.builder()
-                .cardNumber("카드번호1")
+                .cardNumber("4632-1235-3462-0951")
                 .cardState(CardState.OK)
                 .walletId(groupWallet1.getGroupWalletId())
                 .walletType(WalletType.GROUP_WALLET)
@@ -404,7 +312,7 @@ public class InitialSettingTest {
                 .build());
 
         cardIssuanceRepository.save(CardIssuance.builder()
-                .cardNumber("카드번호2")
+                .cardNumber("4654-2356-1235-5734")
                 .cardState(CardState.OK)
                 .walletId(groupWallet1.getGroupWalletId())
                 .walletType(WalletType.GROUP_WALLET)
@@ -412,28 +320,14 @@ public class InitialSettingTest {
                 .build());
 
         cardIssuanceRepository.save(CardIssuance.builder()
-                .cardNumber("카드번호3")
+                .cardNumber("4151-4632-1254")
                 .cardState(CardState.OK)
                 .walletId(groupWallet2.getGroupWalletId())
                 .walletType(WalletType.GROUP_WALLET)
                 .member(member3)
                 .build());
 
-        cardIssuanceRepository.save(CardIssuance.builder()
-                .cardNumber("카드번호5")
-                .cardState(CardState.OK)
-                .walletId(groupWallet3.getGroupWalletId())
-                .walletType(WalletType.GROUP_WALLET)
-                .member(member6)
-                .build());
-
-        cardIssuanceRepository.save(CardIssuance.builder()
-                .cardNumber("카드번호6")
-                .cardState(CardState.OK)
-                .walletId(groupWallet3.getGroupWalletId())
-                .walletType(WalletType.GROUP_WALLET)
-                .member(member5)
-                .build());
+        //==============================================================
 
         Saving save1 = savingRepository.save(Saving.builder()
                 .name("두근두근 외화적금")
@@ -474,16 +368,6 @@ public class InitialSettingTest {
                 .groupWallet(groupWallet1)
                 .build());
 
-        installmentSavingRepository.save(InstallmentSaving.builder()
-                .maturityDate(LocalDateTime.now().plusMonths(save2.getPeriod()))
-                .done(false)
-                .totalAmount(0L) // Example: Set a fixed total amount
-                .savingDate(1) // Example: Set a fixed saving date
-                .savingAmount(200000L) // Example: Set a fixed saving amount
-                .saving(save2)
-                .groupWallet(groupWallet2)
-                .build());
-
         Address bankAddr1 = new Address("서울특별시", "어쩌구저쩌구1길 99", "11111");
         Address bankAddr2 = new Address("서울특별시", "어쩌구저쩌구2길 99", "22222");
         Address bankAddr3 = new Address("서울특별시", "어쩌구저쩌구2길 99", "33333");
@@ -518,31 +402,131 @@ public class InitialSettingTest {
                 .receiptState(ReceiptState.COMPLETE)
                 .bank(bank2)
                 .personalWallet(null)
-                .groupWallet(groupWallet1)
-                .build());
-        ;personalWalletTransferRepository.save(PersonalWalletTransfer.builder()
-                .transferType(TransferType.DEPOSIT)
-                .fromType(TargetType.ACCOUNT)
-                .toType(TargetType.PERSONAL_WALLET)
-                .src("국민은행")
-                .dest(personalWallet2.getMember().getName()) // 수신자 이름 또는 정보
-                .amount(1100000L)
-                .afterBalance(1100000L) // 이체 후 잔액 계산
-                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
-                .personalWallet(personalWallet2)
+                .groupWallet(groupWallet2)
                 .build());
 
-        personalWalletTransferRepository.save(PersonalWalletTransfer.builder()
-                .transferType(TransferType.WITHDRAW)
-                .fromType(TargetType.PERSONAL_WALLET)
-                .toType(TargetType.GROUP_WALLET)
-                .src(personalWallet2.getMember().getName())
-                .dest("모임지갑") // 수신자 이름 또는 정보
-                .amount(100000L)
-                .afterBalance(1000000L) // 이체 후 잔액 계산
-                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
-                .personalWallet(personalWallet2)
-                .build());
+//        ;personalWalletTransferRepository.save(PersonalWalletTransfer.builder()
+//                .transferType(TransferType.DEPOSIT)
+//                .fromType(TargetType.ACCOUNT)
+//                .toType(TargetType.PERSONAL_WALLET)
+//                .src("국민은행")
+//                .dest(personalWallet2.getMember().getName()) // 수신자 이름 또는 정보
+//                .amount(1100000L)
+//                .afterBalance(1100000L) // 이체 후 잔액 계산
+//                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
+//                .personalWallet(personalWallet2)
+//                .build());
+//
+//        personalWalletTransferRepository.save(PersonalWalletTransfer.builder()
+//                .transferType(TransferType.WITHDRAW)
+//                .fromType(TargetType.PERSONAL_WALLET)
+//                .toType(TargetType.GROUP_WALLET)
+//                .src(personalWallet2.getMember().getName())
+//                .dest("모임지갑") // 수신자 이름 또는 정보
+//                .amount(100000L)
+//                .afterBalance(1000000L) // 이체 후 잔액 계산
+//                .currencyCode(CurrencyCode.KRW) // 통화 코드 설정
+//                .personalWallet(personalWallet2)
+//                .build());
     }
 
+    @Test
+    @DisplayName("insertRate")
+    public void insertRate() throws Exception {
+        //given
+        //반환용 리스트
+        List<List<String>> ret = new ArrayList<List<String>>();
+        BufferedReader br = null;
+
+        try {
+            br = Files.newBufferedReader(Paths.get("src/main/java/kb04/team02/web/mvc/exchange/service/result.csv"));
+            //Charset.forName("UTF-8");
+            String line = "";
+            int cnt = 0;
+            LocalDate nowUSD = LocalDate.now();
+            LocalDate nowJPY = LocalDate.now();
+            System.out.println("nowUSD = " + nowUSD);
+            System.out.println("nowJPY = " + nowJPY);
+            while ((line = br.readLine()) != null) {
+                //CSV 1행을 저장하는 리스트
+                List<String> tmpList = new ArrayList<String>();
+                String array[] = line.split(",");
+                //배열에서 리스트 반환
+                tmpList = Arrays.asList(array);
+
+                if (tmpList.get(1).equals("JPY") || tmpList.get(1).equals("USD")) {
+                    cnt++;
+                    System.out.println(tmpList);
+                    ret.add(tmpList);
+                }
+            }
+            System.out.println("cnt/2 = " + cnt / 2);
+
+            for (int i = cnt - 1; i >= 0; --i) {
+                List<String> curr = ret.get(i);
+                if (curr.get(1).equals("USD")) {
+                    System.out.println(curr.get(2));
+                    System.out.println(curr.get(2).replaceAll(",", ""));
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
+                    System.out.println("curr.get(0) = " + curr.get(0));
+                    LocalDateTime time = LocalDateTime.parse(curr.get(0), formatter);
+                    System.out.println("time = " + time);
+                    Double tradingBaseRate = Double.parseDouble(curr.get(2).replaceAll(",", ""));
+                    Double telegraphic_transfer_buying_rate = Double.parseDouble(curr.get(3).replaceAll(",", ""));
+                    Double telegraphic_transfer_selling_rate = Double.parseDouble(curr.get(4).replaceAll(",", ""));
+                    Double buying_rate = Double.parseDouble(curr.get(5).replaceAll(",", ""));
+                    Double selling_rate = Double.parseDouble(curr.get(6).replaceAll(",", ""));
+                    repository.save(ExchangeRate.builder()
+                            .insertDate(time)
+                            .currencyCode(CurrencyCode.USD)
+                            .tradingBaseRate(tradingBaseRate)
+                            .telegraphicTransferBuyingRate(telegraphic_transfer_buying_rate)
+                            .telegraphicTransferSellingRate(telegraphic_transfer_selling_rate)
+                            .buyingRate(buying_rate)
+                            .sellingRate(selling_rate)
+                            .build());
+//                    nowUSD = nowUSD.minusDays(1);
+                }
+                if (curr.get(1).equals("JPY")) {
+                    System.out.println(curr.get(2));
+                    System.out.println(curr.get(2).replaceAll(",", ""));
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
+                    System.out.println("curr.get(0) = " + curr.get(0));
+                    LocalDateTime time = LocalDateTime.parse(curr.get(0), formatter);
+                    Double tradingBaseRate = Double.parseDouble(curr.get(2).replaceAll(",", ""));
+                    Double telegraphic_transfer_buying_rate = Double.parseDouble(curr.get(3).replaceAll(",", ""));
+                    Double telegraphic_transfer_selling_rate = Double.parseDouble(curr.get(4).replaceAll(",", ""));
+                    Double buying_rate = Double.parseDouble(curr.get(5).replaceAll(",", ""));
+                    Double selling_rate = Double.parseDouble(curr.get(6).replaceAll(",", ""));
+                    repository.save(ExchangeRate.builder()
+                            .insertDate(time)
+                            .currencyCode(CurrencyCode.JPY)
+                            .tradingBaseRate((tradingBaseRate * 100) / 100.0)
+                            .telegraphicTransferBuyingRate((telegraphic_transfer_buying_rate) / 100.0)
+                            .telegraphicTransferSellingRate((telegraphic_transfer_selling_rate) / 100.0)
+                            .buyingRate(buying_rate)
+                            .sellingRate(selling_rate)
+                            .build());
+//                    nowJPY = nowJPY.minusDays(1);
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        //when
+
+        //then
+
+    }
 }
