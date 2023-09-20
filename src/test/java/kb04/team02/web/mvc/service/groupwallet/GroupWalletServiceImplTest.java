@@ -237,12 +237,12 @@ public class GroupWalletServiceImplTest {
         Member member1 = Member.builder()
                 .address(address)
                 .email("@naver1.com")
-                .bankAccount("111-111-1111-11")
+                .bankAccount("111-111-1111-12")
                 .name("김진형")
                 .payPassword("123123")
                 .id("qweqwe1")
                 .password("1231123")
-                .phoneNumber("010-1111-1111").build();
+                .phoneNumber("010-1111-1112").build();
         memberRepository.save(member1);
 
         GroupWallet wallet = groupWalletRespository.save(GroupWallet.builder()
