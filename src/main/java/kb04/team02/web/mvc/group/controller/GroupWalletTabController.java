@@ -12,6 +12,7 @@ import kb04.team02.web.mvc.group.dto.InstallmentDto;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
 import kb04.team02.web.mvc.group.service.GroupWalletTabService;
+import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.springframework.data.domain.Page;
@@ -301,7 +302,8 @@ public class GroupWalletTabController {
     @GetMapping("/{id}/saving")
     // Saving 테이블과 대응되는 객체를 Saving.java라고 가정한 코드
     public InstallmentDto groupWalletSavingInfo(@PathVariable String id) {
-        InstallmentDto installmentDto = groupWalletTabService.getSavingById(Long.parseLong(id));
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(Long.valueOf(id));
+        InstallmentDto installmentDto = groupWalletTabService.getSavingById(groupWallet);
 
         if (installmentDto != null) {
             return installmentDto;
@@ -416,7 +418,8 @@ public class GroupWalletTabController {
 
 
         // 적금 조회하기
-        InstallmentDto installmentDto = groupWalletService.getInstallmentDtoSaving(groupWallet);
+//        InstallmentDto installmentDto = groupWalletService.getInstallmentDtoSaving(groupWallet);
+        InstallmentDto installmentDto = groupWalletTabService.getSavingById(groupWallet);
         model.addAttribute("installmentDto", installmentDto);
 
         boolean isCardLinked = groupWalletTabService.linkCard(id, loginMemberDto.getMemberId());
