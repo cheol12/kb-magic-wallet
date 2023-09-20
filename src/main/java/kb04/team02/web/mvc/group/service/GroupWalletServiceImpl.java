@@ -34,10 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -232,8 +229,21 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     }
 
     @Override
-    public String inviteMember(Long groupWalletId) {
-        return "http://초대링크";
+    public int inviteMember(String phone, Long groupWalletId) {
+        Member member = memberRep.findByPhoneNumber(phone).orElseThrow(()-> new NoSuchElementException("멤버 조회 실패"));
+
+        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
+
+        Participation participation;
+        participation = participationRep.save(
+                Participation.builder()
+                        .participationState(ParticipationState.WAITING)
+                        .memberId(member.getMemberId())
+                        .role(Role.GENERAL)
+                        .groupWallet(groupWallet)
+                        .build()
+        );
+        return 1;
     }
 
     @Override
