@@ -220,11 +220,20 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         Member member = groupWallet.getMember();
         Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, member.getMemberId());
         List<Participation> participations = participationRep.findByGroupWalletAndParticipationState(groupWallet, ParticipationState.PARTICIPATED);
-        if (participations.size() > 1 && participation.getRole() == Role.CHAIRMAN) {
-            throw new WalletDeleteException("모임원이 있는 상태에서 삭제할 수 없습니다");
+        List<GroupWalletForeignCurrencyBalance> groupWalletForeignCurrencyBalances = groupForeignBalanceRep.findByGroupWallet(groupWallet);
+        InstallmentSaving installmentSaving = installmentSavingRep.findByGroupWalletAndDone(groupWallet, false);
+
+        if (participations.size() > 1 && participation.getRole() == Role.CHAIRMAN) throw new WalletDeleteException("모임원이 있는 상태에서 삭제할 수 없습니다");
+        if (groupWallet.getBalance() > 0) throw new WalletDeleteException("지갑 잔액이 남아있는 경우 삭제할 수 없습니다.");
+        if (installmentSaving != null) throw new WalletDeleteException("생성한 적금이 있는 경우 삭제할 수 없습니다.");
+        for(GroupWalletForeignCurrencyBalance g : groupWalletForeignCurrencyBalances){
+            if(g.getBalance() > 0) throw new WalletDeleteException("지갑 잔액이 남아있는 경우 삭제할 수 없습니다." + g.getCurrencyCode());
         }
 
-        return groupWalletRep.deleteGroupWalletByGroupWalletId(groupWalletId);
+        // 삭제
+        groupWalletRep.deleteGroupWalletByGroupWalletId(groupWalletId);
+
+        return 1;
     }
 
     @Override

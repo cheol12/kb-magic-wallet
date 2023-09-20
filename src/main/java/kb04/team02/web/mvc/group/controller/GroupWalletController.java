@@ -190,10 +190,11 @@ public class GroupWalletController {
      * @param id 삭제할 모임지갑 id
      */
     @DeleteMapping("/{id}") // 매핑값이 /{id} 가 맞는지?
+    @ResponseBody
     public String groupWalletDelete(@PathVariable Long id) throws WalletDeleteException {
 	    groupWalletService.deleteGroupWallet(id);
 
-	    return "redirect:/group-wallet/";
+	    return "success";
     }
 
     /**
