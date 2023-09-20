@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -30,8 +31,19 @@ public class ExchangeController {
      * API 명세서 ROWNUM:41
      */
     @GetMapping("/")
-    public String exchangeIndex() {
-        return "exchange/exchange";
+    public ModelAndView exchangeIndex() {
+        ModelAndView modelAndView = new ModelAndView();
+        List<String> usdRate = exchangeService.selectExchangeRateByCurrencyCode(CurrencyCode.USD);
+        List<String> jpyRate = exchangeService.selectExchangeRateByCurrencyCode(CurrencyCode.JPY);
+
+        modelAndView.setViewName("exchange/exchange");
+        //request.setAttribute("usdRate", usdRate);
+        // request.setAttribute("jpyRate", jpyRate);
+
+        modelAndView.addObject("usdRate", usdRate);
+        modelAndView.addObject("jpyRate", jpyRate);
+
+        return modelAndView;
     }
 
     /**
@@ -91,7 +103,20 @@ public class ExchangeController {
      * API 명세서 ROWNUM:46
      */
     @GetMapping("/onlineExchange")
-    public void exchangeOnlineIndex() {
+    public ModelAndView exchangeOnlineIndex() {
+
+        ModelAndView modelAndView = new ModelAndView();
+        List<String> usdRate = exchangeService.selectExchangeRateByCurrencyCode(CurrencyCode.USD);
+        List<String> jpyRate = exchangeService.selectExchangeRateByCurrencyCode(CurrencyCode.JPY);
+
+        modelAndView.setViewName("exchange/onlineExchange");
+        //request.setAttribute("usdRate", usdRate);
+        // request.setAttribute("jpyRate", jpyRate);
+
+        modelAndView.addObject("usdRate", usdRate);
+        modelAndView.addObject("jpyRate", jpyRate);
+
+        return modelAndView;
     }
 
     /**

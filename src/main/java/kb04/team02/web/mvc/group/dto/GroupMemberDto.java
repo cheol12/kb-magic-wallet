@@ -18,4 +18,9 @@ public class GroupMemberDto {
     private ParticipationState participationState;
     private String roleToString;
 
+    /**
+     * 카드 연결 여부를 위한 필드 추가
+     * 작성자 : 김진형
+     */
+    private boolean cardIsConnect;
 }
