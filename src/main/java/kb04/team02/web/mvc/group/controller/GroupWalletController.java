@@ -7,6 +7,7 @@ import kb04.team02.web.mvc.exchange.dto.ExchangeRateDto;
 import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
 import kb04.team02.web.mvc.group.dto.GroupMemberDto;
 import kb04.team02.web.mvc.group.dto.InstallmentDto;
+import kb04.team02.web.mvc.group.entity.Participation;
 import kb04.team02.web.mvc.group.service.GroupWalletTabService;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
@@ -191,10 +192,10 @@ public class GroupWalletController {
     }
 
     /**
-     * 모임지갑 초대 링크 생성 폼
+     * 모임지갑 초대 요청 폼
      * API 명세서 ROWNUM:15
      *
-     * @param id 초대링크를 생성할 모임지갑 id
+     * @param id 초대를 요청할 모임지갑 id
      */
     @GetMapping("/{id}/invite-form")
     public String groupWalletInviteForm(@PathVariable Long id, Model model) {
@@ -204,29 +205,47 @@ public class GroupWalletController {
     }
 
     /**
-     * 모임지갑 초대 링크 생성 요청
+     * 모임지갑 초대 요청
      * API 명세서 ROWNUM:15
      *
-     * @param id 초대링크를 생성할 모임지갑 id
+     * @param id 초대를 요청할 모임지갑 id
      */
     @ResponseBody
-    @GetMapping("/{id}/invite-request")
+    @PostMapping("/{id}/invite-request")
     public int groupWalletCreateInviteLink(@PathVariable Long id, @RequestParam String phone) {
-	// 메시지 api 불러오기
 	    int value = groupWalletService.inviteMember(phone, id);
-	//json으로 데이터 전달하기
-        return value;
+	    if(value != 1){
+	        return 0;
+        }
+        return 1;
+        // 메시지 api 불러오기
+        //json으로 데이터 전달하기
 //	    return "redirect:/group-wallet/" + id + "/member-list";
     }
 
     /**
-     * 모임지갑 초대 수락
+     * 나를 초대한 모임지갑들 부르기
+     * */
+    @ResponseBody
+    @PostMapping("/")
+    public List<Participation> groupWalletInvitedList(Model model, HttpSession session) {
+
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+        List<Participation> participationList = groupWalletService.getGroupListInvitedMe(loginMemberDto.getMemberId());
+        System.out.println("초대된 모임지갑의 닉네임 : " + participationList.get(0).getGroupWallet().getNickname());
+        System.out.println("초대된 모임지갑의 모임장 : " + participationList.get(0).getGroupWallet().getMember().getName());
+
+        return participationList;
+    }
+
+    /**
+     * 모임지갑 초대 응답
      * API 명세서
      *
      * @param id 모임지갑 id
      */
     @ResponseBody
-    @GetMapping("/{id}/invite-response")
+    @PostMapping("/{id}/invite-response")
     public String groupWalletInviteResponse(@PathVariable Long id, @RequestParam String phone) {
         // 메시지 api 불러오기
         groupWalletService.inviteMember(phone, id);
