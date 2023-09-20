@@ -224,4 +224,9 @@ public interface GroupWalletService {
      *
      * */
     int countGroupWalletMember(Long groupWalletId);
+
+    /**
+     * 회비 내기
+     */
+    void payDue(Long id, Long memberId);
 }

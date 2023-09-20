@@ -39,6 +39,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Transactional
 public class GroupWalletServiceImpl implements GroupWalletService {
+    private final DuePaymentRepository duePaymentRepository;
 
     private final GroupWalletRespository groupWalletRep;
     private final GroupWalletExchangeRepository groupExchangeRep;
@@ -824,5 +825,39 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     public int countGroupWalletMember(Long groupWalletId) {
         int result = participationRep.countByGroupWalletGroupWalletId(groupWalletId);
         return result;
+    }
+
+
+    @Override
+    public void payDue(Long id, Long memberId) {
+        GroupWallet groupWallet = groupWalletRep.findById(id).orElseThrow(
+                () -> new NoSuchElementException("모임지갑 조회 실패")
+        );
+        Long amount = groupWallet.getDue();
+
+        Member member = memberRep.findById(memberId).orElseThrow(
+                () -> new NoSuchElementException("멤버 조회 실패")
+        );
+
+        duePaymentRepository.save(
+                DuePayment.builder()
+                        .groupWallet(groupWallet)
+                        .member(member)
+//                .due(amount)
+                        .build()
+        );
+
+        DepositDto depositDto = DepositDto.builder()
+                .currencyCode(CurrencyCode.KRW)
+                .amount(amount)
+                .srcMemberId(memberId)
+                .destWalletId(id)
+                .build();
+
+        try {
+            groupWalletDeposit(depositDto);
+        } catch (NotEnoughBalanceException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
