@@ -51,7 +51,8 @@
 
         // 모임지갑 탈퇴 확인창 메소드
         function confirmLeave(id) {
-            var leave = confirm('정말 탈퇴하시겠습니까?');
+            // 모임지갑 이름이 안불러와짐
+            let leave = confirm('모임지갑에서 떠나시겠습니까?');
             if (leave) {
                 // Ajax 요청을 보냅니다.
                 $.ajax({
@@ -574,6 +575,10 @@
 <div class="pageWrap">
     <div class="center">
         <div class="row">
+            <h2>${member.name}님은 ${groupWallet.nickname}의 ${groupMemberDto.roleToString}이에요!</h2>
+        </div>
+
+        <div class="row">
 
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
 
@@ -644,8 +649,8 @@
                                     </div>
                                 </div>
                             </li>
-                            <a href="${pageContext.request.contextPath}/group-wallet/deposit" class="btn btn-primary">채우기</a>
-                            <a href="${pageContext.request.contextPath}/group-wallet/withdraw" class="btn btn-primary">꺼내기</a>
+                            <a href="${pageContext.request.contextPath}/group-wallet/${id}/deposit" class="btn btn-primary">채우기</a>
+                            <a href="${pageContext.request.contextPath}/group-wallet/${id}/withdraw" class="btn btn-primary">꺼내기</a>
                         </ul>
                     </div>
                 </div>
@@ -998,12 +1003,16 @@
                 <c:when test="${isChairman == true}">
                         <a href="${pageContext.request.contextPath}/group-wallet/${id}" id="deleteButton"
                            class="btn btn-primary">모임 지갑 삭제</a>
+                    <a href="${pageContext.request.contextPath}/group-wallet/${id}/invite-form" id="inviteButton"
+                       class="btn btn-primary">모임 지갑에 초대하기</a>
                 </c:when>
                 <c:otherwise>
                         <a href="javascript:void(0);" id="groupLeave" class="btn btn-primary" onclick="confirmLeave(${id});">
                             모임 지갑 떠나기</a>
                 </c:otherwise>
             </c:choose>
+
+
         </div>
 
     </div>

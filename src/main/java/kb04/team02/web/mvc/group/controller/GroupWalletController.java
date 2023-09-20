@@ -79,7 +79,6 @@ public class GroupWalletController {
 
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
         model.addAttribute("loginMemberDto", loginMemberDto);
-        log.info(String.valueOf(loginMemberDto.getMemberId()));
 
         // 내 모임지갑 내역 조회
         WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
@@ -99,6 +98,16 @@ public class GroupWalletController {
         model.addAttribute("groupMemberDtoList", groupMemberDtoList);
         int countMember = groupWalletService.countGroupWalletMember(id);
         model.addAttribute("countMember", countMember);
+        // 모임지갑 내에서 내 권한 확인
+        GroupMemberDto groupMemberDto = null;
+        for(GroupMemberDto dto : groupMemberDtoList){
+            if(dto.getMemberId() == loginMemberDto.getMemberId()){
+                groupMemberDto = dto;
+                break;
+            }
+        }
+        model.addAttribute("groupMemberDto", groupMemberDto);
+        System.out.println("groupMember.Role = " + groupMemberDto.getRoleToString());
 
         // 회비규칙 조회하기
         GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
@@ -136,11 +145,10 @@ public class GroupWalletController {
     @ResponseBody
     @PostMapping("{id}/history")
     public List<WalletHistoryDto> getHistory(@PathVariable Long id, HttpSession session, Model model) {
-        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
         model.addAttribute("walletDetailDto", walletDetailDto);
-        System.out.println(model.getAttribute("startDate"));
-        System.out.println(model.getAttribute("endDate"));
+        System.out.println(walletDetailDto.getList().get(0).getDate()); // 이건 null값
+        System.out.println(walletDetailDto.getList().get(0).getDateTime());     // 이건 진짜 값
         System.out.println("===============");
         return walletDetailDto.getList();
     }
@@ -153,11 +161,6 @@ public class GroupWalletController {
         List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
         GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
         log.info("groupMemberDtoListSize = " + groupMemberDtoList.size());
-        System.out.println(groupMemberDtoList.get(0).getMemberId());
-
-//        mv.setViewName("groupwallet/groupWalletDetail");
-//        mv.addObject("groupMemberDtoList", groupMemberDtoList);
-//        mv.addObject("groupWallet", groupWallet);
 
         return groupMemberDtoList;
     }
@@ -188,18 +191,47 @@ public class GroupWalletController {
     }
 
     /**
+     * 모임지갑 초대 링크 생성 폼
+     * API 명세서 ROWNUM:15
+     *
+     * @param id 초대링크를 생성할 모임지갑 id
+     */
+    @GetMapping("/{id}/invite-form")
+    public String groupWalletInviteForm(@PathVariable Long id, Model model) {
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+        model.addAttribute("groupWallet", groupWallet);
+	    return "groupwallet/groupWalletInviteForm";
+    }
+
+    /**
      * 모임지갑 초대 링크 생성 요청
      * API 명세서 ROWNUM:15
      *
      * @param id 초대링크를 생성할 모임지갑 id
      */
     @ResponseBody
-    @GetMapping("/{id}/link")
-    public String groupWalletCreateInviteLink(@PathVariable Long id) {
+    @GetMapping("/{id}/invite-request")
+    public int groupWalletCreateInviteLink(@PathVariable Long id, @RequestParam String phone) {
 	// 메시지 api 불러오기
-	    groupWalletService.inviteMember(id);
+	    int value = groupWalletService.inviteMember(phone, id);
 	//json으로 데이터 전달하기
-	    return "redirect:/group-wallet/" + id + "/member-list";
+        return value;
+//	    return "redirect:/group-wallet/" + id + "/member-list";
+    }
+
+    /**
+     * 모임지갑 초대 수락
+     * API 명세서
+     *
+     * @param id 모임지갑 id
+     */
+    @ResponseBody
+    @GetMapping("/{id}/invite-response")
+    public String groupWalletInviteResponse(@PathVariable Long id, @RequestParam String phone) {
+        // 메시지 api 불러오기
+        groupWalletService.inviteMember(phone, id);
+        //json으로 데이터 전달하기
+        return "redirect:/group-wallet/" + id + "/member-list";
     }
 
     /**
