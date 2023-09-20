@@ -22,7 +22,9 @@ import kb04.team02.web.mvc.exchange.repository.BankRepository;
 import kb04.team02.web.mvc.exchange.repository.OfflineReceiptRepository;
 import kb04.team02.web.mvc.mypage.repository.CardIssuanceRepository;
 import kb04.team02.web.mvc.member.repository.MemberRepository;
+import kb04.team02.web.mvc.saving.entity.SavingHistory;
 import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
+import kb04.team02.web.mvc.saving.repository.SavingHistoryRepository;
 import kb04.team02.web.mvc.saving.repository.SavingRepository;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletForeignCurrencyBalanceRepository;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
@@ -49,6 +51,8 @@ public class InitialSettingTest2 {
     private MemberRepository memberRepository;
     @Autowired
     private SavingRepository savingRepository;
+    @Autowired
+    private SavingHistoryRepository savingHistoryRepository;
     @Autowired
     private GroupWalletRespository groupWalletRespository;
     @Autowired
@@ -507,25 +511,83 @@ public class InitialSettingTest2 {
                 .amountLimit(5_000_000L) // Example: Increment amount limit for each saving
                 .build());
 
-        installmentSavingRepository.save(InstallmentSaving.builder()
-                .maturityDate(LocalDateTime.now().plusMonths(save1.getPeriod()))
-                .done(false)
-                .totalAmount(0L) // Example: Set a fixed total amount
-                .savingDate(5) // Example: Set a fixed saving date
-                .savingAmount(100000L) // Example: Set a fixed saving amount
-                .saving(save1)
-                .groupWallet(groupWallet1)
-                .build());
+//        InstallmentSaving installmentSavingInstance1 = InstallmentSaving.builder()
+//                .maturityDate(LocalDateTime.now().plusMonths(save1.getPeriod()))
+//                .done(false)
+//                .totalAmount(0L) // Example: Set a fixed total amount
+//                .savingDate(5) // Example: Set a fixed saving date
+//                .savingAmount(100_000L) // Example: Set a fixed saving amount
+//                .saving(save1)
+//                .groupWallet(groupWallet1)
+//                .build();
+//
+//        InstallmentSaving installmentSavingInstance2 = InstallmentSaving.builder()
+//                .maturityDate(LocalDateTime.now().plusMonths(save2.getPeriod()))
+//                .done(false)
+//                .totalAmount(200_000L) // Example: Set a fixed total amount
+//                .savingDate(1) // Example: Set a fixed saving date
+//                .savingAmount(200_000L) // Example: Set a fixed saving amount
+//                .saving(save2)
+//                .groupWallet(groupWallet2)
+//                .build();
+//
+//        InstallmentSaving installmentSavingInstance3 = InstallmentSaving.builder()
+//                .maturityDate(LocalDateTime.of(2022, 1, 9, 10, 0))
+//                .done(true)
+//                .totalAmount(200_000L) // Example: Set a fixed total amount
+//                .savingDate(2) // Example: Set a fixed saving date
+//                .savingAmount(200_000L) // Example: Set a fixed saving amount
+//                .saving(save3)
+//                .groupWallet(groupWallet3)
+//                .build();
+//
+//        InstallmentSaving installmentSavingInstance4 = InstallmentSaving.builder()
+//                .maturityDate(LocalDateTime.of(2023, 9, 22, 10, 22))
+//                .done(false)
+//                .totalAmount(140_000L) // Example: Set a fixed total amount
+//                .savingDate(22) // Example: Set a fixed saving date
+//                .savingAmount(700_000L) // Example: Set a fixed saving amount
+//                .saving(save5)
+//                .groupWallet(groupWallet1)
+//                .build();
 
-        installmentSavingRepository.save(InstallmentSaving.builder()
-                .maturityDate(LocalDateTime.now().plusMonths(save2.getPeriod()))
+        InstallmentSaving installmentSavingInstance5 = InstallmentSaving.builder()
+                .maturityDate(LocalDateTime.of(2023, 11, 5, 1, 45))
                 .done(false)
-                .totalAmount(0L) // Example: Set a fixed total amount
-                .savingDate(1) // Example: Set a fixed saving date
-                .savingAmount(200000L) // Example: Set a fixed saving amount
-                .saving(save2)
+                .totalAmount(200_000L) // Example: Set a fixed total amount
+                .savingDate(5) // Example: Set a fixed saving date
+                .savingAmount(200_000L) // Example: Set a fixed saving amount
+                .saving(save5)
+                .groupWallet(groupWallet1)
+                .build();
+
+        InstallmentSaving installmentSavingInstance6 = InstallmentSaving.builder()
+                .maturityDate(LocalDateTime.of(2023, 9, 2, 14, 29))
+                .done(true)
+                .totalAmount(300_000L) // Example: Set a fixed total amount
+                .savingDate(2) // Example: Set a fixed saving date
+                .savingAmount(100_000L) // Example: Set a fixed saving amount
+                .saving(save5)
                 .groupWallet(groupWallet2)
-                .build());
+                .build();
+
+        InstallmentSaving installmentSavingInstance7 = InstallmentSaving.builder()
+                .maturityDate(LocalDateTime.of(2023, 12, 7, 0, 5))
+                .done(false)
+                .totalAmount(600_000L) // Example: Set a fixed total amount
+                .savingDate(7) // Example: Set a fixed saving date
+                .savingAmount(200_000L) // Example: Set a fixed saving amount
+                .saving(save7)
+                .groupWallet(groupWallet3)
+                .build();
+
+//        installmentSavingRepository.save(installmentSavingInstance1);
+//        installmentSavingRepository.save(installmentSavingInstance2);
+//        installmentSavingRepository.save(installmentSavingInstance3);
+//        installmentSavingRepository.save(installmentSavingInstance4);
+        installmentSavingRepository.save(installmentSavingInstance5);
+        installmentSavingRepository.save(installmentSavingInstance6);
+        installmentSavingRepository.save(installmentSavingInstance7);
 
         Address bankAddr1 = new Address("서울특별시", "어쩌구저쩌구1길 99", "11111");
         Address bankAddr2 = new Address("서울특별시", "어쩌구저쩌구2길 99", "22222");
@@ -563,6 +625,72 @@ public class InitialSettingTest2 {
                 .personalWallet(null)
                 .groupWallet(groupWallet1)
                 .build());
+
+
+
+        // 적금 내역 추가
+        // installmentSavingInstance5
+        SavingHistory savingHistory1 = SavingHistory.builder()
+                .insertDate(LocalDateTime.of(2023, 9, 5, 1, 45))
+                .amount(200_000L)
+                .accumulatedAmount(200_000L)
+                .installmentSaving(installmentSavingInstance5)
+                .build();
+
+
+        // installmentSavingInstance6
+        SavingHistory savingHistory2 = SavingHistory.builder()
+                .insertDate(LocalDateTime.of(2023, 7, 2, 14, 29))
+                .amount(100_000L)
+                .accumulatedAmount(100_000L)
+                .installmentSaving(installmentSavingInstance5)
+                .build();
+
+        SavingHistory savingHistory3 = SavingHistory.builder()
+                .insertDate(LocalDateTime.of(2023, 8, 2, 14, 29))
+                .amount(100_000L)
+                .accumulatedAmount(200_000L)
+                .installmentSaving(installmentSavingInstance5)
+                .build();
+
+        SavingHistory savingHistory4 = SavingHistory.builder()
+                .insertDate(LocalDateTime.of(2023, 9, 2, 14, 29))
+                .amount(100_000L)
+                .accumulatedAmount(300_000L)
+                .installmentSaving(installmentSavingInstance5)
+                .build();
+
+        // installmentSavingInstance7
+        SavingHistory savingHistory5 = SavingHistory.builder()
+                .insertDate(LocalDateTime.of(2023, 7, 7, 0, 5))
+                .amount(200_000L)
+                .accumulatedAmount(200_000L)
+                .installmentSaving(installmentSavingInstance7)
+                .build();
+        
+        SavingHistory savingHistory6 = SavingHistory.builder()
+                .insertDate(LocalDateTime.of(2023, 8, 7, 0, 5))
+                .amount(200_000L)
+                .accumulatedAmount(400_000L)
+                .installmentSaving(installmentSavingInstance7)
+                .build();
+
+        SavingHistory savingHistory7 = SavingHistory.builder()
+                .insertDate(LocalDateTime.of(2023, 9, 7, 0, 5))
+                .amount(200_000L)
+                .accumulatedAmount(600_000L)
+                .installmentSaving(installmentSavingInstance7)
+                .build();
+
+        savingHistoryRepository.save(savingHistory1);
+        savingHistoryRepository.save(savingHistory2);
+        savingHistoryRepository.save(savingHistory3);
+        savingHistoryRepository.save(savingHistory4);
+        savingHistoryRepository.save(savingHistory5);
+        savingHistoryRepository.save(savingHistory6);
+        savingHistoryRepository.save(savingHistory7);
+        
     }
+
 
 }
