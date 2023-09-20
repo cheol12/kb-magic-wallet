@@ -202,7 +202,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
                 installmentSaving = installmentRepository.findByGroupWalletAndTotalAmountIsGreaterThanAndDone(groupWallet, 0L, true);
                 installmentSaving.setTotalAmount(0L);
 
-                double monthlyInterestRate = installmentSaving.getSaving().getInterestRate() / 12; // 월 이자율
+                double monthlyInterestRate = installmentSaving.getSaving().getInterestRate() / 1200; // 월 이자율
                 int numberOfMonths = installmentSaving.getSaving().getPeriod(); // 총 월 수
                 double monthlyDeposit = installmentSaving.getSavingAmount(); // 월별 납입 금액
                 double totalInterest = 0.0; // 총 이자
@@ -219,7 +219,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
 
                 System.out.println("총 이자: " + totalInterest);
 
-                groupWallet.setBalance((long) (groupWallet.getBalance() + installmentSaving.getTotalAmount() + totalInterest));
+                groupWallet.setBalance((long) savingsBalance);
             }
         }
         return true;
