@@ -41,15 +41,17 @@
 <div>
     <div class="banner-container">
     <div class="above-container">
-        <div id="first-box" class="box">
-            <div class="first-contents">
-                <h1>KB<p id="first-text">MAGIC WALLET</p><p id="second-text">깨비의 요술지갑</p></h1>
-                <p>Experience hassle-free foreign currency top-ups with our Foreign currency recharge wallet service
-                </p>
+        <div class="center" style="display: flex">
+            <div id="first-box" class="box" style="width: 60%;">
+                <div class="first-contents">
+                    <h1>KB<p id="first-text">MAGIC WALLET</p><p id="second-text">깨비의 요술지갑</p></h1>
+                    <p>Experience hassle-free foreign currency top-ups with our Foreign currency recharge wallet service
+                    </p>
+                </div>
             </div>
-        </div>
-        <div id="second-box" class="box">
-            <img src="${pageContext.request.contextPath}/assets/img/icons/4.png">
+            <div id="second-box" class="box" style="width: 40%;">
+                <img src="${pageContext.request.contextPath}/assets/img/icons/4.png">
+            </div>
         </div>
 
     </div>
