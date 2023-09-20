@@ -271,12 +271,6 @@
 
             });
 
-            document.getElementById("deleteButton").addEventListener("click", function (event) {
-                if (${countMember}> 1 ){
-                    event.preventDefault();
-                    alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
-                }
-            });
 
             // 조회기간 설정 조회 버튼 누를 시 비동기화 통싱
             $("#selectDateForm").on("submit", function (e) {
@@ -337,13 +331,6 @@
             }
         });
 
-        document.getElementById("deleteButton").addEventListener("click", function (event) {
-            if (${countMember} > 1){
-                event.preventDefault();
-                alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
-            }
-        });
-
 
         function cardList() {
             let memberId = ${loginMemberDto.memberId};
@@ -396,6 +383,54 @@
             });
         }
 
+        let deleteWallet = (event) => {
+
+            let countMember = ${countMember};
+            let balanceKRW = ${walletDetailDto.balance.get("KRW")};
+            let balanceJPY = ${walletDetailDto.balance.get("JPY")};
+            let balanceUSD = ${walletDetailDto.balance.get("USD")};
+            let savingAmount = ${installmentDto.savingAmount};
+
+            console.log(savingAmount)
+
+            if (countMember > 1) {
+                event.preventDefault();
+                alert("모임원이 한 명 이상 남아있을 경우 모임지갑을 삭제할 수 없습니다.");
+            } else if (balanceKRW > 0) {
+                alert(`모임지갑에 돈이 남아있을 경우 모임지갑을 삭제할 수 없습니다. - KRW ${balanceKRW}`);
+            } else if (balanceJPY > 0) {
+                alert(`모임지갑에 돈이 남아있을 경우 모임지갑을 삭제할 수 없습니다. - JPY ${balanceJPY}`);
+            } else if (balanceUSD > 0) {
+                alert(`모임지갑에 돈이 남아있을 경우 모임지갑을 삭제할 수 없습니다. - USD ${balanceUSD}`);
+            } else if (savingAmount > 0) {
+                alert("가입한 적금이 있는 경우 모임지갑을 삭제할 수 없습니다.");
+            }else {
+                // 삭제
+                let confirmation = confirm("모임 지갑을 정말 삭제하시겠습니까? 😥");
+
+                if (confirmation) {
+                    let groupWalletId = "${groupWallet.groupWalletId}"; // 그룹 월렛 아이디 변수로 설정
+
+                    $.ajax({
+                        type: "delete",
+                        url: `${pageContext.request.contextPath}/group-wallet/${groupWalletId}`,
+                        success: function (data) {
+                            console.log(data)
+                            alert("모임지갑 삭제 완료")
+                            location.href = "${pageContext.request.contextPath}/group-wallet/"; // 페이지 새로고침
+                        },
+                        error: function () {
+                            alert("모임지갑 삭제 실패")
+                        }
+                    });
+
+                }
+
+            }
+
+
+
+        }
 
     </script>
 
@@ -760,8 +795,8 @@
         <div class="col-xl-12">
             <c:choose>
                 <c:when test="${isChairman == true}">
-                    <a href="${pageContext.request.contextPath}/group-wallet/${id}" id="deleteButton"
-                       class="btn btn-primary">모임 지갑 삭제</a>
+                    <button id="deleteButton"
+                       class="btn btn-primary" onclick="deleteWallet(event)">모임 지갑 삭제</button>
                     <a href="${pageContext.request.contextPath}/group-wallet/${id}/invite-form" id="inviteButton"
                        class="btn btn-primary">모임 지갑에 초대하기</a>
                 </c:when>
