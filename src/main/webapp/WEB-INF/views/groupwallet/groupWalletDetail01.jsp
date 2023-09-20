@@ -91,8 +91,6 @@
             modal.style.display = 'block';
         }
 
-        //
-        //
         // AJAX READY
         $(document).ready(function () {
 
@@ -511,17 +509,25 @@
 
 
 
+        document.getElementById("deleteButton").addEventListener("click", function (event) {
+            if (${countMember} >
+            1
+        )
+            {
+                event.preventDefault();
+                alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
+            }
+        });
 
 
-
-        function cardList(){
+        function cardList() {
             let memberId = ${loginMemberDto.memberId};
 
             $.ajax({
                 url: '${pageContext.request.contextPath}/group-wallet/${id}/card/list',
                 type: 'GET',
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     let cardExists = false;
                     let content = '';
 
@@ -559,7 +565,7 @@
 
                     $('#tab5').html(content); // 대상 div의 ID를 변경해야 합니다.
                 },
-                error: function(err) {
+                error: function (err) {
                     console.error("Error fetching data", err);
                 }
             });
@@ -819,7 +825,9 @@
 
                     </div>
 
-                    
+                    <!-- 회비 규칙 START -->
+                    <jsp:include page="tab/groupTabDueRule.jsp"/>
+                    <!-- 회비 규칙 END -->
 
                     <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
                         <div class="card" style="margin-top: 5px;">
@@ -832,7 +840,8 @@
                                     <c:choose>
                                         <c:when test="${isChairman}">
                                             <p><strong>적금을 가입하지 않으셨습니다.</strong></p>
-                                            <a href="${pageContext.request.contextPath}/saving/" class="btn btn-primary">적금 보러가기</a>
+                                            <a href="${pageContext.request.contextPath}/saving/"
+                                               class="btn btn-primary">적금 보러가기</a>
                                         </c:when>
                                         <c:otherwise>
                                             <p><strong>가입된 적금이 없습니다. 모임장에게 적금 가입을 추천하는건 어떨까요?</strong></p>
@@ -888,10 +897,12 @@
                                                     <c:when test="${isChairman}">
                                                         <%--                                                                <a href="${pageContext.request.contextPath}/group-wallet/${groupWallet.groupWalletId}/saving" id="cancelSaving" class="btn btn-primary">적금 해지</a>--%>
                                                         <%----%>
-                                                        <button type="submit" class="btn btn-primary" id="cancelSaving">적금 해지</button>
+                                                        <button type="submit" class="btn btn-primary" id="cancelSaving">
+                                                            적금 해지
+                                                        </button>
                                                         <script>
                                                             // 적금 해지 버튼 클릭 시 알림창 띄우기
-                                                            document.getElementById("cancelSaving").addEventListener("click", function(event) {
+                                                            document.getElementById("cancelSaving").addEventListener("click", function (event) {
                                                                 event.preventDefault();
 
                                                                 var confirmation = confirm("적금을 해지하시겠습니까? 해지시 이자도 함께 소멸됩니다.");
@@ -933,66 +944,63 @@
                             <%--                                </div>--%>
                         </div>
                     </div>
-                        <div class="tab-pane fade" id="navs-top-card" role="tabpanel">
-                            <%--
-   Created by IntelliJ IDEA.
-   User: jiwon
-   Date: 2023-09-19
-   Time: 오전 10:56
-   To change this template use File | Settings | File Templates.
- --%>
+                    <div class="tab-pane fade" id="navs-top-card" role="tabpanel">
 
-                            <div class="card">
+                        <div class="card">
 
-                                <div class="card-body">
+                            <div class="card-body">
 
-                                    <div class="row" id="tab5">
-                                        <c:set var="cardExists" value="false" />
+                                <div class="row" id="tab5">
+                                    <c:set var="cardExists" value="false"/>
 
-                                        <c:forEach var="card" items="${cardIssuanceDtoList}" varStatus="status">
-                                            <c:if test="${card.member.memberId == sessionScope.member.memberId}">
-                                                <c:set var="cardExists" value="true" />
-                                            </c:if>
-                                            <div class="col-md-6 col-xl-4">
-                                                <div class="card shadow-none bg-transparent border border-secondary mb-3">
-
-                                                    <div class="card-body" >
-                                                        <h5 class="card-title">${card.member.name}</h5>
-                                                        <img src="${pageContext.request.contextPath}/assets/img/card/card${fn:substring(card.cardNumber, fn:length(card.cardNumber)-1, fn:length(card.cardNumber))}.png" alt="Card Image" style="width: 100%">
-
-                                                    </div>
-
-
-                                                </div>
-                                            </div>
-
-                                        </c:forEach>
-
-                                        <c:if test="${not cardExists}">
-                                            <div class="col-md-6 col-xl-4">
-                                                <div class="card shadow-none bg-transparent border border-secondary mb-3">
-
-                                                    <div class="card-body" >
-                                                        <h5 class="card-title">카드 연결</h5>
-                                                        <div style="width: 100%; text-align: center">
-                                                        <img src="${pageContext.request.contextPath}/assets/img/icons/squre_plus.png" alt="Card Image" style="width: 60%;" onclick="location.href='${pageContext.request.contextPath}/group-wallet/${id}/card_2'" id="cardChange">
-                                                        </div>
-                                                    </div>
-
-
-                                                </div>
-                                            </div>
+                                    <c:forEach var="card" items="${cardIssuanceDtoList}" varStatus="status">
+                                        <c:if test="${card.member.memberId == sessionScope.member.memberId}">
+                                            <c:set var="cardExists" value="true"/>
                                         </c:if>
-                                    </div>
-                                </div>
+                                        <div class="col-md-6 col-xl-4">
+                                            <div class="card shadow-none bg-transparent border border-secondary mb-3">
 
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${card.member.name}</h5>
+                                                    <img src="${pageContext.request.contextPath}/assets/img/card/card${fn:substring(card.cardNumber, fn:length(card.cardNumber)-1, fn:length(card.cardNumber))}.png"
+                                                         alt="Card Image" style="width: 100%">
+
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+                                    </c:forEach>
+
+                                    <c:if test="${not cardExists}">
+                                        <div class="col-md-6 col-xl-4">
+                                            <div class="card shadow-none bg-transparent border border-secondary mb-3">
+
+                                                <div class="card-body">
+                                                    <h5 class="card-title">카드 연결</h5>
+                                                    <div style="width: 100%; text-align: center">
+                                                        <img src="${pageContext.request.contextPath}/assets/img/icons/squre_plus.png"
+                                                             alt="Card Image" style="width: 60%;"
+                                                             onclick="location.href='${pageContext.request.contextPath}/group-wallet/${id}/card_2'"
+                                                             id="cardChange">
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </c:if>
+                                </div>
                             </div>
 
-
                         </div>
+
+
                     </div>
                 </div>
             </div>
+        </div>
         <br>
         <br>
         <br>

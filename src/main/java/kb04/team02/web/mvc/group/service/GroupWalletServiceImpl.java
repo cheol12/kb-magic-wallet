@@ -4,8 +4,7 @@ import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.*;
-import kb04.team02.web.mvc.exchange.dto.RuleDto;
-import kb04.team02.web.mvc.exchange.dto.WalletDto;
+import kb04.team02.web.mvc.group.dto.RuleDto;
 import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.group.entity.*;
 import kb04.team02.web.mvc.group.repository.*;
@@ -24,7 +23,6 @@ import kb04.team02.web.mvc.group.exception.WalletDeleteException;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletForeignCurrencyBalanceRepository;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletTransferRepository;
-import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
 import kb04.team02.web.mvc.saving.entity.Saving;
 import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
@@ -289,7 +287,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         RuleDto ruleDto = new RuleDto();
         if (groupWallet.isDueCondition()) {
             ruleDto.setDueDate(groupWallet.getDueDate());
-            ruleDto.setDuePrice(groupWallet.getDue());
+            ruleDto.setDue(groupWallet.getDue());
         }
         return ruleDto;
     }

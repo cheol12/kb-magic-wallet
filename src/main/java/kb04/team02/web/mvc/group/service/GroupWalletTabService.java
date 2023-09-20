@@ -1,7 +1,7 @@
 package kb04.team02.web.mvc.group.service;
 
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
-import kb04.team02.web.mvc.exchange.dto.RuleDto;
+import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
 import kb04.team02.web.mvc.group.dto.GroupMemberDto;
 import kb04.team02.web.mvc.group.dto.InstallmentDto;
@@ -50,7 +50,7 @@ public interface GroupWalletTabService {
      * @param id
      * @return
      */
-    RuleDto getRuleById(Long id);
+    RuleDto getRuleById(Long id, Long memberId);
 
     /**
      * 모임지갑 회비 규칙 생성
@@ -117,4 +117,13 @@ public interface GroupWalletTabService {
      * @return
      */
     WalletHistoryDto getHistory(Long id, Long historyId, String type);
+
+    /**
+     * 회원 별 납부 내역
+     * 1) 참여 멤버 가져오기
+     * 2) 이번 달에 냈는지 확인해서 넣기
+     * 3) 누적 값 넣기
+     * @return
+     */
+    List<DuePaymentDto> getDuePaymentList(Long id);
 }
