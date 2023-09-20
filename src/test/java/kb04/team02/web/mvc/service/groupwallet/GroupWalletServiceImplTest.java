@@ -285,8 +285,8 @@ public class GroupWalletServiceImplTest {
                 .balance(0L)
                 .build());
 
-        String s = service.inviteMember(wallet.getGroupWalletId());
-        System.out.println("s = " + s);
+//        String s = service.inviteMember(wallet.getGroupWalletId());
+//        System.out.println("s = " + s);
 
     }
 

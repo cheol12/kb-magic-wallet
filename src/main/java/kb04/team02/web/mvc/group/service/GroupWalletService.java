@@ -68,7 +68,7 @@ public interface GroupWalletService {
      * @param groupWalletId 초대링크를 생성할 모임지갑 id
      * @return String
      */
-    String inviteMember(Long groupWalletId);
+    int inviteMember(String phone, Long groupWalletId);
 
 
     /**

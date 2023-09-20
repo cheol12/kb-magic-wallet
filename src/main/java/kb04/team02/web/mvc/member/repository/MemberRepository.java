@@ -45,4 +45,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // memberId로 Member 객체 불러오기
     List<Member> findByMemberId(Long memberId);
 
+    // 초대할 때 전화번호로 검색
+    Optional<Member> findByPhoneNumber(String phone);
+
 }

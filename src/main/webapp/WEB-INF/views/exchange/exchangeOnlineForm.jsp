@@ -41,6 +41,16 @@
 <body>
 <script>
 
+    $(document).ready(function () {
+        $("#saveChangesButton").click(function () {
+            handleEnter()
+        });
+    });
+
+    function summitForm() {
+        $("#exchangeOnlineForm").submit();
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         const walletSelect = document.getElementById("walletSelect");
         const walletOptions = walletSelect.querySelectorAll('option');
@@ -98,7 +108,7 @@
         });
     });
 
-    function validateForm() {
+/*    function validateForm() {
         // 1. 모든 값을 입력했는지 검사
         const walletType = document.querySelector('input[name="walletType"]:checked');
         const walletId = document.getElementById('selectedWallet');
@@ -126,7 +136,7 @@
 
         // 모든 유효성 검사를 통과한 경우 true 반환
         return true;
-    }
+    }*/
 
     let expectedAmountCK = () => {
         var code = $('select[name="buyCurrencyCode"]').val();
@@ -198,7 +208,7 @@
             <div class="container-xxl flex-grow-1 container-p-y">
                 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">환전/</span> 온라인</h4>
                 <!-- Basic Layout -->
-                <form action="${pageContext.request.contextPath}/exchange/online/form" method="post" id="exchangeOnlineForm" onsubmit="return validateForm();">
+                <form action="${pageContext.request.contextPath}/exchange/online/form" method="post" id="exchangeOnlineForm">
                     <div class="row">
                         <div class="col-xl">
                             <div class="card mb-4">
@@ -279,7 +289,31 @@
                                         </div>
                                     </div>
                                 </div>
-                                        <button type="submit" class="btn btn-primary">환전하기</button>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">환전하기</button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">결제 비밀번호 확인</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close">
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <jsp:include page="../common/virtualKeyboard.jsp"/>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    닫기
+                                                </button>
+                                                <button type="button" id="saveChangesButton" class="btn btn-primary">비밀번호 확인</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
 

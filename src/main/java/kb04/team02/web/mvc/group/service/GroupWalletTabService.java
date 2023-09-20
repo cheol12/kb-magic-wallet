@@ -2,6 +2,10 @@ package kb04.team02.web.mvc.group.service;
 
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.group.dto.*;
+import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
+import kb04.team02.web.mvc.group.dto.GroupMemberDto;
+import kb04.team02.web.mvc.group.dto.InstallmentDto;
+import kb04.team02.web.mvc.group.entity.GroupWallet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -73,10 +77,10 @@ public interface GroupWalletTabService {
     /**
      * 모임지갑 가입 적금상품 조회
      *
-     * @param id
+     * @param groupWallet
      * @return
      */
-    InstallmentDto getSavingById(Long id);
+    InstallmentDto getSavingById(GroupWallet groupWallet);
 
     /**
      * 모임지갑 가입 적금상품 해지

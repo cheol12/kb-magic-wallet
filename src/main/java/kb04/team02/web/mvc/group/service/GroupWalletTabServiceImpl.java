@@ -33,6 +33,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class GroupWalletTabServiceImpl implements GroupWalletTabService {
 
     // 회원 관련 의존성
@@ -154,12 +155,19 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
     }
 
     @Override
-    public InstallmentDto getSavingById(Long id) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임 지갑 조회 실패"));
+    public InstallmentDto getSavingById(GroupWallet groupWallet) {
+//    public InstallmentDto getSavingById(Long id) {
+//        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임 지갑 조회 실패"));
         if (groupWallet == null) {
             throw new NoResultException("해당 모임지갑이 존재하지 않습니다");
         } else {
             InstallmentSaving saving = installmentRepository.findByGroupWalletAndDone(groupWallet, false);
+            System.out.println("**************************************************");
+            // 적금이 만료되었지만 아직 정산이 되지 않은 경우
+            if (saving == null) {
+                saving = installmentRepository.findByGroupWalletAndTotalAmountIsGreaterThanAndDone(groupWallet, 0L, true);
+            }
+            // 적금이 만료되지 않았거나 적금이 만료되었더라도 정산이 이루어지지 않은 경우 적금을 확인할 수 있도록 함
             if (saving == null) {
                 return null;
             }
@@ -183,9 +191,36 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
         if (groupWallet == null) {
             throw new NoResultException("해당 모임지갑이 존재하지 않습니다");
         } else {
-            InstallmentSaving saving = installmentRepository.findByGroupWalletAndDone(groupWallet, false);
-            saving.setDone(true);
-            groupWallet.setBalance(groupWallet.getBalance() + saving.getTotalAmount());
+            InstallmentSaving installmentSaving = installmentRepository.findByGroupWalletAndDone(groupWallet, false);
+            // 적금이 아직 만료되지 않은 경우
+            if (installmentSaving != null) {
+                installmentSaving.setDone(true);
+                groupWallet.setBalance(groupWallet.getBalance() + installmentSaving.getTotalAmount());
+                // 적금이 만료되었지만 아직 정산이 되지 않은 경우 이자율도 챙겨줘야 함
+            } else {
+                // 이자율 계산
+                installmentSaving = installmentRepository.findByGroupWalletAndTotalAmountIsGreaterThanAndDone(groupWallet, 0L, true);
+                installmentSaving.setTotalAmount(0L);
+
+                double monthlyInterestRate = installmentSaving.getSaving().getInterestRate() / 12; // 월 이자율
+                int numberOfMonths = installmentSaving.getSaving().getPeriod(); // 총 월 수
+                double monthlyDeposit = installmentSaving.getSavingAmount(); // 월별 납입 금액
+                double totalInterest = 0.0; // 총 이자
+                double savingsBalance = groupWallet.getBalance(); // 적금 잔액
+
+                for (int month = 1; month <= numberOfMonths; month++) {
+                    // 해당 월의 이자 계산
+                    double monthlyInterest = (savingsBalance + monthlyDeposit) * monthlyInterestRate;
+                    // 총 이자에 월별 이자 추가
+                    totalInterest += monthlyInterest;
+                    // 적금 잔액 업데이트
+                    savingsBalance = savingsBalance + monthlyDeposit + monthlyInterest;
+                }
+
+                System.out.println("총 이자: " + totalInterest);
+
+                groupWallet.setBalance((long) (groupWallet.getBalance() + installmentSaving.getTotalAmount() + totalInterest));
+            }
         }
         return true;
     }

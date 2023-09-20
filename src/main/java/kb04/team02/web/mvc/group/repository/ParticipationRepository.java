@@ -73,7 +73,11 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
 
 
 
-
+    /**
+     * @author 김철
+     * 모임원 초대 보내기
+     * */
+//    List
 
 
     // 해당 모임 지갑의 모임장, 공동 모임장 회원 리스트 찾기
