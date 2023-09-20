@@ -1,8 +1,10 @@
 package kb04.team02.web.mvc;
 
 import kb04.team02.web.mvc.exchange.entity.Bank;
+import kb04.team02.web.mvc.exchange.entity.ExchangeRate;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.exchange.entity.ReceiptState;
+import kb04.team02.web.mvc.exchange.repository.ExchangeRateRepository;
 import kb04.team02.web.mvc.group.entity.*;
 import kb04.team02.web.mvc.group.repository.*;
 import kb04.team02.web.mvc.mypage.entity.CardIssuance;
@@ -29,14 +31,23 @@ import kb04.team02.web.mvc.personal.repository.PersonalWalletForeignCurrencyBala
 import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletTransferRepository;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
@@ -44,38 +55,41 @@ import java.util.List;
 @Commit
 public class InitialSettingTest {
 
-   @Autowired
-   private GroupWalletService service;
-   @Autowired
-   private MemberRepository memberRepository;
-   @Autowired
-   private SavingRepository savingRepository;
-   @Autowired
-   private GroupWalletRespository groupWalletRespository;
-   @Autowired
-   private ParticipationRepository participationRepository;
-   @Autowired
-   private InstallmentSavingRepository installmentSavingRepository;
-   @Autowired
-   private CardIssuanceRepository cardIssuanceRepository;
-   @Autowired
-   private GroupWalletTransferRepository transferRepository;
-   @Autowired
-   private GroupWalletExchangeRepository exchangeRepository;
-   @Autowired
-   private GroupWalletPaymentRepository paymentRepository;
-   @Autowired
-   private GroupWalletForeignCurrencyBalanceRepository groupForeignCurrencyRepository;
-   @Autowired
-   private PersonalWalletForeignCurrencyBalanceRepository personalForeignCurrencyBalanceRepository;
-   @Autowired
-   private PersonalWalletRepository personalWalletRepository;
-   @Autowired
-   private PersonalWalletTransferRepository personalWalletTransferRepository;
-   @Autowired
-   private BankRepository bankRepository;
-   @Autowired
-   private OfflineReceiptRepository offlineReceiptRepository;
+    @Autowired
+    private GroupWalletService service;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private SavingRepository savingRepository;
+    @Autowired
+    private GroupWalletRespository groupWalletRespository;
+    @Autowired
+    private ParticipationRepository participationRepository;
+    @Autowired
+    private InstallmentSavingRepository installmentSavingRepository;
+    @Autowired
+    private CardIssuanceRepository cardIssuanceRepository;
+    @Autowired
+    private GroupWalletTransferRepository transferRepository;
+    @Autowired
+    private GroupWalletExchangeRepository exchangeRepository;
+    @Autowired
+    private GroupWalletPaymentRepository paymentRepository;
+    @Autowired
+    private GroupWalletForeignCurrencyBalanceRepository groupForeignCurrencyRepository;
+    @Autowired
+    private PersonalWalletForeignCurrencyBalanceRepository personalForeignCurrencyBalanceRepository;
+    @Autowired
+    private PersonalWalletRepository personalWalletRepository;
+    @Autowired
+    private PersonalWalletTransferRepository personalWalletTransferRepository;
+    @Autowired
+    private BankRepository bankRepository;
+    @Autowired
+    private OfflineReceiptRepository offlineReceiptRepository;
+    @Autowired
+    private ExchangeRateRepository repository;
+
 
 ////    @AfterEach
 ////    public void afterEach() {

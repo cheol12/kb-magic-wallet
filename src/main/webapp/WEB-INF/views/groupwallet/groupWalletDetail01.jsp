@@ -58,14 +58,14 @@
                 $.ajax({
                     type: "GET",
                     url: "${pageContext.request.contextPath}/group-wallet/" + id + "/leave",
-                    success: function(data) {
+                    success: function (data) {
                         // 요청이 성공하면 여기에서 추가 로직을 수행할 수 있습니다.
                         // 예를 들어, 성공한 후에 어떤 동작을 수행할 수 있습니다.
                         console.log("컨트롤러 메소드 호출 성공!");
                         // 페이지 새로고침 또는 다른 동작 수행
                         location.href = "${pageContext.request.contextPath}/group-wallet/"; // 페이지 새로고침
                     },
-                    error: function() {
+                    error: function () {
                         // 요청이 실패하면 여기에서 오류 처리를 수행할 수 있습니다.
                         console.log("컨트롤러 메소드 호출 실패!");
                         // 오류 처리 로직 추가
@@ -74,7 +74,7 @@
             }
         }
 
-    // 모달창을 띄우는 function
+        // 모달창을 띄우는 function
         function PopupDetail(clicked_element, content) {
             var row_td = clicked_element.getElementsByTagName("td");
             var modal = document.getElementById("detail-modal");
@@ -272,7 +272,7 @@
             });
 
             document.getElementById("deleteButton").addEventListener("click", function (event) {
-                if (${countMember} > 1){
+                if (${countMember}> 1 ){
                     event.preventDefault();
                     alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
                 }
@@ -337,183 +337,8 @@
             }
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
-            var options = {
-                // 추후 매개변수로 변경 필요
-                series: [1010000, 100 * 1300, 100000],
-                chart: {
-                    type: 'donut',
-                },
-                labels: ['KRW', 'USD', 'JPY'],
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            width: 200
-                        },
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }]
-            };
-
-            var chart = new ApexCharts(document.querySelector("#chart"), options);
-            chart.render();
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            var options = {
-                series: [
-                    {
-                        name: "KRW",
-                        data: [0, 100000, 200000, 900000, 600000, 800000, 1010000]
-                    },
-                    {
-                        name: "USD",
-                        data: [0, 0, 0, 0, 0, 50 * 1300, 100 * 1300]
-                    },
-                    {
-                        name: "JPY",
-                        data: [100000, 100000, 100000, 100000, 100000, 100000, 100000]
-                    }
-                ],
-                chart: {
-                    height: 490,
-                    type: 'line',
-                    dropShadow: {
-                        enabled: true,
-                        color: '#000',
-                        top: 18,
-                        left: 7,
-                        blur: 10,
-                        opacity: 0.2
-                    },
-                    toolbar: {
-                        show: false
-                    }
-                },
-                colors: ['#77B6EA', '#545454', '#900000'],
-                dataLabels: {
-                    enabled: true,
-                },
-                stroke: {
-                    curve: 'smooth'
-                },
-                title: {
-                    text: '자산 현황 (KRW)',
-                    align: 'left'
-                },
-                grid: {
-                    borderColor: '#e7e7e7',
-                    row: {
-                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                        opacity: 0.5
-                    },
-                },
-                markers: {
-                    size: 1
-                },
-                xaxis: {
-                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-                    title: {
-                        text: '월'
-                    }
-                },
-                yaxis: {
-                    title: {
-                        text: '자산'
-                    },
-                    min: 0,
-                    max: 1500000
-                },
-                legend: {
-                    position: 'top',
-                    horizontalAlign: 'right',
-                    floating: true,
-                    offsetY: -25,
-                    offsetX: -5
-                }
-            };
-
-            var chart = new ApexCharts(document.querySelector("#totalBalance"), options);
-            chart.render();
-        });
-
-        // 환율 그래프
-        document.addEventListener("DOMContentLoaded", function () {
-            var options = {
-                series: [{
-                    name: 'XYZ MOTORS',
-                    data: [1, 2, 3, 4, 5]
-                }],
-                chart: {
-                    type: 'area',
-                    stacked: false,
-                    height: 350,
-                    zoom: {
-                        type: 'x',
-                        enabled: true,
-                        autoScaleYaxis: true
-                    },
-                    toolbar: {
-                        autoSelected: 'zoom'
-                    }
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                markers: {
-                    size: 0,
-                },
-                title: {
-                    text: 'USD 환율',
-                    align: 'left'
-                },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shadeIntensity: 1,
-                        inverseColors: false,
-                        opacityFrom: 0.5,
-                        opacityTo: 0,
-                        stops: [0, 90, 100]
-                    },
-                },
-                yaxis: {
-                    labels: {
-                        formatter: function (val) {
-                            return (val / 1000000).toFixed(0);
-                        },
-                    },
-                    title: {
-                        text: 'Price'
-                    },
-                },
-                xaxis: {
-                    type: 'datetime',
-                },
-                tooltip: {
-                    shared: false,
-                    y: {
-                        formatter: function (val) {
-                            return (val / 1000000).toFixed(0)
-                        }
-                    }
-                }
-            };
-
-            var chart = new ApexCharts(document.querySelector("#exchangeChart"), options);
-            chart.render();
-        });
-
-
-
         document.getElementById("deleteButton").addEventListener("click", function (event) {
-            if (${countMember} >
-            1
-        )
-            {
+            if (${countMember} > 1){
                 event.preventDefault();
                 alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
             }
@@ -586,93 +411,19 @@
 
         <div class="row">
 
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
+            <jsp:include page="/WEB-INF/views/common/walletChart.jsp"/>
 
+            <!-- 차트->멤버 목록 변경 완료
+                 수정자: 김진형 -->
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
                 <h4 class="text-muted">${groupWallet.nickname}의 지갑 정보</h4>
                 <div class="card h-20">
-                    <div class="card-header d-flex align-items-center justify-content-between pb-0">
-                        <div class="card-title mb-0">
-                            <h5 class="m-0 me-2">지갑 보유내역</h5>
-                            <small class="text-muted">원화 외화 비율</small>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3" style="position: relative;">
-                            <div class="d-flex flex-column align-items-center gap-1">
-
-
-                                <h2 class="mb-2">${walletDetailDto.balance.get("KRW")
-                                        +usdExchangeRate.tradingBaseRate*walletDetailDto.balance.get("USD")
-                                        +jpyExchangeRate.tradingBaseRate*walletDetailDto.balance.get("JPY")}₩</h2>
-                                <span>총 보유금</span>
-                            </div>
-
-                            <div id="chart"></div>
-                        </div>
-                        <ul class="p-0 m-0">
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                <span class="avatar-initial rounded bg-label-secondary"><img
-                                        src="https://emojiguide.com/wp-content/uploads/platform/apple/43847.png"></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">KRW</h6>
-                                        <small class="text-muted">대한민국 원</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        ${walletDetailDto.balance.get("KRW")} KRW
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                <span class="avatar-initial rounded bg-label-secondary"><img
-                                        src="https://emojiguide.com/wp-content/uploads/platform/apple/44356.png"></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">USD</h6>
-                                        <small class="text-muted">미 달러</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        ${walletDetailDto.balance.get("USD")} USD
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                <span class="avatar-initial rounded bg-label-secondary"><img
-                                        src="https://emojiguide.com/wp-content/uploads/platform/apple/43839.png"></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">JPY</h6>
-                                        <small class="text-muted">일본 엔</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        ${walletDetailDto.balance.get("JPY")} JPY
-                                    </div>
-                                </div>
-                            </li>
-                            <a href="${pageContext.request.contextPath}/group-wallet/${id}/deposit" class="btn btn-primary">채우기</a>
-                            <a href="${pageContext.request.contextPath}/group-wallet/${id}/withdraw" class="btn btn-primary">꺼내기</a>
-                        </ul>
-                    </div>
+                    <jsp:include page="groupWalletMemberAndCard.jsp"/>
                 </div>
             </div>
+            <!-- 차트->멤버 목록 변경 완료
+                 수정자: 김진형 -->
 
-
-            <%-- 자산 정보 --%>
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
-                <%--            <div class="col-md-6">--%>
-                <h4 class="text-muted">자산 정보</h4>
-                <div class="nav-align-top d-flex mb-8">
-                    <div class="card h-20">
-                        <div id="totalBalance"></div>
-                    </div>
-                </div>
-            </div>
         </div>
 
 
@@ -912,7 +663,7 @@
                                                                     var groupWalletId = "${groupWallet.groupWalletId}"; // 그룹 월렛 아이디 변수로 설정
                                                                     var xhr = new XMLHttpRequest();
                                                                     xhr.open("DELETE", "${pageContext.request.contextPath}/group-wallet/" + groupWalletId + "/saving", true);
-                                                                    xhr.onreadystatechange = function() {
+                                                                    xhr.onreadystatechange = function () {
                                                                         if (xhr.readyState === 4) {
                                                                             if (xhr.status === 200) {
                                                                                 // 적금 해지가 성공적으로 처리되었을 때 알림 메시지 띄우기
@@ -1009,14 +760,15 @@
         <div class="col-xl-12">
             <c:choose>
                 <c:when test="${isChairman == true}">
-                        <a href="${pageContext.request.contextPath}/group-wallet/${id}" id="deleteButton"
-                           class="btn btn-primary">모임 지갑 삭제</a>
+                    <a href="${pageContext.request.contextPath}/group-wallet/${id}" id="deleteButton"
+                       class="btn btn-primary">모임 지갑 삭제</a>
                     <a href="${pageContext.request.contextPath}/group-wallet/${id}/invite-form" id="inviteButton"
                        class="btn btn-primary">모임 지갑에 초대하기</a>
                 </c:when>
                 <c:otherwise>
-                        <a href="javascript:void(0);" id="groupLeave" class="btn btn-primary" onclick="confirmLeave(${id});">
-                            모임 지갑 떠나기</a>
+                    <a href="javascript:void(0);" id="groupLeave" class="btn btn-primary"
+                       onclick="confirmLeave(${id});">
+                        모임 지갑 떠나기</a>
                 </c:otherwise>
             </c:choose>
 
@@ -1079,6 +831,7 @@
     </div>
 </div>
 
+<!-- Modal -->
 <div class="col mb-0">
     <div class="col mb-0 col-lg-5 col-md-auto">
         <!-- Modal -->
@@ -1124,6 +877,52 @@
 
     </div>
 </div>
+
+<!-- 회비 납부 가능 Modal -->
+<div class="modal fade" id="payModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changeWalletLabel">회비 납부</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="changeWalletBody">
+                회비: ${groupWallet.due}
+                <br>
+                잔액: ${personalWalletBalance}
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" name="connect-memberId">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="pay-button" data-bs-dismiss="modal">납부</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 회비 납부 불가능 Modal -->
+<div class="modal fade" id="cantPayModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">회비 납부</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                회비: ${groupWallet.due}
+                <br>
+                잔액: ${personalWalletBalance}
+                <hr>
+                잔액부족입니다
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <p></p>
 <br>
