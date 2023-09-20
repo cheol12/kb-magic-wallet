@@ -3,7 +3,9 @@ package kb04.team02.web.mvc.group.controller;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
+import kb04.team02.web.mvc.exchange.dto.ExchangeCalDto;
 import kb04.team02.web.mvc.exchange.dto.ExchangeRateDto;
+import kb04.team02.web.mvc.exchange.service.ExchangeService;
 import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
 import kb04.team02.web.mvc.group.dto.GroupMemberDto;
 import kb04.team02.web.mvc.group.dto.InstallmentDto;
@@ -13,6 +15,7 @@ import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.group.exception.WalletDeleteException;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
+import kb04.team02.web.mvc.mypage.service.CardIssuanceService;
 import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,9 @@ public class GroupWalletController {
     private final GroupWalletService groupWalletService;
     private final GroupWalletTabService groupWalletTabService;
     private final PersonalWalletService personalWalletService;
+    // 작성자: 김진형
+    private final CardIssuanceService cardIssuanceService;
+    private final ExchangeService exchangeService;
 
     /**
      * 모임지갑 메인 페이지
@@ -83,15 +89,12 @@ public class GroupWalletController {
         // 내 모임지갑 내역 조회
         WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
         model.addAttribute("walletDetailDto", walletDetailDto);
-        ExchangeRateDto usdExchangeRateDto = ExchangeRateDto.builder()
-                .currencyCode(CurrencyCode.USD)
-                .tradingBaseRate(1324.0)
-                .build();
-        ExchangeRateDto jpyExchangeRateDto = ExchangeRateDto.builder()
-                .currencyCode(CurrencyCode.JPY)
-                .tradingBaseRate(9.08).build();
-        model.addAttribute("usdExchangeRateDto", usdExchangeRateDto);
-        model.addAttribute("jpyExchangeRateDto", jpyExchangeRateDto);
+
+        // 수정자: 김진형
+        ExchangeCalDto usdExchangeRateDto = exchangeService.expectedExchangeAmount(CurrencyCode.USD, walletDetailDto.getBalance().get("USD"));
+        ExchangeCalDto jpyExchangeRateDto = exchangeService.expectedExchangeAmount(CurrencyCode.JPY, walletDetailDto.getBalance().get("JPY"));
+        model.addAttribute("usdDto", usdExchangeRateDto);
+        model.addAttribute("jpyDto", jpyExchangeRateDto);
 
         // 내 모임지갑 모임원 리스트
         List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
@@ -106,7 +109,7 @@ public class GroupWalletController {
                 break;
             }
         }
-        model.addAttribute("groupMemberDto", groupMemberDto);
+        model.addAttribute("groupWalletId", id);
         System.out.println("groupMember.Role = " + groupMemberDto.getRoleToString());
 
         // 회비규칙 조회하기
@@ -118,7 +121,12 @@ public class GroupWalletController {
         model.addAttribute("isChairman", isChairman);
 
 
+        model.addAttribute("groupMemberDto", groupMemberDto);
         // 회비 규칙에서 누적 회비 미구현 : 모임원들이 모임지갑에 이체한 내역 전부 더하기
+
+        // 수정자: 김진형
+        Long krwBalance = personalWalletService.personalWallet(loginMemberDto).getBalance().get("KRW");
+        model.addAttribute("personalWalletBalance", krwBalance);
 
         try {
             // 적금 조회하기
@@ -147,9 +155,6 @@ public class GroupWalletController {
     public List<WalletHistoryDto> getHistory(@PathVariable Long id, HttpSession session, Model model) {
         WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
         model.addAttribute("walletDetailDto", walletDetailDto);
-        System.out.println(walletDetailDto.getList().get(0).getDate()); // 이건 null값
-        System.out.println(walletDetailDto.getList().get(0).getDateTime());     // 이건 진짜 값
-        System.out.println("===============");
         return walletDetailDto.getList();
     }
 
@@ -319,5 +324,55 @@ public class GroupWalletController {
 //        return "redirect:/group-wallet/" + id;
         return mv;
     }
+
+
+    /**
+     * 모임지갑 상세 내에서 멤버 리스트와 카드 상태를 보여주는 기능을 위한 메소드
+     * 작성자: 김진형
+     */
+    @ResponseBody
+    @GetMapping("/load-card-data")
+    public List<GroupMemberDto> getGroupWalletDetail(Long id, Model model, HttpSession session) {
+        System.out.println("=====================");
+        System.out.println("id = " + id);
+        // id = 내 모임지갑의 id중 하나임.
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+        model.addAttribute("loginMemberDto", loginMemberDto);
+
+        // 내 모임지갑 모임원 리스트
+        List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
+        for (GroupMemberDto groupMemberDto : groupMemberDtoList) {
+            boolean connectToWallet = cardIssuanceService.isConnectToWallet(groupMemberDto.getMemberId(), id);
+            groupMemberDto.setCardIsConnect(connectToWallet);
+        }
+        model.addAttribute("groupMemberDtoList", groupMemberDtoList);
+
+        return groupMemberDtoList;
+    }
+
+    /**
+     * 모임지갑 상세 내에서 카드 연결 기능을 위한 메소드
+     * 작성자: 김진형
+     */
+    @ResponseBody
+    @GetMapping("/change-card-connection")
+    public List<GroupMemberDto> changeCardConnection(Long id, Model model, HttpSession session) {
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        cardIssuanceService.createCardConnection(member.getMemberId(), id);
+
+        // id = 내 모임지갑의 id중 하나임.
+        LoginMemberDto loginMemberDto = (LoginMemberDto) member;
+        model.addAttribute("loginMemberDto", loginMemberDto);
+
+        // 내 모임지갑 모임원 리스트
+        List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
+        for (GroupMemberDto groupMemberDto : groupMemberDtoList) {
+            boolean connectToWallet = cardIssuanceService.isConnectToWallet(groupMemberDto.getMemberId(), id);
+            groupMemberDto.setCardIsConnect(connectToWallet);
+        }
+        model.addAttribute("groupMemberDtoList", groupMemberDtoList);
+        return groupMemberDtoList;
+    }
+
 
 }

@@ -21,24 +21,24 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
     <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="../../assets/vendor/fonts/boxicons.css"/>
+    <link rel="stylesheet" href="../../../assets/vendor/fonts/boxicons.css"/>
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="../../assets/vendor/css/core.css" class="template-customizer-core-css"/>
-    <link rel="stylesheet" href="../../assets/vendor/css/theme-default.css" class="template-customizer-theme-css"/>
-    <link rel="stylesheet" href="../../assets/css/demo.css"/>
+    <link rel="stylesheet" href="../../../assets/vendor/css/core.css" class="template-customizer-core-css"/>
+    <link rel="stylesheet" href="../../../assets/vendor/css/theme-default.css" class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="../../../assets/css/demo.css"/>
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"/>
+    <link rel="stylesheet" href="../../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"/>
 
     <!-- Page CSS -->
 
     <!-- Helpers -->
-    <script src="../../assets/vendor/js/helpers.js"></script>
-    <script src="../../assets/js/validation.js"></script>
+    <script src="../../../assets/vendor/js/helpers.js"></script>
+    <script src="../../../assets/js/validation.js"></script>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="../../assets/js/config.js"></script>
+    <script src="../../../assets/js/config.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -111,6 +111,7 @@
 </head>
 <body>
 <%--회비 납부 모달창--%>
+<jsp:include page="/WEB-INF/views/common/navbar.jsp"/>
 <div class="modal fade" id="payModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -156,8 +157,8 @@
                 <div class="card h-20">
                     <div class="card-header d-flex align-items-center justify-content-between pb-0">
                         <div class="card-title mb-0">
-                            <h5 class="m-0 me-2">지갑 보유내역</h5>
-                            <small class="text-muted">원화 외화 비율</small>
+                            <h5 class="m-2 me-2">회비 납부내역</h5>
+<%--                            <small class="text-muted"><hr></small>--%>
                         </div>
                     </div>
 

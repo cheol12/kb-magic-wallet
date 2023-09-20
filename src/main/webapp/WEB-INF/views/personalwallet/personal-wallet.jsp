@@ -43,7 +43,7 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../../../assets/js/config.js"></script>
-
+    <script scr="../../../assets/js/common.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script type="text/javascript">
@@ -267,11 +267,6 @@
             chart.render();
         });
 
-
-        function formatNumberWithCommas(number) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-
     </script>
 
 </head>
@@ -283,7 +278,6 @@
         <div class="row">
             <%-- 지갑 정보 --%>
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
-                <%--            <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">--%>
                 <h6 class="text-muted">지갑 정보</h6>
                 <div class="card h-20">
                     <div class="card-header d-flex align-items-center justify-content-between pb-0">
@@ -295,8 +289,6 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3" style="position: relative;">
                             <div class="d-flex flex-column align-items-center gap-1">
-                                <%--                            여기서 환율 계산해서 총액을 표시--%>
-                                <%--                            환율 정보를 받아오는 DTO 필요--%>
                                 <h2 class="mb-2" >
                                     <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;KRW&quot;) + usdDto.expectedAmount + usdDto.expectedAmount}" type="number" pattern="#,###" />
                                     ₩</h2>
@@ -348,7 +340,7 @@
                                         <small class="text-muted">일본 엔</small>
                                     </div>
                                     <div class="user-progress">
-                                        <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;JPY&quot;)}" type="number" pattern="#,###" /> KRW JPY
+                                        <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;JPY&quot;)}" type="number" pattern="#,###" /> JPY
                                     </div>
                                 </div>
                             </li>

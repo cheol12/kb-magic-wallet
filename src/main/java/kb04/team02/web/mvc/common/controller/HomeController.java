@@ -55,7 +55,7 @@ public class HomeController {
     // 카드, 회원 리스트 기능 Test Controller Method
     @GetMapping("/test/newGwalletMain")
     public String newGwalletMain() {
-        return "newGwalletMain";
+        return "groupwallet/groupWalletMemberAndCard";
     }
 
 
@@ -75,8 +75,6 @@ public class HomeController {
             groupMemberDto.setCardIsConnect(connectToWallet);
         }
         model.addAttribute("groupMemberDtoList", groupMemberDtoList);
-        int countMember = groupWalletService.countGroupWalletMember(id);
-        model.addAttribute("countMember", countMember);
         for (GroupMemberDto groupMemberDto : groupMemberDtoList) {
             System.out.println("groupMemberDto.getName() = " + groupMemberDto.getName());
             System.out.println("groupMemberDto.getRole() = " + groupMemberDto.getRole());
@@ -114,5 +112,5 @@ public class HomeController {
     // 회비 납부내역 조회 기능 Test Controller Method
     @GetMapping("test/testDuePayment")
     public String testDuePayment(){
-        return "duePaymentCondition";}
+        return "groupwallet/duePaymentCondition";}
 }

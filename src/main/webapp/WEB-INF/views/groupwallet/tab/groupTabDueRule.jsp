@@ -3,10 +3,42 @@
 <html>
 <head>
     <title>회비 규칙 탭</title>
+
+    <style>
+        .material-icons {
+            vertical-align: middle
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
     <script type="text/javascript">
         let pageContext = "${pageContext.request.contextPath}";
 
         $(document).ready(function () {
+            $(document).on("click", "#payDueBtn", function () {
+                if(${groupWallet.due} > ${personalWalletBalance}){
+                    $("#cantPayModal").modal('show');
+                }else{
+                    $("#payModal").modal('show');
+                }
+            });
+
+            $(document).on("click", "#pay-button", function () {
+                $.ajax({
+                    url: pageContext + "/group-wallet/${id}/rule/pay",
+                    type: "PUT",
+                    dataType: "text",
+                    success: function (result, textStatus, jqXHR) {
+                        dueRule()
+                        console.log(result);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log("회비 납부 내역 가져오기");
+
+                    },
+                });
+            });
 
             // 함수 선언
             function dueRule() {
@@ -45,9 +77,9 @@
                             }
                             str += '</h4>'
                         }
-
                         $("#resultTabDueRule").empty();
                         $("#resultTabDueRule").append(str);
+
                         // textStatus: HTTP 상태 메시지 (예: "success", "notmodified", "error", "timeout", "abort", "parsererror" 등)
                         // jqXHR: jQuery XMLHttpRequest 객체
                     },
@@ -67,14 +99,32 @@
                     url: pageContext + "/group-wallet/${id}/rule/list",
                     type: "GET",
                     dataType: "json",
-                    success: function (data, textStatus, jqXHR) {
-                        console.log(data.size);
+                    success: function (result, textStatus, jqXHR) {
+                        console.log(result.size);
                         let str = "";
 
-                        data.forEach(function (item) {
-                            console.log(item.name);
+                        $.each(result, function (i) {
+                            str += '<tr data-id=' + result[i].memberId + '>';
+                            str += '<td class="text-center">' + result[i].name + '</TD>';
+                            if(result[i].memberId==${sessionScope.get("member").memberId}) {
+                                if (result[i].payed) {
+                                    str += '<td class="text-center"><i class="material-icons" style="color:green;">check_circle</i></td>'
+                                }else{
+                                    str += '<td class="text-center"><i class="material-icons" style="color:red;">cancel</i> <button id="payDueBtn" class="btn btn-primary">납부하기</button></td>'
+                                }
+                            }else{
+                                if (result[i].payed) {
+                                    str += '<td class="text-center"><i class="material-icons" style="color:green;">check_circle</i></td>'
+                                }else{
+                                    str += '<td class="text-center"><i class="material-icons" style="color:red;">cancel</i></td>'
+                                }
+                            }
 
 
+                            str += '<TD class="text-center">' + result[i].due + '</TD>';
+                            str += '<TD class="text-center">' + result[i].dueAccumulation + '</TD>';
+
+                            str += '</TR>';
                         });
 
                         $("#resultTabDueMember").empty();
@@ -95,6 +145,7 @@
     </script>
 </head>
 <body>
+
 <!-- 회비 규칙 START -->
 <div class="tab-pane fade" id="navs-top-rule" role="tabpanel">
     <div class="card" style="margin-top: 5px;">
@@ -105,21 +156,13 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>이름</th>
-                    <th>납부 상태</th>
-                    <th>회비(원)</th>
-                    <th>누적 회비(원)</th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>이름</th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>납부 상태</th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>회비(원)</th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>누적 회비(원)</th>
                 </tr>
                 </thead>
                 <tbody id="resultTabDueMember">
-                <!-- TODO 여기에 모임원 회비 납부 리스트 추가 -->
-                <tr>
-                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <span
-                            class="fw-medium">Angular Project</span></td>
-                    <td><span class="badge bg-label-primary me-1">납부완료</span></td>
-                    <td>50,000</td>
-                    <td>200,000</td>
-                </tr>
                 </tbody>
             </table>
         </div>

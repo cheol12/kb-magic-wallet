@@ -22,24 +22,24 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
     <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="../../assets/vendor/fonts/boxicons.css"/>
+    <link rel="stylesheet" href="../../../assets/vendor/fonts/boxicons.css"/>
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="../../assets/vendor/css/core.css" class="template-customizer-core-css"/>
-    <link rel="stylesheet" href="../../assets/vendor/css/theme-default.css" class="template-customizer-theme-css"/>
-    <link rel="stylesheet" href="../../assets/css/demo.css"/>
+    <link rel="stylesheet" href="../../../assets/vendor/css/core.css" class="template-customizer-core-css"/>
+    <link rel="stylesheet" href="../../../assets/vendor/css/theme-default.css" class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="../../../assets/css/demo.css"/>
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"/>
+    <link rel="stylesheet" href="../../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"/>
 
     <!-- Page CSS -->
 
     <!-- Helpers -->
-    <script src="../../assets/vendor/js/helpers.js"></script>
-    <script src="../../assets/js/validation.js"></script>
+    <script src="../../../assets/vendor/js/helpers.js"></script>
+    <script src="../../../assets/js/validation.js"></script>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="../../assets/js/config.js"></script>
+    <script src="../../../assets/js/config.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -54,27 +54,33 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+
             function initTest(urlPath, data) {
                 $.ajax({
                     url: urlPath,
                     type: "get",
                     dataType: "json",
-                    data: "id="+data,
+                    data: "id="+${groupWalletId},
+
                     success: function (result, status) {
                         $("#table").empty();
                         // 화면에 갱신
                         var str = "";
                         $.each(result, function (i) {
                             str += '<tr data-id=' + result[i].memberId + '>';
-                            str += '<TD>' + result[i].name + '</TD>';
-                            str += '<TD>' + result[i].roleToString + '</TD>';
+                            str += '<TD class="text-center">' + result[i].name + '</TD>';
+                            if (result[i].roleToString == '모임장' || result[i].roleToString == '공동모임장') {
+                                str += '<TD class="text-center" >' + result[i].roleToString + '👑' + '</TD>';
+                            } else {
+                                str += '<TD class="text-center" >' + result[i].roleToString + '</TD>';
+                            }
                             if (result[i].cardIsConnect) {
-                                str += '<td>연결 중&nbsp&nbsp&nbsp&nbsp<i class="material-icons" style="color: green">credit_card</i></td>';
+                                str += '<td class="text-center">연결 중&nbsp&nbsp&nbsp&nbsp<i class="material-icons" style="color: green">credit_card</i></td>';
                             } else {
                                 if (result[i].role == "GENERAL") {
-                                    str += '<td id="cant-connect-card" class="open-modal">연결 불가 <i class="material-icons" style="color:red;">credit_card</i></td>';
+                                    str += '<td id="cant-connect-card" class="open-modal text-center">연결 불가 <i class="material-icons" style="color:red;">credit_card</i></td>';
                                 } else {
-                                    str += `<td id="can-connect-card" class="open-modal">연결 가능 <i class="material-icons">credit_card</i></td>`
+                                    str += `<td id="can-connect-card" class="open-modal text-center">연결 가능 <i class="material-icons">credit_card</i></td>`
                                 }
                             }
                             str += '</TR>';
@@ -85,29 +91,33 @@
                     },
                 });
             }
+
             //initTest() end
 
-            initTest("${pageContext.request.contextPath}/test/load-card-data");
+            initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");
 
             // 연결 불가 선택 시 연결 불가를 알려주는 모달 창 출력
             $(document).on("click", "#cant-connect-card", function () {
                 $("#cantConnectCard").modal('show');
             })
-
             // 연결 가능 선택 시 연결 가능을 알려주는 모달 창 출력
             $(document).on("click", "#can-connect-card", function () {
                 var memberId = $(this).closest("tr").data("id");
-                if(${sessionScope.member.memberId} == memberId){
+                if (${sessionScope.member.memberId} == memberId
+            )
+                {
                     $("input[name='connect-memberId']").val(memberId);
                     $("#changeWallet").modal('show');
-                }else{
+                }
+            else
+                {
                     $("#cantConnectCardByLogin").modal('show');
                 }
             });
-
+            // 변경 버튼을 누릴 시 컨트롤러로의 전송
             $(document).on("click", "#change-confirm-button", function () {
                 var memberId = $("input[name='connect-memberId']").val();
-                initTest("${pageContext.request.contextPath}/test/change-card-connection", memberId);
+                initTest("${pageContext.request.contextPath}/group-wallet/change-card-connection", memberId);
             });
         });
     </script>
@@ -128,7 +138,8 @@
             <div class="modal-footer">
                 <input type="hidden" name="connect-memberId">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                <button type="button" class="btn btn-primary" id="change-confirm-button" data-bs-dismiss="modal">변경</button>
+                <button type="button" class="btn btn-primary" id="change-confirm-button" data-bs-dismiss="modal">변경
+                </button>
             </div>
         </div>
     </div>
@@ -153,7 +164,8 @@
 </div>
 
 <%--카드 변경 불가(로그인한 멤버와 다름) 모달창--%>
-<div class="modal fade" id="cantConnectCardByLogin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="cantConnectCardByLogin" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -169,33 +181,22 @@
         </div>
     </div>
 </div>
-
-<div class="pageWrap">
-    <div class="center">
-        <div class="row">
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
-                <div class="card h-20">
-                    <div class="card-header d-flex align-items-center justify-content-between pb-0">
-                        <div class="card-title mb-0">
-                            <h5 class="m-0 me-2">지갑 보유내역</h5>
-                            <small class="text-muted">원화 외화 비율</small>
-                        </div>
-                    </div>
-                    <table class="table table">
-                        <thead>
-                        <tr>
-                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>이름</th>
-                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>권한</th>
-                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>카드연결</th>
-                        </tr>
-                        </thead>
-                        <tbody class="table-border-bottom-0" id="table">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<div class="card-header d-flex align-items-center justify-content-between pb-0">
+    <div class="card-title mb-0">
+        <h5 class="m-0 me-2">지갑 보유내역</h5>
+        <small class="text-muted">원화 외화 비율</small>
     </div>
 </div>
+<table class="table table">
+    <thead>
+    <tr>
+        <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>이름</th>
+        <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>권한</th>
+        <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>카드연결</th>
+    </tr>
+    </thead>
+    <tbody class="table-border-bottom-0" id="table">
+    </tbody>
+</table>
 </body>
 </html>
