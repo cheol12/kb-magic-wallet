@@ -216,6 +216,7 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     @Override
     public int requestExchangeOnline(ExchangeDto exchangeDto) {
+        System.out.println(exchangeDto.toString());
         // 원화 -> 외화일 경우만
         exchangeDto.setSellCurrencyCode(CurrencyCode.KRW.getValue());
 
@@ -264,6 +265,7 @@ public class ExchangeServiceImpl implements ExchangeService {
                         .build());
             }
             // exchangeDto setter
+
             exchangeDto.setAfterSellBalance(kwBalance - sellAmount); // 지갑 balance - 매도 금액
             exchangeDto.setAfterBuyBalance(fBalance + buyAmount); // 외화 지갑 balance + 매수 금액
             PersonalWalletExchange personalWalletExchange = ExchangeDto.toPersonalEntity(exchangeDto, personalWallet);
@@ -283,9 +285,11 @@ public class ExchangeServiceImpl implements ExchangeService {
 
             Long fBalance = 0L;
             // 해당코드 환전 내역이 있을 때
-            if (bwfcb != null) fBalance = bwfcb.getBalance();
+            if (bwfcb != null) {
+                fBalance = bwfcb.getBalance();
+                bwfcb.setBalance(fBalance + buyAmount);
+            }
 
-            // 외화 지갑 balance insert / update
             if (bwfcb == null) {
                 gFCBalanceRepository.save(GroupWalletForeignCurrencyBalance.builder()
                         .currencyCode(buyCode)

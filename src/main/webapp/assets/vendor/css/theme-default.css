@@ -100,7 +100,7 @@
 }
 
 .text-body[href]:hover {
-  color: #ffbc00 !important;
+/*  color: #595cd9 !important;*/
 }
 
 .bg-primary {
@@ -208,7 +208,7 @@ button.list-group-item-primary.active {
 .btn-primary {
   color: #fff;
   background-color: #595cd9;
-  border-color: #595cd9;
+  border-color: #60584c;
   box-shadow: 0 0.125rem 0.25rem 0 rgba(84, 80, 69, 0.4);
 }
 .btn-primary:hover {

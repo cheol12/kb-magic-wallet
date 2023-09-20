@@ -141,7 +141,7 @@ public class ExchangeController {
         exchangeService.requestExchangeOnline(exchangeDto);
         WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
         if(type.equals(WalletType.PERSONAL_WALLET)) return "redirect:/personalwallet/main";
-        else return "redirect:/group-wallet/";
+        else return "redirect:/group-wallet/"+exchangeDto.getWalletId();
     }
 
     /**
@@ -200,7 +200,7 @@ public class ExchangeController {
         exchangeService.requestReExchangeOnline(exchangeDto);
         WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
         if(type.equals(WalletType.PERSONAL_WALLET)) return "redirect:/personalwallet/main";
-        else return "redirect:/group-wallet/";
+        else return "redirect:/group-wallet/"+exchangeDto.getWalletId();
     }
 
     /**

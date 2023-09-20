@@ -4,8 +4,7 @@ import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.*;
-import kb04.team02.web.mvc.exchange.dto.RuleDto;
-import kb04.team02.web.mvc.exchange.dto.WalletDto;
+import kb04.team02.web.mvc.group.dto.RuleDto;
 import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.group.entity.*;
 import kb04.team02.web.mvc.group.repository.*;
@@ -24,7 +23,6 @@ import kb04.team02.web.mvc.group.exception.WalletDeleteException;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletForeignCurrencyBalanceRepository;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletTransferRepository;
-import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
 import kb04.team02.web.mvc.saving.entity.Saving;
 import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
@@ -34,10 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -155,18 +150,18 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             walletHistoryDto.setDateTime(exchange.getInsertDate());
 
             if(exchange.getSellCurrencyCode() == CurrencyCode.KRW){
-                walletHistoryDto.setType("재환전");
+                walletHistoryDto.setType("환전");
             }
             else{
-                walletHistoryDto.setType("환전");
+                walletHistoryDto.setType("재환전");
             }
 
             String detail = exchange.getSellCurrencyCode() + " > " + exchange.getBuyCurrencyCode();
 
             walletHistoryDto.setDetail(detail);
-            walletHistoryDto.setAmount(exchange.getSellAmount().toString());
-            walletHistoryDto.setBalance(exchange.getAfterSellBalance().toString() + ":" + exchange.getAfterBuyBalance());
-
+            walletHistoryDto.setAmount(exchange.getSellAmount().toString() + " > " + exchange.getBuyAmount());
+            walletHistoryDto.setBalance(exchange.getAfterSellBalance().toString() + " : " + exchange.getAfterBuyBalance());
+            walletHistoryDto.setCurrencyCode(exchange.getBuyCurrencyCode());
             dto.getList().add(walletHistoryDto);
         }
 
@@ -232,8 +227,21 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     }
 
     @Override
-    public String inviteMember(Long groupWalletId) {
-        return "http://초대링크";
+    public int inviteMember(String phone, Long groupWalletId) {
+        Member member = memberRep.findByPhoneNumber(phone).orElseThrow(()-> new NoSuchElementException("멤버 조회 실패"));
+
+        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
+
+        Participation participation;
+        participation = participationRep.save(
+                Participation.builder()
+                        .participationState(ParticipationState.WAITING)
+                        .memberId(member.getMemberId())
+                        .role(Role.GENERAL)
+                        .groupWallet(groupWallet)
+                        .build()
+        );
+        return 1;
     }
 
     @Override
@@ -279,7 +287,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         RuleDto ruleDto = new RuleDto();
         if (groupWallet.isDueCondition()) {
             ruleDto.setDueDate(groupWallet.getDueDate());
-            ruleDto.setDuePrice(groupWallet.getDue());
+            ruleDto.setDue(groupWallet.getDue());
         }
         return ruleDto;
     }
@@ -739,9 +747,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     @Override
     public InstallmentDto getInstallmentDtoSaving(GroupWallet groupWallet) {
         InstallmentSaving installmentSaving = installmentSavingRep.findByGroupWalletAndDone(groupWallet, false);
-        Saving saving = savingRep.findById(installmentSaving.getInstallmentId())
-                .orElseThrow(()->new NoSuchElementException("가입된 적금이 없습니다."));
-
+        Saving saving = installmentSaving.getSaving();
         InstallmentDto installmentDto = new InstallmentDto();
 
         // dto로 변환

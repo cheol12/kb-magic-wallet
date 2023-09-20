@@ -64,7 +64,7 @@ public class GroupWalletFormController {
      * API 명세서에 없음
      * @param id 회비 규칙을 만들 모임지갑 id
      */
-    @GetMapping("/{id}/rule")
+//    @GetMapping("/{id}/rule")
     public String groupWalletRuleForm(@PathVariable Long id, Model model) {
         GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
         model.addAttribute("groupWallet", groupWallet);

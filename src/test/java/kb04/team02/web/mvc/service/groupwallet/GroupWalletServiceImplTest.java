@@ -2,7 +2,7 @@ package kb04.team02.web.mvc.service.groupwallet;
 
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.entity.*;
-import kb04.team02.web.mvc.exchange.dto.RuleDto;
+import kb04.team02.web.mvc.group.dto.RuleDto;
 import kb04.team02.web.mvc.group.dto.DepositDto;
 import kb04.team02.web.mvc.group.dto.SettleDto;
 import kb04.team02.web.mvc.group.dto.WithDrawDto;
@@ -28,7 +28,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
@@ -286,8 +285,8 @@ public class GroupWalletServiceImplTest {
                 .balance(0L)
                 .build());
 
-        String s = service.inviteMember(wallet.getGroupWalletId());
-        System.out.println("s = " + s);
+//        String s = service.inviteMember(wallet.getGroupWalletId());
+//        System.out.println("s = " + s);
 
     }
 
@@ -372,7 +371,7 @@ public class GroupWalletServiceImplTest {
         assertThat(wallet.getDue()).isEqualTo(10000L);
         RuleDto ruleDto = service.getGroupWalletDueRule(wallet.getGroupWalletId());
         assertThat(ruleDto.getDueDate()).isEqualTo(10);
-        assertThat(ruleDto.getDuePrice()).isEqualTo(10000L);
+        assertThat(ruleDto.getDue()).isEqualTo(10000L);
     }
 
     @Test

@@ -49,7 +49,32 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script type="text/javascript">
 
-        // 모달창을 띄우는 function
+        // 모임지갑 탈퇴 확인창 메소드
+        function confirmLeave(id) {
+            // 모임지갑 이름이 안불러와짐
+            let leave = confirm('모임지갑에서 떠나시겠습니까?');
+            if (leave) {
+                // Ajax 요청을 보냅니다.
+                $.ajax({
+                    type: "GET",
+                    url: "${pageContext.request.contextPath}/group-wallet/" + id + "/leave",
+                    success: function(data) {
+                        // 요청이 성공하면 여기에서 추가 로직을 수행할 수 있습니다.
+                        // 예를 들어, 성공한 후에 어떤 동작을 수행할 수 있습니다.
+                        console.log("컨트롤러 메소드 호출 성공!");
+                        // 페이지 새로고침 또는 다른 동작 수행
+                        location.href = "${pageContext.request.contextPath}/group-wallet/"; // 페이지 새로고침
+                    },
+                    error: function() {
+                        // 요청이 실패하면 여기에서 오류 처리를 수행할 수 있습니다.
+                        console.log("컨트롤러 메소드 호출 실패!");
+                        // 오류 처리 로직 추가
+                    }
+                });
+            }
+        }
+
+    // 모달창을 띄우는 function
         function PopupDetail(clicked_element, content) {
             var row_td = clicked_element.getElementsByTagName("td");
             var modal = document.getElementById("detail-modal");
@@ -117,11 +142,13 @@
                         $.each(result, function (i) {
                             str += '<tr id="searchMemberResult">'
                             str += '<td>' + result[i].name + '</td>';
-                            str += '<td>' + result[i].roleToString + result[i].memberId + '</td>';
+                            str += '<td>' + result[i].roleToString + '</td>';
 
-                            // memberId가 자신의 memberId와 일치하지 않는 경우에만 강퇴 버튼 생성
+                            // 내가 모임장인 경우 && 나와 다른 memberId인 경우에만 버튼 생성
                             if (isChairman && (result[i].memberId !== myMemberId)) {
-                                str += '<td><button class="alert-warning" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">강퇴</button></td>';
+                                str += '<td><button class="alert-warning" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">강퇴</button>' +
+                                    '<button class="alert-primary" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">권한 부여</button>' +
+                                    '<button class="alert-secondary" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">권한 철회</button></td>';
                             } else {
                                 str += '<td></td>'; // 자신의 memberId와 일치하면 빈 칸 생성
                             }
@@ -178,6 +205,78 @@
 
             });
 
+            // 모임지갑 권한 부여 버튼 클릭
+            $(document).on("click", '.alert-primary', function () {
+                let memberId = $(this).data("member-id");
+                let memberName = $(this).data("member-name")
+
+                var confirmation = confirm(memberName + memberId + "님에게 공동모임장 권한을 부여하시겠습니까?");
+
+                if (confirmation) {
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/group-wallet/${id}/grant",
+                        type: "post",
+                        data: {memberId: memberId},
+                        success: function (data, result, response) {
+                            console.log(result);
+                            console.log(data);
+                            if (data > 0) {
+                                // 강퇴 성공 시 필요한 작업 수행
+                                alert(memberName + "님이 공동모임장이 되었어요!")
+                                memberCall();
+                            } else {
+                                alert("권한 부여를 실패했어요");
+                            }
+                        },
+                        error: function () {
+                            // 강퇴 실패 시 필요한 작업 수행
+                        }
+                    });
+                } else {
+                    alert("권한 부여를 취소했습니다.");
+                }
+
+            });
+
+            // 모임지갑 권한 철회 버튼 클릭
+            $(document).on("click", '.alert-secondary', function () {
+                let memberId = $(this).data("member-id");
+                let memberName = $(this).data("member-name")
+
+                var confirmation = confirm(memberName + "님의 공동모임장 권한을 철회하시겠습니까?");
+
+                if (confirmation) {
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/group-wallet/${id}/revoke",
+                        type: "post",
+                        data: {memberId: memberId},
+                        success: function (data, result, response) {
+                            console.log(result);
+                            console.log(data);
+                            if (data > 0) {
+                                // 강퇴 성공 시 필요한 작업 수행
+                                alert(memberName + "님이 모임원이 되었어요!")
+                                memberCall();
+                            } else {
+                                alert("권한 철회를 실패했어요");
+                            }
+                        },
+                        error: function () {
+                            // 강퇴 실패 시 필요한 작업 수행
+                        }
+                    });
+                } else {
+                    alert("권한 철회를 취소했습니다.");
+                }
+
+            });
+
+            document.getElementById("deleteButton").addEventListener("click", function (event) {
+                if (${countMember} > 1){
+                    event.preventDefault();
+                    alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
+                }
+            });
 
             // 조회기간 설정 조회 버튼 누를 시 비동기화 통싱
             $("#selectDateForm").on("submit", function (e) {
@@ -409,23 +508,26 @@
         });
 
 
+
         document.getElementById("deleteButton").addEventListener("click", function (event) {
-            if (${countMember} > 1){
+            if (${countMember} >
+            1
+        )
+            {
                 event.preventDefault();
                 alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
             }
         });
 
 
-
-        function cardList(){
+        function cardList() {
             let memberId = ${loginMemberDto.memberId};
 
             $.ajax({
                 url: '${pageContext.request.contextPath}/group-wallet/${id}/card/list',
                 type: 'GET',
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     let cardExists = false;
                     let content = '';
 
@@ -463,7 +565,7 @@
 
                     $('#tab5').html(content); // 대상 div의 ID를 변경해야 합니다.
                 },
-                error: function(err) {
+                error: function (err) {
                     console.error("Error fetching data", err);
                 }
             });
@@ -479,10 +581,14 @@
 <div class="pageWrap">
     <div class="center">
         <div class="row">
+            <h2>${member.name}님은 ${groupWallet.nickname}의 ${groupMemberDto.roleToString}이에요!</h2>
+        </div>
+
+        <div class="row">
 
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
 
-                <h6 class="text-muted">${groupWallet.nickname}의 지갑 정보</h6>
+                <h4 class="text-muted">${groupWallet.nickname}의 지갑 정보</h4>
                 <div class="card h-20">
                     <div class="card-header d-flex align-items-center justify-content-between pb-0">
                         <div class="card-title mb-0">
@@ -549,8 +655,8 @@
                                     </div>
                                 </div>
                             </li>
-                            <a href="/personalwallet/depositForm" class="btn btn-primary">채우기</a>
-                            <a href="/personalwallet/withdrawForm" class="btn btn-primary">꺼내기</a>
+                            <a href="${pageContext.request.contextPath}/group-wallet/${id}/deposit" class="btn btn-primary">채우기</a>
+                            <a href="${pageContext.request.contextPath}/group-wallet/${id}/withdraw" class="btn btn-primary">꺼내기</a>
                         </ul>
                     </div>
                 </div>
@@ -560,7 +666,7 @@
             <%-- 자산 정보 --%>
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
                 <%--            <div class="col-md-6">--%>
-                <h6 class="text-muted">자산 정보</h6>
+                <h4 class="text-muted">자산 정보</h4>
                 <div class="nav-align-top d-flex mb-8">
                     <div class="card h-20">
                         <div id="totalBalance"></div>
@@ -719,39 +825,9 @@
 
                     </div>
 
-                    <div class="tab-pane fade" id="navs-top-rule" role="tabpanel">
-                        <div class="card" style="margin-top: 5px;">
-                            <div class="card-header">
-                                <c:choose>
-                                <c:when test="${groupWallet.dueCondition}">
-                                회비 규칙 ${groupWallet.dueCondition},
-                                <p></p>
-                                매월 : ${groupWallet.dueDate}일, ${groupWallet.due}원
-                                <br>
-                                현재 누적 회비 : ${groupWallet.dueAccumulation}원
-                                <c:choose>
-                                <c:when test="${isChairman == true}">
-                                <p>
-                                    <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
-                                       class="btn btn-primary">회비 규칙 수정</a>
-                                    </c:when>
-                                    </c:choose>
-                                    </c:when>
-                                    <c:otherwise>
-                                    회비가 없습니다.
-                                    <c:choose>
-                                    <c:when test="${isChairman == true}">
-                                    <!-- 모임장 일 때만 -->
-                                    <!-- 회비 규칙 생성 폼으로 넘어가는 버튼 -->
-                                    <a href="${pageContext.request.contextPath}/group-wallet/${id}/rule"
-                                       class="btn btn-primary">회비 규칙 생성</a>
-                                    </c:when>
-                                    </c:choose>
-                                    </c:otherwise>
-                                    </c:choose>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- 회비 규칙 START -->
+                    <jsp:include page="tab/groupTabDueRule.jsp"/>
+                    <!-- 회비 규칙 END -->
 
                     <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
                         <div class="card" style="margin-top: 5px;">
@@ -764,7 +840,8 @@
                                     <c:choose>
                                         <c:when test="${isChairman}">
                                             <p><strong>적금을 가입하지 않으셨습니다.</strong></p>
-                                            <a href="${pageContext.request.contextPath}/saving/" class="btn btn-primary">적금 보러가기</a>
+                                            <a href="${pageContext.request.contextPath}/saving/"
+                                               class="btn btn-primary">적금 보러가기</a>
                                         </c:when>
                                         <c:otherwise>
                                             <p><strong>가입된 적금이 없습니다. 모임장에게 적금 가입을 추천하는건 어떨까요?</strong></p>
@@ -820,10 +897,12 @@
                                                     <c:when test="${isChairman}">
                                                         <%--                                                                <a href="${pageContext.request.contextPath}/group-wallet/${groupWallet.groupWalletId}/saving" id="cancelSaving" class="btn btn-primary">적금 해지</a>--%>
                                                         <%----%>
-                                                        <button type="submit" class="btn btn-primary" id="cancelSaving">적금 해지</button>
+                                                        <button type="submit" class="btn btn-primary" id="cancelSaving">
+                                                            적금 해지
+                                                        </button>
                                                         <script>
                                                             // 적금 해지 버튼 클릭 시 알림창 띄우기
-                                                            document.getElementById("cancelSaving").addEventListener("click", function(event) {
+                                                            document.getElementById("cancelSaving").addEventListener("click", function (event) {
                                                                 event.preventDefault();
 
                                                                 var confirmation = confirm("적금을 해지하시겠습니까? 해지시 이자도 함께 소멸됩니다.");
@@ -865,66 +944,63 @@
                             <%--                                </div>--%>
                         </div>
                     </div>
-                        <div class="tab-pane fade" id="navs-top-card" role="tabpanel">
-                            <%--
-   Created by IntelliJ IDEA.
-   User: jiwon
-   Date: 2023-09-19
-   Time: 오전 10:56
-   To change this template use File | Settings | File Templates.
- --%>
+                    <div class="tab-pane fade" id="navs-top-card" role="tabpanel">
 
-                            <div class="card">
+                        <div class="card">
 
-                                <div class="card-body">
+                            <div class="card-body">
 
-                                    <div class="row" id="tab5">
-                                        <c:set var="cardExists" value="false" />
+                                <div class="row" id="tab5">
+                                    <c:set var="cardExists" value="false"/>
 
-                                        <c:forEach var="card" items="${cardIssuanceDtoList}" varStatus="status">
-                                            <c:if test="${card.member.memberId == sessionScope.member.memberId}">
-                                                <c:set var="cardExists" value="true" />
-                                            </c:if>
-                                            <div class="col-md-6 col-xl-4">
-                                                <div class="card shadow-none bg-transparent border border-secondary mb-3">
-
-                                                    <div class="card-body" >
-                                                        <h5 class="card-title">${card.member.name}</h5>
-                                                        <img src="${pageContext.request.contextPath}/assets/img/card/card${fn:substring(card.cardNumber, fn:length(card.cardNumber)-1, fn:length(card.cardNumber))}.png" alt="Card Image" style="width: 100%">
-
-                                                    </div>
-
-
-                                                </div>
-                                            </div>
-
-                                        </c:forEach>
-
-                                        <c:if test="${not cardExists}">
-                                            <div class="col-md-6 col-xl-4">
-                                                <div class="card shadow-none bg-transparent border border-secondary mb-3">
-
-                                                    <div class="card-body" >
-                                                        <h5 class="card-title">카드 연결</h5>
-                                                        <div style="width: 100%; text-align: center">
-                                                        <img src="${pageContext.request.contextPath}/assets/img/icons/squre_plus.png" alt="Card Image" style="width: 60%;" onclick="location.href='${pageContext.request.contextPath}/group-wallet/${id}/card_2'" id="cardChange">
-                                                        </div>
-                                                    </div>
-
-
-                                                </div>
-                                            </div>
+                                    <c:forEach var="card" items="${cardIssuanceDtoList}" varStatus="status">
+                                        <c:if test="${card.member.memberId == sessionScope.member.memberId}">
+                                            <c:set var="cardExists" value="true"/>
                                         </c:if>
-                                    </div>
-                                </div>
+                                        <div class="col-md-6 col-xl-4">
+                                            <div class="card shadow-none bg-transparent border border-secondary mb-3">
 
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${card.member.name}</h5>
+                                                    <img src="${pageContext.request.contextPath}/assets/img/card/card${fn:substring(card.cardNumber, fn:length(card.cardNumber)-1, fn:length(card.cardNumber))}.png"
+                                                         alt="Card Image" style="width: 100%">
+
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+                                    </c:forEach>
+
+                                    <c:if test="${not cardExists}">
+                                        <div class="col-md-6 col-xl-4">
+                                            <div class="card shadow-none bg-transparent border border-secondary mb-3">
+
+                                                <div class="card-body">
+                                                    <h5 class="card-title">카드 연결</h5>
+                                                    <div style="width: 100%; text-align: center">
+                                                        <img src="${pageContext.request.contextPath}/assets/img/icons/squre_plus.png"
+                                                             alt="Card Image" style="width: 60%;"
+                                                             onclick="location.href='${pageContext.request.contextPath}/group-wallet/${id}/card_2'"
+                                                             id="cardChange">
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </c:if>
+                                </div>
                             </div>
 
-
                         </div>
+
+
                     </div>
                 </div>
             </div>
+        </div>
         <br>
         <br>
         <br>
@@ -933,18 +1009,18 @@
         <div class="col-xl-12">
             <c:choose>
                 <c:when test="${isChairman == true}">
-                    <button id="deleteButton">
-                        <a href="${pageContext.request.contextPath}/group-wallet/${id}"
+                        <a href="${pageContext.request.contextPath}/group-wallet/${id}" id="deleteButton"
                            class="btn btn-primary">모임 지갑 삭제</a>
-                    </button>
+                    <a href="${pageContext.request.contextPath}/group-wallet/${id}/invite-form" id="inviteButton"
+                       class="btn btn-primary">모임 지갑에 초대하기</a>
                 </c:when>
                 <c:otherwise>
-                    <button>
-                        <a href="${pageContext.request.contextPath}/group-wallet/${id}/out"
-                           class="btn btn-primary">모임 지갑 탈퇴</a>
-                    </button>
+                        <a href="javascript:void(0);" id="groupLeave" class="btn btn-primary" onclick="confirmLeave(${id});">
+                            모임 지갑 떠나기</a>
                 </c:otherwise>
             </c:choose>
+
+
         </div>
 
     </div>
