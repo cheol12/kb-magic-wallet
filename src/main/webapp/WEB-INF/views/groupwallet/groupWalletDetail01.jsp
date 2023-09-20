@@ -73,7 +73,6 @@
                 });
             }
         }
-
         // 모달창을 띄우는 function
         function PopupDetail(clicked_element, content) {
             var row_td = clicked_element.getElementsByTagName("td");
@@ -90,11 +89,50 @@
             document.getElementById("detail-balance").innerHTML = row_td[5].innerHTML;
             modal.style.display = 'block';
         }
+        // 모임지갑 모임원 리스트 조회
+        function memberCall() {
+            let myMemberId = ${loginMemberDto.memberId};
+            let isChairman = ${isChairman};
 
-        // AJAX READY
-        $(document).ready(function () {
+            // 이후 JavaScript 코드에서 myMemberId 변수를 사용할 수 있음
 
-            // 모임지갑 상세내역
+            $.ajax({
+                url: "${pageContext.request.contextPath}/group-wallet/${id}/member-list",
+                type: "post",
+                dataType: "json",
+                success: function (result, status) {
+                    // 화면에 갱신
+                    var str = "";
+                    alert(111111111111111111111);
+                    $.each(result, function (i) {
+                        str += '<tr id="searchMemberResult">'
+                        str += '<td>' + result[i].name + '</td>';
+                        str += '<td>' + result[i].roleToString + '</td>';
+
+                        // 내가 모임장인 경우 && 나와 다른 memberId인 경우에만 버튼 생성
+                        if (isChairman && (result[i].memberId !== myMemberId)) {
+                            str += '<td><button class="alert-warning" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">강퇴</button>' +
+                                '<button class="alert-primary" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">권한 부여</button>' +
+                                '<button class="alert-secondary" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">권한 철회</button></td>';
+                        } else {
+                            str += '<td></td>'; // 자신의 memberId와 일치하면 빈 칸 생성
+                        }
+
+                        str += '</tr>';
+                    });
+                    $("#getMemberList").empty();
+                    $("#getMemberList").append(str);
+
+                    // 강퇴 버튼 클릭 이벤트 핸들러
+                    //    모임장 권한 아직
+                },
+                error: function (result, status) {
+                    // 오류 처리
+                },
+            });
+        }
+        // 모임지갑 상세내역
+        function historyCall() {
             $.ajax({
                 url: "${pageContext.request.contextPath}/group-wallet/${id}/history",
                 type: "post",
@@ -123,8 +161,13 @@
 
                 },
             })
+        }
+        // AJAX READY
 
+        $(document).ready(function () {
+            alert(11111111111111);
             memberCall();
+            historyCall();
 
             // 모임지갑에서 강퇴 버튼 클릭
 
@@ -161,7 +204,6 @@
                 }
 
             });
-
 
             document.getElementById("deleteButton").addEventListener("click", function (event) {
                 if (${countMember}>
@@ -316,7 +358,8 @@
             let balanceKRW = ${walletDetailDto.balance.get("KRW")};
             let balanceJPY = ${walletDetailDto.balance.get("JPY")};
             let balanceUSD = ${walletDetailDto.balance.get("USD")};
-            let savingAmount = ${installmentDto.savingAmount};
+            let savingAmount = 0
+            // let savingAmount = ${installmentDto.savingAmount};
 
             console.log(savingAmount)
 
@@ -378,7 +421,7 @@
             <!-- 차트->멤버 목록 변경 완료
                  수정자: 김진형 -->
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
-                <h4 class="text-muted">${groupWallet.nickname}의 지갑 정보</h4>
+                <h6 class="text-muted">${groupWallet.nickname}의 지갑 정보</h6>
                 <div class="card h-20">
                     <jsp:include page="groupWalletMemberAndCard.jsp"/>
                 </div>

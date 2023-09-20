@@ -184,7 +184,7 @@
 <div class="card-header d-flex align-items-center justify-content-between pb-0">
     <div class="card-title mb-0">
         <h5 class="m-0 me-2">지갑 보유내역</h5>
-        <small class="text-muted">원화 외화 비율</small>
+        <small class="text-muted">모임원</small>
     </div>
 </div>
 <table class="table table">
