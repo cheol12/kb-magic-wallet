@@ -111,6 +111,22 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                         .build()
         );
 
+        groupForeignBalanceRep.save(
+                GroupWalletForeignCurrencyBalance.builder()
+                        .currencyCode(CurrencyCode.USD)
+                        .balance(0L)
+                        .groupWallet(groupWalletSave)
+                        .build()
+        );
+
+        groupForeignBalanceRep.save(
+                GroupWalletForeignCurrencyBalance.builder()
+                        .currencyCode(CurrencyCode.JPY)
+                        .balance(0L)
+                        .groupWallet(groupWalletSave)
+                        .build()
+        );
+
         if (groupWalletSave == null || participation == null) {
             throw new InsertException("모임 지갑 생성에 실패했습니다");
         }

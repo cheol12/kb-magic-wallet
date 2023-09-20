@@ -124,49 +124,6 @@
                 },
             })
 
-
-            // 모임지갑 모임원 리스트 조회
-            function memberCall() {
-                let myMemberId = ${loginMemberDto.memberId};
-                let isChairman = ${isChairman};
-
-                // 이후 JavaScript 코드에서 myMemberId 변수를 사용할 수 있음
-
-                $.ajax({
-                    url: "${pageContext.request.contextPath}/group-wallet/${id}/member-list",
-                    type: "post",
-                    dataType: "json",
-                    success: function (result, status) {
-                        // 화면에 갱신
-                        var str = "";
-                        $.each(result, function (i) {
-                            str += '<tr id="searchMemberResult">'
-                            str += '<td>' + result[i].name + '</td>';
-                            str += '<td>' + result[i].roleToString + '</td>';
-
-                            // 내가 모임장인 경우 && 나와 다른 memberId인 경우에만 버튼 생성
-                            if (isChairman && (result[i].memberId !== myMemberId)) {
-                                str += '<td><button class="alert-warning" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">강퇴</button>' +
-                                    '<button class="alert-primary" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">권한 부여</button>' +
-                                    '<button class="alert-secondary" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">권한 철회</button></td>';
-                            } else {
-                                str += '<td></td>'; // 자신의 memberId와 일치하면 빈 칸 생성
-                            }
-
-                            str += '</tr>';
-                        });
-                        $("#getMemberList").empty();
-                        $("#getMemberList").append(str);
-
-                        // 강퇴 버튼 클릭 이벤트 핸들러
-                        //    모임장 권한 아직
-                    },
-                    error: function (result, status) {
-                        // 오류 처리
-                    },
-                });
-            }
-
             memberCall();
 
             // 모임지갑에서 강퇴 버튼 클릭
@@ -203,6 +160,17 @@
                     alert("강퇴를 취소했습니다.");
                 }
 
+            });
+
+
+            document.getElementById("deleteButton").addEventListener("click", function (event) {
+                if (${countMember}>
+                1
+            )
+                {
+                    event.preventDefault();
+                    alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
+                }
             });
 
             // 모임지갑 권한 부여 버튼 클릭
@@ -272,43 +240,6 @@
             });
 
 
-            // 조회기간 설정 조회 버튼 누를 시 비동기화 통싱
-            $("#selectDateForm").on("submit", function (e) {
-                e.preventDefault()
-                var formValues = $("form[name=selectDateForm]").serialize();
-                $.ajax({
-                    url: "/personalwallet/selectDate",
-                    type: "post",
-                    dataType: "json",
-                    data: formValues,
-                    success: function (result, status) {
-                        $("#dateSelectHistory").empty();
-                        // 화면에 갱신
-                        var str = "";
-                        $.each(result, function (i) {
-                            str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
-                            // 날짜 시간 처리
-                            str += '<TD>' + result[i].dateTime + '</TD>';
-                            str += '<TD>' + result[i].dateTime + '</TD>';
-                            // 입금액 출금액 처리
-                            if (result[i].type === '입금') {
-                                str += '<TD> 입금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> 출금액: -</TD>';
-                            } else {
-                                str += '<TD> 입금액: -</TD>' + '<TD> 출금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
-                            }
-                            str += '<TD>' + result[i].type + '</TD>';
-                            str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
-                            str += '</TR>';
-                        });
-                        $("#dateSelectHistory").append(str);
-                    },
-                    error: function (result, status) {
-
-                    },
-                })
-            });
-
-
             // 모달 닫기 (조회기간 설정 버튼 누른 후)
             $("#submitButton").on("click", function () {
                 $("#basicModal").modal("hide");
@@ -326,11 +257,7 @@
                 // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
             });
 
-            function formatNumber(number) {
-                return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
         });
-
 
         function cardList() {
             let memberId = ${loginMemberDto.memberId};
@@ -445,7 +372,7 @@
         </div>
 
         <div class="row">
-
+            <!--지갑 통화 현황 차트-->
             <jsp:include page="/WEB-INF/views/common/walletChart.jsp"/>
 
             <!-- 차트->멤버 목록 변경 완료
@@ -458,13 +385,12 @@
             </div>
             <!-- 차트->멤버 목록 변경 완료
                  수정자: 김진형 -->
-
         </div>
 
 
         <div class="col-xl-12">
-            <h6 class="text-muted"></h6>
             <div class="nav-align-top d-flex mb-8">
+                <!--탭 리스트-->
                 <ul class="nav nav-tabs flex-fill" role="tablist">
                     <li class="nav-item">
                         <button
@@ -475,8 +401,7 @@
                                 data-bs-target="#navs-top-home"
                                 aria-controls="navs-top-home"
                                 aria-selected="true"
-                        >
-                            모임 거래 내역
+                        >모임 거래 내역
                         </button>
                     </li>
                     <li class="nav-item">
@@ -532,261 +457,38 @@
                         </button>
                     </li>
                 </ul>
+
+
                 <div class="tab-content" style="padding: 0px">
-                    <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
 
-                        <div class="card">
-                            <h5 class="card-header">
-                                <div class="row g-2">
-                                    <div class="col mb-0">
-                                        거래 내역
-                                    </div>
-                                    <div class="col mb-0">
-                                        <div class="col mb-0 col-lg-5 col-md-auto">
-                                            <!-- Button trigger modal -->
-                                            <button
-                                                    type="button"
-                                                    class="btn btn-primary"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#basicModal"
-                                            >
-                                                조회 기간 설정
-                                            </button>
+                    <!--모임 거래내역 START-->
+                    <jsp:include page="tab/groupTabTranserHistory.jsp"/>
+                    <!--모임 거래내역 END-->
 
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </h5>
-
-                            <div class="table-responsive text-nowrap">
-                                <table class="table table">
-                                    <thead>
-                                    <tr>
-                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>거래일자</th>
-                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>거래시간</th>
-                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>입금()</th>
-                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>출금()</th>
-                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>내용</th>
-                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>잔액()</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="table-border-bottom-0" id="dateSelectHistory">
-
-                                    </tbody>
-                                </table>
-
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="tab-pane fade show" id="navs-top-member" role="tabpanel">
-
-                        <div class="card">
-                            <h5 class="card-header">
-                                모임원 목록
-                            </h5>
-
-                            <div class="table-responsive text-nowrap">
-
-                                <table class="table table">
-                                    <thead>
-                                    <tr>
-                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>이름</th>
-                                        <th><i class="fab fa-angular fa-lg text-danger me-3"></i>역할</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="table-border-bottom-0" id="getMemberList">
-
-                                    </tbody>
-                                </table>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    <!--모임 멤버조회 START-->
+                    <jsp:include page="tab/groupTabMemberList.jsp"/>
+                    <!--모임 멤버조회 END-->
 
                     <!-- 회비 규칙 START -->
                     <jsp:include page="tab/groupTabDueRule.jsp"/>
                     <!-- 회비 규칙 END -->
 
-                    <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
-                        <div class="card" style="margin-top: 5px;">
-                            <%--                                <div class="card-header">--%>
+                    <!-- 회비 규칙 START -->
+                    <jsp:include page="tab/groupTabDueRule.jsp"/>
+                    <!-- 회비 규칙 END -->
 
-                            <%--                                </div>--%>
-                            <%--                                <div class="card-body">--%>
-                            <c:choose>
-                                <c:when test="${installmentDto == null}">
-                                    <c:choose>
-                                        <c:when test="${isChairman}">
-                                            <p><strong>적금을 가입하지 않으셨습니다.</strong></p>
-                                            <a href="${pageContext.request.contextPath}/saving/"
-                                               class="btn btn-primary">적금 보러가기</a>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <p><strong>가입된 적금이 없습니다. 모임장에게 적금 가입을 추천하는건 어떨까요?</strong></p>
-                                            <!--적금 가입 추천 버튼 넣을까?-->
-                                        </c:otherwise>
-                                    </c:choose>
+                    <!-- 모임적금 조회 START -->
+                    <jsp:include page="tab/groupTabSaving.jsp"/>
+                    <!-- 모임적금 조회 END -->
 
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="card">
-                                        <h5 class="card-header">${installmentDto.savingName}</h5>
-                                        <div class="table-responsive text-nowrap">
-                                            <table class="table table">
-                                                <thead>
-                                                <tr class="text-nowrap">
-                                                    <th>정보</th>
-                                                    <th>내용</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <th scope="row">금리</th>
-                                                    <td>${installmentDto.interestRate}%</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">기간</th>
-                                                    <td>${installmentDto.period}개월</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">가입일</th>
-                                                    <td>${installmentDto.insertDate}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">만기일</th>
-                                                    <td>${installmentDto.maturityDate}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">현재까지</th>
-                                                    <td>${installmentDto.totalAmount}원</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">납입일</th>
-                                                    <td>매월 ${installmentDto.savingDate}일</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">납입금</th>
-                                                    <td> ${installmentDto.savingAmount}원</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                            <div class="d-grid gap-2 col-lg-1 mx-auto">
-                                                <c:choose>
-                                                    <c:when test="${isChairman}">
-                                                        <%--                                                                <a href="${pageContext.request.contextPath}/group-wallet/${groupWallet.groupWalletId}/saving" id="cancelSaving" class="btn btn-primary">적금 해지</a>--%>
-                                                        <%----%>
-                                                        <button type="submit" class="btn btn-primary" id="cancelSaving">
-                                                            적금 해지
-                                                        </button>
-                                                        <script>
-                                                            // 적금 해지 버튼 클릭 시 알림창 띄우기
-                                                            document.getElementById("cancelSaving").addEventListener("click", function (event) {
-                                                                event.preventDefault();
+                    <!-- 모임 연결 카드 START -->
+                    <jsp:include page="tab/groupTabCard.jsp"/>
+                    <!-- 모임 연결 카드 END -->
 
-                                                                var confirmation = confirm("적금을 해지하시겠습니까? 해지시 이자도 함께 소멸됩니다.");
-
-                                                                if (confirmation) {
-                                                                    // 확인 버튼을 눌렀을 때, 적금 해지를 서버에 요청
-                                                                    var groupWalletId = "${groupWallet.groupWalletId}"; // 그룹 월렛 아이디 변수로 설정
-                                                                    var xhr = new XMLHttpRequest();
-                                                                    xhr.open("DELETE", "${pageContext.request.contextPath}/group-wallet/" + groupWalletId + "/saving", true);
-                                                                    xhr.onreadystatechange = function () {
-                                                                        if (xhr.readyState === 4) {
-                                                                            if (xhr.status === 200) {
-                                                                                // 적금 해지가 성공적으로 처리되었을 때 알림 메시지 띄우기
-                                                                                alert("적금이 해지되었습니다.");
-                                                                                // 페이지 리로드 또는 다른 동작 수행
-                                                                                window.location.reload(); // 페이지 리로드 예시
-                                                                            } else {
-                                                                                // 적금 해지가 실패했을 때 알림 메시지 띄우기
-                                                                                var errorMessage = xhr.responseText;
-                                                                                alert(errorMessage);
-                                                                            }
-                                                                        }
-                                                                    };
-                                                                    xhr.send();
-                                                                }
-                                                            });
-                                                        </script>
-
-
-                                                        <%----%>
-                                                    </c:when>
-                                                </c:choose>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
-                            <%--                                </div>--%>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="navs-top-card" role="tabpanel">
-
-                        <div class="card">
-
-                            <div class="card-body">
-
-                                <div class="row" id="tab5">
-                                    <c:set var="cardExists" value="false"/>
-
-                                    <c:forEach var="card" items="${cardIssuanceDtoList}" varStatus="status">
-                                        <c:if test="${card.member.memberId == sessionScope.member.memberId}">
-                                            <c:set var="cardExists" value="true"/>
-                                        </c:if>
-                                        <div class="col-md-6 col-xl-4">
-                                            <div class="card shadow-none bg-transparent border border-secondary mb-3">
-
-                                                <div class="card-body">
-                                                    <h5 class="card-title">${card.member.name}</h5>
-                                                    <img src="${pageContext.request.contextPath}/assets/img/card/card${fn:substring(card.cardNumber, fn:length(card.cardNumber)-1, fn:length(card.cardNumber))}.png"
-                                                         alt="Card Image" style="width: 100%">
-
-                                                </div>
-
-
-                                            </div>
-                                        </div>
-
-                                    </c:forEach>
-
-                                    <c:if test="${not cardExists}">
-                                        <div class="col-md-6 col-xl-4">
-                                            <div class="card shadow-none bg-transparent border border-secondary mb-3">
-
-                                                <div class="card-body">
-                                                    <h5 class="card-title">카드 연결</h5>
-                                                    <div style="width: 100%; text-align: center">
-                                                        <img src="${pageContext.request.contextPath}/assets/img/icons/squre_plus.png"
-                                                             alt="Card Image" style="width: 60%;"
-                                                             onclick="location.href='${pageContext.request.contextPath}/group-wallet/${id}/card_2'"
-                                                             id="cardChange">
-                                                    </div>
-                                                </div>
-
-
-                                            </div>
-                                        </div>
-                                    </c:if>
-                                </div>
-                            </div>
-
-                        </div>
-
-
-                    </div>
                 </div>
             </div>
         </div>
+
         <br>
         <br>
         <br>
@@ -806,24 +508,11 @@
                         모임 지갑 떠나기</a>
                 </c:otherwise>
             </c:choose>
-
-
         </div>
-
     </div>
-
-
 </div>
-</div>
-<!--/ Striped Rows -->
-
-
-</div>
-
-
-</div>
-
 <!-- Modal -->
+
 <div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -956,19 +645,11 @@
         </div>
     </div>
 </div>
-
-
-
-<p></p>
 <br>
 <br>
 <br>
 <br>
 <br>
 <br>
-
-<footer>
-
-</footer>
 </body>
 </html>
