@@ -51,4 +51,6 @@ public interface CardIssuanceRepository extends JpaRepository<CardIssuance, Long
      * 모임지갑 연결 카드 조회
      * */
     List<CardIssuance> findByWalletIdAndWalletTypeAndCardState(Long walletId, WalletType type, CardState state);
+
+    CardIssuance findByMemberAndCardStateAndWalletId(Member member, CardState cardState, Long walletId);
 }

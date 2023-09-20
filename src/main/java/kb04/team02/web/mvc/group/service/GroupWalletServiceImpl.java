@@ -4,8 +4,6 @@ import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.*;
-import kb04.team02.web.mvc.exchange.dto.RuleDto;
-import kb04.team02.web.mvc.exchange.dto.WalletDto;
 import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.group.entity.*;
 import kb04.team02.web.mvc.group.repository.*;
@@ -41,6 +39,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Transactional
 public class GroupWalletServiceImpl implements GroupWalletService {
+    private final DuePaymentRepository duePaymentRepository;
 
     private final GroupWalletRespository groupWalletRep;
     private final GroupWalletExchangeRepository groupExchangeRep;
@@ -271,7 +270,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         RuleDto ruleDto = new RuleDto();
         if (groupWallet.isDueCondition()) {
             ruleDto.setDueDate(groupWallet.getDueDate());
-            ruleDto.setDuePrice(groupWallet.getDue());
+            ruleDto.setDue(groupWallet.getDue());
         }
         return ruleDto;
     }
@@ -718,8 +717,6 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         return groupMemberDtoList;
     }
 
-
-
     @Transactional
     @Override
     public boolean groupMemberIsChairman(Long groupWalletId, Long memberId) {
@@ -852,4 +849,38 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     }
 
 
+
+
+    @Override
+    public void payDue(Long id, Long memberId) {
+        GroupWallet groupWallet = groupWalletRep.findById(id).orElseThrow(
+                () -> new NoSuchElementException("모임지갑 조회 실패")
+        );
+        Long amount = groupWallet.getDue();
+
+        Member member = memberRep.findById(memberId).orElseThrow(
+                () -> new NoSuchElementException("멤버 조회 실패")
+        );
+
+        duePaymentRepository.save(
+                DuePayment.builder()
+                        .groupWallet(groupWallet)
+                        .member(member)
+//                .due(amount)
+                        .build()
+        );
+
+        DepositDto depositDto = DepositDto.builder()
+                .currencyCode(CurrencyCode.KRW)
+                .amount(amount)
+                .srcMemberId(memberId)
+                .destWalletId(id)
+                .build();
+
+        try {
+            groupWalletDeposit(depositDto);
+        } catch (NotEnoughBalanceException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

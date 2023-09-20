@@ -1,10 +1,7 @@
 package kb04.team02.web.mvc.group.service;
 
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
-import kb04.team02.web.mvc.exchange.dto.RuleDto;
-import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
-import kb04.team02.web.mvc.group.dto.GroupMemberDto;
-import kb04.team02.web.mvc.group.dto.InstallmentDto;
+import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.group.entity.*;
 import kb04.team02.web.mvc.group.repository.*;
 import kb04.team02.web.mvc.mypage.entity.CardIssuance;
@@ -28,6 +25,10 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @Service
@@ -52,15 +53,16 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
     private final GroupWalletTransferRepository transferRepository;
     private final GroupWalletExchangeRepository exchangeRepository;
     private final GroupWalletPaymentRepository paymentRepository;
+    private final DuePaymentRepository duePaymentRepository;
 
     @Override
 
     public List<GroupMemberDto> getMembersByGroupId(Long id, Pageable pageable) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         List<Participation> list = participationRepository.findByGroupWalletAndParticipationState(groupWallet, ParticipationState.PARTICIPATED);
         List<GroupMemberDto> dtoList = new ArrayList<>();
         for (Participation participation : list) {
-            Member member = memberRepository.findById(participation.getMemberId()).orElseThrow(()->new NoSuchElementException("회원 조회 실패"));
+            Member member = memberRepository.findById(participation.getMemberId()).orElseThrow(() -> new NoSuchElementException("회원 조회 실패"));
             dtoList.add(GroupMemberDto.builder()
                     .memberId(member.getMemberId())
                     .name(member.getName())
@@ -72,7 +74,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
 
     @Override
     public boolean deleteMember(Long id, Long member) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         Participation participation = participationRepository.findByGroupWalletAndMemberId(groupWallet, member);
         participationRepository.delete(participation);
         return true;
@@ -80,7 +82,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
 
     @Override
     public boolean grantMemberAuth(Long id, Long member) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         Participation participation = participationRepository.findByGroupWalletAndMemberId(groupWallet, member);
         participation.setRole(Role.CO_CHAIRMAN);
         return true;
@@ -88,45 +90,51 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
 
     @Override
     public boolean revokeMemberAuth(Long id, Long member) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         Participation participation = participationRepository.findByGroupWalletAndMemberId(groupWallet, member);
         participation.setRole(Role.GENERAL);
         return true;
     }
 
     @Override
-    public RuleDto getRuleById(Long id) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
-        if (groupWallet == null) {
-            throw new NoResultException("해당 모임지갑이 존재하지 않습니다");
-        } else {
-            if (!groupWallet.isDueCondition()) {
-                return null;
-            }
+    public RuleDto getRuleById(Long id, Long memberId) {
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("모임지갑 조회 실패")
+        );
+
+        if (!groupWallet.isDueCondition()) {
             return RuleDto.builder()
-                    .duePrice(groupWallet.getDue())
-                    .dueDate(groupWallet.getDueDate())
+                    .dueCondition(groupWallet.isDueCondition())
                     .build();
         }
+
+        return RuleDto.builder()
+                .nickname(groupWallet.getNickname())
+                .dueCondition(groupWallet.isDueCondition())
+                .dueAccumulation(groupWallet.getDueAccumulation())
+                .dueDate(groupWallet.getDueDate())
+                .due(groupWallet.getDue())
+                .isChairman(memberId.equals(groupWallet.getMember().getMemberId()))
+                .build();
     }
 
     @Override
     public boolean createRule(Long id, RuleDto ruleDto) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         if (groupWallet == null) {
             throw new NoResultException("해당 모임지갑이 존재하지 않습니다");
         } else {
             groupWallet.setDueCondition(true);
             groupWallet.setDueDate(ruleDto.getDueDate());
             groupWallet.setDueAccumulation(0L);
-            groupWallet.setDue(ruleDto.getDuePrice());
+            groupWallet.setDue(ruleDto.getDue());
         }
         return true;
     }
 
     @Override
     public boolean alertMember(Long id, Long member) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         if (groupWallet == null) {
             throw new NoResultException("해당 모임지갑이 존재하지 않습니다");
         } else {
@@ -147,8 +155,8 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
     }
 
     @Override
-//    public InstallmentDto getSavingById(Long id) {
     public InstallmentDto getSavingById(GroupWallet groupWallet) {
+//    public InstallmentDto getSavingById(Long id) {
 //        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임 지갑 조회 실패"));
         if (groupWallet == null) {
             throw new NoResultException("해당 모임지갑이 존재하지 않습니다");
@@ -179,7 +187,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
     @Override
     @Transactional
     public boolean cancelSaving(Long id) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         if (groupWallet == null) {
             throw new NoResultException("해당 모임지갑이 존재하지 않습니다");
         } else {
@@ -191,10 +199,10 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
                 // 적금이 만료되었지만 아직 정산이 되지 않은 경우 이자율도 챙겨줘야 함
             } else {
                 // 이자율 계산
-                installmentSaving = installmentRepository.findByGroupWalletAndTotalAmountIsGreaterThanAndDone(groupWallet, 0L,true);
+                installmentSaving = installmentRepository.findByGroupWalletAndTotalAmountIsGreaterThanAndDone(groupWallet, 0L, true);
                 installmentSaving.setTotalAmount(0L);
 
-                double monthlyInterestRate = installmentSaving.getSaving().getInterestRate() / 12; // 월 이자율
+                double monthlyInterestRate = installmentSaving.getSaving().getInterestRate() / 1200; // 월 이자율
                 int numberOfMonths = installmentSaving.getSaving().getPeriod(); // 총 월 수
                 double monthlyDeposit = installmentSaving.getSavingAmount(); // 월별 납입 금액
                 double totalInterest = 0.0; // 총 이자
@@ -211,7 +219,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
 
                 System.out.println("총 이자: " + totalInterest);
 
-                groupWallet.setBalance((long) (groupWallet.getBalance() + installmentSaving.getTotalAmount() + totalInterest));
+                groupWallet.setBalance((long) savingsBalance);
             }
         }
         return true;
@@ -219,7 +227,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
 
     @Override
     public List<CardIssuanceDto> getCard(Long id) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         if (groupWallet == null) {
             throw new NoResultException("해당 모임지갑이 존재하지 않습니다");
         } else {
@@ -242,11 +250,11 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
     @Override
     @Transactional
     public boolean linkCard(Long id, Long memberId) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         if (groupWallet == null) {
             throw new NoResultException("해당 모임지갑이 존재하지 않습니다");
         } else {
-            Member member = memberRepository.findById(memberId).orElseThrow(()->new NoSuchElementException("회원 조회 실패"));
+            Member member = memberRepository.findById(memberId).orElseThrow(() -> new NoSuchElementException("회원 조회 실패"));
             CardIssuance cardIssuance = cardRepository.findByMemberAndCardState(member, CardState.OK);
             cardIssuance.setWalletId(groupWallet.getGroupWalletId());
             cardIssuance.setWalletType(WalletType.GROUP_WALLET);
@@ -256,7 +264,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
 
     @Override
     public Page<WalletHistoryDto> getHistoryByGroupId(Long id, Pageable page) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
 
         List<GroupWalletPayment> groupWalletPayments
                 = paymentRepository.searchAllByGroupWallet(groupWallet);
@@ -328,13 +336,13 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
 
     @Override
     public WalletHistoryDto getHistory(Long id, Long historyId, String type) {
-        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(()->new NoSuchElementException("모임지갑 조회 실패"));
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(() -> new NoSuchElementException("모임지갑 조회 실패"));
         WalletHistoryDto historyDto = new WalletHistoryDto();
         String detail;
         switch (type) {
             case "입금":
             case "출금":
-                GroupWalletTransfer transfer = transferRepository.findById(historyId).orElseThrow(()->new NoSuchElementException("이체 내역 조회 실패"));
+                GroupWalletTransfer transfer = transferRepository.findById(historyId).orElseThrow(() -> new NoSuchElementException("이체 내역 조회 실패"));
                 assert transfer != null;
                 historyDto.setDateTime(transfer.getInsertDate());
                 if (transfer.getTransferType() == TransferType.DEPOSIT) {
@@ -349,7 +357,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
                 return historyDto;
             case "환전":
             case "재환전":
-                GroupWalletExchange exchange = exchangeRepository.findById(historyId).orElseThrow(()->new NoSuchElementException("환전 내역 조회 실패"));
+                GroupWalletExchange exchange = exchangeRepository.findById(historyId).orElseThrow(() -> new NoSuchElementException("환전 내역 조회 실패"));
                 assert exchange != null;
                 if (exchange.getBuyCurrencyCode() == CurrencyCode.KRW) {
                     historyDto.setType("재환전");
@@ -365,7 +373,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
                 return historyDto;
             case "결제":
             case "취소":
-                GroupWalletPayment payment = paymentRepository.findById(historyId).orElseThrow(()->new NoSuchElementException("결제 내역 조회 실패"));
+                GroupWalletPayment payment = paymentRepository.findById(historyId).orElseThrow(() -> new NoSuchElementException("결제 내역 조회 실패"));
                 assert payment != null;
                 historyDto.setDateTime(payment.getInsertDate());
                 if (payment.getPaymentType() == PaymentType.OK) {
@@ -381,5 +389,35 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
             default:
                 return null;
         }
+    }
+
+    @Override
+    public List<DuePaymentDto> getDuePaymentList(Long id) {
+        List<DuePaymentDto> duePaymentDtoList = new ArrayList<>();
+
+        GroupWallet groupWallet = groupWalletRespository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("모임 지갑 조회 실패")
+        );
+
+        List<Participation> participationList = participationRepository.findByGroupWalletAndParticipationState(groupWallet, ParticipationState.PARTICIPATED);
+
+        for (Participation p :
+                participationList) {
+            Member member = memberRepository.findById(p.getMemberId()).orElseThrow(
+                    () -> new NoSuchElementException("멤버 조회 실패")
+            );
+            DuePaymentDto duePaymentDto = DuePaymentDto.builder()
+                    .memberId(p.getMemberId())
+                    .name(member.getName())
+                    .due(groupWallet.getDue())
+                    .build();
+            duePaymentDto.setDueAccumulation(groupWallet.getDue() * duePaymentRepository.countByGroupWalletAndMember(groupWallet, member));
+            DuePayment payed = duePaymentRepository.findByGroupWalletAndMemberAndInsertDateAfter(groupWallet, member, LocalDateTime.of(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()), LocalTime.MIDNIGHT))
+                    .orElse(null);
+            duePaymentDto.setPayed(payed != null);
+            duePaymentDtoList.add(duePaymentDto);
+        }
+
+        return duePaymentDtoList;
     }
 }

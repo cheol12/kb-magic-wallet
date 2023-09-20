@@ -237,4 +237,9 @@ public interface GroupWalletService {
      * 모임지갑 초대에 응답하기
      * */
     int invitedResponse(Long groupWalletId, Long memberId, boolean confirm);
+
+    /**
+     * 회비 내기
+     */
+    void payDue(Long id, Long memberId);
 }
