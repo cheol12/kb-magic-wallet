@@ -46,4 +46,25 @@ public class CardIssuanceServiceImpl implements CardIssuanceService {
     public void deleteCardConnection() {
 
     }
+
+    @Override
+    public boolean isConnectToPersonalWallet(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new NoSuchElementException("회원조회 실패"));
+        CardIssuance cardIssuance = cardIssuanceRepository.findByMemberAndCardStateAndWalletId(member, CardState.OK, member.getPersonalWallet().getPersonalWalletId());
+        if (cardIssuance != null) {
+            // 해당 지갑에 해당 인원의 카드가 연결되어있다
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void createPersonalWalletCardConnection(Long memberId) {
+        Optional<Member> byId = memberRepository.findById(memberId);
+        Member member = byId.get();
+
+        CardIssuance cardIssuance = cardIssuanceRepository.findByMemberAndCardState(member, CardState.OK);
+        cardIssuance.setWalletType(WalletType.PERSONAL_WALLET);
+        cardIssuance.setWalletId(member.getPersonalWallet().getPersonalWalletId());
+    }
 }

@@ -103,7 +103,6 @@
                 success: function (result, status) {
                     // 화면에 갱신
                     var str = "";
-                    alert(111111111111111111111);
                     $.each(result, function (i) {
                         str += '<tr id="searchMemberResult">'
                         str += '<td>' + result[i].name + '</td>';
@@ -141,18 +140,24 @@
                     // 화면에 갱신
                     var str = "";
                     $.each(result, function (i) {
+                        var dateTime = new Date(result[i].dateTime);
+                        var detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
+
+                        var date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
+                        var time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
+
                         str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
                         // 날짜 시간 처리
-                        str += '<TD>' + result[i].dateTime + '</TD>';
-                        str += '<TD>' + result[i].dateTime + '</TD>';
+                        str += '<TD class="text-center">' + date + '</TD>';
+                        str += '<TD class="text-center">' + time + '</TD>';
                         // 입금액 출금액 처리
                         if (result[i].type === '입금') {
-                            str += '<TD> ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> </TD>';
+                            str += '<TD class="text-center"> ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> </TD>';
                         } else {
-                            str += '<TD> </TD>' + '<TD> ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
+                            str += '<TD class="text-center"> </TD>' + '<TD class="text-center"> ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
                         }
-                        str += '<TD>  ' + result[i].type + '</TD>';
-                        str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
+                        str += '<TD class="text-center">  ' + result[i].type + '</TD>';
+                        str += '<TD class="text-center">' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
                         str += '</TR>';
                     });
                     $("#dateSelectHistory").append(str);
@@ -165,7 +170,6 @@
         // AJAX READY
 
         $(document).ready(function () {
-            alert(11111111111111);
             memberCall();
             historyCall();
 
