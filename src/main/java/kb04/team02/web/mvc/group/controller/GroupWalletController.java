@@ -210,7 +210,7 @@ public class GroupWalletController {
      * @param id 초대링크를 생성할 모임지갑 id
      */
     @ResponseBody
-    @GetMapping("/{id}/invite-request")
+    @PostMapping("/{id}/invite-request")
     public int groupWalletCreateInviteLink(@PathVariable Long id, @RequestParam String phone) {
 	// 메시지 api 불러오기
 	    int value = groupWalletService.inviteMember(phone, id);

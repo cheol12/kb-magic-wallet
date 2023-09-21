@@ -106,4 +106,12 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
      * @author 김현지
      */
     List<Participation> findByMemberIdAndRoleInAndParticipationState(Long memberId, List<Role> roles, ParticipationState participationState);
+
+    /**
+     * @author 정지원
+     * @param groupWallet
+     * @param memberId
+     * @return
+     */
+    int countByGroupWalletAndMemberId(GroupWallet groupWallet, Long memberId);
 }

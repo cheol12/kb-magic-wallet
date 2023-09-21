@@ -84,7 +84,7 @@
                                 <div class="col-auto">
 
                                     <input type="text" id="invite" class="form-control"
-                                           aria-describedby="passwordHelpInline" name="invite">
+                                           aria-describedby="passwordHelpInline" name="phone">
 
                                 </div>
 

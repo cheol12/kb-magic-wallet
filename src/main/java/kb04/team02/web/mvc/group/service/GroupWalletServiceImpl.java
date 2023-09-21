@@ -231,7 +231,12 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         Member member = memberRep.findByPhoneNumber(phone).orElseThrow(()-> new NoSuchElementException("멤버 조회 실패"));
 
         GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
+//
+        int countParticipation = participationRep.countByGroupWalletAndMemberId(groupWallet, member.getMemberId());
 
+        if(countParticipation>0){
+            return 0;
+        }
         Participation participation;
         participation = participationRep.save(
                 Participation.builder()
