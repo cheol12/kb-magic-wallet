@@ -145,3 +145,7 @@
 .explainDiv p {
   margin: 3px; /* 위아래 간격을 없애거나 원하는 크기로 설정하세요 */
 }
+
+.title{
+  font-weight: bold;
+}
