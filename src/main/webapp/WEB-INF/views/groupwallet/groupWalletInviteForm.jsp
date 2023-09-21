@@ -135,6 +135,7 @@
                                     <label for="phoneInput" class="col-form-label"></label>
                                 </div>
                                 <div class="col-auto">
+
                                     <input type="text" id="phoneInput" class="form-control" aria-describedby="passwordHelpInline" name="phone">
                                 </div>
                                 <div class="col-auto">

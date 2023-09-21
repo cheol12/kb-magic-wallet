@@ -247,6 +247,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         // 삭제
         groupWalletRep.deleteGroupWalletByGroupWalletId(groupWalletId);
 
+
         return 1;
     }
 
@@ -865,6 +866,21 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
         Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, member.getMemberId());
 
+
+        int countParticipation = participationRep.countByGroupWalletAndMemberId(groupWallet, member.getMemberId());
+
+        if(countParticipation>0){
+            return 0;
+        }
+        Participation participation;
+        participation = participationRep.save(
+                Participation.builder()
+                        .participationState(ParticipationState.WAITING)
+                        .memberId(member.getMemberId())
+                        .role(Role.GENERAL)
+                        .groupWallet(groupWallet)
+                        .build()
+        );
 //        Participation participation;
         // 초대 수정해야함
         participation = participationRep.save(
