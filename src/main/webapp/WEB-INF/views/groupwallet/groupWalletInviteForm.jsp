@@ -96,7 +96,7 @@
                         if (data === 1) {
                             $("#resultMessage").text(phone + "에게 초대 요청을 보냈어요!");
                         } else {
-                            $("#resultMessage").text("이미 모임 지갑에 있나봐요!");
+                            $("#resultMessage").text("이미 초대되었거나 초대 중이에요!");
                         }
                     }
                 });

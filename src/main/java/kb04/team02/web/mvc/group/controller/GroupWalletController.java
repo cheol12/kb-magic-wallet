@@ -155,7 +155,6 @@ public class GroupWalletController {
     @ResponseBody
     @PostMapping("{id}/history")
     public List<WalletHistoryDto> getHistory(@PathVariable Long id, HttpSession session, Model model) {
-        System.out.println("여기여기");
         WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
         model.addAttribute("walletDetailDto", walletDetailDto);
         return walletDetailDto.getList();
@@ -164,10 +163,7 @@ public class GroupWalletController {
     @ResponseBody
     @PostMapping("/{id}/member-list")
     public List<GroupMemberDto> getGroupWalletMembers(@PathVariable Long id, ModelAndView mv, HttpSession session) {
-        // id = 내 모임지갑의 id중 하나임.
-        System.out.println("여기여기2");
         List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
-        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
         log.info("groupMemberDtoListSize = " + groupMemberDtoList.size());
 
         return groupMemberDtoList;

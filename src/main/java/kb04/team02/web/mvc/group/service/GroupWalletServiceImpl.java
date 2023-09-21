@@ -163,31 +163,27 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         // 환전 내역 설정
         for(GroupWalletExchange exchange : exchangeList){
             WalletHistoryDto walletHistoryDto = new WalletHistoryDto();
-
             walletHistoryDto.setDateTime(exchange.getInsertDate());
-
             if(exchange.getSellCurrencyCode() == CurrencyCode.KRW){
-                walletHistoryDto.setType("환전");
-            }
-            else{
                 walletHistoryDto.setType("재환전");
             }
+            else{
+                walletHistoryDto.setType("환전");
+            }
+            String detail = exchange.getSellCurrencyCode().name() + " > " + exchange.getBuyCurrencyCode().name();
 
-            String detail = exchange.getSellCurrencyCode() + " > " + exchange.getBuyCurrencyCode();
-
-            walletHistoryDto.setDetail(detail);
-            walletHistoryDto.setAmount(exchange.getSellAmount().toString() + " > " + exchange.getBuyAmount());
-            walletHistoryDto.setBalance(exchange.getAfterSellBalance().toString() + " : " + exchange.getAfterBuyBalance());
             walletHistoryDto.setCurrencyCode(exchange.getBuyCurrencyCode());
+            walletHistoryDto.setDetail(detail);
+            walletHistoryDto.setAmount(exchange.getSellAmount() + " > " + exchange.getBuyAmount());
+            walletHistoryDto.setBalance(exchange.getAfterSellBalance() + " : " + exchange.getAfterBuyBalance());
+
             dto.getList().add(walletHistoryDto);
         }
 
         // 결제 내역 설정
         for(GroupWalletPayment payment : paymentList){
             WalletHistoryDto walletHistoryDto = new WalletHistoryDto();
-
             walletHistoryDto.setDateTime(payment.getInsertDate());
-
             if(payment.getPaymentType() == PaymentType.OK){
                 walletHistoryDto.setType("결제");
             }
@@ -197,6 +193,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
             String detail = payment.getAmount() + payment.getCurrencyCode().name();
 
+            walletHistoryDto.setCurrencyCode(payment.getCurrencyCode());
             walletHistoryDto.setDetail(detail);
             walletHistoryDto.setAmount(payment.getAmount().toString());
             walletHistoryDto.setBalance(payment.getAfterPayBalance().toString());
@@ -207,23 +204,29 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         // 이체 내역 설정
         for(Transfer transfer : transferList){
             WalletHistoryDto walletHistoryDto = new WalletHistoryDto();
-
             walletHistoryDto.setDateTime(transfer.getInsertDate());
-
+            String detail = "";
             if(transfer.getTransferType() == TransferType.DEPOSIT){
                 walletHistoryDto.setType("입금");
+                detail = transfer.getSrc() + " > " + transfer.getDest();
             }
             else{
                 walletHistoryDto.setType("출금");
+                detail = "모임지갑 : " + groupWallet.getNickname() + " > " + transfer.getDest();
             }
-
-            String detail = transfer.getSrc() + " > " + transfer.getDest();
+            walletHistoryDto.setCurrencyCode(CurrencyCode.KRW);
             walletHistoryDto.setDetail(detail);
             walletHistoryDto.setAmount(transfer.getAmount().toString());
             walletHistoryDto.setBalance(transfer.getAfterBalance().toString());
 
             dto.getList().add(walletHistoryDto);
         }
+        dto.getList().sort(new Comparator<WalletHistoryDto>() {
+            @Override
+            public int compare(WalletHistoryDto o1, WalletHistoryDto o2) {
+                return o2.getDateTime().compareTo(o1.getDateTime());
+            }
+        });
 
         return dto;
     }
@@ -866,23 +869,11 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
         Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, member.getMemberId());
 
-
         int countParticipation = participationRep.countByGroupWalletAndMemberId(groupWallet, member.getMemberId());
 
         if(countParticipation>0){
             return 0;
         }
-        Participation participation;
-        participation = participationRep.save(
-                Participation.builder()
-                        .participationState(ParticipationState.WAITING)
-                        .memberId(member.getMemberId())
-                        .role(Role.GENERAL)
-                        .groupWallet(groupWallet)
-                        .build()
-        );
-//        Participation participation;
-        // 초대 수정해야함
         participation = participationRep.save(
                 Participation.builder()
 //                        .participationId(participation.getParticipationId())

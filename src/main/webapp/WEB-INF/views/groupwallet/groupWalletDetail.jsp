@@ -93,6 +93,7 @@
             } else {
                 document.getElementById("detail-amount").innerHTML = row_td[2].innerHTML;
             }
+            document.getElementById("detail-type").innerHTML = row_td[4].innerHTML;
             document.getElementById("detail-content").innerHTML = content;
             document.getElementById("detail-balance").innerHTML = row_td[5].innerHTML;
             modal.style.display = 'block';
@@ -108,18 +109,24 @@
                     // 화면에 갱신
                     var str = "";
                     $.each(result, function (i) {
-                        str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
+                        let dateTime = new Date(result[i].dateTime);
+                        let detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
+                        // 날짜와 시간을 따로 추출
+                        let date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
+                        let time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
+
+                        str += '<TR id="searchDateResult" onclick="PopupDetail(this, \'' + detailString  + '\')" data-bs-toggle="modal" data-bs-target="#detailModal">'
                         // 날짜 시간 처리
-                        str += '<TD>' + result[i].dateTime + '</TD>';
-                        str += '<TD>' + result[i].dateTime + '</TD>';
+                        str += '<TD>' + date + '</TD>';
+                        str += '<TD>' + time + '</TD>';
                         // 입금액 출금액 처리
                         if (result[i].type === '입금') {
-                            str += '<TD> ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> </TD>';
+                            str += '<TD> ' + formatNumberWithCommas(result[i].amount) + ' ' + result[i].currencyCode + '</TD><TD> </TD>';
                         } else {
-                            str += '<TD> </TD>' + '<TD> ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
+                            str += '<TD> </TD>' + '<TD> ' + formatNumberWithCommas(result[i].amount) + ' ' + result[i].currencyCode + '</TD>';
                         }
                         str += '<TD>  ' + result[i].type + '</TD>';
-                        str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
+                        str += '<TD>' + formatNumberWithCommas(result[i].balance) + ' ' + result[i].currencyCode + '</TD>';
                         str += '</TR>';
                     });
                     $("#dateSelectHistory").append(str);
@@ -136,16 +143,152 @@
             historyCall();
             displayMemberList();
 
-            document.getElementById("deleteButton").addEventListener("click", function (event) {
-                if (${countMember}>
-                1
-            )
-                {
-                    event.preventDefault();
-                    alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
+            // $(document).on("click", , function(){ }) 형식을 쓰는 이유
+            // = 동적 요소에 대한 이벤트 처리: 이 방식을 사용하면 페이지가 로드된 이후에
+            // 동적으로 생성되는 요소에 대해서도 이벤트 처리를 할 수 있다
+            // 모임지갑에서 강퇴 버튼 클릭
+            $(document).on("click", '.alert-warning', function () {
+                let memberId = $(this).data("member-id");
+                let memberName = $(this).data("member-name")
+
+                var confirmation = confirm(memberName + "님을 강퇴하시겠습니까?");
+
+                if (confirmation) {
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/group-wallet/${id}/out",
+                        type: "post",
+                        data: {memberId: memberId},
+                        success: function (result, response) {
+                            console.log(result);
+                            if (result > 0) {
+                                // 강퇴 성공 시 필요한 작업 수행
+                                alert(memberName + "님을 강퇴했어요")
+                                memberCall();
+                            } else {
+                                alert("강퇴를 실패했어요");
+                            }
+                        },
+                        error: function () {
+                            // 강퇴 실패 시 필요한 작업 수행
+                        }
+                    });
+                } else {
+                    alert("강퇴를 취소했습니다.");
                 }
+
             });
 
+
+            <%--document.getElementById("deleteButton").addEventListener("click", function (event) {--%>
+            <%--    if (${countMember}>--%>
+            <%--    1--%>
+            <%--)--%>
+            //     {
+            //         event.preventDefault();
+            //         alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
+            //     }
+            // });
+
+            // 모임지갑 권한 부여 버튼 클릭
+            $(document).on("click", '.alert-primary', function () {
+                let memberId = $(this).data("member-id");
+                let memberName = $(this).data("member-name")
+
+                var confirmation = confirm(memberName + memberId + "님에게 공동모임장 권한을 부여하시겠습니까?");
+
+                if (confirmation) {
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/group-wallet/${id}/grant",
+                        type: "post",
+                        data: {memberId: memberId},
+                        success: function (data, result, response) {
+                            console.log(result);
+                            console.log(data);
+                            if (data > 0) {
+                                // 강퇴 성공 시 필요한 작업 수행
+                                alert(memberName + "님이 공동모임장이 되었어요!")
+                                memberCall();
+                            } else {
+                                alert("권한 부여를 실패했어요");
+                            }
+                        },
+                        error: function () {
+                            // 강퇴 실패 시 필요한 작업 수행
+                        }
+                    });
+                } else {
+                    alert("권한 부여를 취소했습니다.");
+                }
+
+            });
+
+            // 모임지갑 권한 철회 버튼 클릭
+            $(document).on("click", '.alert-secondary', function () {
+                let memberId = $(this).data("member-id");
+                let memberName = $(this).data("member-name")
+
+                var confirmation = confirm(memberName + "님의 공동모임장 권한을 철회하시겠습니까?");
+
+                if (confirmation) {
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/group-wallet/${id}/revoke",
+                        type: "post",
+                        data: {memberId: memberId},
+                        success: function (data, result, response) {
+                            console.log(result);
+                            console.log(data);
+                            if (data > 0) {
+                                // 강퇴 성공 시 필요한 작업 수행
+                                alert(memberName + "님이 모임원이 되었어요!")
+                                memberCall();
+                            } else {
+                                alert("권한 철회를 실패했어요");
+                            }
+                        },
+                        error: function () {
+                            // 강퇴 실패 시 필요한 작업 수행
+                        }
+                    });
+                } else {
+                    alert("권한 철회를 취소했습니다.");
+                }
+
+            });
+
+            $("#selectDateForm").on("submit", function (e) {
+                e.preventDefault()
+                var formValues = $("form[name=selectDateForm]").serialize();
+                $.ajax({
+                    url: "/personalwallet/selectDate",
+                    type: "post",
+                    dataType: "json",
+                    data: formValues,
+                    success: function (result, status) {
+                        $("#dateSelectHistory").empty();
+                        // 화면에 갱신
+                        var str = "";
+                        $.each(result, function (i) {
+                            str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
+                            // 날짜 시간 처리
+                            str += '<TD>' + result[i].dateTime + '</TD>';
+                            str += '<TD>' + result[i].dateTime + '</TD>';
+                            // 입금액 출금액 처리
+                            if (result[i].type === '입금') {
+                                str += '<TD> 입금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> 출금액: -</TD>';
+                            } else {
+                                str += '<TD> 입금액: -</TD>' + '<TD> 출금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
+                            }
+                            str += '<TD>' + result[i].type + '</TD>';
+                            str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
+                            str += '</TR>';
+                        });
+                        $("#dateSelectHistory").append(str);
+                    },
+                    error: function (result, status) {
+
+                    },
+                })
+            });
 
             // 모달 닫기 (조회기간 설정 버튼 누른 후)
             $("#submitButton").on("click", function () {

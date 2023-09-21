@@ -51,94 +51,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            <%--function inviteResponse() {--%>
-
-            <%--    $.ajax({--%>
-            <%--        url: "${pageContext.request.contextPath}/group-wallet/invited-list",--%>
-            <%--        type: "post",--%>
-            <%--        dataType: "json",--%>
-            <%--        success: function (data, result, status) {--%>
-            <%--            var str = "";--%>
-
-            <%--            $.each(data, function (index, item) {--%>
-            <%--                str += '<tr id="searchGroupWalletList">'--%>
-            <%--                str += '<td>' + item.nickname + '</td>';--%>
-            <%--                str += '<td>' + item.chairmanName + '</td>';--%>
-            <%--                str += '<td><button class="alert-warning" data-group-id="' + item.groupWalletId + '" data-nickname="' + item.nickname + '">초대 응답</button>';--%>
-            <%--                str += '</tr>';--%>
-            <%--            });--%>
-            <%--            $("#invitedMeList").empty();--%>
-            <%--            $("#invitedMeList").append(str);--%>
-
-            <%--            if (data.length === 0) {--%>
-            <%--                $("#invitedMeListContainer").hide();--%>
-            <%--            } else {--%>
-            <%--                $("#invitedMeListContainer").show();--%>
-            <%--            }--%>
-            <%--        },--%>
-            <%--        error: function (result, status) {--%>
-            <%--            // 오류 처리--%>
-            <%--        },--%>
-            <%--    });--%>
-            <%--}--%>
-
-            <%--inviteResponse();--%>
-
-            <%--// $(document).on("click", , function(){ }) 형식을 쓰는 이유--%>
-            <%--// = 동적 요소에 대한 이벤트 처리: 이 방식을 사용하면 페이지가 로드된 이후에--%>
-            <%--// 동적으로 생성되는 요소에 대해서도 이벤트 처리를 할 수 있다--%>
-            <%--$(document).on("click", '.alert-warning', function () {--%>
-            <%--    let groupId = $(this).data("group-id");--%>
-            <%--    let nickname = $(this).data("nickname")--%>
-
-            <%--    var confirmation = confirm("모임지갑명 : " + nickname + "에 참여하시겠습니까?");--%>
-
-            <%--    // 확인 눌렀을 때--%>
-            <%--    if (confirmation) {--%>
-            <%--        $.ajax({--%>
-            <%--            url: "${pageContext.request.contextPath}/group-wallet/" + groupId + "/invite-accept",--%>
-            <%--            type: "post",--%>
-            <%--            data: {groupId: groupId},--%>
-            <%--            success: function (result, response) {--%>
-            <%--                console.log(result);--%>
-            <%--                if (result > 0) {--%>
-            <%--                    alert("새로운 모임지갑에 들어갔어요!")--%>
-            <%--                    inviteResponse();--%>
-            <%--                } else {--%>
-            <%--                    alert("실패했어요");--%>
-            <%--                }--%>
-            <%--            },--%>
-            <%--            error: function () {--%>
-
-            <%--            }--%>
-            <%--        });--%>
-            <%--    }--%>
-            <%--    // 취소 눌렀을 때--%>
-            <%--    else {--%>
-            <%--       $.ajax({--%>
-            <%--            url: "${pageContext.request.contextPath}/group-wallet/" + groupId + "/invite-refuse",--%>
-            <%--            type: "post",--%>
-            <%--            data: {groupId: groupId},--%>
-            <%--            success: function (result, response) {--%>
-            <%--                console.log(result);--%>
-            <%--                if (result > 0) {--%>
-            <%--                    // 강퇴 성공 시 필요한 작업 수행--%>
-            <%--                    alert("모임지갑의 초대를 거절했어요");--%>
-            <%--                    inviteResponse();--%>
-            <%--                } else {--%>
-            <%--                    alert("실패했어요");--%>
-            <%--                }--%>
-            <%--            },--%>
-            <%--            error: function () {--%>
-
-            <%--            }--%>
-            <%--        });--%>
-
-            <%--    }--%>
-
-            <%--});--%>
-
-
             /// gpt의 뜬금포 모달
             function inviteResponse() {
                 $.ajax({
@@ -213,7 +125,8 @@
                             console.log(result);
                             if (result > 0) {
                                 // 강퇴 성공 시 필요한 작업 수행
-                                // alert("새로운 모임지갑에 들어갔어요!")
+                                alert("새로운 모임지갑에 들어갔어요!")
+                                inviteResponse();
                                 location.href = "${pageContext.request.contextPath}/group-wallet/" + groupId; // 해당 페이지로 이동
                             } else {
                                 alert("실패했어요");
@@ -237,6 +150,7 @@
                             if (result > 0) {
                                 // 거절 성공 시 필요한 작업 수행
                                 alert("모임지갑의 초대를 거절했어요!");
+                                modal.hide();
                                 inviteResponse();
                             } else {
                                 alert("실패했어요");
