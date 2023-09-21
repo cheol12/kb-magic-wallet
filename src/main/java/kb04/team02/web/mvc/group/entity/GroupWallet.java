@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.group.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.common.module.BooleanToYNConverter;
 import kb04.team02.web.mvc.member.entity.Member;

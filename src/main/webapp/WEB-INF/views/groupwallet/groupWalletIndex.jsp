@@ -1,4 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: jiwon
@@ -9,40 +12,157 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>깨비의 요술 지갑 - 모임목록</title>
 
     <link rel="stylesheet" type="text/css" href="/css/common.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="../../../assets/vendor/fonts/boxicons.css"/>
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../../../assets/vendor/css/core.css" class="template-customizer-core-css"/>
+    <link rel="stylesheet" href="../../../assets/vendor/css/theme-default.css" class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="../../../assets/css/demo.css"/>
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="../../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"/>
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="../../../assets/vendor/js/helpers.js"></script>
+    <script src="../../../assets/js/validation.js"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="../../../assets/js/config.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
 
+            <%--function inviteResponse() {--%>
+
+            <%--    $.ajax({--%>
+            <%--        url: "${pageContext.request.contextPath}/group-wallet/invited-list",--%>
+            <%--        type: "post",--%>
+            <%--        dataType: "json",--%>
+            <%--        success: function (data, result, status) {--%>
+            <%--            var str = "";--%>
+
+            <%--            $.each(data, function (index, item) {--%>
+            <%--                str += '<tr id="searchGroupWalletList">'--%>
+            <%--                str += '<td>' + item.nickname + '</td>';--%>
+            <%--                str += '<td>' + item.chairmanName + '</td>';--%>
+            <%--                str += '<td><button class="alert-warning" data-group-id="' + item.groupWalletId + '" data-nickname="' + item.nickname + '">초대 응답</button>';--%>
+            <%--                str += '</tr>';--%>
+            <%--            });--%>
+            <%--            $("#invitedMeList").empty();--%>
+            <%--            $("#invitedMeList").append(str);--%>
+
+            <%--            if (data.length === 0) {--%>
+            <%--                $("#invitedMeListContainer").hide();--%>
+            <%--            } else {--%>
+            <%--                $("#invitedMeListContainer").show();--%>
+            <%--            }--%>
+            <%--        },--%>
+            <%--        error: function (result, status) {--%>
+            <%--            // 오류 처리--%>
+            <%--        },--%>
+            <%--    });--%>
+            <%--}--%>
+
+            <%--inviteResponse();--%>
+
+            <%--// $(document).on("click", , function(){ }) 형식을 쓰는 이유--%>
+            <%--// = 동적 요소에 대한 이벤트 처리: 이 방식을 사용하면 페이지가 로드된 이후에--%>
+            <%--// 동적으로 생성되는 요소에 대해서도 이벤트 처리를 할 수 있다--%>
+            <%--$(document).on("click", '.alert-warning', function () {--%>
+            <%--    let groupId = $(this).data("group-id");--%>
+            <%--    let nickname = $(this).data("nickname")--%>
+
+            <%--    var confirmation = confirm("모임지갑명 : " + nickname + "에 참여하시겠습니까?");--%>
+
+            <%--    // 확인 눌렀을 때--%>
+            <%--    if (confirmation) {--%>
+            <%--        $.ajax({--%>
+            <%--            url: "${pageContext.request.contextPath}/group-wallet/" + groupId + "/invite-accept",--%>
+            <%--            type: "post",--%>
+            <%--            data: {groupId: groupId},--%>
+            <%--            success: function (result, response) {--%>
+            <%--                console.log(result);--%>
+            <%--                if (result > 0) {--%>
+            <%--                    alert("새로운 모임지갑에 들어갔어요!")--%>
+            <%--                    inviteResponse();--%>
+            <%--                } else {--%>
+            <%--                    alert("실패했어요");--%>
+            <%--                }--%>
+            <%--            },--%>
+            <%--            error: function () {--%>
+
+            <%--            }--%>
+            <%--        });--%>
+            <%--    }--%>
+            <%--    // 취소 눌렀을 때--%>
+            <%--    else {--%>
+            <%--       $.ajax({--%>
+            <%--            url: "${pageContext.request.contextPath}/group-wallet/" + groupId + "/invite-refuse",--%>
+            <%--            type: "post",--%>
+            <%--            data: {groupId: groupId},--%>
+            <%--            success: function (result, response) {--%>
+            <%--                console.log(result);--%>
+            <%--                if (result > 0) {--%>
+            <%--                    // 강퇴 성공 시 필요한 작업 수행--%>
+            <%--                    alert("모임지갑의 초대를 거절했어요");--%>
+            <%--                    inviteResponse();--%>
+            <%--                } else {--%>
+            <%--                    alert("실패했어요");--%>
+            <%--                }--%>
+            <%--            },--%>
+            <%--            error: function () {--%>
+
+            <%--            }--%>
+            <%--        });--%>
+
+            <%--    }--%>
+
+            <%--});--%>
+
+
+            /// gpt의 뜬금포 모달
             function inviteResponse() {
-                let myMemberId = ${loginMemberDto.memberId};
-
-                // 이후 JavaScript 코드에서 myMemberId 변수를 사용할 수 있음
-
                 $.ajax({
-                    url: "${pageContext.request.contextPath}/group-wallet/",
+                    url: "${pageContext.request.contextPath}/group-wallet/invited-list",
                     type: "post",
                     dataType: "json",
-                    success: function (result, status) {
-                        // 화면에 갱신
+                    success: function (data, result, status) {
                         var str = "";
-                        $.each(result, function (i) {
-                            str += '<tr id="searchGroupWalletList">'
-                            str += '<td>' + result[i].groupWallet.nickname + '</td>';
-                            str += '<td>' + result[i].groupWallet.member.name + '</td>';
-                            str += '<td><button class="alert-warning" data-member-id="' + result[i].groupWallet.groupWalletId + '" data-member-name="' + result[i].name + '">초대 응답</button>';
 
+                        $.each(data, function (index, item) {
+                            str += '<tr id="searchGroupWalletList">'
+                            str += '<td>' + item.nickname + '</td>';
+                            str += '<td>' + item.chairmanName + '</td>';
+                            str += '<td><button class="alert-warning" data-group-id="' + item.groupWalletId + '" data-nickname="' + item.nickname + '">초대 응답</button>';
                             str += '</tr>';
                         });
-                        $("#invitedMeList").empty();
-                        $("#invitedMeList").append(str);
+                        $("#invitedMeList").empty().append(str);
 
-                        // 강퇴 버튼 클릭 이벤트 핸들러
-                        //    모임장 권한 아직
+                        // 초대된 목록이 비어있으면 숨기기
+                        if (data.length === 0) {
+                            $("#invitedMeListContainer").hide();
+                        } else {
+                            $("#invitedMeListContainer").show();
+                        }
                     },
                     error: function (result, status) {
                         // 오류 처리
@@ -53,40 +173,86 @@
             inviteResponse();
 
             // 모임지갑에서 강퇴 버튼 클릭
-
-            // $(document).on("click", , function(){ }) 형식을 쓰는 이유
-            // = 동적 요소에 대한 이벤트 처리: 이 방식을 사용하면 페이지가 로드된 이후에
-            // 동적으로 생성되는 요소에 대해서도 이벤트 처리를 할 수 있다
             $(document).on("click", '.alert-warning', function () {
-                let groupId = $(this).data("member-id");
-                let memberName = $(this).data("member-name")
+                let groupId = $(this).data("group-id");
+                let nickname = $(this).data("nickname");
 
-                var confirmation = confirm(groupId + "의 초대를 수락하시겠습니까?");
+                // 모달 다이얼로그 생성
+                var modalHtml = '<div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">';
+                modalHtml += '<div class="modal-dialog">';
+                modalHtml += '<div class="modal-content">';
+                modalHtml += '<div class="modal-header">';
+                modalHtml += '<h5 class="modal-title" id="exampleModalLabel">초대 응답</h5>';
+                modalHtml += '<button id="inviteModalCloseBtn" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
+                modalHtml += '</div>';
+                modalHtml += '<div class="modal-body">';
+                modalHtml += '모임지갑명 : ' + nickname + '에 참여하시겠습니까?';
+                modalHtml += '</div>';
+                modalHtml += '<div class="modal-footer">';
+                modalHtml += '<button type="button" class="btn btn-primary" id="acceptBtn">수락</button>';
+                modalHtml += '<button type="button" class="btn btn-secondary" id="refuseBtn" data-bs-dismiss="modal">거절</button>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
+                modalHtml += '</div>';
 
-                if (confirmation) {
+                // 모달 다이얼로그 추가
+                $("body").append(modalHtml);
+
+                // 모달 다이얼로그 표시
+                var modal = new bootstrap.Modal(document.getElementById('inviteModal'));
+                modal.show();
+
+                // 수락 버튼 클릭 시 이벤트 처리
+                $("#acceptBtn").on("click", function () {
                     $.ajax({
-                        url: "${pageContext.request.contextPath}/group-wallet/" + groupId + "/invite-response",
+                        url: "${pageContext.request.contextPath}/group-wallet/" + groupId + "/invite-accept",
                         type: "post",
                         data: {groupId: groupId},
                         success: function (result, response) {
                             console.log(result);
                             if (result > 0) {
                                 // 강퇴 성공 시 필요한 작업 수행
-                                alert(memberName + "님을 강퇴했어요")
-                                memberCall();
+                                // alert("새로운 모임지갑에 들어갔어요!")
+                                location.href = "${pageContext.request.contextPath}/group-wallet/" + groupId; // 해당 페이지로 이동
                             } else {
-                                alert("강퇴를 실패했어요");
+                                alert("실패했어요");
+                            }
+                            modal.hide(); // 모달 닫기
+                        },
+                        error: function () {
+
+                        }
+                    });
+                });
+
+                // 거절 버튼 클릭 시 이벤트 처리
+                $('#refuseBtn').on('hidden.bs.modal', function () {
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/group-wallet/" + groupId + "/invite-refuse",
+                        type: "post",
+                        data: {groupId: groupId},
+                        success: function (result, response) {
+                            console.log(result);
+                            if (result > 0) {
+                                // 거절 성공 시 필요한 작업 수행
+                                alert("모임지갑의 초대를 거절했어요");
+                                modal.hide(); // 모달 닫기
+
+                            } else {
+                                alert("실패했어요");
                             }
                         },
                         error: function () {
-                            // 강퇴 실패 시 필요한 작업 수행
+
                         }
                     });
-                } else {
-                    alert("강퇴를 취소했습니다.");
-                }
-
+                });
+                $("#inviteModalCloseBtn").on("click", function () {
+                    modal.hide();
+                });
             });
+
         })
 
     </script>
@@ -118,13 +284,15 @@
                 </div>
             </div>
 
-            <div style="margin-top: 5px">
+            <div id="invitedMeListContainer" style="display:none; margin-top: 5px">
                 <h2 class="card-title text-break"> 잠깐! 모임지갑으로부터 초대가 왔어요!</h2>
                 <div class="table-responsive text-nowrap">
+
                     <table class="table table">
                         <thead>
                         <tr>
-
+                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>모임지갑명</th>
+                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>모임장</th>
                         </tr>
                         </thead>
                         <tbody class="table-border-bottom-0" id="invitedMeList">
