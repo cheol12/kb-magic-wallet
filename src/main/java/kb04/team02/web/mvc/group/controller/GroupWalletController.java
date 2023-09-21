@@ -9,6 +9,7 @@ import kb04.team02.web.mvc.exchange.service.ExchangeService;
 import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
 import kb04.team02.web.mvc.group.dto.GroupMemberDto;
 import kb04.team02.web.mvc.group.dto.InstallmentDto;
+import kb04.team02.web.mvc.group.dto.InvitedDto;
 import kb04.team02.web.mvc.group.entity.Participation;
 import kb04.team02.web.mvc.group.service.GroupWalletTabService;
 import kb04.team02.web.mvc.member.entity.Member;
@@ -138,13 +139,13 @@ public class GroupWalletController {
             List<CardIssuanceDto> cardIssuanceDtoList = groupWalletService.getCardIssuanceDto(id);
             model.addAttribute("cardIssuanceDtoList", cardIssuanceDtoList);
 
-            return "groupwallet/groupWalletDetail01";
+            return "groupwallet/groupWalletDetail";
         } catch (RuntimeException e) {
             model.addAttribute("installmentDto", null);
             model.addAttribute("cardIssuanceDtoList", null);
 
 
-            return "groupwallet/groupWalletDetail01";
+            return "groupwallet/groupWalletDetail";
         }
 
     }
@@ -225,39 +226,45 @@ public class GroupWalletController {
 	        return 0;
         }
         return 1;
-        // 메시지 api 불러오기
-        //json으로 데이터 전달하기
-//	    return "redirect:/group-wallet/" + id + "/member-list";
     }
 
     /**
      * 나를 초대한 모임지갑들 부르기
      * */
     @ResponseBody
-    @PostMapping("/")
-    public List<Participation> groupWalletInvitedList(Model model, HttpSession session) {
+    @PostMapping("/invited-list")
+    public List<InvitedDto> groupWalletInvitedList( HttpSession session) {
 
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
-        List<Participation> participationList = groupWalletService.getGroupListInvitedMe(loginMemberDto.getMemberId());
-        System.out.println("초대된 모임지갑의 닉네임 : " + participationList.get(0).getGroupWallet().getNickname());
-        System.out.println("초대된 모임지갑의 모임장 : " + participationList.get(0).getGroupWallet().getMember().getName());
-
-        return participationList;
+        try{
+            List<InvitedDto> invitedDtoList = groupWalletService.getGroupListInvitedMe(loginMemberDto.getMemberId());
+            return invitedDtoList;
+        }catch (ArrayIndexOutOfBoundsException e){
+            return null;
+        }
     }
 
     /**
-     * 모임지갑 초대 응답
+     * 모임지갑 초대 수락
      * API 명세서
      *
      * @param id 모임지갑 id
      */
     @ResponseBody
-    @PostMapping("/{id}/invite-response")
-    public String groupWalletInviteResponse(@PathVariable Long id, @RequestParam String phone) {
-        // 메시지 api 불러오기
-        groupWalletService.inviteMember(phone, id);
-        //json으로 데이터 전달하기
-        return "redirect:/group-wallet/" + id + "/member-list";
+    @PostMapping("/{id}/invite-accept")
+    public int groupWalletInviteAccept(@PathVariable Long id, HttpSession session) {
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+        return groupWalletService.invitedAccept(id, loginMemberDto.getMemberId());
+    }
+
+    /**
+     * 모임지갑 초대 거절
+     * */
+    @ResponseBody
+    @PostMapping("/{id}/invite-refuse")
+    public int groupWalletInviteRefuse(@PathVariable Long id, HttpSession session){
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+        return groupWalletService.invitedRefuse(id, loginMemberDto.getMemberId());
     }
 
     /**

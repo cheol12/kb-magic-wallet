@@ -420,7 +420,7 @@ public class GroupWalletTabController {
         model.addAttribute("cardIssuanceDtoList", cardIssuanceDtoList);
 
 
-        return "groupwallet/groupWalletDetail01";
+        return "groupwallet/groupWalletDetail";
 
 
     }
