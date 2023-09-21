@@ -48,14 +48,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script type="text/javascript">
-        // 모임장이면 모임원 관리
-        function displayMemberList() {
-            let isChairman = ${isChairman}
-
-            if (isChairman) {
-                document.getElementById("hiddenNavItem").style.display = "block";
-            }
-        }
 
         // 모임지갑 탈퇴 확인창 메소드
         function confirmLeave(id) {
@@ -93,12 +85,51 @@
             } else {
                 document.getElementById("detail-amount").innerHTML = row_td[2].innerHTML;
             }
-            document.getElementById("detail-type").innerHTML = row_td[4].innerHTML;
             document.getElementById("detail-content").innerHTML = content;
             document.getElementById("detail-balance").innerHTML = row_td[5].innerHTML;
             modal.style.display = 'block';
         }
+        // 모임지갑 모임원 리스트 조회
+        function memberCall() {
+            let myMemberId = ${loginMemberDto.memberId};
+            let isChairman = ${isChairman};
 
+            // 이후 JavaScript 코드에서 myMemberId 변수를 사용할 수 있음
+
+            $.ajax({
+                url: "${pageContext.request.contextPath}/group-wallet/${id}/member-list",
+                type: "post",
+                dataType: "json",
+                success: function (result, status) {
+                    // 화면에 갱신
+                    var str = "";
+                    $.each(result, function (i) {
+                        str += '<tr id="searchMemberResult">'
+                        str += '<td>' + result[i].name + '</td>';
+                        str += '<td>' + result[i].roleToString + '</td>';
+
+                        // 내가 모임장인 경우 && 나와 다른 memberId인 경우에만 버튼 생성
+                        if (isChairman && (result[i].memberId !== myMemberId)) {
+                            str += '<td><button class="alert-warning" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">강퇴</button>' +
+                                '<button class="alert-primary" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">권한 부여</button>' +
+                                '<button class="alert-secondary" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">권한 철회</button></td>';
+                        } else {
+                            str += '<td></td>'; // 자신의 memberId와 일치하면 빈 칸 생성
+                        }
+
+                        str += '</tr>';
+                    });
+                    $("#getMemberList").empty();
+                    $("#getMemberList").append(str);
+
+                    // 강퇴 버튼 클릭 이벤트 핸들러
+                    //    모임장 권한 아직
+                },
+                error: function (result, status) {
+                    // 오류 처리
+                },
+            });
+        }
         // 모임지갑 상세내역
         function historyCall() {
             $.ajax({
@@ -109,24 +140,24 @@
                     // 화면에 갱신
                     var str = "";
                     $.each(result, function (i) {
-                        let dateTime = new Date(result[i].dateTime);
-                        let detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
-                        // 날짜와 시간을 따로 추출
-                        let date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
-                        let time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
+                        var dateTime = new Date(result[i].dateTime);
+                        var detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
 
-                        str += '<TR id="searchDateResult" onclick="PopupDetail(this, \'' + detailString  + '\')" data-bs-toggle="modal" data-bs-target="#detailModal">'
+                        var date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
+                        var time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
+
+                        str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
                         // 날짜 시간 처리
-                        str += '<TD>' + date + '</TD>';
-                        str += '<TD>' + time + '</TD>';
+                        str += '<TD class="text-center">' + date + '</TD>';
+                        str += '<TD class="text-center">' + time + '</TD>';
                         // 입금액 출금액 처리
                         if (result[i].type === '입금') {
-                            str += '<TD> ' + formatNumberWithCommas(result[i].amount) + ' ' + result[i].currencyCode + '</TD><TD> </TD>';
+                            str += '<TD class="text-center"> ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> </TD>';
                         } else {
-                            str += '<TD> </TD>' + '<TD> ' + formatNumberWithCommas(result[i].amount) + ' ' + result[i].currencyCode + '</TD>';
+                            str += '<TD class="text-center"> </TD>' + '<TD class="text-center"> ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
                         }
-                        str += '<TD>  ' + result[i].type + '</TD>';
-                        str += '<TD>' + formatNumberWithCommas(result[i].balance) + ' ' + result[i].currencyCode + '</TD>';
+                        str += '<TD class="text-center">  ' + result[i].type + '</TD>';
+                        str += '<TD class="text-center">' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
                         str += '</TR>';
                     });
                     $("#dateSelectHistory").append(str);
@@ -141,12 +172,12 @@
         $(document).ready(function () {
             memberCall();
             historyCall();
-            displayMemberList();
+
+            // 모임지갑에서 강퇴 버튼 클릭
 
             // $(document).on("click", , function(){ }) 형식을 쓰는 이유
             // = 동적 요소에 대한 이벤트 처리: 이 방식을 사용하면 페이지가 로드된 이후에
             // 동적으로 생성되는 요소에 대해서도 이벤트 처리를 할 수 있다
-            // 모임지갑에서 강퇴 버튼 클릭
             $(document).on("click", '.alert-warning', function () {
                 let memberId = $(this).data("member-id");
                 let memberName = $(this).data("member-name")
@@ -178,16 +209,15 @@
 
             });
 
-
-            <%--document.getElementById("deleteButton").addEventListener("click", function (event) {--%>
-            <%--    if (${countMember}>--%>
-            <%--    1--%>
-            <%--)--%>
-            //     {
-            //         event.preventDefault();
-            //         alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
-            //     }
-            // });
+            document.getElementById("deleteButton").addEventListener("click", function (event) {
+                if (${countMember}>
+                1
+            )
+                {
+                    event.preventDefault();
+                    alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
+                }
+            });
 
             // 모임지갑 권한 부여 버튼 클릭
             $(document).on("click", '.alert-primary', function () {
@@ -255,40 +285,6 @@
 
             });
 
-            $("#selectDateForm").on("submit", function (e) {
-                e.preventDefault()
-                var formValues = $("form[name=selectDateForm]").serialize();
-                $.ajax({
-                    url: "/personalwallet/selectDate",
-                    type: "post",
-                    dataType: "json",
-                    data: formValues,
-                    success: function (result, status) {
-                        $("#dateSelectHistory").empty();
-                        // 화면에 갱신
-                        var str = "";
-                        $.each(result, function (i) {
-                            str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
-                            // 날짜 시간 처리
-                            str += '<TD>' + result[i].dateTime + '</TD>';
-                            str += '<TD>' + result[i].dateTime + '</TD>';
-                            // 입금액 출금액 처리
-                            if (result[i].type === '입금') {
-                                str += '<TD> 입금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> 출금액: -</TD>';
-                            } else {
-                                str += '<TD> 입금액: -</TD>' + '<TD> 출금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
-                            }
-                            str += '<TD>' + result[i].type + '</TD>';
-                            str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
-                            str += '</TR>';
-                        });
-                        $("#dateSelectHistory").append(str);
-                    },
-                    error: function (result, status) {
-
-                    },
-                })
-            });
 
             // 모달 닫기 (조회기간 설정 버튼 누른 후)
             $("#submitButton").on("click", function () {
@@ -406,6 +402,8 @@
 
             }
 
+
+
         }
 
     </script>
@@ -452,14 +450,18 @@
                                 aria-selected="true"
                         >모임 거래 내역
                         </button>
-                        <!-- Button trigger modal -->
+                    </li>
+                    <li class="nav-item">
                         <button
                                 type="button"
-                                class="btn btn-primary"
-                                data-bs-toggle="modal"
-                                data-bs-target="#basicModal"
+                                class="nav-link"
+                                role="tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#navs-top-member"
+                                aria-controls="navs-top-member"
+                                aria-selected="false"
                         >
-                            조회 기간 설정
+                            모임 멤버 조회
                         </button>
                     </li>
                     <li class="nav-item">
@@ -501,19 +503,6 @@
                             모임 연결 카드
                         </button>
                     </li>
-                    <li class="nav-item" id="hiddenNavItem" style="display: none;">
-                        <button
-                                type="button"
-                                class="nav-link"
-                                role="tab"
-                                data-bs-toggle="tab"
-                                data-bs-target="#navs-top-member"
-                                aria-controls="navs-top-member"
-                                aria-selected="false"
-                        >
-                            모임 멤버 관리
-                        </button>
-                    </li>
                 </ul>
 
 
@@ -522,6 +511,14 @@
                     <!--모임 거래내역 START-->
                     <jsp:include page="tab/groupTabTranserHistory.jsp"/>
                     <!--모임 거래내역 END-->
+
+                    <!--모임 멤버조회 START-->
+                    <jsp:include page="tab/groupTabMemberList.jsp"/>
+                    <!--모임 멤버조회 END-->
+
+                    <!-- 회비 규칙 START -->
+                    <jsp:include page="tab/groupTabDueRule.jsp"/>
+                    <!-- 회비 규칙 END -->
 
                     <!-- 회비 규칙 START -->
                     <jsp:include page="tab/groupTabDueRule.jsp"/>
@@ -534,10 +531,6 @@
                     <!-- 모임 연결 카드 START -->
                     <jsp:include page="tab/groupTabCard.jsp"/>
                     <!-- 모임 연결 카드 END -->
-
-                    <!--모임 멤버조회 START-->
-                    <jsp:include page="tab/groupTabMemberList.jsp"/>
-                    <!--모임 멤버조회 END-->
 
                 </div>
             </div>
@@ -552,7 +545,7 @@
             <c:choose>
                 <c:when test="${isChairman == true}">
                     <button id="deleteButton"
-                       class="btn btn-primary" onclick="deleteWallet(event)">모임 지갑 삭제</button>
+                            class="btn btn-primary" onclick="deleteWallet(event)">모임 지갑 삭제</button>
                     <a href="${pageContext.request.contextPath}/group-wallet/${id}/invite-form" id="inviteButton"
                        class="btn btn-primary">모임 지갑에 초대하기</a>
                 </c:when>
@@ -602,8 +595,7 @@
                             data-bs-dismiss="modal">
                         취소
                     </button>
-                    <button type="submit" class="btn btn-primary" id="submitButton">조회
-                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitButton">조회</button>
                 </div>
             </form>
         </div>
@@ -614,68 +606,46 @@
 <div class="col mb-0">
     <div class="col mb-0 col-lg-5 col-md-auto">
         <!-- Modal -->
-        <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal fade show" id="detailModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel11">거래상세내역</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="row g-2">
-                                <div class="col mb-3">
-                                    <label class="form-label">거래 날짜</label>
-                                    <div id="detail-date"></div>
-                                </div>
-
-                                <div class="col mb-3">
-                                    <label class="form-label">거래 시간</label>
-                                    <div id="detail-time"></div>
-                                </div>
-                            </div>
-
-                            <div class="row g-2">
-                                <div class="col mb-3">
-                                    <label class="form-label">거래종류</label>
-                                    <div id="detail-type"></div>
-                                </div>
-                            </div>
-
-                            <div class="row g-2">
-                                <div class="col mb-3">
-                                    <label class="form-label">상세내용</label>
-                                    <div id="detail-content"></div>
-                                </div>
-                            </div>
-
-
-
-                            <div class="row g-2">
-                                <div class="col mb-0">
-                                    <label class="form-label">금액</label>
-                                    <div class="col mb-3">
-                                        <div id="detail-amount"></div>
-                                    </div>
-                                </div>
-                                <div class="col mb-0">
-                                    <label class="form-label">거래후 잔액</label>
-                                    <div class="col mb-3">
-                                        <div id="detail-balance"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+                    <div>
+                        <p>거래 날짜</p>
+                        <p class="col mb-0" style="height: 50px" id="detail-date"
+                           readonly>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                            Close
-                        </button>
-                        <button type="button" class="btn btn-primary">Save</button>
+                    <hr>
+                    <div>
+                        <p>거래 시간</p>
+                        <p class="col mb-0" style="height: 50px" id="detail-time"
+                           readonly>
+                    </div>
+                    <hr>
+                    <div>
+                        <p>금액</p>
+                        <p class="col mb-0" style="height: 50px" id="detail-amount"
+                           readonly>
+                    </div>
+                    <hr>
+                    <div>
+                        <p>상세 내용</p>
+                        <p class="col mb-0" style="height: 50px" id="detail-content"
+                           readonly>
+                    </div>
+                    <hr>
+                    <div>
+                        <p>거래후 잔액</p>
+                        <p class="col mb-0" style="height: 50px" id="detail-balance"
+                           readonly>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -722,10 +692,6 @@
         </div>
     </div>
 </div>
-
-<!-- 회비 규칙 생성 Modal -->
-<jsp:include page="modal/groupModalDueRule.jsp"/>
-
 <br>
 <br>
 <br>

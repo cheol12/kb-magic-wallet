@@ -197,8 +197,8 @@ public class ValidDataTest {
          * 유효카드: 2개 (김진형, 최예빈)
          * 카드번호: 유효카드 2개에 대해 랜덤으로 생성 (그 외의 데이터는 동일한 숫자 나열)
          */
-        CardIssuance cardIssuance1 = CardIssuance.builder().cardNumber("4311-5214-2351-5232").cardState(CardState.OK).member(member1).build();
-        CardIssuance cardIssuance2 = CardIssuance.builder().cardNumber("4312-5114-2151-5532").cardState(CardState.OK).member(member2).build();
+        CardIssuance cardIssuance1 = CardIssuance.builder().cardNumber("4311-5214-2351-5232").cardState(CardState.OK).member(member1).walletId(member1.getMemberId()).build();
+        CardIssuance cardIssuance2 = CardIssuance.builder().cardNumber("4312-5114-2151-5532").cardState(CardState.OK).member(member2).walletId(member2.getMemberId()).build();
         CardIssuance cardIssuance3 = CardIssuance.builder().cardNumber("3333-3333-3333-3333").cardState(CardState.OK).member(member2).build();
         CardIssuance cardIssuance4 = CardIssuance.builder().cardNumber("4444-4444-4444-4444").cardState(CardState.OK).member(member2).build();
         CardIssuance cardIssuance5 = CardIssuance.builder().cardNumber("5555-5555-5555-5555").cardState(CardState.OK).member(member2).build();

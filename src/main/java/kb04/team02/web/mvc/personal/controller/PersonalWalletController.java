@@ -6,6 +6,10 @@ import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.ExchangeCalDto;
 import kb04.team02.web.mvc.exchange.dto.ExchangeRateDto;
 import kb04.team02.web.mvc.exchange.service.ExchangeService;
+import kb04.team02.web.mvc.group.dto.GroupMemberDto;
+import kb04.team02.web.mvc.mypage.dto.CardNumberDto;
+import kb04.team02.web.mvc.mypage.service.CardIssuanceService;
+import kb04.team02.web.mvc.mypage.service.MyPageService;
 import kb04.team02.web.mvc.personal.dto.PersonalWalletTransferDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.exception.InsufficientBalanceException;
@@ -27,6 +31,10 @@ public class PersonalWalletController {
 
     private final PersonalWalletService personalWalletService;
     private final ExchangeService exchangeService;
+    private final MyPageService myPageService;
+    private final CardIssuanceService cardIssuanceService;
+
+
     /**
      * 개인지갑 메인 페이지
      * API 명세서 ROWNUM:5
@@ -37,13 +45,21 @@ public class PersonalWalletController {
         WalletDetailDto walletDetailDto = personalWalletService.personalWallet(member);
         ExchangeCalDto usd = exchangeService.expectedExchangeAmount(CurrencyCode.USD, walletDetailDto.getBalance().get("USD"));
         ExchangeCalDto jpy = exchangeService.expectedExchangeAmount(CurrencyCode.JPY, walletDetailDto.getBalance().get("JPY"));
+        Long surplus = personalWalletService.personalWalletCalSurplus(member);
+        CardNumberDto cardNumber = myPageService.getCardNumber(member);
+
+        boolean connectToWallet = cardIssuanceService.isConnectToPersonalWallet(member.getMemberId());
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("personalwallet/personal-wallet");
         modelAndView.addObject("walletDetailDto", walletDetailDto);
-
+        modelAndView.addObject("connected", connectToWallet);
         modelAndView.addObject("usdDto", usd);
         modelAndView.addObject("jpyDto", jpy);
+
+        modelAndView.addObject("cardNumber", cardNumber);
+
+        modelAndView.addObject("surplus", surplus);
 
         return modelAndView;
     }
@@ -114,5 +130,14 @@ public class PersonalWalletController {
         System.out.println(model.getAttribute("endDate"));
         System.out.println("===============");
         return walletDetailDto.getList();
+    }
+
+    @ResponseBody
+    @GetMapping("/cardStatusUpdate")
+    public boolean changeCardConnection(Model model, HttpSession session) {
+        System.out.println("qqqqqqqqqqqqqqqqqqqqqqqq");
+        LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
+        cardIssuanceService.createPersonalWalletCardConnection(member.getMemberId());
+        return true;
     }
 }
