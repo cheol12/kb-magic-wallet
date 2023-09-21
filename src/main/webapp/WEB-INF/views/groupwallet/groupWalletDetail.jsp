@@ -406,8 +406,6 @@
 
             }
 
-
-
         }
 
     </script>
@@ -453,6 +451,15 @@
                                 aria-controls="navs-top-home"
                                 aria-selected="true"
                         >모임 거래 내역
+                        </button>
+                        <!-- Button trigger modal -->
+                        <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#basicModal"
+                        >
+                            조회 기간 설정
                         </button>
                     </li>
                     <li class="nav-item">
@@ -595,7 +602,8 @@
                             data-bs-dismiss="modal">
                         취소
                     </button>
-                    <button type="submit" class="btn btn-primary" id="submitButton">조회</button>
+                    <button type="submit" class="btn btn-primary" id="submitButton">조회
+                    </button>
                 </div>
             </form>
         </div>
@@ -606,46 +614,68 @@
 <div class="col mb-0">
     <div class="col mb-0 col-lg-5 col-md-auto">
         <!-- Modal -->
-        <div class="modal fade show" id="detailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel11">거래상세내역</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div>
-                        <p>거래 날짜</p>
-                        <p class="col mb-0" style="height: 50px" id="detail-date"
-                           readonly>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="row g-2">
+                                <div class="col mb-3">
+                                    <label class="form-label">거래 날짜</label>
+                                    <div id="detail-date"></div>
+                                </div>
+
+                                <div class="col mb-3">
+                                    <label class="form-label">거래 시간</label>
+                                    <div id="detail-time"></div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col mb-3">
+                                    <label class="form-label">거래종류</label>
+                                    <div id="detail-type"></div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col mb-3">
+                                    <label class="form-label">상세내용</label>
+                                    <div id="detail-content"></div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="row g-2">
+                                <div class="col mb-0">
+                                    <label class="form-label">금액</label>
+                                    <div class="col mb-3">
+                                        <div id="detail-amount"></div>
+                                    </div>
+                                </div>
+                                <div class="col mb-0">
+                                    <label class="form-label">거래후 잔액</label>
+                                    <div class="col mb-3">
+                                        <div id="detail-balance"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    <hr>
-                    <div>
-                        <p>거래 시간</p>
-                        <p class="col mb-0" style="height: 50px" id="detail-time"
-                           readonly>
-                    </div>
-                    <hr>
-                    <div>
-                        <p>금액</p>
-                        <p class="col mb-0" style="height: 50px" id="detail-amount"
-                           readonly>
-                    </div>
-                    <hr>
-                    <div>
-                        <p>상세 내용</p>
-                        <p class="col mb-0" style="height: 50px" id="detail-content"
-                           readonly>
-                    </div>
-                    <hr>
-                    <div>
-                        <p>거래후 잔액</p>
-                        <p class="col mb-0" style="height: 50px" id="detail-balance"
-                           readonly>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button type="button" class="btn btn-primary">Save</button>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 

@@ -127,7 +127,7 @@ public interface GroupWalletService {
      *                    - from id(group wallet id 자동)
      *                    - to id(내내 개인지갑 자동)
      */
-    int groupWalletWithdraw(WithDrawDto withDrawDto) throws NotEnoughBalanceException;
+    void groupWalletWithdraw(TransferDto transferDto) throws NotEnoughBalanceException;
 
 
     /**
@@ -158,14 +158,14 @@ public interface GroupWalletService {
      * 모임지갑 잔액 update + 모임지갑 이체내역 insert + 개인지갑 잔액 update + 개인지갑 이체내역 insert
      * => 트랜잭션 처리
      *
-     * @param depositDto 이체내역을 insert할 transferDto객체
+     * @param transferDto 이체내역을 insert할 transferDto객체
      *                    TransferDto
      *                    - 통화
      *                    - 금액
      *                    - from id(group wallet id 자동)
-     *                    - to id(내내 개인지갑 자동)
+     *                    - to id(내 개인지갑 자동)
      */
-    int groupWalletDeposit(DepositDto depositDto) throws NotEnoughBalanceException;
+    void groupWalletDeposit(TransferDto transferDto) throws NotEnoughBalanceException;
 
     /**
      * 정산 시 모임지갑에서 개인지갑으로의 돈 전송
