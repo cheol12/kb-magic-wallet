@@ -139,13 +139,13 @@ public class GroupWalletController {
             List<CardIssuanceDto> cardIssuanceDtoList = groupWalletService.getCardIssuanceDto(id);
             model.addAttribute("cardIssuanceDtoList", cardIssuanceDtoList);
 
-            return "groupwallet/groupWalletDetail01";
+            return "groupwallet/groupWalletDetail";
         } catch (RuntimeException e) {
             model.addAttribute("installmentDto", null);
             model.addAttribute("cardIssuanceDtoList", null);
 
 
-            return "groupwallet/groupWalletDetail01";
+            return "groupwallet/groupWalletDetail";
         }
 
     }

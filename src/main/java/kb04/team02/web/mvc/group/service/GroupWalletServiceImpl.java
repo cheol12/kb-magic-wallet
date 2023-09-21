@@ -885,7 +885,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
         Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, memberId);
 
-        if(participation.getParticipationState().equals(ParticipationState.WAITING)){
+        if(participation != null && participation.getParticipationState().equals(ParticipationState.WAITING)){
             participation.setParticipationState(ParticipationState.PARTICIPATED);
             return 1;
         }

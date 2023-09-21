@@ -172,7 +172,7 @@
 
             inviteResponse();
 
-            // 모임지갑에서 강퇴 버튼 클릭
+            // 초대 응답 버튼 누르면
             $(document).on("click", '.alert-warning', function () {
                 let groupId = $(this).data("group-id");
                 let nickname = $(this).data("nickname");
@@ -227,7 +227,7 @@
                 });
 
                 // 거절 버튼 클릭 시 이벤트 처리
-                $('#refuseBtn').on('hidden.bs.modal', function () {
+                $('#refuseBtn').on('click', function () {
                     $.ajax({
                         url: "${pageContext.request.contextPath}/group-wallet/" + groupId + "/invite-refuse",
                         type: "post",
@@ -236,9 +236,8 @@
                             console.log(result);
                             if (result > 0) {
                                 // 거절 성공 시 필요한 작업 수행
-                                alert("모임지갑의 초대를 거절했어요");
-                                modal.hide(); // 모달 닫기
-
+                                alert("모임지갑의 초대를 거절했어요!");
+                                inviteResponse();
                             } else {
                                 alert("실패했어요");
                             }
