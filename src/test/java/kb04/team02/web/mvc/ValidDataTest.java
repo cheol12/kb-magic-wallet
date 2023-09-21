@@ -348,14 +348,14 @@ public class ValidDataTest {
 
         PersonalWalletForeignCurrencyBalance personalWalletForeignCurrencyBalance3
                 = PersonalWalletForeignCurrencyBalance.builder()
-                .personalWallet(personalWallet1)
+                .personalWallet(personalWallet2)
                 .currencyCode(CurrencyCode.USD)
                 .balance(61L)
                 .build();
 
         PersonalWalletForeignCurrencyBalance personalWalletForeignCurrencyBalance4
                 = PersonalWalletForeignCurrencyBalance.builder()
-                .personalWallet(personalWallet1)
+                .personalWallet(personalWallet2)
                 .currencyCode(CurrencyCode.JPY)
                 .balance(3655L)
                 .build();
