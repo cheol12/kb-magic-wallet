@@ -771,77 +771,77 @@ public class ValidDataTest {
 
 
         Saving save1 = savingRepository.save(Saving.builder()
-                .name("KB내맘대로적금")
+                .name("KB 두근두근 여행 적금")
                 .savingComment("\n" +
-                        "상품에 관한 다양한 옵션(우대이율, 부가서비스 등)을 제공함으로써 고객이 직접 상품 요건을 설계하여 가입할 수 있는 비대면채널 전용 DIY(Do-It-Yourself)형 상품")
-                .interestRate(3.75) // Example: Increment interest rate for each saving
-                .period(36) // Example: Increment period for each saving
-                .amountLimit(3_000_000L) // Example: Increment amount limit for each saving
+                        "여행준비의 혜택과 설렘이 있는 적금으로, 노랑풍선 최대 3만원 & 4% 외화적금")
+                .interestRate(3.9) // Example: Increment interest rate for each saving
+                .period(6) // Example: Increment period for each saving
+                .amountLimit(1_000_000L) // Example: Increment amount limit for each saving
                 .build());
         Saving save2 = savingRepository.save(Saving.builder()
-                .name("직장인우대적금")
-                .savingComment("직장인의 재테크 스타일을 반영하여 급여이체를 하거나 보너스 등의 부정기적인 자금을 추가로 적립하는 경우 우대이율로 목돈마련을 지원하고 결혼, 출산, 이사 등 이벤트를 위한 중도해지시 기본이율을 제공 하는 적립식 예금")
-                .interestRate(4.05) // Example: Increment interest rate for each saving
+                .name("KB WISE 외화정기적금")
+                .savingComment("내가 선택한 금리적용주기에 따라 복리로 이자를 불리는 외화적금")
+                .interestRate(4.5) // Example: Increment interest rate for each saving
                 .period(36) // Example: Increment period for each saving
-                .amountLimit(3_000_000L) // Example: Increment amount limit for each saving
+                .amountLimit(5_000_000L) // Example: Increment amount limit for each saving
                 .build());
         Saving save3 = savingRepository.save(Saving.builder()
+                .name("KB 적립식 외화정기적금")
+                .savingComment("외화를 매월 자동이체하거나 자유롭게 저축 가능한 스마트한 외화적금")
+                .interestRate(3.75) // Example: Increment interest rate for each saving
+                .period(12) // Example: Increment period for each saving
+                .amountLimit(3_000_000L) // Example: Increment amount limit for each saving
+                .build());
+        Saving save4 = savingRepository.save(Saving.builder()
                 .name("KB 특★한 적금")
                 .savingComment("내가 원하는 특별한 날을 만기일로 지정하고 변경할 수 있는 단기 적금")
                 .interestRate(6.0) // Example: Increment interest rate for each saving
                 .period(1) // Example: Increment period for each saving
                 .amountLimit(300_000L) // Example: Increment amount limit for each saving
                 .build());
-        Saving save4 = savingRepository.save(Saving.builder()
-                .name("KB장병내일준비적금")
-                .savingComment("병사봉급 한도 내에서 복무기간 동안 목돈마련을 원하는 병역 의무복무자 맞춤형 상품으로, 은행 거래실적에 따라 추가 우대이율 제공")
-                .interestRate(5.5) // Example: Increment interest rate for each saving
-                .period(24) // Example: Increment period for each saving
-                .amountLimit(200_000L) // Example: Increment amount limit for each saving
-                .build());
-        Saving save5 = savingRepository.save(Saving.builder()
-                .name("KB청년도약계좌")
-                .savingComment("힘찬 미래 높은 도약")
-                .interestRate(6.0) // Example: Increment interest rate for each saving
-                .period(3) // Example: Increment period for each saving
-                .amountLimit(700_000L) // Example: Increment amount limit for each saving
-                .build());
+//        Saving save5 = savingRepository.save(Saving.builder()
+//                .name("KB청년도약계좌")
+//                .savingComment("힘찬 미래 높은 도약")
+//                .interestRate(6.0) // Example: Increment interest rate for each saving
+//                .period(3) // Example: Increment period for each saving
+//                .amountLimit(700_000L) // Example: Increment amount limit for each saving
+//                .build());
         Saving save6 = savingRepository.save(Saving.builder()
-                .name("KB맑은하늘적금")
+                .name("KB 맑은하늘적금")
                 .savingComment("맑은하늘을 위한 생활 속 작은 실천에 대해 우대금리를 제공하고, 대중교통/자전거상해 관련 무료 보험서비스(최대 2억원 보장)를 제공하는 친환경 특화 상품")
                 .interestRate(3.35) // Example: Increment interest rate for each saving
                 .period(36) // Example: Increment period for each saving
                 .amountLimit(1_000_000L) // Example: Increment amount limit for each saving
                 .build());
-        Saving save7 = savingRepository.save(Saving.builder()
-                .name("온국민 건강적금-골든라이프")
-                .savingComment("시니어 고객의 건강관리와 금융 혜택을 결합한 앱테크형 상품으로, 저소득층 대상 특별 우대이율을 제공하는 적금")
-                .interestRate(10.0) // Example: Increment interest rate for each saving
-                .period(6) // Example: Increment period for each saving
-                .amountLimit(200_000L) // Example: Increment amount limit for each saving
-                .build());
+//        Saving save7 = savingRepository.save(Saving.builder()
+//                .name("온국민 건강적금-골든라이프")
+//                .savingComment("시니어 고객의 건강관리와 금융 혜택을 결합한 앱테크형 상품으로, 저소득층 대상 특별 우대이율을 제공하는 적금")
+//                .interestRate(10.0) // Example: Increment interest rate for each saving
+//                .period(6) // Example: Increment period for each saving
+//                .amountLimit(200_000L) // Example: Increment amount limit for each saving
+//                .build());
         Saving save8 = savingRepository.save(Saving.builder()
-                .name("KB맑은바다적금")
+                .name("KB 맑은바다적금")
                 .savingComment("해양쓰레기 줄이기 활동에 동참할 경우 친환경 실천 우대이율을 제공하고,\n" +
                         "맑은바다의 소중함에 대한 공감대를 형성하는 친환경 특화 상품")
                 .interestRate(3.05) // Example: Increment interest rate for each saving
                 .period(12) // Example: Increment period for each saving
                 .amountLimit(1_000_000L) // Example: Increment amount limit for each saving
                 .build());
-        Saving save9 = savingRepository.save(Saving.builder()
-                .name("KB Young Youth 적금")
-                .savingComment("자녀가 성년이 될 때까지 장기거래가 가능하며, 어린이/청소년을 위한 무료 보험가입서비스를 제공하는 적금")
-                .interestRate(3.65) // Example: Increment interest rate for each saving
-                .period(12) // Example: Increment period for each saving
-                .amountLimit(3_000_000L) // Example: Increment amount limit for each saving
-                .build());
-        Saving save10 = savingRepository.save(Saving.builder()
-                .name("KB상호부금(자유적립식)")
-                .savingComment("목돈을 마련하는 국민은행의 대표 적립식예금")
-                .interestRate(3.55) // Example: Increment interest rate for each saving
-                .period(36) // Example: Increment period for each saving
-                .amountLimit(5_000_000L) // Example: Increment amount limit for each saving
-                .build());
+//        Saving save9 = savingRepository.save(Saving.builder()
+//                .name("KB Young Youth 적금")
+//                .savingComment("자녀가 성년이 될 때까지 장기거래가 가능하며, 어린이/청소년을 위한 무료 보험가입서비스를 제공하는 적금")
+//                .interestRate(3.65) // Example: Increment interest rate for each saving
+//                .period(12) // Example: Increment period for each saving
+//                .amountLimit(3_000_000L) // Example: Increment amount limit for each saving
+//                .build());
+//        Saving save10 = savingRepository.save(Saving.builder()
+//                .name("KB상호부금(자유적립식)")
+//                .savingComment("목돈을 마련하는 국민은행의 대표 적립식예금")
+//                .interestRate(3.55) // Example: Increment interest rate for each saving
+//                .period(36) // Example: Increment period for each saving
+//                .amountLimit(5_000_000L) // Example: Increment amount limit for each saving
+//                .build());
 
         InstallmentSaving installmentSaving1 = InstallmentSaving.builder()
                 .maturityDate(LocalDateTime.of(2023, 12, 7, 0, 5))
@@ -849,7 +849,7 @@ public class ValidDataTest {
                 .totalAmount(600_0000L) // Example: Set a fixed total amount
                 .savingDate(10) // Example: Set a fixed saving date
                 .savingAmount(100_000L) // Example: Set a fixed saving amount
-                .saving(save7)
+                .saving(save4)
                 .groupWallet(groupWallet1)
                 .build();
         installmentSavingRepository.save(installmentSaving1);
