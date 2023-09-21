@@ -93,39 +93,37 @@
             <div class="container-xxl flex-grow-1 container-p-y">
                 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">환전/ </span>오프라인</h4>
                 <div class="row">
-                    <a href="/exchange/offline/form">
                     <div class="col-sm-6">
                         <div class="card">
                             <div class="card-body">
-                                <br>
-                                <h5 class="card-title">환전 신청하러 가기</h5>
-                                <br>
+                                <h3 class="card-title">오프라인 환전</h3>
+                                <p class="card-text">원화에서 외화로 직접 수령!!</p>
+                                <a href="/exchange/offline/form" class="btn btn-primary">환전하러 가기</a>
                             </div>
                         </div>
                     </div>
-                    </a>
                 </div>
                 <br>
                 <div class="card">
-                    <h5 class="card-header">오프라인 환전 내역</h5>
+                    <h2 class="card-header">오프라인 환전 내역</h2>
                     <div class="table-responsive text-nowrap">
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th>수령 지점</th>
-                                <th>금액</th>
-                                <th>수령일</th>
-                                <th>상태</th>
+                                <th><h4 style="margin-bottom: 0" class="text-center">수령 지점</h4></th>
+                                <th><h4 style="margin-bottom: 0" class="text-center">금액</h4></th>
+                                <th><h4 style="margin-bottom: 0" class="text-center">수령일</h4></th>
+                                <th><h4 style="margin-bottom: 0">상태</h4></th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody class="table-border-bottom-0">
                             <c:forEach items="${offlineExchangeHistoryList}" var="receipt" varStatus="loop">
                             <tr>
-                                <td>${receipt.bankName}</td>
-                                <td>${receipt.currencyCode} ${receipt.amount}</td>
-                                <td>${receipt.receiptDate}</td>
-                                <td><span class="badge bg-label-primary me-1 receiptState" data-receipt-state="${receipt.receiptState}">${receipt.receiptState}</span></td>
+                                <td><h5 style="margin-bottom: 0" class="text-center">${receipt.bankName}</h5></td>
+                                <td><h5 style="margin-bottom: 0" class="text-center">${receipt.currencyCode} ${receipt.amount}</h5></td>
+                                <td><h5 style="margin-bottom: 0" class="text-center">${receipt.receiptDate}</h5></td>
+                                <td><span style="margin-bottom: 0" class="badge bg-label-primary me-1 receiptState" data-receipt-state="${receipt.receiptState}">${receipt.receiptState}</span></td>
                                 <td><button onclick="cancelEvent(${loop.index + 1});" id="cancelBtn${loop.index + 1}" class="btn btn-outline-secondary">취소하기</button></td>
                             </tr>
                                 <input id="receiptId${loop.index + 1}" type="hidden" value="${receipt.offlineReceiptId}">
