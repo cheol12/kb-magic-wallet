@@ -43,7 +43,7 @@
         <div class="center">
             <%----%>
             <div class="banner">
-                <img src="${pageContext.request.contextPath}/images/kb_group_saving_banner.jpg" style="width: 1200px; height: 400px;  border-radius: 25px;" >
+                <img src="${pageContext.request.contextPath}/images/saving/savingBanner.jpg" style="width: 1200px; height: 400px;  border-radius: 25px;" >
 
             </div>
         <!-- 나머지 HTML 내용 -->
