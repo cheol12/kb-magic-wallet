@@ -68,19 +68,19 @@
                         var str = "";
                         $.each(result, function (i) {
                             str += '<tr data-id=' + result[i].memberId + '>';
-                            str += '<TD class="text-center">' + result[i].name + '</TD>';
+                            str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-break text-center" style="margin-bottom: 0">' + result[i].name + '</h4></TD>';
                             if (result[i].roleToString == '모임장' || result[i].roleToString == '공동모임장') {
-                                str += '<TD class="text-center" >' + result[i].roleToString + '👑' + '</TD>';
+                                str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-break text-center" style="margin-bottom: 0">' +  result[i].roleToString + '👑' + '</h4></TD>';
                             } else {
-                                str += '<TD class="text-center" >' + result[i].roleToString + '</TD>';
+                                str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-break text-center" style="margin-bottom: 0">' + result[i].roleToString + '</TD>';
                             }
                             if (result[i].cardIsConnect) {
                                 str += '<td class="text-center">연결 중&nbsp&nbsp&nbsp&nbsp<i class="material-icons" style="color: green">credit_card</i></td>';
                             } else {
                                 if (result[i].role == "GENERAL") {
-                                    str += '<td id="cant-connect-card" class="open-modal text-center">연결 불가 <i class="material-icons" style="color:red;">credit_card</i></td>';
+                                    str += '<td id="cant-connect-card" class="open-modal text-center"><h4 class="text-break text-center" style="margin-bottom: 0"> 연결 불가 <i class="material-icons" style="color:red;">credit_card</i></h4></td>';
                                 } else {
-                                    str += `<td id="can-connect-card" class="open-modal text-center">연결 가능 <i class="material-icons">credit_card</i></td>`
+                                    str += `<td id="can-connect-card" class="open-modal text-center"><h4 class="text-break text-center" style="margin-bottom: 0"> 연결 가능 <i class="material-icons">credit_card</i></h4></td>`
                                 }
                             }
                             str += '</TR>';
@@ -183,16 +183,25 @@
 </div>
 <div class="card-header d-flex align-items-center justify-content-between pb-0">
     <div class="card-title mb-0">
-        <h5 class="m-0 me-2">지갑 보유내역</h5>
+        <h2 class="m-0 me-2">카드 연결내역</h2>
         <small class="text-muted">모임원</small>
     </div>
 </div>
 <table class="table table">
     <thead>
     <tr>
-        <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>이름</th>
-        <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>권한</th>
-        <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>카드연결</th>
+        <th class="text-center">
+            <i class="fab fa-angular fa-lg text-danger me-3"></i>
+            <h5 class="text-break" style="margin-bottom: 0">이름</h5>
+        </th>
+        <th class="text-center">
+            <i class="fab fa-angular fa-lg text-danger me-3"></i>
+            <h5 class="text-break" style="margin-bottom: 0">권한</h5>
+        </th>
+        <th class="text-center">
+            <i class="fab fa-angular fa-lg text-danger me-3"></i>
+            <h5 class="text-break" style="margin-bottom: 0">카드연결</h5>
+        </th>
     </tr>
     </thead>
     <tbody class="table-border-bottom-0" id="table">
