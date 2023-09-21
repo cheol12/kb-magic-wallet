@@ -892,7 +892,7 @@ public class DataLoader {
                 .address(bankAddr6)
                 .build());
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
         exchangeRateRepository.save(ExchangeRate.builder().insertDate(LocalDateTime.parse("2023-09-18T07:08", formatter)).currencyCode(CurrencyCode.JPY).tradingBaseRate(897.730000).telegraphicTransferBuyingRate(906.430000).telegraphicTransferSellingRate(889.030000).buyingRate(913.440000).sellingRate(882.020000).build());
         exchangeRateRepository.save(ExchangeRate.builder().insertDate(LocalDateTime.parse("2023-09-18T07:08", formatter)).currencyCode(CurrencyCode.USD).tradingBaseRate(1325.500000).telegraphicTransferBuyingRate(1338.300000).telegraphicTransferSellingRate(1312.700000).buyingRate(1348.690000).sellingRate(1302.310000).build());
@@ -1181,6 +1181,5 @@ public class DataLoader {
         exchangeRateRepository.save(ExchangeRate.builder().insertDate(LocalDateTime.parse("2023-09-12T14:39", formatter)).currencyCode(CurrencyCode.USD).tradingBaseRate(1329.100000).telegraphicTransferBuyingRate(1341.900000).telegraphicTransferSellingRate(1316.300000).buyingRate(1352.350000).sellingRate(1305.850000).build());
         exchangeRateRepository.save(ExchangeRate.builder().insertDate(LocalDateTime.parse("2023-09-12T14:27", formatter)).currencyCode(CurrencyCode.JPY).tradingBaseRate(902.790000).telegraphicTransferBuyingRate(911.540000).telegraphicTransferSellingRate(894.040000).buyingRate(918.580000).sellingRate(887.000000).build());
         exchangeRateRepository.save(ExchangeRate.builder().insertDate(LocalDateTime.parse("2023-09-12T14:27", formatter)).currencyCode(CurrencyCode.USD).tradingBaseRate(1329.000000).telegraphicTransferBuyingRate(1341.800000).telegraphicTransferSellingRate(1316.200000).buyingRate(1352.250000).sellingRate(1305.750000).build());
-
     }
 }
