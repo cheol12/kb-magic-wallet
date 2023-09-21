@@ -212,11 +212,11 @@ public class GroupWalletTabController {
      */
     @ResponseBody
     @GetMapping("/{id}/rule")
-    // 회비 테이블과 객체 필요해 보임, 회비 객체를 Rule.java로 가정함
     public RuleDto groupWalletRule(@PathVariable String id, HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
 
         RuleDto ruleDto = groupWalletTabService.getRuleById(Long.parseLong(id), member.getMemberId());
+        System.out.println(ruleDto);
         return ruleDto;
     }
 
@@ -420,7 +420,7 @@ public class GroupWalletTabController {
         model.addAttribute("cardIssuanceDtoList", cardIssuanceDtoList);
 
 
-        return "groupwallet/groupWalletDetail01";
+        return "groupwallet/groupWalletDetail";
 
 
     }

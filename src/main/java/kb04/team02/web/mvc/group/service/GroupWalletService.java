@@ -229,13 +229,19 @@ public interface GroupWalletService {
      * @author 김철
      * 내가 초대된 모임지갑 리스트를 보기
      * */
-    List<Participation> getGroupListInvitedMe(Long memberId);
+    List<InvitedDto> getGroupListInvitedMe(Long memberId);
 
     /**
      * @author 김철
-     * 모임지갑 초대에 응답하기
+     * 모임지갑 초대 수락하기
      * */
-    int invitedResponse(Long groupWalletId, Long memberId, boolean confirm);
+    int invitedAccept(Long groupWalletId, Long memberId);
+
+    /**
+     * @author 김철
+     * 모임지갑 초대 거절하기
+     * */
+    int invitedRefuse(Long groupWalletId, Long memberId);
 
     /**
      * 회비 내기

@@ -44,7 +44,7 @@
         <div id="first-box" class="box">
             <div class="first-contents">
                 <h1>KB<p id="first-text">MAGIC WALLET</p><p id="second-text">깨비의 요술지갑</p></h1>
-                <p>Experience hassle-free foreign currency top-ups with our Foreign currency recharge wallet service
+                <p>다같이 해외여행엔 매직월렛! 지갑 하나로 달러, 엔화 환전하기!
                 </p>
             </div>
         </div>
@@ -71,10 +71,10 @@
             </div>
             <div class="divider">
                 <div class="title">
-                    Exchange
+                    환전
                 </div>
                 <div class="content">
-                    Sign up for your free NEFA Wallet on web, <br> iOS or Android and follow our easy process to set up your profile
+                    지갑 하나에 다양한 외화 충전 가능 <br> 전세계 어디서든 온/오프라인 환전 지원
                 </div>
             </div>
         </div>
@@ -86,10 +86,10 @@
             </div>
             <div class="divider">
                 <div class="title">
-                    Wallet
+                    지갑
                 </div>
                 <div class="content">
-                    Choose your preferred payment method <br>such as bank transfer or credit card to top up your NEFA Wallet
+                    개인지갑과 모임지갑을 제공 <br> 모임원들에게 투명한 입출금 내역 공개
                 </div>
             </div>
         </div>
@@ -101,10 +101,10 @@
             </div>
             <div class="divider">
                 <div class="title">
-                    Savings
+                    적금
                 </div>
                 <div class="content">
-                    Buy Bitcoin or Ethereum, then securely store it <br>in your Wallet or send it on easily to your friends anywhere
+                    모임원들과 함께 하는 적금 <br> 모임지갑에 보관하는 것보다 최대 4%의 이자
                 </div>
             </div>
         </div>
