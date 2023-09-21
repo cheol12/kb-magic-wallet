@@ -98,6 +98,10 @@
 <main>
     <div class="pageWrap">
         <div class="center">
+            <div class = "banner">
+                <img src="${pageContext.request.contextPath}/images/exchange/exchangeBanner.jpg" style="width: 1200px; height: 400px;  border-radius: 25px;" >
+            </div>
+            <br>
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <div class="card">
