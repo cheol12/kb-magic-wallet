@@ -48,6 +48,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script type="text/javascript">
+        // 모임장이면 모임원 관리
+        function displayMemberList() {
+            let isChairman = ${isChairman}
+
+            if (isChairman) {
+                document.getElementById("hiddenNavItem").style.display = "block";
+            }
+        }
 
         // 모임지갑 탈퇴 확인창 메소드
         function confirmLeave(id) {
@@ -89,48 +97,7 @@
             document.getElementById("detail-balance").innerHTML = row_td[5].innerHTML;
             modal.style.display = 'block';
         }
-        // 모임지갑 모임원 리스트 조회
-        function memberCall() {
-            let myMemberId = ${loginMemberDto.memberId};
-            let isChairman = ${isChairman};
 
-            // 이후 JavaScript 코드에서 myMemberId 변수를 사용할 수 있음
-
-            $.ajax({
-                url: "${pageContext.request.contextPath}/group-wallet/${id}/member-list",
-                type: "post",
-                dataType: "json",
-                success: function (result, status) {
-                    // 화면에 갱신
-                    var str = "";
-                    alert(111111111111111111111);
-                    $.each(result, function (i) {
-                        str += '<tr id="searchMemberResult">'
-                        str += '<td>' + result[i].name + '</td>';
-                        str += '<td>' + result[i].roleToString + '</td>';
-
-                        // 내가 모임장인 경우 && 나와 다른 memberId인 경우에만 버튼 생성
-                        if (isChairman && (result[i].memberId !== myMemberId)) {
-                            str += '<td><button class="alert-warning" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">강퇴</button>' +
-                                '<button class="alert-primary" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">권한 부여</button>' +
-                                '<button class="alert-secondary" data-member-id="' + result[i].memberId + '" data-member-name="' + result[i].name + '">권한 철회</button></td>';
-                        } else {
-                            str += '<td></td>'; // 자신의 memberId와 일치하면 빈 칸 생성
-                        }
-
-                        str += '</tr>';
-                    });
-                    $("#getMemberList").empty();
-                    $("#getMemberList").append(str);
-
-                    // 강퇴 버튼 클릭 이벤트 핸들러
-                    //    모임장 권한 아직
-                },
-                error: function (result, status) {
-                    // 오류 처리
-                },
-            });
-        }
         // 모임지갑 상세내역
         function historyCall() {
             $.ajax({
@@ -165,45 +132,9 @@
         // AJAX READY
 
         $(document).ready(function () {
-            alert(11111111111111);
             memberCall();
             historyCall();
-
-            // 모임지갑에서 강퇴 버튼 클릭
-
-            // $(document).on("click", , function(){ }) 형식을 쓰는 이유
-            // = 동적 요소에 대한 이벤트 처리: 이 방식을 사용하면 페이지가 로드된 이후에
-            // 동적으로 생성되는 요소에 대해서도 이벤트 처리를 할 수 있다
-            $(document).on("click", '.alert-warning', function () {
-                let memberId = $(this).data("member-id");
-                let memberName = $(this).data("member-name")
-
-                var confirmation = confirm(memberName + "님을 강퇴하시겠습니까?");
-
-                if (confirmation) {
-                    $.ajax({
-                        url: "${pageContext.request.contextPath}/group-wallet/${id}/out",
-                        type: "post",
-                        data: {memberId: memberId},
-                        success: function (result, response) {
-                            console.log(result);
-                            if (result > 0) {
-                                // 강퇴 성공 시 필요한 작업 수행
-                                alert(memberName + "님을 강퇴했어요")
-                                memberCall();
-                            } else {
-                                alert("강퇴를 실패했어요");
-                            }
-                        },
-                        error: function () {
-                            // 강퇴 실패 시 필요한 작업 수행
-                        }
-                    });
-                } else {
-                    alert("강퇴를 취소했습니다.");
-                }
-
-            });
+            displayMemberList();
 
             document.getElementById("deleteButton").addEventListener("click", function (event) {
                 if (${countMember}>
@@ -213,72 +144,6 @@
                     event.preventDefault();
                     alert("모임원이 없을 때 모임 지갑을 삭제할 수 있습니다.");
                 }
-            });
-
-            // 모임지갑 권한 부여 버튼 클릭
-            $(document).on("click", '.alert-primary', function () {
-                let memberId = $(this).data("member-id");
-                let memberName = $(this).data("member-name")
-
-                var confirmation = confirm(memberName + memberId + "님에게 공동모임장 권한을 부여하시겠습니까?");
-
-                if (confirmation) {
-                    $.ajax({
-                        url: "${pageContext.request.contextPath}/group-wallet/${id}/grant",
-                        type: "post",
-                        data: {memberId: memberId},
-                        success: function (data, result, response) {
-                            console.log(result);
-                            console.log(data);
-                            if (data > 0) {
-                                // 강퇴 성공 시 필요한 작업 수행
-                                alert(memberName + "님이 공동모임장이 되었어요!")
-                                memberCall();
-                            } else {
-                                alert("권한 부여를 실패했어요");
-                            }
-                        },
-                        error: function () {
-                            // 강퇴 실패 시 필요한 작업 수행
-                        }
-                    });
-                } else {
-                    alert("권한 부여를 취소했습니다.");
-                }
-
-            });
-
-            // 모임지갑 권한 철회 버튼 클릭
-            $(document).on("click", '.alert-secondary', function () {
-                let memberId = $(this).data("member-id");
-                let memberName = $(this).data("member-name")
-
-                var confirmation = confirm(memberName + "님의 공동모임장 권한을 철회하시겠습니까?");
-
-                if (confirmation) {
-                    $.ajax({
-                        url: "${pageContext.request.contextPath}/group-wallet/${id}/revoke",
-                        type: "post",
-                        data: {memberId: memberId},
-                        success: function (data, result, response) {
-                            console.log(result);
-                            console.log(data);
-                            if (data > 0) {
-                                // 강퇴 성공 시 필요한 작업 수행
-                                alert(memberName + "님이 모임원이 되었어요!")
-                                memberCall();
-                            } else {
-                                alert("권한 철회를 실패했어요");
-                            }
-                        },
-                        error: function () {
-                            // 강퇴 실패 시 필요한 작업 수행
-                        }
-                    });
-                } else {
-                    alert("권한 철회를 취소했습니다.");
-                }
-
             });
 
 
@@ -453,19 +318,6 @@
                                 class="nav-link"
                                 role="tab"
                                 data-bs-toggle="tab"
-                                data-bs-target="#navs-top-member"
-                                aria-controls="navs-top-member"
-                                aria-selected="false"
-                        >
-                            모임 멤버 조회
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button
-                                type="button"
-                                class="nav-link"
-                                role="tab"
-                                data-bs-toggle="tab"
                                 data-bs-target="#navs-top-rule"
                                 aria-controls="navs-top-rule"
                                 aria-selected="false"
@@ -499,6 +351,19 @@
                             모임 연결 카드
                         </button>
                     </li>
+                    <li class="nav-item" id="hiddenNavItem" style="display: none;">
+                        <button
+                                type="button"
+                                class="nav-link"
+                                role="tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#navs-top-member"
+                                aria-controls="navs-top-member"
+                                aria-selected="false"
+                        >
+                            모임 멤버 관리
+                        </button>
+                    </li>
                 </ul>
 
 
@@ -507,14 +372,6 @@
                     <!--모임 거래내역 START-->
                     <jsp:include page="tab/groupTabTranserHistory.jsp"/>
                     <!--모임 거래내역 END-->
-
-                    <!--모임 멤버조회 START-->
-                    <jsp:include page="tab/groupTabMemberList.jsp"/>
-                    <!--모임 멤버조회 END-->
-
-                    <!-- 회비 규칙 START -->
-                    <jsp:include page="tab/groupTabDueRule.jsp"/>
-                    <!-- 회비 규칙 END -->
 
                     <!-- 회비 규칙 START -->
                     <jsp:include page="tab/groupTabDueRule.jsp"/>
@@ -527,6 +384,10 @@
                     <!-- 모임 연결 카드 START -->
                     <jsp:include page="tab/groupTabCard.jsp"/>
                     <!-- 모임 연결 카드 END -->
+
+                    <!--모임 멤버조회 START-->
+                    <jsp:include page="tab/groupTabMemberList.jsp"/>
+                    <!--모임 멤버조회 END-->
 
                 </div>
             </div>
@@ -688,6 +549,10 @@
         </div>
     </div>
 </div>
+
+<!-- 회비 규칙 생성 Modal -->
+<jsp:include page="modal/groupModalDueRule.jsp"/>
+
 <br>
 <br>
 <br>

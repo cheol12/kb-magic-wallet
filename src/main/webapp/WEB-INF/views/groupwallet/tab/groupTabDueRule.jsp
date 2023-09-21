@@ -13,13 +13,15 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <script type="text/javascript">
-        let pageContext = "${pageContext.request.contextPath}";
-
         $(document).ready(function () {
+            let pageContext = "${pageContext.request.contextPath}";
+            let groupWalletDue = ${groupWallet.due};
+            let personalWalletBalance = ${personalWalletBalance};
+
             $(document).on("click", "#payDueBtn", function () {
-                if(${groupWallet.due} > ${personalWalletBalance}){
+                if (groupWalletDue > personalWalletBalance) {
                     $("#cantPayModal").modal('show');
-                }else{
+                } else {
                     $("#payModal").modal('show');
                 }
             });
@@ -49,7 +51,8 @@
                     type: "GET",
                     dataType: "json",
                     success: function (data, textStatus, jqXHR) {
-                        console.log(data.dueCondition);
+                        console.log(data)
+
                         let str = "";
 
                         // 성공적으로 응답을 받았을 때 실행되는 함수
@@ -59,7 +62,7 @@
                             str += '<p style="text-align: center">' +
                                 '매 월 <strong>' + data.dueDate + '</strong>일에 모임원들이 <strong>' + data.due + '</strong>원씩 회비를 납부해요!' +
                                 '</p>';
-                            if (data.isChairman) {
+                            if (data.chairman === true) {
                                 str += '<div class="text-end">';
                                 str += '<button type="button" class="btn btn-outline-danger btn-sm" style="align-self: center">회비 규칙 삭제</button>'
                                 str += '</div>'
@@ -69,7 +72,7 @@
                             dueMemberList();
                         } else { // dueCondition이 false일 때
                             str += '<h5 style="text-align: center">회비 규칙이 없습니다.&nbsp;';
-                            if (data.isChairman) {
+                            if (data.chairman === true) {
                                 str += '회비를 생성해 볼까요?&nbsp;';
                                 str += '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#dueModal">';
                                 str += '회비 규칙 생성';
@@ -106,16 +109,16 @@
                         $.each(result, function (i) {
                             str += '<tr data-id=' + result[i].memberId + '>';
                             str += '<td class="text-center">' + result[i].name + '</TD>';
-                            if(result[i].memberId==${sessionScope.get("member").memberId}) {
+                            if (result[i].memberId ==${sessionScope.get("member").memberId}) {
                                 if (result[i].payed) {
                                     str += '<td class="text-center"><i class="material-icons" style="color:green;">check_circle</i></td>'
-                                }else{
+                                } else {
                                     str += '<td class="text-center"><i class="material-icons" style="color:red;">cancel</i> <button id="payDueBtn" class="btn btn-primary">납부하기</button></td>'
                                 }
-                            }else{
+                            } else {
                                 if (result[i].payed) {
                                     str += '<td class="text-center"><i class="material-icons" style="color:green;">check_circle</i></td>'
-                                }else{
+                                } else {
                                     str += '<td class="text-center"><i class="material-icons" style="color:red;">cancel</i></td>'
                                 }
                             }
