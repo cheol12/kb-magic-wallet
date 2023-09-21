@@ -6,4 +6,8 @@ public interface CardIssuanceService {
     public void createCardConnection(Long memberId, Long groupWalletId);
 
     public void deleteCardConnection();
+
+    boolean isConnectToPersonalWallet(Long memberId);
+
+    void createPersonalWalletCardConnection(Long memberId);
 }

@@ -186,4 +186,19 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
         personalWallet.setBalance(afterBalance);
         transferRepository.save(withdraw);
     }
+
+    @Override
+    public Long personalWalletCalSurplus(LoginMemberDto memberDto) {
+        Member member = memberRepository.findById(memberDto.getId()).orElseThrow(NoSuchElementException::new);
+        PersonalWallet personalWallet = member.getPersonalWallet();
+        List<PersonalWalletExchange> personalWalletExchanges = exchangeRepository.searchAllByPersonalWallet(personalWallet);
+        Long sum = 0L;
+        for (PersonalWalletExchange personalWalletExchange : personalWalletExchanges) {
+            if (personalWalletExchange.getBuyCurrencyCode() != CurrencyCode.KRW) {
+                Long sellAmount = personalWalletExchange.getSellAmount();
+                sum += sellAmount;
+            }
+        }
+        return sum;
+    }
 }

@@ -42,4 +42,6 @@ public interface PersonalWalletService {
      * 오류 캐치 안되면 정상 작동.
      */
     void personalWalletWithdraw(PersonalWalletTransferDto personalWalletTransferDto);
+
+    Long personalWalletCalSurplus(LoginMemberDto member);
 }

@@ -50,20 +50,21 @@
 <body>
 
 <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
-
     <h6 class="text-muted">지갑 정보</h6>
     <div class="card h-20">
         <div class="card-header d-flex align-items-center justify-content-between pb-0">
             <div class="card-title mb-0">
-                <h5 class="m-0 me-2">지갑 보유내역</h5>
+                <h2 class="m-0 me-2">지갑 보유내역</h2>
                 <small class="text-muted">원화 외화 비율</small>
             </div>
         </div>
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3" style="position: relative;">
                 <div class="d-flex flex-column align-items-center gap-1">
-                    <h2 class="mb-2" >
-                        <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;KRW&quot;) + usdDto.expectedAmount + usdDto.expectedAmount}" type="number" pattern="#,###" />
+                    <h2 class="mb-2">
+                        <fmt:formatNumber
+                                value="${walletDetailDto.balance.get(&quot;KRW&quot;) + jpyDto.expectedAmount + usdDto.expectedAmount}"
+                                type="number" pattern="#,###"/>
                         ₩</h2>
                     <span>총 보유금</span>
                 </div>
@@ -78,12 +79,13 @@
                     </div>
                     <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                         <div class="me-2">
-                            <h6 class="mb-0">KRW</h6>
+                            <h4 class="mb-0">KRW</h4>
                             <small class="text-muted">대한민국 원</small>
                         </div>
-                        <div class="user-progress">
-                            <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;KRW&quot;)}" type="number" pattern="#,###" /> KRW
-                        </div>
+                        <h5 class="user-progress">
+                            <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;KRW&quot;)}"
+                                              type="number" pattern="#,###"/> KRW
+                        </h5>
                     </div>
                 </li>
                 <li class="d-flex mb-4 pb-1">
@@ -93,12 +95,14 @@
                     </div>
                     <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                         <div class="me-2">
-                            <h6 class="mb-0">USD</h6>
+                            <h4 class="mb-0">USD</h4>
                             <small class="text-muted">미 달러</small>
                         </div>
-                        <div class="user-progress">
-                            <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;USD&quot;)}" type="number" pattern="#,###" /> USD
-                        </div>
+                        <h5 class="user-progress">
+                            <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;USD&quot;)}"
+                                              type="number" pattern="#,###"/> USD
+                            USD
+                        </h5>
                     </div>
                 </li>
                 <li class="d-flex mb-4 pb-1">
@@ -108,18 +112,17 @@
                     </div>
                     <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                         <div class="me-2">
-                            <h6 class="mb-0">JPY</h6>
+                            <h4 class="mb-0">JPY</h4>
                             <small class="text-muted">일본 엔</small>
                         </div>
-                        <div class="user-progress">
-                            <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;JPY&quot;)}" type="number" pattern="#,###" /> JPY
-                        </div>
+                        <h5 class="user-progress">
+                            <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;JPY&quot;)}"
+                                              type="number" pattern="#,###"/> JPY
+                        </h5>
                     </div>
                 </li>
-                <a href="${pageContext.request.contextPath}/group-wallet/${id}/deposit"
-                   class="btn btn-primary">채우기</a>
-                <a href="${pageContext.request.contextPath}/group-wallet/${id}/withdraw"
-                   class="btn btn-primary">꺼내기</a>
+                <a href="/personalwallet/depositForm" class="btn btn-primary">채우기</a>
+                <a href="/personalwallet/withdrawForm" class="btn btn-primary">꺼내기</a>
             </ul>
         </div>
     </div>
