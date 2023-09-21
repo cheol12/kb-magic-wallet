@@ -714,7 +714,7 @@ public class ValidDataTest {
                 .exchangeRate(1250.0)
                 .build();
         GroupWalletExchange groupWalletExchange2 = GroupWalletExchange.builder()
-                .groupWallet(groupWallet1)
+                .groupWallet(groupWallet2)
                 .sellCurrencyCode(CurrencyCode.KRW)
                 .sellAmount(500000L)
                 .afterSellBalance(500000L)
@@ -727,6 +727,7 @@ public class ValidDataTest {
         groupWalletExchangeRepository.save(groupWalletExchange2);
 
         GroupWalletPayment groupWalletPayment1 = GroupWalletPayment.builder()
+                .groupWallet(groupWallet1)
                 .currencyCode(CurrencyCode.KRW)
                 .paymentType(PaymentType.OK)
                 .paymentPlace("바나프레소 선릉 위워크점")
@@ -854,6 +855,7 @@ public class ValidDataTest {
         installmentSavingRepository.save(installmentSaving1);
 
         SavingHistory savingHistory1 = SavingHistory.builder()
+                .installmentSaving(installmentSaving1)
                 .insertDate(LocalDateTime.of(2023, 9, 10, 0, 5))
                 .amount(100000L)
                 .accumulatedAmount(100_000L)
