@@ -102,9 +102,18 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
                 () -> new NoSuchElementException("모임지갑 조회 실패")
         );
 
+        Long chairmanId = groupWallet.getMember().getMemberId();
+        boolean isChairman = memberId.equals(chairmanId);
+
+        System.out.println("memberId = " + memberId);
+        System.out.println("chairmanId = " + chairmanId);
+        System.out.println("isChairman = " + isChairman);
+
         if (!groupWallet.isDueCondition()) {
             return RuleDto.builder()
+                    .nickname(groupWallet.getNickname())
                     .dueCondition(groupWallet.isDueCondition())
+                    .isChairman(isChairman)
                     .build();
         }
 
@@ -114,7 +123,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
                 .dueAccumulation(groupWallet.getDueAccumulation())
                 .dueDate(groupWallet.getDueDate())
                 .due(groupWallet.getDue())
-                .isChairman(memberId.equals(groupWallet.getMember().getMemberId()))
+                .isChairman(isChairman)
                 .build();
     }
 

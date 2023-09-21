@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.group.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import kb04.team02.web.mvc.exchange.entity.OfflineReceipt;
 import kb04.team02.web.mvc.common.module.BooleanToYNConverter;
 import kb04.team02.web.mvc.member.entity.Member;
@@ -47,28 +48,28 @@ public class GroupWallet {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "groupWallet")
+    @OneToMany(mappedBy = "groupWallet", cascade = CascadeType.REMOVE)
     private List<DuePayment> duePayments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "groupWallet")
+    @OneToMany(mappedBy = "groupWallet", cascade = CascadeType.REMOVE)
     private List<Participation> participations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "groupWallet")
+    @OneToMany(mappedBy = "groupWallet", cascade = CascadeType.REMOVE)
     private List<GroupWalletTransfer> groupWalletTransfers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "groupWallet")
+    @OneToMany(mappedBy = "groupWallet", cascade = CascadeType.REMOVE)
     private List<GroupWalletExchange> groupWalletExchanges = new ArrayList<>();
 
-    @OneToMany(mappedBy = "groupWallet")
+    @OneToMany(mappedBy = "groupWallet", cascade = CascadeType.REMOVE)
     private List<GroupWalletPayment> groupWalletPayments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "groupWallet")
+    @OneToMany(mappedBy = "groupWallet", cascade = CascadeType.REMOVE)
     private List<GroupWalletForeignCurrencyBalance> foreignCurrencyBalances = new ArrayList<>();
 
-    @OneToMany(mappedBy = "groupWallet")
+    @OneToMany(mappedBy = "groupWallet", cascade = CascadeType.REMOVE)
     private List<InstallmentSaving> installmentSavings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "groupWallet")
+    @OneToMany(mappedBy = "groupWallet", cascade = CascadeType.REMOVE)
     private List<OfflineReceipt> offlineReceipts = new ArrayList<>();
     //== 연관관계 설정 END==//
 }

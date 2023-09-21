@@ -53,13 +53,14 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
      */
     Participation findByGroupWalletAndMemberId(GroupWallet groupWallet, Long memberId);
 
+    // 나를 초대한 모임지갑 볼 때도 사용
     List<Participation> findByMemberIdAndParticipationState(Long memberId, ParticipationState state);
 
     /**
      * @author 김철
-     * 현재 모임원 몇 명인지 count
+     * 모임지갑 인원 수 세기
      * */
-    int countByGroupWalletGroupWalletId(Long groupWalletId);
+    int countByGroupWallet_GroupWalletIdAndParticipationState(Long groupWalletId, ParticipationState participationState);
 
 
 

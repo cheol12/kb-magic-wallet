@@ -52,6 +52,60 @@
 
     </script>
 
+    <script type="text/javascript">
+        // Ajax 요청을 보내고 반환된 값을 처리합니다.
+        $(document).ready(function () {
+
+            <%--$("#inviteButton").click(function () {--%>
+            <%--    let phone = $("#phoneInput").val(); // 폼 입력값 가져오기--%>
+            <%--    let id = ${id}; // JSP 변수 'id' 가져오기--%>
+            <%--    console.log(phone);--%>
+            <%--    console.log(id);--%>
+            <%--    $.ajax({--%>
+            <%--        type: "POST",--%>
+            <%--        url: "${pageContext.request.contextPath}/group-wallet/" + id +"/invite-request",--%>
+            <%--        data : {phone : phone},--%>
+            <%--        success: function (data) {--%>
+            <%--            console.log("data = " + data + this.data)--%>
+            <%--            // 서버에서 반환된 데이터 처리--%>
+            <%--            if (data === 1) {--%>
+            <%--                // 반환된 값이 1인 경우 성공 메시지 표시--%>
+            <%--                $("#resultMessage").text("초대 링크가 생성되었습니다.");--%>
+            <%--            } else {--%>
+            <%--                // 반환된 값이 1이 아닌 경우 실패 메시지 표시--%>
+            <%--                $("#resultMessage").text("초대 링크 생성에 실패했습니다.");--%>
+            <%--            }--%>
+            <%--        }--%>
+            <%--    });--%>
+            <%--});--%>
+
+            $("#inviteForm").submit(function (event) {
+                event.preventDefault(); // 폼의 기본 동작(페이지 리로딩)을 막습니다.
+
+                var phone = $("#phoneInput").val(); // 폼 데이터를 직렬화하여 가져옵니다.
+                var id = ${id}; // JSP 변수 'id' 가져오기
+
+                console.log(phone)
+                console.log(id)
+
+                $.ajax({
+                    type: "POST",
+                    url: "${pageContext.request.contextPath}/group-wallet/" + id + "/invite-request",
+                    data: {phone:phone},
+                    success: function (data) {
+                        if (data === 1) {
+                            $("#resultMessage").text(phone + "에게 초대 요청을 보냈어요!");
+                        } else {
+                            $("#resultMessage").text("이미 모임 지갑에 있나봐요!");
+                        }
+                    }
+                });
+            });
+
+
+        });
+    </script>
+
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/common/navbar.jsp"/>
@@ -59,12 +113,12 @@
 <div class="pageWrap">
     <div class="center">
         <div class="row">
-            <h2>모임지갑에 모임원을 새로 초대해보세요!</h2>
+            <h2>${groupWallet.nickname}에 모임원을 새로 초대해보세요!</h2>
         </div>
 
         <div class="row">
 
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
+            <div class="col-md-14 col-lg-14 col-xl-14 mb-4 h-100">
 
                 <h4 class="text-muted"></h4>
                 <div class="card h-20">
@@ -75,23 +129,23 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="${pageContext.request.contextPath}/group-wallet/${id}/invite-request"
-                              method="post">
+                        <form id="inviteForm">
                             <div class="row g-3 align-items-center">
                                 <div class="col-auto">
-                                    <label for="invite" class="col-form-label"></label>
+                                    <label for="phoneInput" class="col-form-label"></label>
                                 </div>
                                 <div class="col-auto">
 
-                                    <input type="text" id="invite" class="form-control"
-                                           aria-describedby="passwordHelpInline" name="phone">
-
+                                    <input type="text" id="phoneInput" class="form-control" aria-describedby="passwordHelpInline" name="phone">
                                 </div>
-
+                                <div class="col-auto">
+                                    <button id="inviteButton" type="submit" class="btn btn-primary">초대 요청</button>
+                                </div>
                             </div>
-                            <input type="submit" value="초대하기">
                         </form>
 
+                        <div id="resultMessage"></div>
+                        <a href="${pageContext.request.contextPath}/group-wallet/${id}" id="pageMove" class="btn btn-primary">모임 지갑으로 돌아가기</a>
 
                     </div>
                 </div>

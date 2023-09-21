@@ -4,7 +4,6 @@ import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.*;
-import kb04.team02.web.mvc.group.dto.RuleDto;
 import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.group.entity.*;
 import kb04.team02.web.mvc.group.repository.*;
@@ -23,6 +22,7 @@ import kb04.team02.web.mvc.group.exception.WalletDeleteException;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletForeignCurrencyBalanceRepository;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletRepository;
 import kb04.team02.web.mvc.personal.repository.PersonalWalletTransferRepository;
+import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
 import kb04.team02.web.mvc.saving.entity.Saving;
 import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
@@ -39,6 +39,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Transactional
 public class GroupWalletServiceImpl implements GroupWalletService {
+    private final DuePaymentRepository duePaymentRepository;
 
     private final GroupWalletRespository groupWalletRep;
     private final GroupWalletExchangeRepository groupExchangeRep;
@@ -106,6 +107,22 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                         .participationState(ParticipationState.PARTICIPATED)
                         .memberId(member.get(0).getMemberId())
                         .role(Role.CHAIRMAN)
+                        .groupWallet(groupWalletSave)
+                        .build()
+        );
+
+        groupForeignBalanceRep.save(
+                GroupWalletForeignCurrencyBalance.builder()
+                        .currencyCode(CurrencyCode.USD)
+                        .balance(0L)
+                        .groupWallet(groupWalletSave)
+                        .build()
+        );
+
+        groupForeignBalanceRep.save(
+                GroupWalletForeignCurrencyBalance.builder()
+                        .currencyCode(CurrencyCode.JPY)
+                        .balance(0L)
                         .groupWallet(groupWalletSave)
                         .build()
         );
@@ -213,39 +230,24 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
     @Override
     public int deleteGroupWallet(Long groupWalletId) throws WalletDeleteException {
-        // 모임장이 모임지갑을 삭제하는 것.
-        // 모임장인지 확인하는 것은 어디서할지?
         GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElseThrow(()-> new NoSuchElementException("모임 지갑 조회 실패"));
         Member member = groupWallet.getMember();
         Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, member.getMemberId());
         List<Participation> participations = participationRep.findByGroupWalletAndParticipationState(groupWallet, ParticipationState.PARTICIPATED);
-        if (participations.size() > 1 && participation.getRole() == Role.CHAIRMAN) {
-            throw new WalletDeleteException("모임원이 있는 상태에서 삭제할 수 없습니다");
+        List<GroupWalletForeignCurrencyBalance> groupWalletForeignCurrencyBalances = groupForeignBalanceRep.findByGroupWallet(groupWallet);
+        InstallmentSaving installmentSaving = installmentSavingRep.findByGroupWalletAndDone(groupWallet, false);
+
+        if (participations.size() > 1 && participation.getRole() == Role.CHAIRMAN) throw new WalletDeleteException("모임원이 있는 상태에서 삭제할 수 없습니다");
+        if (groupWallet.getBalance() > 0) throw new WalletDeleteException("지갑 잔액이 남아있는 경우 삭제할 수 없습니다.");
+        if (installmentSaving != null) throw new WalletDeleteException("생성한 적금이 있는 경우 삭제할 수 없습니다.");
+        for(GroupWalletForeignCurrencyBalance g : groupWalletForeignCurrencyBalances){
+            if(g.getBalance() > 0) throw new WalletDeleteException("지갑 잔액이 남아있는 경우 삭제할 수 없습니다." + g.getCurrencyCode());
         }
 
-        return groupWalletRep.deleteGroupWalletByGroupWalletId(groupWalletId);
-    }
+        // 삭제
+        groupWalletRep.deleteGroupWalletByGroupWalletId(groupWalletId);
 
-    @Override
-    public int inviteMember(String phone, Long groupWalletId) {
-        Member member = memberRep.findByPhoneNumber(phone).orElseThrow(()-> new NoSuchElementException("멤버 조회 실패"));
 
-        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
-//
-        int countParticipation = participationRep.countByGroupWalletAndMemberId(groupWallet, member.getMemberId());
-
-        if(countParticipation>0){
-            return 0;
-        }
-        Participation participation;
-        participation = participationRep.save(
-                Participation.builder()
-                        .participationState(ParticipationState.WAITING)
-                        .memberId(member.getMemberId())
-                        .role(Role.GENERAL)
-                        .groupWallet(groupWallet)
-                        .build()
-        );
         return 1;
     }
 
@@ -827,7 +829,128 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
     @Override
     public int countGroupWalletMember(Long groupWalletId) {
-        int result = participationRep.countByGroupWalletGroupWalletId(groupWalletId);
+        int result = participationRep.countByGroupWallet_GroupWalletIdAndParticipationState(groupWalletId, ParticipationState.PARTICIPATED);
         return result;
+    }
+
+    // 초대 목록 부르기
+    @Override
+    public List<InvitedDto> getGroupListInvitedMe(Long memberId) {
+        List<InvitedDto> InvitedDtoList = new ArrayList<>();
+
+        // 참여자 테이블에서 내가 대기 상태인 모임지갑을 부른다. .getGroupWalletId
+        List<Participation> participationList
+                = participationRep.findByMemberIdAndParticipationState(memberId, ParticipationState.WAITING);
+
+        for (Participation participation : participationList) {
+            GroupWallet groupWallet = participation.getGroupWallet();
+            if (groupWallet != null) {
+                InvitedDto invitedDto = new InvitedDto();
+                invitedDto.setNickname(groupWallet.getNickname());
+                invitedDto.setGroupWalletId(groupWallet.getGroupWalletId());
+                invitedDto.setChairmanName(groupWallet.getMember().getName());
+                invitedDto.setMemberCount(this.countGroupWalletMember(invitedDto.getGroupWalletId()));
+
+                InvitedDtoList.add(invitedDto);
+            }
+        }
+
+        return InvitedDtoList;
+    }
+
+    // 초대하기
+    @Override
+    public int inviteMember(String phone, Long groupWalletId) {
+        Member member = memberRep.findByPhoneNumber(phone).orElseThrow(()-> new NoSuchElementException("멤버 조회 실패"));
+
+        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
+        Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, member.getMemberId());
+
+
+        int countParticipation = participationRep.countByGroupWalletAndMemberId(groupWallet, member.getMemberId());
+
+        if(countParticipation>0){
+            return 0;
+        }
+        Participation participation;
+        participation = participationRep.save(
+                Participation.builder()
+                        .participationState(ParticipationState.WAITING)
+                        .memberId(member.getMemberId())
+                        .role(Role.GENERAL)
+                        .groupWallet(groupWallet)
+                        .build()
+        );
+//        Participation participation;
+        // 초대 수정해야함
+        participation = participationRep.save(
+                Participation.builder()
+//                        .participationId(participation.getParticipationId())
+                        .participationState(ParticipationState.WAITING)
+                        .memberId(member.getMemberId())
+                        .role(Role.GENERAL)
+                        .groupWallet(groupWallet)
+                        .build()
+        );
+        return 1;
+    }
+
+    // 초대 수락하기
+    @Override
+    public int invitedAccept(Long groupWalletId, Long memberId) {
+        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
+        Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, memberId);
+
+        if(participation != null && participation.getParticipationState().equals(ParticipationState.WAITING)){
+            participation.setParticipationState(ParticipationState.PARTICIPATED);
+            return 1;
+        }
+        return 0;
+    }
+
+    // 초대 거절하기
+    @Override
+    public int invitedRefuse(Long groupWalletId, Long memberId) {
+        GroupWallet groupWallet = groupWalletRep.findByGroupWalletId(groupWalletId);
+        Participation participation = participationRep.findByGroupWalletAndMemberId(groupWallet, memberId);
+        if(participation != null){
+            participationRep.delete(participation);
+            return 1;
+        }
+        return 0;
+    }
+
+    //
+    @Override
+    public void payDue(Long id, Long memberId) {
+        GroupWallet groupWallet = groupWalletRep.findById(id).orElseThrow(
+                () -> new NoSuchElementException("모임지갑 조회 실패")
+        );
+        Long amount = groupWallet.getDue();
+
+        Member member = memberRep.findById(memberId).orElseThrow(
+                () -> new NoSuchElementException("멤버 조회 실패")
+        );
+
+        duePaymentRepository.save(
+                DuePayment.builder()
+                        .groupWallet(groupWallet)
+                        .member(member)
+//                .due(amount)
+                        .build()
+        );
+
+        DepositDto depositDto = DepositDto.builder()
+                .currencyCode(CurrencyCode.KRW)
+                .amount(amount)
+                .srcMemberId(memberId)
+                .destWalletId(id)
+                .build();
+
+        try {
+            groupWalletDeposit(depositDto);
+        } catch (NotEnoughBalanceException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

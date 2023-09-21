@@ -32,7 +32,7 @@ class DuePaymentRepositoryTest {
     @Autowired
     private ParticipationRepository participationRepository;
 
-    //    @Test
+    @Test
     void insertData() {
 
         Member member = memberRepository.findById(2L).get();
@@ -44,7 +44,7 @@ class DuePaymentRepositoryTest {
                 .build());
     }
 
-//        @Test
+    //        @Test
     void thisMonthDuePayment() {
         GroupWallet groupWallet = groupWalletRepository.findById(8L).get();
 

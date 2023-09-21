@@ -24,6 +24,8 @@ public class DuePayment {
     @CreationTimestamp
     private LocalDateTime insertDate;
 
+//    private Long due;
+
     //== 연관관계 설정 START==//
     @ManyToOne
     @JoinColumn(name = "member_id")

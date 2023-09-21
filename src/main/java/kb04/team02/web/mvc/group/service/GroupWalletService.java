@@ -3,8 +3,8 @@ package kb04.team02.web.mvc.group.service;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
-import kb04.team02.web.mvc.group.dto.RuleDto;
 import kb04.team02.web.mvc.group.dto.*;
+import kb04.team02.web.mvc.group.entity.Participation;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.group.exception.NotEnoughBalanceException;
@@ -224,4 +224,27 @@ public interface GroupWalletService {
      *
      * */
     int countGroupWalletMember(Long groupWalletId);
+
+    /**
+     * @author 김철
+     * 내가 초대된 모임지갑 리스트를 보기
+     * */
+    List<InvitedDto> getGroupListInvitedMe(Long memberId);
+
+    /**
+     * @author 김철
+     * 모임지갑 초대 수락하기
+     * */
+    int invitedAccept(Long groupWalletId, Long memberId);
+
+    /**
+     * @author 김철
+     * 모임지갑 초대 거절하기
+     * */
+    int invitedRefuse(Long groupWalletId, Long memberId);
+
+    /**
+     * 회비 내기
+     */
+    void payDue(Long id, Long memberId);
 }
