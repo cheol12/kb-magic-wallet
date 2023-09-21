@@ -274,7 +274,7 @@
                         <div class="row align-items-start">
                             <div class="card mb-4">
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">환전 정보</h5>
+                                    <h4 class="mb-0">환전 정보</h4>
                                     <small class="text-muted float-end"></small>
                                 </div>
                                 <div class="card-body">
@@ -295,7 +295,7 @@
                                                    name="amount">
                                         </div>
                                         <div class="col-3">
-                                            <button type="button" class="btn btn-outline-warning"
+                                            <button type="button" class="btn btn-primary"
                                                     onclick="expectedAmountCK();">환전 예상 금액 확인
                                             </button>
                                         </div>
@@ -358,7 +358,7 @@
                                             </select>
                                         </div>
                                         <div class="col-2">
-                                            <button type="button" class="btn btn-outline-warning"
+                                            <button type="button" class="btn btn-primary"
                                                     onclick="balanceCK();">지갑 잔액 확인
                                             </button>
                                         </div>
@@ -374,7 +374,7 @@
                         <div class="row align-items-end">
                             <div class="card mb-4">
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">수령 정보</h5>
+                                    <h4 class="mb-0">수령 정보</h4>
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3">
