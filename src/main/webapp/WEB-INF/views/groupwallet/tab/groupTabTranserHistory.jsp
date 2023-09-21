@@ -16,7 +16,9 @@
         <h5 class="card-header">
             <div class="row g-2">
                 <div class="col mb-0">
-                    거래 내역
+                    <h2 class="col mb-0">
+                        거래 내역
+                    </h2>
                 </div>
             </div>
         </h5>
@@ -25,12 +27,24 @@
             <table class="table table">
                 <thead>
                 <tr>
-                    <th><i class="text-center fab fa-angular fa-lg text-danger me-3"></i>거래일자</th>
-                    <th><i class="text-center fab fa-angular fa-lg text-danger me-3"></i>거래시간</th>
-                    <th><i class="text-center fab fa-angular fa-lg text-danger me-3"></i>입금()</th>
-                    <th><i class="text-center fab fa-angular fa-lg text-danger me-3"></i>출금()</th>
-                    <th><i class="text-center fab fa-angular fa-lg text-danger me-3"></i>내용</th>
-                    <th><i class="text-center fab fa-angular fa-lg text-danger me-3"></i>잔액()</th>
+                    <th><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-center"
+                                                                                 style="margin-bottom: 0">거래일자</h4>
+                    </th>
+                    <th><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-center"
+                                                                                 style="margin-bottom: 0">거래시간</h4>
+                    </th>
+                    <th><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-center"
+                                                                                 style="margin-bottom: 0">입금액</h4>
+                    </th>
+                    <th><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-center"
+                                                                                 style="margin-bottom: 0">출금액</h4>
+                    </th>
+                    <th><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-center"
+                                                                                 style="margin-bottom: 0">내용</h4>
+                    </th>
+                    <th><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-center"
+                                                                                 style="margin-bottom: 0">잔액</h4>
+                    </th>
                 </tr>
                 </thead>
                 <tbody class="table-border-bottom-0" id="dateSelectHistory">
