@@ -6,11 +6,9 @@ import kb04.team02.web.mvc.common.entity.CurrencyCode;
 import kb04.team02.web.mvc.exchange.dto.ExchangeCalDto;
 import kb04.team02.web.mvc.exchange.dto.ExchangeRateDto;
 import kb04.team02.web.mvc.exchange.service.ExchangeService;
-import kb04.team02.web.mvc.group.dto.CardIssuanceDto;
-import kb04.team02.web.mvc.group.dto.GroupMemberDto;
-import kb04.team02.web.mvc.group.dto.InstallmentDto;
-import kb04.team02.web.mvc.group.dto.InvitedDto;
+import kb04.team02.web.mvc.group.dto.*;
 import kb04.team02.web.mvc.group.entity.Participation;
+import kb04.team02.web.mvc.group.exception.NotEnoughBalanceException;
 import kb04.team02.web.mvc.group.service.GroupWalletTabService;
 import kb04.team02.web.mvc.member.entity.Member;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
@@ -155,7 +153,6 @@ public class GroupWalletController {
     @ResponseBody
     @PostMapping("{id}/history")
     public List<WalletHistoryDto> getHistory(@PathVariable Long id, HttpSession session, Model model) {
-        System.out.println("여기여기");
         WalletDetailDto walletDetailDto = groupWalletService.getGroupWalletDetail(id);
         model.addAttribute("walletDetailDto", walletDetailDto);
         return walletDetailDto.getList();
@@ -164,10 +161,7 @@ public class GroupWalletController {
     @ResponseBody
     @PostMapping("/{id}/member-list")
     public List<GroupMemberDto> getGroupWalletMembers(@PathVariable Long id, ModelAndView mv, HttpSession session) {
-        // id = 내 모임지갑의 id중 하나임.
-        System.out.println("여기여기2");
         List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
-        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
         log.info("groupMemberDtoListSize = " + groupMemberDtoList.size());
 
         return groupMemberDtoList;
@@ -291,12 +285,20 @@ public class GroupWalletController {
      * @param id 모임지갑에서 꺼내기 할 모임지갑 id
      */
     @PostMapping("/{id}/withdraw")
-    public String groupWalletWithdraw(@PathVariable Long id, int amount, HttpSession session) {
-        Member member = (Member) session.getAttribute("member_id");
+    public String groupWalletWithdraw(@PathVariable Long id, @RequestParam Long amount, HttpSession session) {
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+        TransferDto transferDto = new TransferDto();
+        transferDto.setMemberId(loginMemberDto.getMemberId());
+        transferDto.setGroupWalletId(id);
+        transferDto.setAmount(amount);
+        try {
+            groupWalletService.groupWalletWithdraw(transferDto);
+            return "redirect:/group-wallet/" + id;
+        }
+        catch (NotEnoughBalanceException e){
+            return null;
+        }
 
-        // member로 꺼내기하는 사람을 불러오고, {id}로 모임지갑 id를 불러오고, amount로 폼에서의 입력값을 부른다.
-//	    groupWalletService.groupWalleWithdraw(member, id, amount);
-	return "redirect:/group-wallet/" + id;
     }
 
     /**
@@ -319,21 +321,31 @@ public class GroupWalletController {
      * @param id 입금할 모임지갑 id
      */
     @PostMapping("/{id}/deposit")
-    public String groupWalletDeposit(@PathVariable Long id, int amount, HttpSession session) {
-	    Member member = (Member) session.getAttribute("member_id");
+    public String groupWalletDeposit(@PathVariable Long id, @RequestParam Long amount, HttpSession session) {
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+        TransferDto transferDto = new TransferDto();
+        transferDto.setMemberId(loginMemberDto.getMemberId());
+        transferDto.setGroupWalletId(id);
+        transferDto.setAmount(amount);
+        try{
+            groupWalletService.groupWalletDeposit(transferDto);
+            return "redirect:/group-wallet/" + id;
+        }
+        catch (NotEnoughBalanceException e){
+            return null;
+        }
 
-	    // 모임지갑 '채우기' 를 하기 위해 개인지갑을 '꺼내기' 한다.
+        // 모임지갑 '채우기' 를 하기 위해 개인지갑을 '꺼내기' 한다.
 //	    PersonalWallet pWallet = personalWalletService.personalWalletWithdraw();
-	
-	// 입금했을 경우,
-	// GroupWallet 의 잔액을 update : id, amount 필요
-	// 모임지갑 이체내역 데이터 insert, 
-	// PersonalWallet 의 잔액을 update,
-	// 개인지갑 이체내역 데이터 insert
-	// 이를 service.deposit 에서 한 번에 트랜잭션 처리
+
+        // 입금했을 경우,
+        // GroupWallet 의 잔액을 update : id, amount 필요
+        // 모임지갑 이체내역 데이터 insert,
+        // PersonalWallet 의 잔액을 update,
+        // 개인지갑 이체내역 데이터 insert
+        // 이를 service.deposit 에서 한 번에 트랜잭션 처리
 //	groupWalletService.groupWalletDeposit(id, amount, memberId );
 
-	return "redirect:/group-wallet/" + id;
     }
 
 //    @ResponseBody

@@ -44,31 +44,12 @@
 
 <div class="pageWrap">
     <div class="center">
-
-
-        <form action="/group-wallet/${id}/deposit" method="post">
-            <div class="row g-3 align-items-center">
-                <div class="col-auto">
-                    <label for="amount" class="col-form-label">충전하실 금액</label>
-                </div>
-                <div class="col-auto">
-
-                    <input type="text" id="amount" class="form-control" aria-describedby="passwordHelpInline"
-                           name="amount">
-
-
-                </div>
-
-            </div>
-            <input type="submit" value="충전하기">
-        </form>
-
         <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
                 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">모임지갑/</span> 충전</h4>
                 <!-- Basic Layout -->
-                <form id="depositForm">
+                <form id="depositForm" action="${pageContext.request.contextPath}/group-wallet/${id}/deposit" method="post">
                     <div class="row">
                         <div class="col-xl">
                             <div class="card mb-4">
@@ -122,7 +103,8 @@
                                     <div class="mb-3">
                                         이체금액
                                         <div class="input-group input-group-merge">
-                                            <input type="number" id="basic-icon-default-company" class="form-control"/>원
+                                            <input type="number" id="basic-icon-default-company" class="form-control"
+                                                   name="amount"/>원
                                         </div>
 
                                         <div class="mb-auto">
@@ -135,7 +117,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        받는 통장 메모
+                                        받는 모임지갑 메모
                                         <div class="input-group input-group-merge">
                                             <input
                                                     type="text"
@@ -147,7 +129,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        받는 통장 메모
+                                        내 개인 지갑 메모
                                         <div class="input-group input-group-merge">
                                             <input
                                                     type="text"
@@ -157,6 +139,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- Button trigger modal -->
                                 <button type="button" class="btn btn-primary" id="depositButton" data-bs-toggle="modal"
                                         data-bs-target="#exampleModal">
@@ -209,6 +192,5 @@
     }
 
 </script>
-</div>
 </body>
 </html>
