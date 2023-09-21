@@ -123,12 +123,19 @@
                         str += '<TD><h5 id="time" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
                         // 입금액 출금액 처리
                         if (result[i].type === '입금') {
-                            str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + ' ' + result[i].currencyCode + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
+                            str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
                         } else {
-                            str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + ' ' + result[i].currencyCode + '</h5></TD>';
+                            str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
                         }
+
+                        if (result[i].type === '환전' || result[i].type === '재환전') {
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance)+'</TD>';
+                        } else {
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance)+'</TD>';
+                        }
+
                         str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
-                        str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + ' ' + result[i].currencyCode + '</TD>';
+
                         str += '</TR>';
                     });
                     $("#dateSelectHistory").append(str);
@@ -231,7 +238,6 @@
                                     <h5 class="user-progress">
                                         <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;USD&quot;)}"
                                                           type="number" pattern="#,###"/> USD
-                                        USD
                                     </h5>
                                 </div>
                             </li>
@@ -470,10 +476,9 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                    Close
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    확인
                 </button>
-                <button type="button" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
