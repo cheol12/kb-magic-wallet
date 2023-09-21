@@ -97,7 +97,7 @@
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">환전</h5>
+                            <h3 class="card-title">환전</h3>
                             <p class="card-text">외국으로 가자!</p>
                             <p class="card-text">원화에서 외화로!!</p>
                             <a href="/exchange/online/form" class="btn btn-primary">환전하러 가기</a>
@@ -107,7 +107,7 @@
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">재환전</h5>
+                            <h3 class="card-title">재환전</h3>
                             <p class="card-text">다시 한국으로!</p>
                             <p class="card-text">외화에서 원화로!!</p>
                             <a href="/exchange/online/re-form" class="btn btn-primary">재환전하러 가기</a>

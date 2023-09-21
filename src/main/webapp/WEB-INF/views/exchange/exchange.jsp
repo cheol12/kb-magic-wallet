@@ -102,7 +102,7 @@
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">온라인 환전</h5>
+                            <h3 class="card-title">온라인 환전</h3>
                             <p class="card-text">내 개인지갑으로 간편하게 온라인 환전!</p>
                             <a href="/exchange/onlineExchange" class="btn btn-primary">환전하러 가기</a>
                         </div>
@@ -111,7 +111,7 @@
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">오프라인 환전</h5>
+                            <h3 class="card-title">오프라인 환전</h3>
                             <p class="card-text">실제 현금으로!! 오프라인 환전!</p>
                             <a href="/exchange/offline" class="btn btn-primary">환전하러 가기</a>
                         </div>
