@@ -76,7 +76,6 @@
             data: {offlineReceiptId: receiptId},
             dataType: "text",
             success: function (response) {
-                alert("성공")
                 location.reload();
             },
             error: function (error) {
