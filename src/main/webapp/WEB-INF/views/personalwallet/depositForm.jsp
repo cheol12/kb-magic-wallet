@@ -50,7 +50,7 @@
             var inputElement = document.getElementById("basic-icon-default-company");
             var currentValue = parseFloat(inputElement.value.replace(/,/g, "")) || 0; // 현재 값 가져오기, 숫자가 아닌 경우 0으로 설정
             var newValue = currentValue + amount; // 새로운 값 계산
-            inputElement.value = numberWithCommas(newValue)+' 원'; // 새로운 값을 세자리마다 콤마를 추가하여 설정
+            inputElement.value = newValue; // 새로운 값을 세자리마다 콤마를 추가하여 설정
         }
 
         function numberWithCommas(x) {
