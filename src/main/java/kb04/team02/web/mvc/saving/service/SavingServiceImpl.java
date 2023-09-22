@@ -96,4 +96,9 @@ public class SavingServiceImpl implements SavingService {
             return false;
         }
     }
+
+    @Override
+    public Long selectGroupWalletIdFromSavingInstallment(SavingInstallmentDto installmentDto) {
+        return installmentDto.getGroupWalletId();
+    }
 }
