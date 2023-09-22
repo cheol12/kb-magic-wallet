@@ -135,4 +135,10 @@ public interface ExchangeService {
      * 환율정보 모두 긁어오기
      */
     List<String> selectExchangeRateByCurrencyCode(CurrencyCode currencyCode);
+
+
+    /**
+     * 환율 정보 예측
+     */
+    public List<Double> getPredictedExchangeRates();
 }
