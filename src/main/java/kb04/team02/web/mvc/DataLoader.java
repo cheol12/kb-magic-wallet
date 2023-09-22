@@ -191,10 +191,10 @@ public class DataLoader {
          */
         CardIssuance cardIssuance1 = CardIssuance.builder().cardNumber("4311-5214-2351-5232").cardState(CardState.OK).member(member1).walletId(member1.getMemberId()).build();
         CardIssuance cardIssuance2 = CardIssuance.builder().cardNumber("4312-5114-2151-5532").cardState(CardState.OK).member(member2).walletId(member2.getMemberId()).build();
-        CardIssuance cardIssuance3 = CardIssuance.builder().cardNumber("3333-3333-3333-3333").cardState(CardState.OK).member(member2).build();
-        CardIssuance cardIssuance4 = CardIssuance.builder().cardNumber("4444-4444-4444-4444").cardState(CardState.OK).member(member2).build();
-        CardIssuance cardIssuance5 = CardIssuance.builder().cardNumber("5555-5555-5555-5555").cardState(CardState.OK).member(member2).build();
-        CardIssuance cardIssuance6 = CardIssuance.builder().cardNumber("6666-6666-6666-6666").cardState(CardState.OK).member(member2).build();
+        CardIssuance cardIssuance3 = CardIssuance.builder().cardNumber("3333-3333-3333-3333").cardState(CardState.OK).member(member3).build();
+        CardIssuance cardIssuance4 = CardIssuance.builder().cardNumber("4444-4444-4444-4444").cardState(CardState.OK).member(member4).build();
+        CardIssuance cardIssuance5 = CardIssuance.builder().cardNumber("5555-5555-5555-5555").cardState(CardState.OK).member(member5).build();
+        CardIssuance cardIssuance6 = CardIssuance.builder().cardNumber("6666-6666-6666-6666").cardState(CardState.OK).member(member6).build();
         cardIssuanceRepository.save(cardIssuance1);
         cardIssuanceRepository.save(cardIssuance2);
         cardIssuanceRepository.save(cardIssuance3);
