@@ -165,18 +165,18 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         for(GroupWalletExchange exchange : exchangeList){
             WalletHistoryDto walletHistoryDto = new WalletHistoryDto();
             walletHistoryDto.setDateTime(exchange.getInsertDate());
-            if(exchange.getSellCurrencyCode() == CurrencyCode.KRW){
+            if(exchange.getBuyCurrencyCode() == CurrencyCode.KRW){
                 walletHistoryDto.setType("재환전");
             }
             else{
                 walletHistoryDto.setType("환전");
             }
-            String detail = exchange.getSellCurrencyCode().name() + " > " + exchange.getBuyCurrencyCode().name();
+            String detail = exchange.getSellCurrencyCode().name() + " ➜ " + exchange.getBuyCurrencyCode().name();
 
             walletHistoryDto.setCurrencyCode(exchange.getBuyCurrencyCode());
             walletHistoryDto.setDetail(detail);
-            walletHistoryDto.setAmount(exchange.getSellAmount() + " > " + exchange.getBuyAmount());
-            walletHistoryDto.setBalance(exchange.getAfterSellBalance() + " : " + exchange.getAfterBuyBalance());
+            walletHistoryDto.setAmount(exchange.getSellAmount() + " " + exchange.getSellCurrencyCode() + " ➜ " + exchange.getBuyAmount() + " " + exchange.getBuyCurrencyCode().name());
+            walletHistoryDto.setBalance(exchange.getAfterSellBalance() + " " + exchange.getSellCurrencyCode() + " / " + exchange.getAfterBuyBalance() + " " + exchange.getBuyCurrencyCode().name());
 
             dto.getList().add(walletHistoryDto);
         }
@@ -196,8 +196,8 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
             walletHistoryDto.setCurrencyCode(payment.getCurrencyCode());
             walletHistoryDto.setDetail(detail);
-            walletHistoryDto.setAmount(payment.getAmount().toString());
-            walletHistoryDto.setBalance(payment.getAfterPayBalance().toString());
+            walletHistoryDto.setAmount(payment.getAmount().toString() + " " + payment.getCurrencyCode().name());
+            walletHistoryDto.setBalance(payment.getAfterPayBalance().toString() + " " + payment.getCurrencyCode().name());
 
             dto.getList().add(walletHistoryDto);
         }
@@ -209,16 +209,16 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             String detail = "";
             if(transfer.getTransferType() == TransferType.DEPOSIT){
                 walletHistoryDto.setType("입금");
-                detail = transfer.getSrc() + " > " + transfer.getDest();
+                detail = transfer.getSrc() + " ➜ " + transfer.getDest();
             }
             else{
                 walletHistoryDto.setType("출금");
-                detail = "모임지갑 : " + groupWallet.getNickname() + " > " + transfer.getDest();
+                detail = "모임지갑 : " + groupWallet.getNickname() + " ➜ " + transfer.getDest();
             }
             walletHistoryDto.setCurrencyCode(CurrencyCode.KRW);
             walletHistoryDto.setDetail(detail);
-            walletHistoryDto.setAmount(transfer.getAmount().toString());
-            walletHistoryDto.setBalance(transfer.getAfterBalance().toString());
+            walletHistoryDto.setAmount(transfer.getAmount().toString() + transfer.getCurrencyCode().name());
+            walletHistoryDto.setBalance(transfer.getAfterBalance().toString() + transfer.getCurrencyCode().name());
 
             dto.getList().add(walletHistoryDto);
         }

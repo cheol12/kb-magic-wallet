@@ -30,6 +30,7 @@
                 <form id="createForm" method="post" action="${pageContext.request.contextPath}/group-wallet/new">
                     <input type="text" name="nickname" id="nickname">
                     <button type="submit" value="생성" class="btn btn-primary">생성</button>
+                    <h5>모임지갑을 생성해요!</h5>
                 </form>
 
 
