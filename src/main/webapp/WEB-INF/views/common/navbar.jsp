@@ -37,7 +37,7 @@
 
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="font-family: NanumSquareNeo-Variable,serif">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -67,14 +67,14 @@
             </ul>
             <form class="d-flex" onsubmit="return false" method="get">
                 <c:if test="${empty sessionScope.member}">
-                <button class="btn rounded-pill btn-outline-primary button-spacing" type="submit"
-                        onclick="location.href='${pageContext.request.contextPath}/login'">로그인</button>
-                <button class="btn rounded-pill btn-primary" type="submit"
-                        onclick="location.href='${pageContext.request.contextPath}/register'">회원가입</button>
+                <button class="btn rounded-pill btn-primary button-spacing" type="submit"
+                        onclick="location.href='${pageContext.request.contextPath}/login'" style="font-size: 20px">로그인</button>
+                <button class="btn rounded-pill btn-outline-primary" type="submit"
+                        onclick="location.href='${pageContext.request.contextPath}/register'" style="font-size: 20px">회원가입</button>
                 </c:if>
                 <c:if test="${not empty sessionScope.member}">
                     <button class="btn rounded-pill btn-primary" type="submit"
-                            onclick="location.href='${pageContext.request.contextPath}/logout'">로그아웃</button>
+                            onclick="location.href='${pageContext.request.contextPath}/logout'" style="font-size: 20px">로그아웃</button>
                 </c:if>
             </form>
         </div>
