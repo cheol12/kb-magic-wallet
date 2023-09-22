@@ -38,14 +38,14 @@
 
 
 <div class="pageWrap">
-
     <div class="center">
         <div class="col-xxl">
             <div class="card mb-4" style="width: 50%; margin: auto">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5 class="mb-0">로그인</h5>
+                    <h3 class="mb-0">로그인</h3>
                 </div>
                 <div class="card-body">
+
                     <form method="post" action="/login">
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="register_id">아이디</label>
