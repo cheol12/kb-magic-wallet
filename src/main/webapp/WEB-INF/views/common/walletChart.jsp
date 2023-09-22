@@ -100,7 +100,6 @@
                     <h5 class="user-progress">
                         <fmt:formatNumber value="${walletDetailDto.balance.get(&quot;USD&quot;)}"
                                           type="number" pattern="#,###"/> USD
-                        USD
                     </h5>
                 </div>
             </li>
