@@ -423,17 +423,20 @@
     </script>
 
 </head>
-<body>
+<body style="font-family: NanumSquareNeo-Variable,serif">
 <jsp:include page="/WEB-INF/views/common/navbar.jsp"/>
 
 <div class="pageWrap">
     <div class="center">
         <div class="row">
             <i class="fab fa-angular fa-lg text-danger me-3"></i>
-            <h2 class="text-center" style="margin-bottom: 0">
+            <h1 class="text-center text-muted" style="margin-bottom: 0">
                 ${member.name}님은 ${groupWallet.nickname}의 ${groupMemberDto.roleToString}이에요!
-            </h2>
+            </h1>
         </div>
+
+        <p>
+        </p>
 
         <div class="row">
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
@@ -461,7 +464,7 @@
                  수정자: 김진형 -->
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <h6 class="text-break" style="margin-bottom: 0">
+                <h6 class="text-muted" style="margin-bottom: 0">
                     ${groupWallet.nickname}의 카드 현황
                 </h6>
                 <div class="card h-20" style="margin-bottom: 10px">

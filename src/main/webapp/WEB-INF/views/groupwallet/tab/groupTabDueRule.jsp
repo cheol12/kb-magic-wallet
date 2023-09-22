@@ -58,27 +58,27 @@
                         // 성공적으로 응답을 받았을 때 실행되는 함수
                         // data: 서버에서 받은 응답 데이터
                         if (data.dueCondition === true) { // dueCondition이 true일 때
-                            str += '<h5 style="text-align: center">✈️ <strong>' + data.nickname + '</strong>의 회비 규칙 ✈️</h5>';
-                            str += '<p style="text-align: center">' +
+                            str += '<h2 style="text-align: center">✈️ <strong>' + data.nickname + '</strong>의 회비 규칙 ✈️</h2>';
+                            str += '<p style="text-align: center"><h4 style="text-align: center">' +
                                 '매 월 <strong>' + data.dueDate + '</strong>일에 모임원들이 <strong>' + data.due + '</strong>원씩 회비를 납부해요!' +
-                                '</p>';
+                                '</h4></p>';
                             if (data.chairman === true) {
                                 str += '<div class="text-end">';
-                                str += '<button type="button" class="btn btn-outline-danger btn-sm" style="align-self: center">회비 규칙 삭제</button>'
+                                str += '<h2 style="margin-bottom: 0"><button type="button" class="btn btn-outline-danger btn-sm" style="align-self: center">회비 규칙 삭제</button></h2>'
                                 str += '</div>'
                             }
 
                             // 이번달 회비 납부 현황
                             dueMemberList();
                         } else { // dueCondition이 false일 때
-                            str += '<h5 style="text-align: center">회비 규칙이 없습니다.&nbsp;';
+                            str += '<h2 style="text-align: center">회비 규칙이 없습니다.&nbsp;';
                             if (data.chairman === true) {
                                 str += '회비를 생성해 볼까요?&nbsp;';
                                 str += '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#dueModal">';
                                 str += '회비 규칙 생성';
                                 str += '</button>';
                             }
-                            str += '</h4>'
+                            str += '</h2>'
                         }
                         $("#resultTabDueRule").empty();
                         $("#resultTabDueRule").append(str);
@@ -108,10 +108,10 @@
 
                         $.each(result, function (i) {
                             str += '<tr data-id=' + result[i].memberId + '>';
-                            str += '<td class="text-center">' + result[i].name + '</TD>';
+                            str += '<td class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].name + '</h5></TD>';
                             if (result[i].memberId ==${sessionScope.get("member").memberId}) {
                                 if (result[i].payed) {
-                                    str += '<td class="text-center"><i class="material-icons" style="color:green;">check_circle</i></td>'
+                                    str += '<td class="text-center"><i class="material-icons" style="color:green;"><h5 class="text-break text-center" style="margin-bottom: 0">check_circle</i></h5></td>'
                                 } else {
                                     str += '<td class="text-center"><i class="material-icons" style="color:red;">cancel</i> <button id="payDueBtn" class="btn btn-primary">납부하기</button></td>'
                                 }
@@ -124,8 +124,8 @@
                             }
 
 
-                            str += '<TD class="text-center">' + result[i].due + '</TD>';
-                            str += '<TD class="text-center">' + result[i].dueAccumulation + '</TD>';
+                            str += '<TD class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].due + '</h5></TD>';
+                            str += '<TD class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].dueAccumulation + '</h5></TD>';
 
                             str += '</TR>';
                         });
@@ -159,10 +159,10 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>이름</th>
-                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>납부 상태</th>
-                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>회비(원)</th>
-                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>누적 회비(원)</th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">이름</h5></th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">납부 상태</h5></th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">회비(원)</h5></th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">누적 회비(원)</h5></th>
                 </tr>
                 </thead>
                 <tbody id="resultTabDueMember">
