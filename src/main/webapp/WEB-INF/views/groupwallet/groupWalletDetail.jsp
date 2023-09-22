@@ -435,9 +435,6 @@
             </h1>
         </div>
 
-        <p>
-        </p>
-
         <div class="row">
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>

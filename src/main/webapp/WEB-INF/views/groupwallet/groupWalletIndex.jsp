@@ -179,15 +179,12 @@
 
 <main>
     <div class="pageWrap">
-
-
         <div class="center">
             <div class="d-flex align-items-end row">
                 <div class="col-sm-7">
                     <div class="card-body">
                         <h1 class="card-title text-break" >${member.name}님이 참여 중인 모임지갑이에요 🎉</h1>
                         <p class="mb-4"></p>
-
                     </div>
                 </div>
                 <div class="col-sm-5 text-center text-sm-left">
@@ -196,7 +193,6 @@
                     </div>
                 </div>
             </div>
-
             <div id="invitedMeListContainer" style="display:none; margin-top: 5px">
                 <h2 class="card-title text-break"> 잠깐! 모임지갑으로부터 초대가 왔어요!</h2>
                 <div class="table-responsive text-nowrap">
@@ -225,10 +221,14 @@
                     <div style="margin-top: 5px">
                         <div class="card">
                             <div class="card-header">
+                                <h3>
                                     ${list.getNickname()}
+                                </h3>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title">원화 잔액 : ${list.getBalance()}</h5>
+                                <h4 class="card-title">원화 잔액 :
+                                    <fmt:formatNumber value="${list.getBalance()}" pattern="#,###" />
+                                </h4>
                                 <a href="${pageContext.request.contextPath}/group-wallet/${list.getGroupWalletId()}" class="btn btn-primary">상세보기</a>
                             </div>
                         </div>
