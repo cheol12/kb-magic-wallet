@@ -104,10 +104,11 @@ public class SavingController {
 
         int result = savingService.insertInstallmentSaving(installmentDto);
         System.out.println("result = " + result);
+        Long groupWalletId = savingService.selectGroupWalletIdFromSavingInstallment(installmentDto);
 
         if (result == 1) {
             redirectAttributes.addFlashAttribute("successMessage", "적금 가입에 성공했습니다.");
-            return "redirect:/mypage/main";
+            return "redirect:/group-wallet/" + groupWalletId;
         } else {
             return "redirect:/saving/";
         }
