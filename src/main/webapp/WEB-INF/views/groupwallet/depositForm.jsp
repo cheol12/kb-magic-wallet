@@ -47,21 +47,24 @@
         <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
-                <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">모임지갑/</span> 충전</h4>
+                <h2 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">모임지갑/</span> 충전</h2>
                 <!-- Basic Layout -->
                 <form id="depositForm" action="${pageContext.request.contextPath}/group-wallet/${id}/deposit" method="post">
                     <div class="row">
                         <div class="col-xl">
                             <div class="card mb-4">
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">출금 정보</h5>
+                                    <h3 class="mb-0">출금 정보</h3>
                                     <small class="text-muted float-end"></small>
                                 </div>
                                 <div class="card-body">
 
                                     <div class="row gx-3 gy-2 align-items-center">
                                         <div class="mb-3">
-                                            출금 계좌 번호
+                                            <h5 class="mb-3">
+                                                출금 계좌 번호
+                                            </h5>
+
                                             <select id="selectTypeOpt" class="form-select color-dropdown">
                                                 <option value="bg-primary" selected>[국민] 937702-00-888XXX</option>
                                             </select>
