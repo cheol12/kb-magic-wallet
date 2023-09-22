@@ -478,7 +478,7 @@
         <br>
 
         <div class="row">
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100" style="text-align: center">
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
                 <h6 class="text-break" style="margin-bottom: 0">
                     지갑 정보
