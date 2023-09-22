@@ -63,15 +63,15 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
             String detail = "";
             if (transfer.getTransferType() == TransferType.DEPOSIT) {
                 historyDto.setType("입금");
-                detail = transfer.getSrc() + " > " + transfer.getDest();
+                detail = transfer.getSrc() + " ➜ " + transfer.getDest();
             } else {
                 historyDto.setType("출금");
-                detail = loginMemberDto.getName()+"의 개인지갑" + " > " + transfer.getDest();
+                detail = loginMemberDto.getName() + "의 개인지갑" + " ➜ " + transfer.getDest();
             }
             historyDto.setCurrencyCode(CurrencyCode.KRW);
             historyDto.setDetail(detail);
-            historyDto.setAmount(transfer.getAmount().toString());
-            historyDto.setBalance(transfer.getAfterBalance().toString());
+            historyDto.setAmount(transfer.getAmount().toString() + " " + transfer.getCurrencyCode().name());
+            historyDto.setBalance(transfer.getAfterBalance().toString() + " " + transfer.getCurrencyCode().name());
 
             dto.getList().add(historyDto);
         }
@@ -84,12 +84,12 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
             } else {
                 historyDto.setType("환전");
             }
-            String detail = exchange.getSellCurrencyCode().name() + " > " + exchange.getBuyCurrencyCode().name();
+            String detail = exchange.getSellCurrencyCode().name() + " ➜ " + exchange.getBuyCurrencyCode().name();
 
             historyDto.setCurrencyCode(exchange.getBuyCurrencyCode());
             historyDto.setDetail(detail);
-            historyDto.setAmount(exchange.getSellAmount() + " > " + exchange.getBuyAmount());
-            historyDto.setBalance(exchange.getAfterSellBalance() + " : " + exchange.getAfterBuyBalance());
+            historyDto.setAmount(exchange.getSellAmount() + " " + exchange.getSellCurrencyCode().name() + " ➜ " + exchange.getBuyAmount() + " " + exchange.getBuyCurrencyCode().name());
+            historyDto.setBalance(exchange.getAfterSellBalance() + " " + exchange.getSellCurrencyCode().name() + " / " + exchange.getAfterBuyBalance() + " " + exchange.getBuyCurrencyCode().name());
 
             dto.getList().add(historyDto);
         }
@@ -102,12 +102,12 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
             } else {
                 historyDto.setType("취소");
             }
-            String detail = payment.getAmount() + payment.getCurrencyCode().name();
+            String detail = payment.getPaymentPlace();
 
             historyDto.setCurrencyCode(payment.getCurrencyCode());
             historyDto.setDetail(detail);
-            historyDto.setAmount(payment.getAmount().toString());
-            historyDto.setBalance(payment.getAfterPayBalance().toString());
+            historyDto.setAmount(payment.getAmount().toString() + " " + payment.getCurrencyCode().name());
+            historyDto.setBalance(payment.getAfterPayBalance().toString() + " " + payment.getCurrencyCode().name());
 
             dto.getList().add(historyDto);
         }
@@ -143,7 +143,7 @@ public class PersonalWalletServiceImpl implements PersonalWalletService {
                 .fromType(TargetType.ACCOUNT)
                 .toType(TargetType.PERSONAL_WALLET)
                 .src(bankAccount)
-                .dest(personalWallet.getMember().getName()+"의 개인지갑")
+                .dest(personalWallet.getMember().getName() + "의 개인지갑")
                 .amount(amount)
                 .afterBalance(afterBalance)
                 .currencyCode(CurrencyCode.KRW)
