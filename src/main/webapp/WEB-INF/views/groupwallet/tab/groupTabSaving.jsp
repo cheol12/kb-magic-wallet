@@ -11,42 +11,10 @@
 <head>
     <title>모임 적금 조회</title>
 
-    <script>
-
-        // 적금 해지 버튼 클릭 시 알림창 띄우기
-        document.getElementById("cancelSaving").addEventListener("click", function (event) {
-            event.preventDefault();
-
-            var confirmation = confirm("적금을 해지하시겠습니까? 만기일이 지나지 않았으면 해지시 이자도 함께 소멸됩니다.");
-
-            if (confirmation) {
-                // 확인 버튼을 눌렀을 때, 적금 해지를 서버에 요청
-                var groupWalletId = "${groupWallet.groupWalletId}"; // 그룹 월렛 아이디 변수로 설정
-                var xhr = new XMLHttpRequest();
-                xhr.open("DELETE", "${pageContext.request.contextPath}/group-wallet/" + groupWalletId + "/saving", true);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        if (xhr.status === 200) {
-                            // 적금 해지가 성공적으로 처리되었을 때 알림 메시지 띄우기
-                            alert("적금이 해지되었습니다.");
-                            // 페이지 리로드 또는 다른 동작 수행
-                            window.location.reload(); // 페이지 리로드 예시
-                        } else {
-                            // 적금 해지가 실패했을 때 알림 메시지 띄우기
-                            var errorMessage = xhr.responseText;
-                            alert(errorMessage);
-                        }
-                    }
-                };
-                xhr.send();
-            }
-        });
-    </script>
-
 </head>
 <body>
 <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
-    <div class="card" style="margin-top: 5px;">
+    <div class="card" style="margin-top: 0px; padding-top: 0px">
         <c:choose>
             <c:when test="${installmentDto == null}">
                 <c:choose>
