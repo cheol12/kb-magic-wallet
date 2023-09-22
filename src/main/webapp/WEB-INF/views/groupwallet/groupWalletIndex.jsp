@@ -12,6 +12,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <style>
+        @font-face {
+            font-family: 'NanumSquareNeo-Variable';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
     <title>깨비의 요술 지갑 - 모임목록</title>
 
     <link rel="stylesheet" type="text/css" href="/css/common.css">
@@ -44,10 +52,10 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../../../assets/js/config.js"></script>
+    <script src="../../../assets/js/common.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -172,7 +180,7 @@
 </head>
 <body>
 <header>
-    <jsp:include page="../common/navbar.jsp"/>
+    <jsp:include page="/WEB-INF/views/common/navbar.jsp"/>
 </header>
 
 
