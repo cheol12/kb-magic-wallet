@@ -16,9 +16,9 @@
         <h5 class="card-header">
             <div class="row g-2">
                 <div class="col mb-0">
-                    <h2 class="col mb-0">
+                    <h3 class="col mb-0">
                         거래 내역
-                    </h2>
+                    </h3>
                 </div>
             </div>
         </h5>

@@ -131,8 +131,8 @@
                     console.log("멤버 리스트 비동기 통신")
                     $.each(result, function (i) {
                         str += '<tr id="searchMemberResult">'
-                        str += '<td class="text-center">' + result[i].name + '</td>';
-                        str += '<td class="text-center">' + result[i].roleToString + '</td>';
+                        str += '<td class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].name + '</h5></td>';
+                        str += '<td class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].roleToString + '</h5></td>';
 
                         if (result[i].roleToString === "모임장") {
                             str += '<td class="text-center"></td>';
@@ -165,17 +165,17 @@
 <body>
 <div class="tab-pane fade show" id="navs-top-member" role="tabpanel">
     <div class="card " style="margin-top: 5px;">
-        <h5 class="card-header">
+        <h3 class="card-header">
             모임원 목록
-        </h5>
+        </h3>
         <div class="table-responsive">
             <table class="table">
                 <thead>
                 <tr>
-                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>이름</th>
-                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>역할</th>
-                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>출금/결제 권한</th>
-                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i>모임에서 내보내기</th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-break text-center" style="margin-bottom: 0">이름</h4></th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-break text-center" style="margin-bottom: 0">역할</h4></th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-break text-center" style="margin-bottom: 0">출금/결제 권한</h4></th>
+                    <th class="text-center"><i class="fab fa-angular fa-lg text-danger me-3"></i><h4 class="text-break text-center" style="margin-bottom: 0">모임에서 내보내기</h4></th>
                 </tr>
                 </thead>
                 <tbody id="getMemberList">
