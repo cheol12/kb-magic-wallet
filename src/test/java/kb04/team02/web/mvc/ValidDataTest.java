@@ -921,7 +921,7 @@ public class ValidDataTest {
             while ((line = br.readLine()) != null) {
                 //CSV 1행을 저장하는 리스트
                 List<String> tmpList = new ArrayList<String>();
-                String array[] = line.split(",");
+                String[] array = line.split(",");
                 //배열에서 리스트 반환
                 tmpList = Arrays.asList(array);
 
@@ -936,17 +936,27 @@ public class ValidDataTest {
             for (int i = cnt - 1; i >= 0; --i) {
                 List<String> curr = ret.get(i);
                 if (curr.get(1).equals("USD")) {
-                    System.out.println(curr.get(2));
-                    System.out.println(curr.get(2).replaceAll(",", ""));
+
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
-                    System.out.println("curr.get(0) = " + curr.get(0));
+
                     LocalDateTime time = LocalDateTime.parse(curr.get(0), formatter);
-                    System.out.println("time = " + time);
+
                     Double tradingBaseRate = Double.parseDouble(curr.get(2).replaceAll(",", ""));
                     Double telegraphic_transfer_buying_rate = Double.parseDouble(curr.get(3).replaceAll(",", ""));
                     Double telegraphic_transfer_selling_rate = Double.parseDouble(curr.get(4).replaceAll(",", ""));
                     Double buying_rate = Double.parseDouble(curr.get(5).replaceAll(",", ""));
                     Double selling_rate = Double.parseDouble(curr.get(6).replaceAll(",", ""));
+//                    System.out.println("======================");
+                    System.out.printf("exchangeRateRepository.save(ExchangeRate.builder()" +
+                            ".insertDate(LocalDateTime.parse(\"%s\", formatter))" +
+                            ".currencyCode(%s)" +
+                            ".tradingBaseRate(%f)" +
+                            ".telegraphicTransferBuyingRate(%f)" +
+                            ".telegraphicTransferSellingRate(%f)" +
+                            ".buyingRate(%f)" +
+                            ".sellingRate(%f)" +
+                            ".build());\n", time, CurrencyCode.USD, tradingBaseRate, telegraphic_transfer_buying_rate, telegraphic_transfer_selling_rate, buying_rate, selling_rate);
+
                     exchangeRateRepository.save(ExchangeRate.builder()
                             .insertDate(time)
                             .currencyCode(CurrencyCode.USD)
@@ -959,16 +969,27 @@ public class ValidDataTest {
 //                    nowUSD = nowUSD.minusDays(1);
                 }
                 if (curr.get(1).equals("JPY")) {
-                    System.out.println(curr.get(2));
-                    System.out.println(curr.get(2).replaceAll(",", ""));
+
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
-                    System.out.println("curr.get(0) = " + curr.get(0));
+
                     LocalDateTime time = LocalDateTime.parse(curr.get(0), formatter);
                     Double tradingBaseRate = Double.parseDouble(curr.get(2).replaceAll(",", ""));
                     Double telegraphic_transfer_buying_rate = Double.parseDouble(curr.get(3).replaceAll(",", ""));
                     Double telegraphic_transfer_selling_rate = Double.parseDouble(curr.get(4).replaceAll(",", ""));
                     Double buying_rate = Double.parseDouble(curr.get(5).replaceAll(",", ""));
                     Double selling_rate = Double.parseDouble(curr.get(6).replaceAll(",", ""));
+
+                    System.out.printf("exchangeRateRepository.save(ExchangeRate.builder()" +
+                            ".insertDate(LocalDateTime.parse(\"%s\", formatter))" +
+                            ".currencyCode(CurrencyCode.%s)" +
+                            ".tradingBaseRate(%f)" +
+                            ".telegraphicTransferBuyingRate(%f)" +
+                            ".telegraphicTransferSellingRate(%f)" +
+                            ".buyingRate(%f)" +
+                            ".sellingRate(%f)" +
+                            ".build());\n", time, CurrencyCode.JPY, tradingBaseRate, telegraphic_transfer_buying_rate, telegraphic_transfer_selling_rate, buying_rate, selling_rate);
+
+
                     exchangeRateRepository.save(ExchangeRate.builder()
                             .insertDate(time)
                             .currencyCode(CurrencyCode.JPY)
