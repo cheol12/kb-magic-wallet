@@ -85,21 +85,21 @@
             $(document).on("click", "#can-connect-card", function () {
                 $("#changeWallet").modal('show');
             });
-            $(document).on("click", "#change-confirm-button", function () {
+            <%--$(document).on("click", "#change-confirm-button", function () {--%>
 
-                $.ajax({
-                    url: "${pageContext.request.contextPath}/personalwallet/cardStatusUpdate",
-                    type: "get",
-                    dataType: "text",
-                    success: function (result, status) {
-                        str = '<h3 class="open-modal text-center">연결 중</h3> <h1 class="text-center"><i class="material-icons text-center" style="font-size: 40px;color: green"> credit_card </i></h1>'
-                        $("#result").empty();
-                        $("#result").append(str);
-                    },
-                    error: function (result, status) {
-                    },
-                });
-            });
+            <%--    $.ajax({--%>
+            <%--        url: "${pageContext.request.contextPath}/personalwallet/cardStatusUpdate",--%>
+            <%--        type: "get",--%>
+            <%--        dataType: "text",--%>
+            <%--        success: function (result, status) {--%>
+            <%--            str = '<h3 class="open-modal text-center">연결 중</h3> <h1 class="text-center"><i class="material-icons text-center" style="font-size: 40px;color: green"> credit_card </i></h1>'--%>
+            <%--            $("#result").empty();--%>
+            <%--            $("#result").append(str);--%>
+            <%--        },--%>
+            <%--        error: function (result, status) {--%>
+            <%--        },--%>
+            <%--    });--%>
+            <%--});--%>
             $.ajax({
                 url: "/personalwallet/selectDate",
                 type: "post",
@@ -129,9 +129,9 @@
                         }
 
                         if (result[i].type === '환전' || result[i].type === '재환전') {
-                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance)+'</TD>';
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
                         } else {
-                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance)+'</TD>';
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
                         }
 
                         str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
@@ -346,19 +346,23 @@
                             </div>
                             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
                                 <div id="result">
-                                    <c:choose>
-                                        <c:when test="${connected}">
-                                            <h3 class="text-center">연결 중&nbsp&nbsp&nbsp&nbsp<i class="material-icons"
-                                                                                               style="color: green">credit_card</i>
-                                            </h3>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <h3 class="open-modal text-center">연결 가능</h3>
-                                            <h1 id="can-connect-card" class="text-center"><i
-                                                    class="material-icons text-center" style="font-size: 40px">
-                                                credit_card </i></h1>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    <h3 class="open-modal text-center">연결 중</h3>
+                                    <h1 class="text-center"><i class="material-icons text-center"
+                                                               style="font-size: 40px;color: green"> credit_card </i>
+<%--                                    </h1>--%>
+<%--                                    <c:choose>--%>
+<%--                                        <c:when test="${connected}">--%>
+<%--                                            <h3 class="text-center">연결 중&nbsp&nbsp&nbsp&nbsp<i class="material-icons"--%>
+<%--                                                                                               style="color: green">credit_card</i>--%>
+<%--                                            </h3>--%>
+<%--                                        </c:when>--%>
+<%--                                        <c:otherwise>--%>
+<%--                                            <h3 class="open-modal text-center">연결 가능</h3>--%>
+<%--                                            <h1 id="can-connect-card" class="text-center"><i--%>
+<%--                                                    class="material-icons text-center" style="font-size: 40px">--%>
+<%--                                                credit_card </i></h1>--%>
+<%--                                        </c:otherwise>--%>
+<%--                                    </c:choose>--%>
                                 </div>
                             </div>
                         </div>
@@ -489,11 +493,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="changeWalletLabel">모달 제목</h5>
+                <h3 class="modal-title" id="changeWalletLabel">카드 변경</h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="changeWalletBody">
-                변경?
+                카드 연결을 변경하시겠습니까?
             </div>
             <div class="modal-footer">
                 <input type="hidden" name="connect-memberId">

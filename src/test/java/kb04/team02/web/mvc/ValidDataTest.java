@@ -106,7 +106,7 @@ public class ValidDataTest {
     public void init() throws Exception {
 
         //======================== 회원 관련 Data 생성 ========================//
-        
+
         /**
          * 회원 Data 생성
          * 총 회원: 6명 (김진형, 최예빈, 김철, 정지원, 김현지, 염혜정)
@@ -211,7 +211,7 @@ public class ValidDataTest {
         cardIssuanceRepository.save(cardIssuance6);
 
         //======================== 개인지갑 Data 생성 ========================//
-        
+
         /**
          * 개인지갑 Data 생성
          * 유효개인지갑: 2개 (김진형, 최예빈)
@@ -229,7 +229,6 @@ public class ValidDataTest {
         personalWalletRepository.save(personalWallet4);
         personalWalletRepository.save(personalWallet5);
         personalWalletRepository.save(personalWallet6);
-
 
 
         /**
@@ -568,7 +567,7 @@ public class ValidDataTest {
                 .amount(100000L)
                 .afterBalance(700000L)
                 .build();
-        
+
         GroupWalletTransfer groupWalletTransfer5 = GroupWalletTransfer.builder()
                 .groupWallet(groupWallet2)
                 .transferType(TransferType.DEPOSIT)
@@ -586,8 +585,6 @@ public class ValidDataTest {
         groupWalletTransferRepository.save(groupWalletTransfer3);
         groupWalletTransferRepository.save(groupWalletTransfer4);
         groupWalletTransferRepository.save(groupWalletTransfer5);
-
-
 
 
         /**
@@ -922,8 +919,8 @@ public class ValidDataTest {
             int cnt = 0;
             LocalDate nowUSD = LocalDate.now();
             LocalDate nowJPY = LocalDate.now();
-            System.out.println("nowUSD = " + nowUSD);
-            System.out.println("nowJPY = " + nowJPY);
+//            System.out.println("nowUSD = " + nowUSD);
+//            System.out.println("nowJPY = " + nowJPY);
             while ((line = br.readLine()) != null) {
                 //CSV 1행을 저장하는 리스트
                 List<String> tmpList = new ArrayList<String>();
@@ -933,7 +930,7 @@ public class ValidDataTest {
 
                 if (tmpList.get(1).equals("JPY") || tmpList.get(1).equals("USD")) {
                     cnt++;
-                    System.out.println(tmpList);
+//                    System.out.println(tmpList);
                     ret.add(tmpList);
                 }
             }
@@ -955,13 +952,13 @@ public class ValidDataTest {
 //                    System.out.println("======================");
                     System.out.printf("exchangeRateRepository.save(ExchangeRate.builder()" +
                             ".insertDate(LocalDateTime.parse(\"%s\", formatter))" +
-                            ".currencyCode(%s)" +
-                            ".tradingBaseRate(%f)" +
-                            ".telegraphicTransferBuyingRate(%f)" +
-                            ".telegraphicTransferSellingRate(%f)" +
-                            ".buyingRate(%f)" +
-                            ".sellingRate(%f)" +
-                            ".build());\n", time, CurrencyCode.USD, tradingBaseRate, telegraphic_transfer_buying_rate, telegraphic_transfer_selling_rate, buying_rate, selling_rate);
+                            ".currencyCode(CurrencyCode.%s)" +
+                            ".tradingBaseRate(%.2f)" +
+                            ".telegraphicTransferBuyingRate(%.2f)" +
+                            ".telegraphicTransferSellingRate(%.2f)" +
+                            ".buyingRate(%.2f)" +
+                            ".sellingRate(%.2f)" +
+                            ".build());\n", time, CurrencyCode.USD, (tradingBaseRate), (telegraphic_transfer_buying_rate ), (telegraphic_transfer_selling_rate ), (buying_rate ), (selling_rate ));
 
                     exchangeRateRepository.save(ExchangeRate.builder()
                             .insertDate(time)
@@ -988,18 +985,21 @@ public class ValidDataTest {
                     System.out.printf("exchangeRateRepository.save(ExchangeRate.builder()" +
                             ".insertDate(LocalDateTime.parse(\"%s\", formatter))" +
                             ".currencyCode(CurrencyCode.%s)" +
-                            ".tradingBaseRate(%f)" +
-                            ".telegraphicTransferBuyingRate(%f)" +
-                            ".telegraphicTransferSellingRate(%f)" +
-                            ".buyingRate(%f)" +
-                            ".sellingRate(%f)" +
-                            ".build());\n", time, CurrencyCode.JPY, tradingBaseRate, telegraphic_transfer_buying_rate, telegraphic_transfer_selling_rate, buying_rate, selling_rate);
+                            ".tradingBaseRate(%.2f)" +
+                            ".telegraphicTransferBuyingRate(%.2f)" +
+                            ".telegraphicTransferSellingRate(%.2f)" +
+                            ".buyingRate(%.2f)" +
+                            ".sellingRate(%.2f)" +
+                            ".build());\n", time, CurrencyCode.JPY, tradingBaseRate / 100, (telegraphic_transfer_buying_rate )/100, (telegraphic_transfer_selling_rate )/100, (buying_rate )/100, (selling_rate )/100)
+
+
+                    ;
 
 
                     exchangeRateRepository.save(ExchangeRate.builder()
                             .insertDate(time)
                             .currencyCode(CurrencyCode.JPY)
-                            .tradingBaseRate((tradingBaseRate * 100) / 100.0)
+                            .tradingBaseRate((tradingBaseRate ) / 100.0)
                             .telegraphicTransferBuyingRate((telegraphic_transfer_buying_rate) / 100.0)
                             .telegraphicTransferSellingRate((telegraphic_transfer_selling_rate) / 100.0)
                             .buyingRate(buying_rate)
