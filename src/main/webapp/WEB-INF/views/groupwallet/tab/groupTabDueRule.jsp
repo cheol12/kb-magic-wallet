@@ -151,7 +151,7 @@
 
 <!-- 회비 규칙 START -->
 <div class="tab-pane fade" id="navs-top-rule" role="tabpanel">
-    <div class="card" style="margin-top: 5px;">
+    <div class="card" style="margin-top: 0px; padding-top: 0px">
         <div class="card-body" id="resultTabDueRule">
             <h1>회비 규칙</h1>
         </div>

@@ -46,7 +46,7 @@
 </head>
 <body>
 <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
-    <div class="card" style="margin-top: 5px;">
+    <div class="card" style="margin-top: 0px; padding-top: 0px">
         <c:choose>
             <c:when test="${installmentDto == null}">
                 <c:choose>

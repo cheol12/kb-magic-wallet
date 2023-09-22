@@ -94,6 +94,7 @@
 
         // 모달창을 띄우는 function
         function PopupDetail(clicked_element, content) {
+            // 이전 모달 버전
             var row_td = clicked_element.getElementsByTagName("td");
             var modal = document.getElementById("detail-modal");
 
@@ -108,6 +109,28 @@
             document.getElementById("detail-content").innerHTML = content;
             document.getElementById("detail-balance").innerHTML = row_td[5].innerHTML;
             modal.style.display = 'block';
+
+            // 최근 모달 버전
+            // console.log("ck")
+            // $('#detailModal').modal('show');
+            //
+            // var id = $(this).closest("tr").data("id");
+            // var row = $(this).closest("tr");
+            //
+            // $("#detail-date").text(row.find("td:eq(0)").text());
+            // $("#detail-time").text(row.find("td:eq(1)").text());
+            //
+            // var deposit = row.find("td:eq(2)").text();
+            // var withdrawal = row.find("td:eq(3)").text();
+            //
+            // if (deposit === "-") {
+            //     $("#detail-amount").text(withdrawal);
+            // } else {
+            //     $("#detail-amount").text(deposit);
+            // }
+            // $("#detail-type").text(row.find("td:eq(4)").text());
+            // $("#detail-content").text(id);
+            // $("#detail-balance").text(row.find("td:eq(5)").text());
         }
 
         // 모임지갑 상세내역
@@ -126,7 +149,7 @@
                         let date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
                         let time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
 
-                        str += '<TR id="searchDateResult" onclick="PopupDetail(this, \'' + detailString + '\')" data-bs-toggle="modal" data-bs-target="#detailModal">'
+                        str += '<TR class="searchDateResult" onclick="PopupDetail(this, \'' + detailString + '\')" data-bs-toggle="modal" data-bs-target="#detailModal">'
                         // 날짜 시간 처리
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
@@ -255,7 +278,7 @@
                             console.log(data);
                             if (data > 0) {
                                 // 강퇴 성공 시 필요한 작업 수행
-                                alert(memberName + "님이 모임원이 되었어요!")
+                                alert(memberName + "님이 공동모임장에서 모임원이 되었어요!")
                                 memberCall();
                             } else {
                                 alert("권한 철회를 실패했어요");
@@ -272,30 +295,43 @@
             });
 
             $("#selectDateForm").on("submit", function (e) {
-                e.preventDefault()
-                var formValues = $("form[name=selectDateForm]").serialize();
+                e.preventDefault();
                 $.ajax({
                     url: "/personalwallet/selectDate",
                     type: "post",
                     dataType: "json",
-                    data: formValues,
                     success: function (result, status) {
-                        $("#dateSelectHistory").empty();
                         // 화면에 갱신
                         var str = "";
                         $.each(result, function (i) {
-                            str += '<TR id="searchDateResult" onclick="PopupDetail(this)" data-bs-toggle="modal" data-bs-target="#detailModal">'
+                            console.log(result[i].dateTime)
+                            var dateTime = new Date(result[i].dateTime);
+                            var detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
+                            // 날짜와 시간을 따로 추출
+                            var date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
+                            var time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
+                            console.log(date);
+                            console.log(time);
+
+                            str += '<TR class="searchDateResult" data-id="' + detailString + '">'
                             // 날짜 시간 처리
-                            str += '<TD>' + result[i].dateTime + '</TD>';
-                            str += '<TD>' + result[i].dateTime + '</TD>';
+                            str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
+                            str += '<TD><h5 id="time" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
                             // 입금액 출금액 처리
                             if (result[i].type === '입금') {
-                                str += '<TD> 입금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD><TD> 출금액: -</TD>';
+                                str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
                             } else {
-                                str += '<TD> 입금액: -</TD>' + '<TD> 출금액: ' + result[i].amount + ' ' + result[i].currencyCode + '</TD>';
+                                str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
                             }
-                            str += '<TD>' + result[i].type + '</TD>';
-                            str += '<TD>' + result[i].balance + ' ' + result[i].currencyCode + '</TD>';
+
+                            if (result[i].type === '환전' || result[i].type === '재환전') {
+                                str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
+                            } else {
+                                str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
+                            }
+
+                            str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
+
                             str += '</TR>';
                         });
                         $("#dateSelectHistory").append(str);
@@ -450,16 +486,10 @@
                 <!--지갑 통화 현황 차트-->
                 <jsp:include page="/WEB-INF/views/common/walletChart.jsp"/>
                 <a href="/group-wallet/${id}/deposit" class="btn btn-primary">
-                    <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                    <h6 class="text-white" style="margin-bottom: 0">
-                        채우기
-                    </h6>
+                    채우기
                 </a>
                 <a href="/group-wallet/${id}/withdraw" class="btn btn-primary">
-                    <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                    <h6 class="text-white" style="margin-bottom: 0">
-                        꺼내기
-                    </h6>
+                    꺼내기
                 </a>
             </div>
 
@@ -480,11 +510,11 @@
         </div>
 
 
-        <div class="col-xl-12">
-            <div class="">
+        <div class="col-xl-12" style="padding: 0px">
+            <div class="" style="padding: 0px;">
                 <!--탭 리스트-->
-                <ul class="nav nav-tabs flex-fill" role="tablist">
-                    <li class="nav-item">
+                <ul class="nav nav-tabs flex-fill" role="tablist" style="padding: 0px">
+                    <li class="nav-item" style="padding: 0px">
                         <button
                                 type="button"
                                 class="nav-link active"
@@ -495,7 +525,7 @@
                                 aria-selected="true"
                         >
                             <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                            <h4 class="text-break" style="margin-bottom: 0">
+                            <h4 class="text-break" style="margin: 0px; padding: 0px">
                                 모임 거래 내역
                             </h4>
                         </button>
@@ -509,7 +539,7 @@
 <%--                            조회 기간 설정--%>
 <%--                        </button>--%>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" style="padding: 0px">
                         <button
                                 type="button"
                                 class="nav-link"
@@ -520,7 +550,7 @@
                                 aria-selected="false"
                         >
                             <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                            <h4 class="text-break" style="margin-bottom: 0">
+                            <h4 class="text-break" style="margin: 0px; padding: 0px">
                                 모임 회비 규칙
                             </h4>
                         </button>
@@ -536,7 +566,7 @@
                                 aria-selected="false"
                         >
                             <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                            <h4 class="text-break" style="margin-bottom: 0">
+                            <h4 class="text-break" style="margin: 0px; padding: 0px">
                                 모임 적금 조회
                             </h4>
                         </button>
@@ -552,7 +582,7 @@
                                 aria-selected="false"
                         >
                             <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                            <h4 class="text-break" style="margin-bottom: 0">
+                            <h4 class="text-break" style="margin: 0px; padding: 0px">
                                 모임 연결 카드
                             </h4>
                         </button>
@@ -568,7 +598,7 @@
                                 aria-selected="false"
                         >
                             <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                            <h4 class="text-break" style="margin-bottom: 0">
+                            <h4 class="text-break" style="margin: 0px; padding: 0px">
                                 모임 멤버 관리
                             </h4>
                         </button>
@@ -576,7 +606,7 @@
                 </ul>
 
 
-                <div class="tab-content flex-fill" class="card" style="margin-bottom: 0">
+                <div class="tab-content flex-fill" class="card" style="margin-bottom: 0; padding: 0px">
 
                     <!--모임 거래내역 START-->
                     <jsp:include page="tab/groupTabTranserHistory.jsp"/>
@@ -625,114 +655,75 @@
         </div>
     </div>
 </div>
-<!-- Modal -->
 
-<div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
+
+<!-- Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel1">조회기간 설정</h5>
-                <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                ></button>
+                <h2 class="modal-title" id="exampleModalLabel11">거래상세내역</h2>
             </div>
-            <form action="/personalwallet/selectDate" method="post" id="selectDateForm"
-                  name="selectDateForm">
-                <div class="modal-body">
-                    <div class="row g-2">
+            <div class="modal-body" style="margin: 20px">
+                <div class="row">
+                    <div class="row g-2" style="margin-bottom: 20px">
+                        <div class="col mb-3">
+                            <h3 style="margin-bottom: 0">거래 날짜</h3>
+                            <br>
+                            <h4 id="detail-date">
+                                아러나ㅣㅇ러ㅣㅏㄴ어라ㅣㄴㅇ러ㅣㅏㅇ너리ㅏㄴㅇ러ㅏㅣㄴㅇ
+                                <br>
+                                asd
+                            </h4>
+                        </div>
+
+                        <div class="col mb-3">
+                            <h3 style="margin-bottom: 0">거래 시간</h3>
+                            <br>
+                            <h4 id="detail-time"></h4>
+                        </div>
+                    </div>
+
+                    <div class="row g-2" style="margin-bottom: 20px">
+                        <div class="col mb-3">
+                            <h3 style="margin-bottom: 0">거래종류</h3>
+                            <br>
+                            <h4 id="detail-type"></h4>
+                        </div>
+                    </div>
+
+                    <div class="row g-2" style="margin-bottom: 20px">
+                        <div class="col mb-3">
+                            <h3 style="margin-bottom: 0">상세내용</h3>
+                            <br>
+                            <h4 id="detail-content"></h4>
+                        </div>
+                    </div>
+
+
+                    <div class="row g-2" style="margin-bottom: 20px">
                         <div class="col mb-0">
-                            <label for="startDate" class="form-label">시작일</label>
-                            <input type="date" id="startDate" class="form-control"
-                                   name="startDate"
-                                   placeholder="DD / MM / YY"/>
+                            <h3 style="margin-bottom: 0">금액</h3>
+                            <br>
+                            <div class="col mb-3">
+                                <h4 id="detail-amount"></h4>
+                            </div>
                         </div>
                         <div class="col mb-0">
-                            <label for="endDate" class="form-label">종료일</label>
-                            <input type="date" id="endDate" class="form-control"
-                                   name="endDate"
-                                   placeholder="DD / MM / YY"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal">
-                        취소
-                    </button>
-                    <button type="submit" class="btn btn-primary" id="submitButton">조회
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="col mb-0">
-    <div class="col mb-0 col-lg-5 col-md-auto">
-        <!-- Modal -->
-        <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel11">거래상세내역</h5>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="row g-2">
-                                <div class="col mb-3">
-                                    <label class="form-label">거래 날짜</label>
-                                    <div id="detail-date"></div>
-                                </div>
-
-                                <div class="col mb-3">
-                                    <label class="form-label">거래 시간</label>
-                                    <div id="detail-time"></div>
-                                </div>
-                            </div>
-
-                            <div class="row g-2">
-                                <div class="col mb-3">
-                                    <label class="form-label">거래종류</label>
-                                    <div id="detail-type"></div>
-                                </div>
-                            </div>
-
-                            <div class="row g-2">
-                                <div class="col mb-3">
-                                    <label class="form-label">상세내용</label>
-                                    <div id="detail-content"></div>
-                                </div>
-                            </div>
-
-
-                            <div class="row g-2">
-                                <div class="col mb-0">
-                                    <label class="form-label">금액</label>
-                                    <div class="col mb-3">
-                                        <div id="detail-amount"></div>
-                                    </div>
-                                </div>
-                                <div class="col mb-0">
-                                    <label class="form-label">거래후 잔액</label>
-                                    <div class="col mb-3">
-                                        <div id="detail-balance"></div>
-                                    </div>
-                                </div>
+                            <h3 style="margin-bottom: 0">거래후 잔액</h3>
+                            <br>
+                            <div class="col mb-3">
+                                <h4 id="detail-balance"></h4>
                             </div>
                         </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                            Close
-                        </button>
-                        <button type="button" class="btn btn-primary">Save</button>
                     </div>
                 </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    확인
+                </button>
             </div>
         </div>
     </div>
