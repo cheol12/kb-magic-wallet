@@ -17,7 +17,7 @@
         document.getElementById("cancelSaving").addEventListener("click", function (event) {
             event.preventDefault();
 
-            var confirmation = confirm("적금을 해지하시겠습니까? 해지시 이자도 함께 소멸됩니다.");
+            var confirmation = confirm("적금을 해지하시겠습니까? 만기일이 지나지 않았으면 해지시 이자도 함께 소멸됩니다.");
 
             if (confirmation) {
                 // 확인 버튼을 눌렀을 때, 적금 해지를 서버에 요청
