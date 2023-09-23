@@ -85,21 +85,7 @@
             $(document).on("click", "#can-connect-card", function () {
                 $("#changeWallet").modal('show');
             });
-            <%--$(document).on("click", "#change-confirm-button", function () {--%>
 
-            <%--    $.ajax({--%>
-            <%--        url: "${pageContext.request.contextPath}/personalwallet/cardStatusUpdate",--%>
-            <%--        type: "get",--%>
-            <%--        dataType: "text",--%>
-            <%--        success: function (result, status) {--%>
-            <%--            str = '<h3 class="open-modal text-center">연결 중</h3> <h1 class="text-center"><i class="material-icons text-center" style="font-size: 40px;color: green"> credit_card </i></h1>'--%>
-            <%--            $("#result").empty();--%>
-            <%--            $("#result").append(str);--%>
-            <%--        },--%>
-            <%--        error: function (result, status) {--%>
-            <%--        },--%>
-            <%--    });--%>
-            <%--});--%>
             $.ajax({
                 url: "/personalwallet/selectDate",
                 type: "post",
@@ -146,6 +132,8 @@
             })
         });
 
+
+        // 차트 그리기
         document.addEventListener("DOMContentLoaded", function () {
             var data = [];
             data.push(${walletDetailDto.balance.get("KRW")});
