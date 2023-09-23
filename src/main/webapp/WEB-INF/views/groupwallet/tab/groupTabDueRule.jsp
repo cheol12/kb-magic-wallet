@@ -36,9 +36,32 @@
                         console.log(result);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        console.log("회비 납부 내역 가져오기");
-
+                        console.log("회비 납부 내역 가져오기 실패");
                     },
+                });
+            });
+
+            // 회비 규칙 삭제 버튼
+            $(document).on("click", "#btnDeleteDueRule", function () {
+                console.log("회비 규칙 삭제 비동기 통신");
+
+                $.ajax({
+                    url: pageContext + "/group-wallet/${id}/rule",
+                    type: "DELETE",
+                    success: function(data) {
+                        // 서버에서 리다이렉트 완료 후 자동으로 새로운 페이지로 이동됩니다.
+                        if (data != null) {
+                            alert("회비 규칙이 삭제되었습니다!");
+                        }
+                        let redirectUrl = pageContext + '/group-wallet/' + data;
+                        console.log(redirectUrl)
+                        window.location.href = redirectUrl;
+                    },
+                    error: function(xhr, status, error) {
+                        // 오류 처리 코드
+                        console.error(error);
+                        alert("회비 규칙 삭제에 실패했습니다.");
+                    }
                 });
             });
 
@@ -64,7 +87,11 @@
                                 '</h4></p>';
                             if (data.chairman === true) {
                                 str += '<div class="text-end">';
-                                str += '<h4 style="margin-bottom: 0"><button type="button" class="btn btn-outline-danger btn-sm" style="align-self: center">회비 규칙 삭제</button></h4>'
+                                str += '<h4 style="margin-bottom: 0">';
+                                str += '<button type="button" id="btnDeleteDueRule" class="btn btn-outline-danger btn-sm" style="align-self: center">';
+                                str += '회비 규칙 삭제';
+                                str += '</button>';
+                                str += '</h4>';
                                 str += '</div>'
                             }
 
