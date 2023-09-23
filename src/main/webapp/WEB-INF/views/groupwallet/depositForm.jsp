@@ -37,6 +37,26 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../../../assets/js/config.js"></script>
 
+    <script>
+        function showBalance() {
+            // Get a reference to the input element
+            var balanceInput = document.getElementById("balance");
+
+            // Set the value of the input element to 3,000,000
+            balanceInput.value = "3,000,000 원";
+        }
+
+        function addValue(amount) {
+            var inputElement = document.getElementById("basic-icon-default-company");
+            var currentValue = parseFloat(inputElement.value.replace(/,/g, "")) || 0; // 현재 값 가져오기, 숫자가 아닌 경우 0으로 설정
+            var newValue = currentValue + amount; // 새로운 값 계산
+            inputElement.value = newValue; // 새로운 값을 세자리마다 콤마를 추가하여 설정
+        }
+
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+    </script>
 </head>
 <body>
 
@@ -49,7 +69,8 @@
             <div class="container-xxl flex-grow-1 container-p-y">
                 <h2 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">모임지갑/</span> 충전</h2>
                 <!-- Basic Layout -->
-                <form id="depositForm" action="${pageContext.request.contextPath}/group-wallet/${id}/deposit" method="post">
+                <form id="depositForm" action="${pageContext.request.contextPath}/group-wallet/${id}/deposit"
+                      method="post">
                     <div class="row">
                         <div class="col-xl">
                             <div class="card mb-4">
@@ -58,31 +79,25 @@
                                     <small class="text-muted float-end"></small>
                                 </div>
                                 <div class="card-body">
-
                                     <div class="row gx-3 gy-2 align-items-center">
                                         <div class="mb-3">
                                             <h5 class="mb-3">
                                                 출금 계좌 번호
                                             </h5>
-
                                             <select id="selectTypeOpt" class="form-select color-dropdown">
                                                 <option value="bg-primary" selected>[국민] 937702-00-888XXX</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-3">
-                                            <button type="button" class="btn btn-outline-warning">잔액 조회</button>
+                                        <div class="md-3">
+                                            <button type="button" class="btn btn-outline-warning"
+                                                    onclick="showBalance()">잔액 조회
+                                            </button>
                                         </div>
                                         <div id="hide-balance">
-                                            <label class="form-label">출금가능잔액</label>
-                                            <input type="text" class="form-control" placeholder="3,000,000" readonly/>
+                                            <h5 class="mb3">출금가능잔액</h5>
+                                            <input type="text" id="balance" class="form-control" readonly/>
+                                        </div>
 
-                                            <label class="form-label">총잔액</label>
-                                            <input type="text" class="form-control" placeholder="3,000,000" readonly/>
-                                        </div>
-                                        <div class="col-md-3">
-                                            계좌 비밀번호
-                                            <input type="password" class="form-control" maxlength="4">
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -93,61 +108,82 @@
                                     <h5 class="mb-0">입금정보</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="mb-3">
-                                        입금개인지갑
-                                        <label class="form-label"></label>
-                                        <div class="input-group input-group-merge">
+                                    <div class="row gx-3 gy-2 align-items-center">
+                                        <div class="mb-3">
+                                            <h5 class="mb-3">
+                                                입금모임지갑
+                                            </h5>
                                             <select id="selectPersonalWallet" class="form-select color-dropdown">
-                                                <option value="bg-primary" selected>XXX의 개인지갑</option>
+                                                <option value="bg-primary" selected>${groupWallet.nickname}</option>
                                             </select>
                                         </div>
-                                    </div>
 
-                                    <div class="mb-3">
-                                        이체금액
-                                        <div class="input-group input-group-merge">
-                                            <input type="number" id="basic-icon-default-company" class="form-control"
-                                                   name="amount"/>원
-                                        </div>
+                                        <h5 class="mb-3">
+                                            <div class="mb-3">
+                                                이체금액
+                                            </div>
+                                            <input type="text" id="basic-icon-default-company" class="form-control"
+                                                   name="amount" value="0" readonly/>
+                                            <br>
 
-                                        <div class="mb-auto">
-                                            <button type="button" class="btn btn-sm btn-outline-warning">1만</button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning">3만</button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning">5만</button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning">10만</button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning">50만</button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning">100만</button>
+                                            <div class="mb-3">
+                                                <button type="button" class="btn btn-outline-warning"
+                                                        style="font-size: 0.875rem;" onclick="addValue(10000)">1만
+                                                </button>
+                                                <button type="button" class="btn btn-outline-warning"
+                                                        style="font-size: 0.875rem;" onclick="addValue(30000)">3만
+                                                </button>
+                                                <button type="button" class="btn btn-outline-warning"
+                                                        style="font-size: 0.875rem;" onclick="addValue(50000)">5만
+                                                </button>
+                                                <button type="button" class="btn btn-outline-warning"
+                                                        style="font-size: 0.875rem;" onclick="addValue(100000)">10만
+                                                </button>
+                                                <button type="button" class="btn btn-outline-warning"
+                                                        style="font-size: 0.875rem;" onclick="addValue(500000)">50만
+                                                </button>
+                                                <button type="button" class="btn btn-outline-warning"
+                                                        style="font-size: 0.875rem;" onclick="addValue(1000000)">100만
+                                                </button>
+                                            </div>
+                                        </h5>
+                                        <div class="mb-3">
+                                            <h5>
+                                                받는 모임지갑 메모
+                                            </h5>
+                                            <div class="input-group input-group-merge">
+                                                <input
+                                                        type="text"
+                                                        class="form-control"
+                                                        placeholder="(선택) 7자 이내 입력"
+                                                />
+                                            </div>
+                                            <div class="form-text">* 미 입력 시 출금계좌의 예금주명(내이름)이 기본 표기
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        받는 모임지갑 메모
-                                        <div class="input-group input-group-merge">
-                                            <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    placeholder="(선택) 7자 이내 입력"
-                                            />
-                                        </div>
-                                        <div class="form-text">* 미 입력 시 출금계좌의 예금주명(내이름)이 기본 표기
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        내 개인 지갑 메모
-                                        <div class="input-group input-group-merge">
-                                            <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    placeholder="(선택) 7자 이내 입력"
-                                            />
+                                        <div class="mb-3">
+                                            <h5>
+                                                내 개인 지갑 메모
+                                            </h5>
+                                            <div class="input-group input-group-merge">
+                                                <input
+                                                        type="text"
+                                                        class="form-control"
+                                                        placeholder="(선택) 7자 이내 입력"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary" id="depositButton" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">
-                                    채우기
-                                </button>
+                                <div class="mb-3">
+                                    <div class="col-xl d-flex justify-content-center">
+                                        <button type="button" class="btn btn-primary" id="depositButton"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal">
+                                            모임지갑에 채우기
+                                        </button>
+                                    </div>
+                                </div>
 
                                 <!-- Modal -->
                                 <div class="modal fade" id="exampleModal" tabindex="-1"
@@ -167,7 +203,9 @@
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                     닫기
                                                 </button>
-                                                <button type="button" id="saveChangesButton" class="btn btn-primary">비밀번호 확인</button>
+                                                <button type="button" id="saveChangesButton" class="btn btn-primary">
+                                                    비밀번호 확인
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -182,7 +220,6 @@
 
     </div>
 </div>
-
 <script>
     $(document).ready(function () {
         $("#saveChangesButton").click(function () {
@@ -193,7 +230,6 @@
     function summitForm() {
         $("#depositForm").submit();
     }
-
 </script>
 </body>
 </html>
