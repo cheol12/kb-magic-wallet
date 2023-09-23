@@ -31,17 +31,20 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../../../assets/js/config.js"></script>
 
-
 </head>
 
 <body>
-<input type="password" readonly class="input form-control-plaintext" id="exampleFormControlReadOnlyInputPlain1" value="결제 비밀번호"/>
+<input type="password" readonly
+       class="input form-control-plaintext form-control-lg text-center"
+       id="exampleFormControlReadOnlyInputPlain1"
+       style="font-size: 48px;"/>
 <div class="simple-keyboard"></div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.js"></script>
 <script src="src/index.js"></script>
 <script>
+
     let Keyboard = window.SimpleKeyboard.default;
 
     // 숫자 0부터 9까지의 배열 생성
@@ -72,7 +75,7 @@
             '{bksp}': '지우기',
             '{enter}': '확인'
         },
-        maxLength: 6
+        maxLength: 4
     });
 
     /**
@@ -118,8 +121,8 @@
         $.ajax({
             type: "POST",
             url: "${pageContext.request.contextPath}/verification",
-            data: { payPassword: paymentPassword },
-            success: function(data, textStatus, xhr) {
+            data: {payPassword: paymentPassword},
+            success: function (data, textStatus, xhr) {
                 // 비밀번호 확인 결과에 따라 동작 결정
                 if (xhr.status === 200) {
                     // 비밀번호 확인 완료 시 폼을 제출
@@ -129,9 +132,10 @@
                     alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
                 }
             },
-            error: function() {
+            error: function () {
                 // AJAX 요청 실패 시 처리
                 alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+                document.querySelector(".input").value = "";
             }
         });
     }
