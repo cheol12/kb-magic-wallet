@@ -43,7 +43,7 @@
             var balanceInput = document.getElementById("balance");
 
             // Set the value of the input element to 3,000,000
-            balanceInput.value = "3,000,000 원";
+            balanceInput.value = numberWithCommas(${krwBalance}) + "원";
         }
 
         function addValue(amount) {
@@ -85,7 +85,7 @@
                                                 출금 계좌 번호
                                             </h5>
                                             <select id="selectTypeOpt" class="form-select color-dropdown">
-                                                <option value="bg-primary" selected>[국민] 937702-00-888XXX</option>
+                                                <option value="bg-primary" selected>${member.name}의 개인지갑</option>
                                             </select>
                                         </div>
                                         <div class="md-3">
@@ -163,7 +163,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <h5>
-                                                내 개인 지갑 메모
+                                                내 모임 지갑 메모
                                             </h5>
                                             <div class="input-group input-group-merge">
                                                 <input

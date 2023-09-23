@@ -3,6 +3,7 @@ package kb04.team02.web.mvc.group.controller;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
+import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpSession;
 public class GroupWalletFormController {
 
     private final GroupWalletService groupWalletService;
+    private final PersonalWalletService personalWalletService;
 
     /**
      * 모임지갑 생성 폼
@@ -38,7 +40,7 @@ public class GroupWalletFormController {
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
         GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
         model.addAttribute("groupWallet", groupWallet);
-
+        model.addAttribute("member", loginMemberDto);
         return "groupwallet/groupWalletWithdrawForm";
     }
 
@@ -64,6 +66,10 @@ public class GroupWalletFormController {
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
         GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
         model.addAttribute("groupWallet", groupWallet);
+        model.addAttribute("member", loginMemberDto);
+        Long krwBalance = personalWalletService.personalWallet(loginMemberDto).getBalance().get("KRW");
+        model.addAttribute("personalWalletBalance", krwBalance);
+
         return "groupwallet/depositForm";
     }
 
