@@ -83,7 +83,7 @@
                         if (data.dueCondition === true) { // dueCondition이 true일 때
                             str += '<h4 style="text-align: center">✈️ <strong>' + data.nickname + '</strong>의 회비 규칙 ✈️</h4>';
                             str += '<p style="text-align: center"><h4 style="text-align: center">' +
-                                '매 월 <strong>' + data.dueDate + '</strong>일에 모임원들이 <strong>' + data.due + '</strong>원씩 회비를 납부해요!' +
+                                '매 월 <strong>' + data.dueDate + '</strong>일에 모임원들이 <strong>' + formatNumberWithCommas(data.due) + '</strong>원씩 회비를 납부해요!' +
                                 '</h4></p>';
                             if (data.chairman === true) {
                                 str += '<div class="text-end">';
