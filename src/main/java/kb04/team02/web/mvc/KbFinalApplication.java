@@ -18,7 +18,7 @@ public class KbFinalApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) {
+    public void run(String... args) throws InterruptedException {
         // 애플리케이션 시작 시 DataLoader를 호출하여 초기 데이터를 로드합니다.
         dataLoader.loadInitialData();
     }

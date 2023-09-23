@@ -92,47 +92,6 @@
             }
         }
 
-        // 모달창을 띄우는 function
-        function PopupDetail(clicked_element, content) {
-            // 이전 모달 버전
-            var row_td = clicked_element.getElementsByTagName("td");
-            var modal = document.getElementById("detail-modal");
-
-            document.getElementById("detail-date").innerHTML = row_td[0].innerHTML;
-            document.getElementById("detail-time").innerHTML = row_td[1].innerHTML;
-            if (row_td[2].innerHTML === "입금액: -") {
-                document.getElementById("detail-amount").innerHTML = row_td[3].innerHTML;
-            } else {
-                document.getElementById("detail-amount").innerHTML = row_td[2].innerHTML;
-            }
-            document.getElementById("detail-type").innerHTML = row_td[4].innerHTML;
-            document.getElementById("detail-content").innerHTML = content;
-            document.getElementById("detail-balance").innerHTML = row_td[5].innerHTML;
-            modal.style.display = 'block';
-
-            // 최근 모달 버전
-            // console.log("ck")
-            // $('#detailModal').modal('show');
-            //
-            // var id = $(this).closest("tr").data("id");
-            // var row = $(this).closest("tr");
-            //
-            // $("#detail-date").text(row.find("td:eq(0)").text());
-            // $("#detail-time").text(row.find("td:eq(1)").text());
-            //
-            // var deposit = row.find("td:eq(2)").text();
-            // var withdrawal = row.find("td:eq(3)").text();
-            //
-            // if (deposit === "-") {
-            //     $("#detail-amount").text(withdrawal);
-            // } else {
-            //     $("#detail-amount").text(deposit);
-            // }
-            // $("#detail-type").text(row.find("td:eq(4)").text());
-            // $("#detail-content").text(id);
-            // $("#detail-balance").text(row.find("td:eq(5)").text());
-        }
-
         // 모임지갑 상세내역
         function historyCall() {
             $.ajax({
@@ -149,7 +108,8 @@
                         let date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
                         let time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
 
-                        str += '<TR class="searchDateResult" onclick="PopupDetail(this, \'' + detailString + '\')" data-bs-toggle="modal" data-bs-target="#detailModal">'
+                        console.log(detailString);
+                        str += '<TR class="searchDateResult" data-id="' + detailString + '">';
                         // 날짜 시간 처리
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
@@ -209,10 +169,35 @@
         // AJAX READY
 
         $(document).ready(function () {
+            $(document).on("click", ".searchDateResult", function () {
+                $('#detailModal').modal('show');
+
+                var id = $(this).closest("tr").data("id");
+                var row = $(this).closest("tr");
+
+                $("#detail-date").text(row.find("td:eq(0)").text());
+                $("#detail-time").text(row.find("td:eq(1)").text());
+
+                var deposit = row.find("td:eq(2)").text();
+                var withdrawal = row.find("td:eq(3)").text();
+
+                if (deposit === "-") {
+                    $("#detail-amount").text(withdrawal);
+                } else {
+                    $("#detail-amount").text(deposit);
+                }
+                $("#detail-type").text(row.find("td:eq(4)").text());
+                $("#detail-content").text(id);
+                console.log(id);
+                $("#detail-balance").text(row.find("td:eq(5)").text());
+
+            });
+
             memberCall();
             historyCall();
             displayMemberList();
             savingCall();
+            initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");
 
             // $(document).on("click", , function(){ }) 형식을 쓰는 이유
             // = 동적 요소에 대한 이벤트 처리: 이 방식을 사용하면 페이지가 로드된 이후에
@@ -235,6 +220,7 @@
                                 // 강퇴 성공 시 필요한 작업 수행
                                 alert(memberName + "님을 강퇴했어요")
                                 memberCall();
+                                initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");
                             } else {
                                 alert("강퇴를 실패했어요");
                             }
@@ -325,71 +311,71 @@
                 }
 
             });
-
-            $("#selectDateForm").on("submit", function (e) {
-                e.preventDefault();
-                $.ajax({
-                    url: "/personalwallet/selectDate",
-                    type: "post",
-                    dataType: "json",
-                    success: function (result, status) {
-                        // 화면에 갱신
-                        var str = "";
-                        $.each(result, function (i) {
-                            console.log(result[i].dateTime)
-                            var dateTime = new Date(result[i].dateTime);
-                            var detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
-                            // 날짜와 시간을 따로 추출
-                            var date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
-                            var time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
-                            console.log(date);
-                            console.log(time);
-
-                            str += '<TR class="searchDateResult" data-id="' + detailString + '">'
-                            // 날짜 시간 처리
-                            str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
-                            str += '<TD><h5 id="time" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
-                            // 입금액 출금액 처리
-                            if (result[i].type === '입금') {
-                                str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
-                            } else {
-                                str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
-                            }
-
-                            if (result[i].type === '환전' || result[i].type === '재환전') {
-                                str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
-                            } else {
-                                str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
-                            }
-
-                            str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
-
-                            str += '</TR>';
-                        });
-                        $("#dateSelectHistory").append(str);
-                    },
-                    error: function (result, status) {
-
-                    },
-                })
-            });
-
-            // 모달 닫기 (조회기간 설정 버튼 누른 후)
-            $("#submitButton").on("click", function () {
-                $("#basicModal").modal("hide");
-            });
-
-            // 모달 닫힌 후에 스크롤, 배경색 관련 처리
-            $("#basicModal").on("hidden.bs.modal", function () {
-
-                // 모달이 완전히 사라진 후에 배경색 변경 및 스크롤 관련 처리
-                $("body").removeClass("modal-open");
-                $(".modal-backdrop").remove();
-
-                // 필요한 스크롤 관련 설정
-                $("body").css("overflow", "auto");
-                // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
-            });
+            //
+            // $("#selectDateForm").on("submit", function (e) {
+            //     e.preventDefault();
+            //     $.ajax({
+            //         url: "/personalwallet/selectDate",
+            //         type: "post",
+            //         dataType: "json",
+            //         success: function (result, status) {
+            //             // 화면에 갱신
+            //             var str = "";
+            //             $.each(result, function (i) {
+            //                 console.log(result[i].dateTime)
+            //                 var dateTime = new Date(result[i].dateTime);
+            //                 var detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
+            //                 // 날짜와 시간을 따로 추출
+            //                 var date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
+            //                 var time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
+            //                 console.log(date);
+            //                 console.log(time);
+            //
+            //                 str += '<TR class="searchDateResult" data-id="' + detailString + '">'
+            //                 // 날짜 시간 처리
+            //                 str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
+            //                 str += '<TD><h5 id="time" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
+            //                 // 입금액 출금액 처리
+            //                 if (result[i].type === '입금') {
+            //                     str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
+            //                 } else {
+            //                     str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
+            //                 }
+            //
+            //                 if (result[i].type === '환전' || result[i].type === '재환전') {
+            //                     str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
+            //                 } else {
+            //                     str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
+            //                 }
+            //
+            //                 str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
+            //
+            //                 str += '</TR>';
+            //             });
+            //             $("#dateSelectHistory").append(str);
+            //         },
+            //         error: function (result, status) {
+            //
+            //         },
+            //     })
+            // });
+            //
+            // // 모달 닫기 (조회기간 설정 버튼 누른 후)
+            // $("#submitButton").on("click", function () {
+            //     $("#basicModal").modal("hide");
+            // });
+            //
+            // // 모달 닫힌 후에 스크롤, 배경색 관련 처리
+            // $("#basicModal").on("hidden.bs.modal", function () {
+            //
+            //     // 모달이 완전히 사라진 후에 배경색 변경 및 스크롤 관련 처리
+            //     $("body").removeClass("modal-open");
+            //     $(".modal-backdrop").remove();
+            //
+            //     // 필요한 스크롤 관련 설정
+            //     $("body").css("overflow", "auto");
+            //     // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
+            // });
 
         });
 
@@ -494,6 +480,44 @@
 
         }
 
+        // 카드 연결상태 확인
+        function initTest(urlPath, data) {
+            $.ajax({
+                url: urlPath,
+                type: "get",
+                dataType: "json",
+                data: "id="+${groupWalletId},
+
+                success: function (result, status) {
+                    $("#table").empty();
+                    // 화면에 갱신
+                    var str = "";
+                    $.each(result, function (i) {
+                        str += '<tr data-id=' + result[i].memberId + '>';
+                        str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].name + '</h5></TD>';
+                        if (result[i].roleToString == '모임장' || result[i].roleToString == '공동모임장') {
+                            str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' +  result[i].roleToString + '👑' + '</h5></TD>';
+                        } else {
+                            str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].roleToString + '</TD>';
+                        }
+                        if (result[i].cardIsConnect) {
+                            str += '<td class="open-modal text-center"><h5 class="text-break" style="margin-bottom: 0">연결 중&nbsp&nbsp&nbsp&nbsp<i class="material-icons" style="color: green">credit_card</i></h5></td>';
+                        } else {
+                            if (result[i].role == "GENERAL") {
+                                str += '<td id="cant-connect-card" class="open-modal text-center"><h5 class="text-break text-center" style="margin-bottom: 0"> 연결 불가 <i class="material-icons" style="color:red;">credit_card</i></h5></td>';
+                            } else {
+                                str += `<td id="can-connect-card" class="open-modal text-center"><h5 class="text-break text-center" style="margin-bottom: 0"> 연결 가능 <i class="material-icons">credit_card</i></h5></td>`
+                            }
+                        }
+                        str += '</TR>';
+                    });
+                    $("#table").append(str);
+                },
+                error: function (result, status) {
+                },
+            });
+        }
+
         // 꺼내기 클릭 시 권한 판단
         document.getElementById("withdrawButton").addEventListener("click", function (event) {
             // 여기서 groupMemberDto.roleToString 값을 자바스크립트로 가져와서 사용합니다.
@@ -509,6 +533,7 @@
                 event.preventDefault();
             }
         });
+
     </script>
 
 </head>
@@ -539,6 +564,9 @@
                 </a>
                 <a href="/group-wallet/${id}/withdraw" class="btn btn-primary" id="withdrawButton">
                     꺼내기
+                </a>
+                <a href="/group-wallet/${id}/settle" class="btn btn-primary" id="settlebutton">
+                    정산하기
                 </a>
             </div>
 
