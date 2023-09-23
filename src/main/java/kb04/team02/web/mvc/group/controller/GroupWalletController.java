@@ -96,11 +96,12 @@ public class GroupWalletController {
         model.addAttribute("usdDto", usdExchangeRateDto);
         model.addAttribute("jpyDto", jpyExchangeRateDto);
 
-        // 내 모임지갑 모임원 리스트
+//        // 내 모임지갑 모임원 리스트
         List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
-        model.addAttribute("groupMemberDtoList", groupMemberDtoList);
-        int countMember = groupWalletService.countGroupWalletMember(id);
-        model.addAttribute("countMember", countMember);
+//        model.addAttribute("groupMemberDtoList", groupMemberDtoList);
+//        int countMember = groupWalletService.countGroupWalletMember(id);
+//        model.addAttribute("countMember", countMember);
+
         // 모임지갑 내에서 내 권한 확인
         GroupMemberDto groupMemberDto = null;
         for(GroupMemberDto dto : groupMemberDtoList){
@@ -110,7 +111,6 @@ public class GroupWalletController {
             }
         }
         model.addAttribute("groupWalletId", id);
-        System.out.println("groupMember.Role = " + groupMemberDto.getRoleToString());
 
         // 회비규칙 조회하기
         GroupWallet groupWallet = groupWalletService.getGroupWallet(id);

@@ -460,6 +460,21 @@
 
         }
 
+        // 꺼내기 클릭 시 권한 판단
+        document.getElementById("withdrawButton").addEventListener("click", function (event) {
+            // 여기서 groupMemberDto.roleToString 값을 자바스크립트로 가져와서 사용합니다.
+            var role = "${groupMemberDto.roleToString}";
+
+            // 권한이 ADMIN인 경우에만 꺼내기 동작
+            if (role === '모임장' || role === '공동모임장') {
+                // 꺼내기 동작 구현
+            } else {
+                // 권한이 없는 경우 alert 메시지 표시
+                alert("꺼내기는 모임장이나 공동모임장이 할 수 있어요!");
+                // 이벤트 기본 동작 취소
+                event.preventDefault();
+            }
+        });
     </script>
 
 </head>
@@ -488,7 +503,7 @@
                 <a href="/group-wallet/${id}/deposit" class="btn btn-primary">
                     채우기
                 </a>
-                <a href="/group-wallet/${id}/withdraw" class="btn btn-primary">
+                <a href="/group-wallet/${id}/withdraw" class="btn btn-primary" id="withdrawButton">
                     꺼내기
                 </a>
             </div>
