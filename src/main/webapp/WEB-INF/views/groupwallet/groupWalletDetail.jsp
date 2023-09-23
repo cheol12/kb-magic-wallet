@@ -92,47 +92,6 @@
             }
         }
 
-        // 모달창을 띄우는 function
-        function PopupDetail(clicked_element, content) {
-            // 이전 모달 버전
-            var row_td = clicked_element.getElementsByTagName("td");
-            var modal = document.getElementById("detail-modal");
-
-            document.getElementById("detail-date").innerHTML = row_td[0].innerHTML;
-            document.getElementById("detail-time").innerHTML = row_td[1].innerHTML;
-            if (row_td[2].innerHTML === "입금액: -") {
-                document.getElementById("detail-amount").innerHTML = row_td[3].innerHTML;
-            } else {
-                document.getElementById("detail-amount").innerHTML = row_td[2].innerHTML;
-            }
-            document.getElementById("detail-type").innerHTML = row_td[4].innerHTML;
-            document.getElementById("detail-content").innerHTML = content;
-            document.getElementById("detail-balance").innerHTML = row_td[5].innerHTML;
-            modal.style.display = 'block';
-
-            // 최근 모달 버전
-            // console.log("ck")
-            // $('#detailModal').modal('show');
-            //
-            // var id = $(this).closest("tr").data("id");
-            // var row = $(this).closest("tr");
-            //
-            // $("#detail-date").text(row.find("td:eq(0)").text());
-            // $("#detail-time").text(row.find("td:eq(1)").text());
-            //
-            // var deposit = row.find("td:eq(2)").text();
-            // var withdrawal = row.find("td:eq(3)").text();
-            //
-            // if (deposit === "-") {
-            //     $("#detail-amount").text(withdrawal);
-            // } else {
-            //     $("#detail-amount").text(deposit);
-            // }
-            // $("#detail-type").text(row.find("td:eq(4)").text());
-            // $("#detail-content").text(id);
-            // $("#detail-balance").text(row.find("td:eq(5)").text());
-        }
-
         // 모임지갑 상세내역
         function historyCall() {
             $.ajax({
@@ -149,7 +108,7 @@
                         let date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
                         let time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
 
-                        str += '<TR class="searchDateResult" onclick="PopupDetail(this, \'' + detailString + '\')" data-bs-toggle="modal" data-bs-target="#detailModal">'
+                        str += '<TR class="searchDateResult"' + detailString + '">';
                         // 날짜 시간 처리
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
@@ -178,6 +137,29 @@
         // AJAX READY
 
         $(document).ready(function () {
+            $(document).on("click", ".searchDateResult", function () {
+                $('#detailModal').modal('show');
+
+                var id = $(this).closest("tr").data("id");
+                var row = $(this).closest("tr");
+
+                $("#detail-date").text(row.find("td:eq(0)").text());
+                $("#detail-time").text(row.find("td:eq(1)").text());
+
+                var deposit = row.find("td:eq(2)").text();
+                var withdrawal = row.find("td:eq(3)").text();
+
+                if (deposit === "-") {
+                    $("#detail-amount").text(withdrawal);
+                } else {
+                    $("#detail-amount").text(deposit);
+                }
+                $("#detail-type").text(row.find("td:eq(4)").text());
+                $("#detail-content").text(id);
+                $("#detail-balance").text(row.find("td:eq(5)").text());
+
+            });
+
             memberCall();
             historyCall();
             displayMemberList();
@@ -461,8 +443,6 @@
             }
 
         }
-
-
 
         // 카드 연결상태 확인
         function initTest(urlPath, data) {

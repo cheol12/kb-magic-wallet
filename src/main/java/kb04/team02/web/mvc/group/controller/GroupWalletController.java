@@ -98,9 +98,9 @@ public class GroupWalletController {
 
 //        // 내 모임지갑 모임원 리스트
         List<GroupMemberDto> groupMemberDtoList = groupWalletService.getGroupMemberList(id);
-//        model.addAttribute("groupMemberDtoList", groupMemberDtoList);
-//        int countMember = groupWalletService.countGroupWalletMember(id);
-//        model.addAttribute("countMember", countMember);
+        model.addAttribute("groupMemberDtoList", groupMemberDtoList);
+        int countMember = groupWalletService.countGroupWalletMember(id);
+        model.addAttribute("countMember", countMember);
 
         // 모임지갑 내에서 내 권한 확인
         GroupMemberDto groupMemberDto = null;
