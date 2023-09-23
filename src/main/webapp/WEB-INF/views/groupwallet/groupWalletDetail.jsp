@@ -549,6 +549,9 @@
                 <a href="/group-wallet/${id}/withdraw" class="btn btn-primary" id="withdrawButton">
                     꺼내기
                 </a>
+                <a href="/group-wallet/${id}/settle" class="btn btn-primary" id="settlebutton">
+                    정산하기
+                </a>
             </div>
 
             <!-- 차트->멤버 목록 변경 완료

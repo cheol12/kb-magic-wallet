@@ -25,7 +25,7 @@
     <div class="center">
 
 
-        <form action="${pageContext.request.contextPath}/group-wallet/{id}/settle" method="post">
+        <form action="${pageContext.request.contextPath}/group-wallet/${id}/settle" method="post">
             <div class="row g-3 align-items-center" >
                 <div class="col-auto">
                     <label for="amount" class="col-form-label">환불하실 금액</label>

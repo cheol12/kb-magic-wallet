@@ -96,7 +96,7 @@ public class DataLoader {
     private ExchangeRateRepository exchangeRateRepository;
 
 
-    public void loadInitialData() {
+    public void loadInitialData() throws InterruptedException {
         //======================== 회원 관련 Data 생성 ========================//
 
         /**
@@ -184,37 +184,18 @@ public class DataLoader {
         memberRepository.save(member5);
         memberRepository.save(member6);
 
-        /**
-         * 카드 Data 생성
-         * 유효카드: 2개 (김진형, 최예빈)
-         * 카드번호: 유효카드 2개에 대해 랜덤으로 생성 (그 외의 데이터는 동일한 숫자 나열)
-         */
-        CardIssuance cardIssuance1 = CardIssuance.builder().cardNumber("4311-5214-2351-5232").cardState(CardState.OK).member(member1).walletId(member1.getMemberId()).build();
-        CardIssuance cardIssuance2 = CardIssuance.builder().cardNumber("4312-5114-2151-5532").cardState(CardState.OK).member(member2).walletId(member2.getMemberId()).build();
-        CardIssuance cardIssuance3 = CardIssuance.builder().cardNumber("3333-3333-3333-3333").cardState(CardState.OK).member(member3).build();
-        CardIssuance cardIssuance4 = CardIssuance.builder().cardNumber("4444-4444-4444-4444").cardState(CardState.OK).member(member4).build();
-        CardIssuance cardIssuance5 = CardIssuance.builder().cardNumber("5555-5555-5555-5555").cardState(CardState.OK).member(member5).build();
-        CardIssuance cardIssuance6 = CardIssuance.builder().cardNumber("6666-6666-6666-6666").cardState(CardState.OK).member(member6).build();
-        cardIssuanceRepository.save(cardIssuance1);
-        cardIssuanceRepository.save(cardIssuance2);
-        cardIssuanceRepository.save(cardIssuance3);
-        cardIssuanceRepository.save(cardIssuance4);
-        cardIssuanceRepository.save(cardIssuance5);
-        cardIssuanceRepository.save(cardIssuance6);
-
-        //======================== 개인지갑 Data 생성 ========================//
 
         /**
          * 개인지갑 Data 생성
          * 유효개인지갑: 2개 (김진형, 최예빈)
          * 초기 원화: 937,100원 동일 (그 외의 데이터는 0원)
          */
-        PersonalWallet personalWallet1 = PersonalWallet.builder().balance(937100L).member(member1).build();
-        PersonalWallet personalWallet2 = PersonalWallet.builder().balance(937100L).member(member2).build();
-        PersonalWallet personalWallet3 = PersonalWallet.builder().balance(0L).member(member3).build();
-        PersonalWallet personalWallet4 = PersonalWallet.builder().balance(0L).member(member4).build();
-        PersonalWallet personalWallet5 = PersonalWallet.builder().balance(0L).member(member5).build();
-        PersonalWallet personalWallet6 = PersonalWallet.builder().balance(0L).member(member6).build();
+        PersonalWallet personalWallet1 = PersonalWallet.builder().balance(937_100L).member(member1).build();
+        PersonalWallet personalWallet2 = PersonalWallet.builder().balance(937_100L).member(member2).build();
+        PersonalWallet personalWallet3 = PersonalWallet.builder().balance(1_000_000L).member(member3).build();
+        PersonalWallet personalWallet4 = PersonalWallet.builder().balance(1_000_000L).member(member4).build();
+        PersonalWallet personalWallet5 = PersonalWallet.builder().balance(1_000_000L).member(member5).build();
+        PersonalWallet personalWallet6 = PersonalWallet.builder().balance(1_000_000L).member(member6).build();
         personalWalletRepository.save(personalWallet1);
         personalWalletRepository.save(personalWallet2);
         personalWalletRepository.save(personalWallet3);
@@ -223,140 +204,23 @@ public class DataLoader {
         personalWalletRepository.save(personalWallet6);
 
 
-
         /**
-         * 개인지갑 환전내역 Data 생성 1 (김진형)
-         * 환전 내역: 2개 (KRW=>CurrencyCode.USD, KRW=>JPY로 각 한번)
-         * 이체 후 최종 잔액:
-         *      KRW: 987,1000
-         *      CurrencyCode.USD: 38
-         *      CurrencyCode.JPY: 6988
+         * 카드 Data 생성
+         * 유효카드: 2개 (김진형, 최예빈)
+         * 카드번호: 유효카드 2개에 대해 랜덤으로 생성 (그 외의 데이터는 동일한 숫자 나열)
          */
-        PersonalWalletExchange personalWalletExchange1
-                = PersonalWalletExchange.builder()
-                .personalWallet(personalWallet1)
-                .sellCurrencyCode(CurrencyCode.KRW)
-                .sellAmount(50000L)
-                .afterSellBalance(1050000L)
-                .buyCurrencyCode(CurrencyCode.USD)
-                .buyAmount(38L)
-                .afterBuyBalance(38L)
-                .exchangeRate(1300.0)
-                .build();
-        PersonalWalletExchange personalWalletExchange2
-                = PersonalWalletExchange.builder()
-                .personalWallet(personalWallet1)
-                .sellCurrencyCode(CurrencyCode.KRW)
-                .sellAmount(62900L)
-                .afterSellBalance(987100L)
-                .buyCurrencyCode(CurrencyCode.JPY)
-                .buyAmount(6988L)
-                .afterBuyBalance(6988L)
-                .exchangeRate(9.0)
-                .build();
-
-        /**
-         * 개인지갑 환전내역 Data 생성 2 (최예빈)
-         * 환전 내역: 2개 (KRW=>CurrencyCode.USD, KRW=>JPY로 각 한번)
-         * 이체 후 최종 잔액:
-         *      KRW: 987,1000
-         *      CurrencyCode.USD: 61
-         *      CurrencyCode.JPY: 3655
-         */
-        PersonalWalletExchange personalWalletExchange3
-                = PersonalWalletExchange.builder()
-                .personalWallet(personalWallet2)
-                .sellCurrencyCode(CurrencyCode.KRW)
-                .sellAmount(80000L)
-                .afterSellBalance(1020000L)
-                .buyCurrencyCode(CurrencyCode.USD)
-                .buyAmount(61L)
-                .afterBuyBalance(61L)
-                .exchangeRate(1300.0)
-                .build();
-        PersonalWalletExchange personalWalletExchange4
-                = PersonalWalletExchange.builder()
-                .personalWallet(personalWallet2)
-                .sellCurrencyCode(CurrencyCode.KRW)
-                .sellAmount(32900L)
-                .afterSellBalance(987100L)
-                .buyCurrencyCode(CurrencyCode.JPY)
-                .buyAmount(3655L)
-                .afterBuyBalance(3655L)
-                .exchangeRate(9.0)
-                .build();
-        personalWalletExchangeRepository.save(personalWalletExchange1);
-        personalWalletExchangeRepository.save(personalWalletExchange2);
-        personalWalletExchangeRepository.save(personalWalletExchange3);
-        personalWalletExchangeRepository.save(personalWalletExchange4);
-
-        /**
-         * 결제 Data 생성
-         * 결제 내역: 각 1개 (음식점 결제 50,000원)
-         * 결제 후 잔액: 937,100원
-         */
-        // 김진형 결제 내역
-        PersonalWalletPayment personalWalletPayment1 =
-                PersonalWalletPayment.builder()
-                        .personalWallet(personalWallet1)
-                        .currencyCode(CurrencyCode.KRW)
-                        .paymentType(PaymentType.OK)
-                        .paymentPlace("소공 순대국")
-                        .paymentCategory(PaymentCategoryType.RESTAURANT)
-                        .amount(50000L)
-                        .afterPayBalance(937100L)
-                        .build();
-        // 최예빈 결제 내역
-        PersonalWalletPayment personalWalletPayment2 =
-                PersonalWalletPayment.builder()
-                        .personalWallet(personalWallet2)
-                        .currencyCode(CurrencyCode.KRW)
-                        .paymentType(PaymentType.OK)
-                        .paymentPlace("맛자랑")
-                        .paymentCategory(PaymentCategoryType.RESTAURANT)
-                        .amount(50000L)
-                        .afterPayBalance(937100L)
-                        .build();
-        personalWalletPaymentRepository.save(personalWalletPayment1);
-        personalWalletPaymentRepository.save(personalWalletPayment2);
-
-        /**
-         * 외화 잔액 Data 생성
-         * 기존 잔액과 동일
-         */
-        PersonalWalletForeignCurrencyBalance personalWalletForeignCurrencyBalance1
-                = PersonalWalletForeignCurrencyBalance.builder()
-                .personalWallet(personalWallet1)
-                .currencyCode(CurrencyCode.USD)
-                .balance(38L)
-                .build();
-
-        PersonalWalletForeignCurrencyBalance personalWalletForeignCurrencyBalance2
-                = PersonalWalletForeignCurrencyBalance.builder()
-                .personalWallet(personalWallet1)
-                .currencyCode(CurrencyCode.JPY)
-                .balance(6988L)
-                .build();
-
-        PersonalWalletForeignCurrencyBalance personalWalletForeignCurrencyBalance3
-                = PersonalWalletForeignCurrencyBalance.builder()
-                .personalWallet(personalWallet2)
-                .currencyCode(CurrencyCode.USD)
-                .balance(61L)
-                .build();
-
-        PersonalWalletForeignCurrencyBalance personalWalletForeignCurrencyBalance4
-                = PersonalWalletForeignCurrencyBalance.builder()
-                .personalWallet(personalWallet2)
-                .currencyCode(CurrencyCode.JPY)
-                .balance(3655L)
-                .build();
-        personalForeignCurrencyBalanceRepository.save(personalWalletForeignCurrencyBalance1);
-        personalForeignCurrencyBalanceRepository.save(personalWalletForeignCurrencyBalance2);
-        personalForeignCurrencyBalanceRepository.save(personalWalletForeignCurrencyBalance3);
-        personalForeignCurrencyBalanceRepository.save(personalWalletForeignCurrencyBalance4);
-
-        //======================== 모임지갑 Data 생성 ========================//
+        CardIssuance cardIssuance1 = CardIssuance.builder().cardNumber("4311-5214-2351-5232").cardState(CardState.OK).member(member1).walletId(personalWallet1.getPersonalWalletId()).walletType(WalletType.PERSONAL_WALLET).cardState(CardState.OK).build();
+        CardIssuance cardIssuance2 = CardIssuance.builder().cardNumber("4312-5114-2151-5532").cardState(CardState.OK).member(member2).walletId(personalWallet2.getPersonalWalletId()).walletType(WalletType.PERSONAL_WALLET).cardState(CardState.OK).build();
+        CardIssuance cardIssuance3 = CardIssuance.builder().cardNumber("3333-3333-3333-3333").cardState(CardState.OK).member(member3).walletId(personalWallet3.getPersonalWalletId()).walletType(WalletType.PERSONAL_WALLET).cardState(CardState.OK).build();
+        CardIssuance cardIssuance4 = CardIssuance.builder().cardNumber("4444-4444-4444-4444").cardState(CardState.OK).member(member4).walletId(personalWallet4.getPersonalWalletId()).walletType(WalletType.PERSONAL_WALLET).cardState(CardState.OK).build();
+        CardIssuance cardIssuance5 = CardIssuance.builder().cardNumber("5555-5555-5555-5555").cardState(CardState.OK).member(member5).walletId(personalWallet5.getPersonalWalletId()).walletType(WalletType.PERSONAL_WALLET).cardState(CardState.OK).build();
+        CardIssuance cardIssuance6 = CardIssuance.builder().cardNumber("6666-6666-6666-6666").cardState(CardState.OK).member(member6).walletId(personalWallet6.getPersonalWalletId()).walletType(WalletType.PERSONAL_WALLET).cardState(CardState.OK).build();
+        cardIssuanceRepository.save(cardIssuance1);
+        cardIssuanceRepository.save(cardIssuance2);
+        cardIssuanceRepository.save(cardIssuance3);
+        cardIssuanceRepository.save(cardIssuance4);
+        cardIssuanceRepository.save(cardIssuance5);
+        cardIssuanceRepository.save(cardIssuance6);
 
         /**
          * 모임지갑 Data생성
@@ -367,19 +231,19 @@ public class DataLoader {
          * 모임지갑 2 => 규칙 X
          */
         GroupWallet groupWallet1 = GroupWallet.builder()
-                .nickname("취업기념 미국여행")
+                .nickname("IT's Your Life 수료기념 미국여행")
                 .dueCondition(true)
-                .balance(250000L)
-                .dueAccumulation(800000L)
+                .balance(250_000L)
+                .dueAccumulation(800_000L)
                 .dueDate(1)
-                .due(200000L)
+                .due(200_000L)
                 .member(member1)
                 .build();
 
         GroupWallet groupWallet2 = GroupWallet.builder()
                 .nickname("일본 라면 투어")
                 .dueCondition(false)
-                .balance(500000L)
+                .balance(500_000L)
                 .dueAccumulation(0L)
                 .dueDate(0)
                 .due(0L)
@@ -406,12 +270,6 @@ public class DataLoader {
                 .role(Role.CHAIRMAN)
                 .groupWallet(groupWallet1)
                 .memberId(member1.getMemberId())
-                .build();
-        Participation participation2 = Participation.builder()
-                .participationState(ParticipationState.PARTICIPATED)
-                .role(Role.CO_CHAIRMAN)
-                .groupWallet(groupWallet1)
-                .memberId(member2.getMemberId())
                 .build();
         Participation participation3 = Participation.builder()
                 .participationState(ParticipationState.PARTICIPATED)
@@ -464,7 +322,7 @@ public class DataLoader {
                 .memberId(member4.getMemberId())
                 .build();
         participationRepository.save(participation1);
-        participationRepository.save(participation2);
+
         participationRepository.save(participation3);
         participationRepository.save(participation4);
         participationRepository.save(participation5);
@@ -483,10 +341,6 @@ public class DataLoader {
                 .member(member1)
                 .groupWallet(groupWallet1)
                 .build();
-        DuePayment duePayment2 = DuePayment.builder()
-                .member(member2)
-                .groupWallet(groupWallet1)
-                .build();
         DuePayment duePayment3 = DuePayment.builder()
                 .member(member3)
                 .groupWallet(groupWallet1)
@@ -495,92 +349,14 @@ public class DataLoader {
                 .member(member4)
                 .groupWallet(groupWallet1)
                 .build();
+        DuePayment duePayment2 = DuePayment.builder()
+                .member(member6)
+                .groupWallet(groupWallet1)
+                .build();
         duePaymentRepository.save(duePayment1);
         duePaymentRepository.save(duePayment2);
         duePaymentRepository.save(duePayment3);
         duePaymentRepository.save(duePayment4);
-
-        /**
-         * 모임지갑 이체 내역 Data 생성
-         * 4명의 회비 이체 내역
-         */
-        GroupWalletTransfer groupWalletTransfer1 = GroupWalletTransfer.builder()
-                .groupWallet(groupWallet1)
-                .transferType(TransferType.DEPOSIT)
-                .fromType(TargetType.PERSONAL_WALLET)
-                .toType(TargetType.GROUP_WALLET)
-                .src(member1.getName())
-                .currencyCode(CurrencyCode.KRW)
-                .dest(groupWallet1.getNickname())
-                .amount(200000L)
-                .afterBalance(200000L)
-                .build();
-        GroupWalletTransfer groupWalletTransfer2 = GroupWalletTransfer.builder()
-                .groupWallet(groupWallet1)
-                .transferType(TransferType.DEPOSIT)
-                .fromType(TargetType.PERSONAL_WALLET)
-                .toType(TargetType.GROUP_WALLET)
-                .src(member2.getName())
-                .currencyCode(CurrencyCode.KRW)
-                .dest(groupWallet1.getNickname())
-                .amount(200000L)
-                .afterBalance(400000L)
-                .build();
-        GroupWalletTransfer groupWalletTransfer3 = GroupWalletTransfer.builder()
-                .groupWallet(groupWallet1)
-                .transferType(TransferType.DEPOSIT)
-                .fromType(TargetType.PERSONAL_WALLET)
-                .toType(TargetType.GROUP_WALLET)
-                .src(member3.getName())
-                .currencyCode(CurrencyCode.KRW)
-                .dest(groupWallet1.getNickname())
-                .amount(200000L)
-                .afterBalance(600000L)
-                .build();
-        GroupWalletTransfer groupWalletTransfer4 = GroupWalletTransfer.builder()
-                .groupWallet(groupWallet1)
-                .transferType(TransferType.DEPOSIT)
-                .fromType(TargetType.PERSONAL_WALLET)
-                .toType(TargetType.GROUP_WALLET)
-                .src(member4.getName())
-                .currencyCode(CurrencyCode.KRW)
-                .dest(groupWallet1.getNickname())
-                .amount(200000L)
-                .afterBalance(800000L)
-                .build();
-
-        GroupWalletTransfer groupWalletTransfer6 = GroupWalletTransfer.builder()
-                .groupWallet(groupWallet1)
-                .transferType(TransferType.WITHDRAW)
-                .fromType(TargetType.GROUP_WALLET)
-                .toType(TargetType.ACCOUNT)
-                .src(groupWallet1.getNickname())
-                .dest("KB적금")
-                .currencyCode(CurrencyCode.KRW)
-                .amount(100000L)
-                .afterBalance(700000L)
-                .build();
-
-        GroupWalletTransfer groupWalletTransfer5 = GroupWalletTransfer.builder()
-                .groupWallet(groupWallet2)
-                .transferType(TransferType.DEPOSIT)
-                .fromType(TargetType.PERSONAL_WALLET)
-                .toType(TargetType.GROUP_WALLET)
-                .src(member3.getName())
-                .currencyCode(CurrencyCode.KRW)
-                .dest(groupWallet1.getNickname())
-                .amount(1000000L)
-                .afterBalance(1000000L)
-                .build();
-
-        groupWalletTransferRepository.save(groupWalletTransfer1);
-        groupWalletTransferRepository.save(groupWalletTransfer2);
-        groupWalletTransferRepository.save(groupWalletTransfer3);
-        groupWalletTransferRepository.save(groupWalletTransfer4);
-        groupWalletTransferRepository.save(groupWalletTransfer5);
-
-
-
 
         /**
          * 개인지갑 이체내역 Data 생성
@@ -588,6 +364,8 @@ public class DataLoader {
          * 이체 후 최종 잔액: 1,100,000원
          */
         // 김진형의 개인지갑
+
+        Thread.sleep(1000);
         PersonalWalletTransfer personalWalletTransfer1
                 = PersonalWalletTransfer.builder()
                 .personalWallet(personalWallet1)
@@ -596,51 +374,10 @@ public class DataLoader {
                 .toType(TargetType.PERSONAL_WALLET)
                 .src(personalWallet1.getMember().getBankAccount())
                 .dest(personalWallet1.getMember().getName())
-                .amount(500000L)
-                .afterBalance(500000L)
+                .amount(500_000L)
+                .afterBalance(500_000L)
                 .currencyCode(CurrencyCode.KRW)
                 .build();
-
-        PersonalWalletTransfer personalWalletTransfer2
-                = PersonalWalletTransfer.builder()
-                .personalWallet(personalWallet1)
-                .transferType(TransferType.WITHDRAW)
-                .fromType(TargetType.PERSONAL_WALLET)
-                .toType(TargetType.ACCOUNT)
-                .src(personalWallet1.getMember().getName())
-                .dest(personalWallet1.getMember().getBankAccount())
-                .amount(150000L)
-                .afterBalance(350000L)
-                .currencyCode(CurrencyCode.KRW)
-                .build();
-
-        PersonalWalletTransfer personalWalletTransfer3
-                = PersonalWalletTransfer.builder()
-                .personalWallet(personalWallet1)
-                .transferType(TransferType.DEPOSIT)
-                .fromType(TargetType.ACCOUNT)
-                .toType(TargetType.PERSONAL_WALLET)
-                .src(personalWallet1.getMember().getBankAccount())
-                .dest(personalWallet1.getMember().getName())
-                .amount(950000L)
-                .afterBalance(1300000L)
-                .currencyCode(CurrencyCode.KRW)
-                .build();
-
-        PersonalWalletTransfer personalWalletTransfer7
-                = PersonalWalletTransfer.builder()
-                .personalWallet(personalWallet1)
-                .transferType(TransferType.WITHDRAW)
-                .fromType(TargetType.PERSONAL_WALLET)
-                .toType(TargetType.GROUP_WALLET)
-                .src(personalWallet1.getMember().getName())
-                .dest(groupWallet1.getNickname())
-                .amount(200000L)
-                .afterBalance(1100000L)
-                .currencyCode(CurrencyCode.KRW)
-                .build();
-
-        // 최예빈의 개인지갑
         PersonalWalletTransfer personalWalletTransfer4
                 = PersonalWalletTransfer.builder()
                 .personalWallet(personalWallet2)
@@ -654,6 +391,19 @@ public class DataLoader {
                 .currencyCode(CurrencyCode.KRW)
                 .build();
 
+        Thread.sleep(1000);
+        PersonalWalletTransfer personalWalletTransfer2
+                = PersonalWalletTransfer.builder()
+                .personalWallet(personalWallet1)
+                .transferType(TransferType.WITHDRAW)
+                .fromType(TargetType.PERSONAL_WALLET)
+                .toType(TargetType.ACCOUNT)
+                .src(personalWallet1.getMember().getName())
+                .dest(personalWallet1.getMember().getBankAccount())
+                .amount(150000L)
+                .afterBalance(350000L)
+                .currencyCode(CurrencyCode.KRW)
+                .build();
         PersonalWalletTransfer personalWalletTransfer5
                 = PersonalWalletTransfer.builder()
                 .personalWallet(personalWallet2)
@@ -667,6 +417,19 @@ public class DataLoader {
                 .currencyCode(CurrencyCode.KRW)
                 .build();
 
+        Thread.sleep(1000);
+        PersonalWalletTransfer personalWalletTransfer3
+                = PersonalWalletTransfer.builder()
+                .personalWallet(personalWallet1)
+                .transferType(TransferType.DEPOSIT)
+                .fromType(TargetType.ACCOUNT)
+                .toType(TargetType.PERSONAL_WALLET)
+                .src(personalWallet1.getMember().getBankAccount())
+                .dest(personalWallet1.getMember().getName())
+                .amount(950000L)
+                .afterBalance(1300000L)
+                .currencyCode(CurrencyCode.KRW)
+                .build();
         PersonalWalletTransfer personalWalletTransfer6
                 = PersonalWalletTransfer.builder()
                 .personalWallet(personalWallet2)
@@ -680,6 +443,30 @@ public class DataLoader {
                 .currencyCode(CurrencyCode.KRW)
                 .build();
 
+        Thread.sleep(1000);
+        PersonalWalletTransfer personalWalletTransfer7
+                = PersonalWalletTransfer.builder()
+                .personalWallet(personalWallet1)
+                .transferType(TransferType.WITHDRAW)
+                .fromType(TargetType.PERSONAL_WALLET)
+                .toType(TargetType.GROUP_WALLET)
+                .src(personalWallet1.getMember().getName())
+                .dest(groupWallet1.getNickname())
+                .amount(200000L)
+                .afterBalance(1100000L)
+                .currencyCode(CurrencyCode.KRW)
+                .build();
+        GroupWalletTransfer groupWalletTransfer1 = GroupWalletTransfer.builder()
+                .groupWallet(groupWallet1)
+                .transferType(TransferType.DEPOSIT)
+                .fromType(TargetType.PERSONAL_WALLET)
+                .toType(TargetType.GROUP_WALLET)
+                .src(member1.getName())
+                .currencyCode(CurrencyCode.KRW)
+                .dest(groupWallet1.getNickname())
+                .amount(200_000L)
+                .afterBalance(200_000L)
+                .build();
         PersonalWalletTransfer personalWalletTransfer8
                 = PersonalWalletTransfer.builder()
                 .personalWallet(personalWallet2)
@@ -701,11 +488,227 @@ public class DataLoader {
         personalWalletTransferRepository.save(personalWalletTransfer7);
         personalWalletTransferRepository.save(personalWalletTransfer8);
 
+        /**
+         * 모임지갑 이체 내역 Data 생성
+         * 4명의 회비 이체 내역
+         */
+        Thread.sleep(1000);
+        GroupWalletTransfer groupWalletTransfer2 = GroupWalletTransfer.builder()
+                .groupWallet(groupWallet1)
+                .transferType(TransferType.DEPOSIT)
+                .fromType(TargetType.PERSONAL_WALLET)
+                .toType(TargetType.GROUP_WALLET)
+                .src(member6.getName())
+                .currencyCode(CurrencyCode.KRW)
+                .dest(groupWallet1.getNickname())
+                .amount(200_000L)
+                .afterBalance(400_000L)
+                .build();
+
+        Thread.sleep(1000);
+        GroupWalletTransfer groupWalletTransfer3 = GroupWalletTransfer.builder()
+                .groupWallet(groupWallet1)
+                .transferType(TransferType.DEPOSIT)
+                .fromType(TargetType.PERSONAL_WALLET)
+                .toType(TargetType.GROUP_WALLET)
+                .src(member3.getName())
+                .currencyCode(CurrencyCode.KRW)
+                .dest(groupWallet1.getNickname())
+                .amount(200_000L)
+                .afterBalance(600_000L)
+                .build();
+        Thread.sleep(1000);
+        GroupWalletTransfer groupWalletTransfer4 = GroupWalletTransfer.builder()
+                .groupWallet(groupWallet1)
+                .transferType(TransferType.DEPOSIT)
+                .fromType(TargetType.PERSONAL_WALLET)
+                .toType(TargetType.GROUP_WALLET)
+                .src(member4.getName())
+                .currencyCode(CurrencyCode.KRW)
+                .dest(groupWallet1.getNickname())
+                .amount(200_000L)
+                .afterBalance(800_000L)
+                .build();
+
+        GroupWalletTransfer groupWalletTransfer5 = GroupWalletTransfer.builder()
+                .groupWallet(groupWallet2)
+                .transferType(TransferType.DEPOSIT)
+                .fromType(TargetType.PERSONAL_WALLET)
+                .toType(TargetType.GROUP_WALLET)
+                .src(member3.getName())
+                .currencyCode(CurrencyCode.KRW)
+                .dest(groupWallet1.getNickname())
+                .amount(1_000_000L)
+                .afterBalance(1_000_000L)
+                .build();
+
+
+        Thread.sleep(1000);
+        GroupWalletTransfer groupWalletTransfer6 = GroupWalletTransfer.builder()
+                .groupWallet(groupWallet1)
+                .transferType(TransferType.WITHDRAW)
+                .fromType(TargetType.GROUP_WALLET)
+                .toType(TargetType.ACCOUNT)
+                .src(groupWallet1.getNickname())
+                .dest("KB적금")
+                .currencyCode(CurrencyCode.KRW)
+                .amount(100_000L)
+                .afterBalance(700_000L)
+                .build();
+        groupWalletTransferRepository.save(groupWalletTransfer1);
+        groupWalletTransferRepository.save(groupWalletTransfer2);
+        groupWalletTransferRepository.save(groupWalletTransfer3);
+        groupWalletTransferRepository.save(groupWalletTransfer4);
+        groupWalletTransferRepository.save(groupWalletTransfer5);
+        groupWalletTransferRepository.save(groupWalletTransfer6);
+
+        /**
+         * 개인지갑 환전내역 Data 생성 1 (김진형)
+         * 환전 내역: 2개 (KRW=>CurrencyCode.USD, KRW=>JPY로 각 한번)
+         * 이체 후 최종 잔액:
+         *      KRW: 987,1000
+         *      CurrencyCode.USD: 38
+         *      CurrencyCode.JPY: 6988
+         */
+        Thread.sleep(1000);
+        PersonalWalletExchange personalWalletExchange1
+                = PersonalWalletExchange.builder()
+                .personalWallet(personalWallet1)
+                .sellCurrencyCode(CurrencyCode.KRW)
+                .sellAmount(50_000L)
+                .afterSellBalance(1_050_000L)
+                .buyCurrencyCode(CurrencyCode.USD)
+                .buyAmount(38L)
+                .afterBuyBalance(38L)
+                .exchangeRate(1300.0)
+                .build();
+
+        Thread.sleep(1000);
+        PersonalWalletExchange personalWalletExchange2
+                = PersonalWalletExchange.builder()
+                .personalWallet(personalWallet1)
+                .sellCurrencyCode(CurrencyCode.KRW)
+                .sellAmount(62_900L)
+                .afterSellBalance(987_100L)
+                .buyCurrencyCode(CurrencyCode.JPY)
+                .buyAmount(6_988L)
+                .afterBuyBalance(6_988L)
+                .exchangeRate(9.0)
+                .build();
+
+        /**
+         * 개인지갑 환전내역 Data 생성 2 (최예빈)
+         * 환전 내역: 2개 (KRW=>CurrencyCode.USD, KRW=>JPY로 각 한번)
+         * 이체 후 최종 잔액:
+         *      KRW: 987,1000
+         *      CurrencyCode.USD: 61
+         *      CurrencyCode.JPY: 3655
+         */
+        Thread.sleep(1000);
+        PersonalWalletExchange personalWalletExchange3
+                = PersonalWalletExchange.builder()
+                .personalWallet(personalWallet2)
+                .sellCurrencyCode(CurrencyCode.KRW)
+                .sellAmount(80_000L)
+                .afterSellBalance(1_020_000L)
+                .buyCurrencyCode(CurrencyCode.USD)
+                .buyAmount(61L)
+                .afterBuyBalance(61L)
+                .exchangeRate(1300.0)
+                .build();
+
+        Thread.sleep(1000);
+        PersonalWalletExchange personalWalletExchange4
+                = PersonalWalletExchange.builder()
+                .personalWallet(personalWallet2)
+                .sellCurrencyCode(CurrencyCode.KRW)
+                .sellAmount(32_900L)
+                .afterSellBalance(987_100L)
+                .buyCurrencyCode(CurrencyCode.JPY)
+                .buyAmount(3_655L)
+                .afterBuyBalance(3_655L)
+                .exchangeRate(9.0)
+                .build();
+        personalWalletExchangeRepository.save(personalWalletExchange1);
+        personalWalletExchangeRepository.save(personalWalletExchange2);
+        personalWalletExchangeRepository.save(personalWalletExchange3);
+        personalWalletExchangeRepository.save(personalWalletExchange4);
+
+        /**
+         * 결제 Data 생성
+         * 결제 내역: 각 1개 (음식점 결제 50,000원)
+         * 결제 후 잔액: 937,100원
+         */
+        Thread.sleep(1000);
+        // 김진형 결제 내역
+        PersonalWalletPayment personalWalletPayment1 =
+                PersonalWalletPayment.builder()
+                        .personalWallet(personalWallet1)
+                        .currencyCode(CurrencyCode.KRW)
+                        .paymentType(PaymentType.OK)
+                        .paymentPlace("소공 순대국")
+                        .paymentCategory(PaymentCategoryType.RESTAURANT)
+                        .amount(50_000L)
+                        .afterPayBalance(937_100L)
+                        .build();
+        Thread.sleep(1000);
+
+        // 최예빈 결제 내역
+        PersonalWalletPayment personalWalletPayment2 =
+                PersonalWalletPayment.builder()
+                        .personalWallet(personalWallet2)
+                        .currencyCode(CurrencyCode.KRW)
+                        .paymentType(PaymentType.OK)
+                        .paymentPlace("맛자랑")
+                        .paymentCategory(PaymentCategoryType.RESTAURANT)
+                        .amount(50_000L)
+                        .afterPayBalance(937_100L)
+                        .build();
+        personalWalletPaymentRepository.save(personalWalletPayment1);
+        personalWalletPaymentRepository.save(personalWalletPayment2);
+
+        /**
+         * 외화 잔액 Data 생성
+         * 기존 잔액과 동일
+         */
+        PersonalWalletForeignCurrencyBalance personalWalletForeignCurrencyBalance1
+                = PersonalWalletForeignCurrencyBalance.builder()
+                .personalWallet(personalWallet1)
+                .currencyCode(CurrencyCode.USD)
+                .balance(38L)
+                .build();
+
+        PersonalWalletForeignCurrencyBalance personalWalletForeignCurrencyBalance2
+                = PersonalWalletForeignCurrencyBalance.builder()
+                .personalWallet(personalWallet1)
+                .currencyCode(CurrencyCode.JPY)
+                .balance(6988L)
+                .build();
+
+        PersonalWalletForeignCurrencyBalance personalWalletForeignCurrencyBalance3
+                = PersonalWalletForeignCurrencyBalance.builder()
+                .personalWallet(personalWallet2)
+                .currencyCode(CurrencyCode.USD)
+                .balance(61L)
+                .build();
+
+        PersonalWalletForeignCurrencyBalance personalWalletForeignCurrencyBalance4
+                = PersonalWalletForeignCurrencyBalance.builder()
+                .personalWallet(personalWallet2)
+                .currencyCode(CurrencyCode.JPY)
+                .balance(3655L)
+                .build();
+        personalForeignCurrencyBalanceRepository.save(personalWalletForeignCurrencyBalance1);
+        personalForeignCurrencyBalanceRepository.save(personalWalletForeignCurrencyBalance2);
+        personalForeignCurrencyBalanceRepository.save(personalWalletForeignCurrencyBalance3);
+        personalForeignCurrencyBalanceRepository.save(personalWalletForeignCurrencyBalance4);
+
+        Thread.sleep(1000);
         GroupWalletExchange groupWalletExchange1 = GroupWalletExchange.builder()
                 .groupWallet(groupWallet1)
                 .sellCurrencyCode(CurrencyCode.KRW)
-                .sellAmount(400000L)
-                .afterSellBalance(400000L)
+                .sellAmount(400_000L)
+                .afterSellBalance(400_000L)
                 .buyCurrencyCode(CurrencyCode.USD)
                 .buyAmount(320L)
                 .afterBuyBalance(320L)
@@ -714,24 +717,25 @@ public class DataLoader {
         GroupWalletExchange groupWalletExchange2 = GroupWalletExchange.builder()
                 .groupWallet(groupWallet2)
                 .sellCurrencyCode(CurrencyCode.KRW)
-                .sellAmount(500000L)
-                .afterSellBalance(500000L)
+                .sellAmount(500_000L)
+                .afterSellBalance(500_000L)
                 .buyCurrencyCode(CurrencyCode.JPY)
-                .buyAmount(58823L)
-                .afterBuyBalance(58823L)
+                .buyAmount(58_823L)
+                .afterBuyBalance(58_823L)
                 .exchangeRate(8.5)
                 .build();
         groupWalletExchangeRepository.save(groupWalletExchange1);
         groupWalletExchangeRepository.save(groupWalletExchange2);
 
+        Thread.sleep(1000);
         GroupWalletPayment groupWalletPayment1 = GroupWalletPayment.builder()
                 .groupWallet(groupWallet1)
                 .currencyCode(CurrencyCode.KRW)
                 .paymentType(PaymentType.OK)
                 .paymentPlace("바나프레소 선릉 위워크점")
                 .paymentCategory(PaymentCategoryType.RESTAURANT)
-                .amount(50000L)
-                .afterPayBalance(250000L)
+                .amount(50_000L)
+                .afterPayBalance(250_000L)
                 .build();
         groupWalletPaymentRepository.save(groupWalletPayment1);
 
@@ -741,26 +745,23 @@ public class DataLoader {
                         .currencyCode(CurrencyCode.USD)
                         .balance(320L)
                         .build();
-
         GroupWalletForeignCurrencyBalance groupWalletForeignCurrencyBalance2 =
                 GroupWalletForeignCurrencyBalance.builder()
                         .groupWallet(groupWallet1)
                         .currencyCode(CurrencyCode.JPY)
                         .balance(0L)
                         .build();
-
         GroupWalletForeignCurrencyBalance groupWalletForeignCurrencyBalance3 =
                 GroupWalletForeignCurrencyBalance.builder()
                         .groupWallet(groupWallet2)
                         .currencyCode(CurrencyCode.USD)
                         .balance(0L)
                         .build();
-
         GroupWalletForeignCurrencyBalance groupWalletForeignCurrencyBalance4 =
                 GroupWalletForeignCurrencyBalance.builder()
                         .groupWallet(groupWallet2)
                         .currencyCode(CurrencyCode.JPY)
-                        .balance(58823L)
+                        .balance(58_823L)
                         .build();
         groupWalletForeignCurrencyBalanceRepository.save(groupWalletForeignCurrencyBalance1);
         groupWalletForeignCurrencyBalanceRepository.save(groupWalletForeignCurrencyBalance2);
@@ -797,13 +798,6 @@ public class DataLoader {
                 .period(1) // Example: Increment period for each saving
                 .amountLimit(300_000L) // Example: Increment amount limit for each saving
                 .build());
-//        Saving save5 = savingRepository.save(Saving.builder()
-//                .name("KB청년도약계좌")
-//                .savingComment("힘찬 미래 높은 도약")
-//                .interestRate(6.0) // Example: Increment interest rate for each saving
-//                .period(3) // Example: Increment period for each saving
-//                .amountLimit(700_000L) // Example: Increment amount limit for each saving
-//                .build());
         Saving save6 = savingRepository.save(Saving.builder()
                 .name("KB 맑은하늘적금")
                 .savingComment("맑은하늘을 위한 생활 속 작은 실천에 대해 우대금리를 제공하고, 대중교통/자전거상해 관련 무료 보험서비스(최대 2억원 보장)를 제공하는 친환경 특화 상품")
@@ -811,13 +805,6 @@ public class DataLoader {
                 .period(36) // Example: Increment period for each saving
                 .amountLimit(1_000_000L) // Example: Increment amount limit for each saving
                 .build());
-//        Saving save7 = savingRepository.save(Saving.builder()
-//                .name("온국민 건강적금-골든라이프")
-//                .savingComment("시니어 고객의 건강관리와 금융 혜택을 결합한 앱테크형 상품으로, 저소득층 대상 특별 우대이율을 제공하는 적금")
-//                .interestRate(10.0) // Example: Increment interest rate for each saving
-//                .period(6) // Example: Increment period for each saving
-//                .amountLimit(200_000L) // Example: Increment amount limit for each saving
-//                .build());
         Saving save8 = savingRepository.save(Saving.builder()
                 .name("KB 맑은바다적금")
                 .savingComment("해양쓰레기 줄이기 활동에 동참할 경우 친환경 실천 우대이율을 제공하고,\n" +
@@ -826,25 +813,10 @@ public class DataLoader {
                 .period(12) // Example: Increment period for each saving
                 .amountLimit(1_000_000L) // Example: Increment amount limit for each saving
                 .build());
-//        Saving save9 = savingRepository.save(Saving.builder()
-//                .name("KB Young Youth 적금")
-//                .savingComment("자녀가 성년이 될 때까지 장기거래가 가능하며, 어린이/청소년을 위한 무료 보험가입서비스를 제공하는 적금")
-//                .interestRate(3.65) // Example: Increment interest rate for each saving
-//                .period(12) // Example: Increment period for each saving
-//                .amountLimit(3_000_000L) // Example: Increment amount limit for each saving
-//                .build());
-//        Saving save10 = savingRepository.save(Saving.builder()
-//                .name("KB상호부금(자유적립식)")
-//                .savingComment("목돈을 마련하는 국민은행의 대표 적립식예금")
-//                .interestRate(3.55) // Example: Increment interest rate for each saving
-//                .period(36) // Example: Increment period for each saving
-//                .amountLimit(5_000_000L) // Example: Increment amount limit for each saving
-//                .build());
-
         InstallmentSaving installmentSaving1 = InstallmentSaving.builder()
                 .maturityDate(LocalDateTime.of(2023, 12, 7, 0, 5))
                 .done(false)
-                .totalAmount(600_0000L) // Example: Set a fixed total amount
+                .totalAmount(600_000L) // Example: Set a fixed total amount
                 .savingDate(10) // Example: Set a fixed saving date
                 .savingAmount(100_000L) // Example: Set a fixed saving amount
                 .saving(save4)
@@ -855,7 +827,7 @@ public class DataLoader {
         SavingHistory savingHistory1 = SavingHistory.builder()
                 .installmentSaving(installmentSaving1)
                 .insertDate(LocalDateTime.of(2023, 9, 10, 0, 5))
-                .amount(100000L)
+                .amount(100_000L)
                 .accumulatedAmount(100_000L)
                 .installmentSaving(installmentSaving1)
                 .build();

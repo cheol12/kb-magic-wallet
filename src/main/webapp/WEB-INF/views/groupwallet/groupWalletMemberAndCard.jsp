@@ -52,7 +52,7 @@
 
             //initTest() end
 
-            initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");
+            <%--initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");--%>
 
             // 연결 불가 선택 시 연결 불가를 알려주는 모달 창 출력
             $(document).on("click", "#cant-connect-card", function () {
