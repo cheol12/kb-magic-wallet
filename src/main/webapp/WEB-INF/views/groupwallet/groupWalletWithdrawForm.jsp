@@ -48,7 +48,7 @@
             var balanceInput = document.getElementById("balance");
 
             // Set the value of the input element to 3,000,000
-            balanceInput.value = numberWithCommas(${groupWallet.balance.get("KRW")}) + " 원";
+            balanceInput.value = numberWithCommas(${groupWallet.balance}) + " 원";
         }
 
         function addValue(amount) {
