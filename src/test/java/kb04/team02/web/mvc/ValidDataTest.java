@@ -19,6 +19,7 @@ import kb04.team02.web.mvc.personal.repository.*;
 import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
 import kb04.team02.web.mvc.saving.entity.Saving;
 import kb04.team02.web.mvc.saving.entity.SavingHistory;
+import kb04.team02.web.mvc.saving.entity.TransactionType;
 import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
 import kb04.team02.web.mvc.saving.repository.SavingHistoryRepository;
 import kb04.team02.web.mvc.saving.repository.SavingRepository;
@@ -863,6 +864,7 @@ public class ValidDataTest {
                 .amount(100000L)
                 .accumulatedAmount(100_000L)
                 .installmentSaving(installmentSaving1)
+                .transactionType(TransactionType.WITHDRAWAL)
                 .build();
         savingHistoryRepository.save(savingHistory1);
 

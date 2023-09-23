@@ -26,5 +26,8 @@ public class SavingHistory {
     @ManyToOne
     @JoinColumn(name = "installment_id")
     private InstallmentSaving installmentSaving;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
     //== 연관관계 설정 END==//
 }

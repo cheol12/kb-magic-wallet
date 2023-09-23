@@ -437,15 +437,15 @@
                                         <div id="map" style="width:100%;height:600px;"></div>
                                         <code id="snippet" class="snippet"></code>
                                         <script id="code">
-                                            var map = new naver.maps.Map('map', {
-                                                center: new naver.maps.LatLng(37.3595704, 127.105399),
-                                                zoom: 15
-                                            });
-
-                                            var marker = new naver.maps.Marker({
-                                                position: new naver.maps.LatLng(37.3595704, 127.105399),
-                                                map: map
-                                            });
+                                            // var map = new naver.maps.Map('map', {
+                                            //     center: new naver.maps.LatLng(37.3595704, 127.105399),
+                                            //     zoom: 15
+                                            // });
+                                            //
+                                            // var marker = new naver.maps.Marker({
+                                            //     position: new naver.maps.LatLng(37.3595704, 127.105399),
+                                            //     map: map
+                                            // });
                                         </script>
                                     </div>
 

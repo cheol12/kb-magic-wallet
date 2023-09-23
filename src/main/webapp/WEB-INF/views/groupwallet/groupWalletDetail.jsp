@@ -108,12 +108,13 @@
                         let date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
                         let time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
 
-                        str += '<TR class="searchDateResult"' + detailString + '">';
+                        console.log(detailString);
+                        str += '<TR class="searchDateResult" data-id="' + detailString + '">';
                         // 날짜 시간 처리
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
                         // 입금액 출금액 처리
-                        if (result[i].type === '입금') {
+                        if (result[i].type === '입금' || result[i].type === '적금 입금') {
                             str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
                         } else {
                             str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
@@ -132,6 +133,37 @@
 
                 },
             })
+        }
+
+        // ajax 로 적금 표시 + 포맷 형식 지정
+        function savingCall() {
+            $.ajax({
+                url: "${pageContext.request.contextPath}/group-wallet/${id}/saving-check", // 컨트롤러에서 데이터를 반환하는 엔드포인트를 지정하세요.
+                type: "get", // HTTP GET 요청을 사용합니다.
+                dataType: "json",
+                success: function (data) {
+                    var insertDate = new Date(data.insertDate);
+                    var maturityDate = new Date(data.maturityDate); // 날짜를 원하는 형식으로 포맷팅
+                    var totalAmount = new Date(data.totalAmount);
+
+                    var insertDateFormatted = insertDate.toLocaleDateString(); // 날짜 형식으로 변환
+                    var maturityDateFormatted = maturityDate.toLocaleDateString(); // 날짜 형식으로 변환
+                    var totalAmountFormatted = formatNumberWithCommas(totalAmount);
+                    var savingAmountFormatted = formatNumberWithCommas(savingAmount);
+
+                    // 데이터를 가져와서 화면에 표시합니다.
+                    $("#interestRate").text(data.interestRate + "%");
+                    $("#period").text(data.period + "개월");
+                    $("#insertDate").text(insertDateFormatted);
+                    $("#maturityDate").text(maturityDateFormatted);
+                    $("#totalAmount").text(formatNumberWithCommas(data.totalAmount) + "원");
+                    $("#savingDate").text("매월 " + data.savingDate + "일");
+                    $("#savingAmount").text(formatNumberWithCommas(data.savingAmount) + "원");
+                },
+                error: function (xhr, status, error) {
+                    console.error("데이터를 가져오는 중 오류 발생: " + error);
+                }
+            });
         }
 
         // AJAX READY
@@ -156,6 +188,7 @@
                 }
                 $("#detail-type").text(row.find("td:eq(4)").text());
                 $("#detail-content").text(id);
+                console.log(id);
                 $("#detail-balance").text(row.find("td:eq(5)").text());
 
             });
@@ -163,6 +196,7 @@
             memberCall();
             historyCall();
             displayMemberList();
+            savingCall();
             initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");
 
             // $(document).on("click", , function(){ }) 형식을 쓰는 이유
@@ -277,74 +311,75 @@
                 }
 
             });
-
-            $("#selectDateForm").on("submit", function (e) {
-                e.preventDefault();
-                $.ajax({
-                    url: "/personalwallet/selectDate",
-                    type: "post",
-                    dataType: "json",
-                    success: function (result, status) {
-                        // 화면에 갱신
-                        var str = "";
-                        $.each(result, function (i) {
-                            console.log(result[i].dateTime)
-                            var dateTime = new Date(result[i].dateTime);
-                            var detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
-                            // 날짜와 시간을 따로 추출
-                            var date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
-                            var time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
-                            console.log(date);
-                            console.log(time);
-
-                            str += '<TR class="searchDateResult" data-id="' + detailString + '">'
-                            // 날짜 시간 처리
-                            str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
-                            str += '<TD><h5 id="time" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
-                            // 입금액 출금액 처리
-                            if (result[i].type === '입금') {
-                                str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
-                            } else {
-                                str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
-                            }
-
-                            if (result[i].type === '환전' || result[i].type === '재환전') {
-                                str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
-                            } else {
-                                str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
-                            }
-
-                            str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
-
-                            str += '</TR>';
-                        });
-                        $("#dateSelectHistory").append(str);
-                    },
-                    error: function (result, status) {
-
-                    },
-                })
-            });
-
-            // 모달 닫기 (조회기간 설정 버튼 누른 후)
-            $("#submitButton").on("click", function () {
-                $("#basicModal").modal("hide");
-            });
-
-            // 모달 닫힌 후에 스크롤, 배경색 관련 처리
-            $("#basicModal").on("hidden.bs.modal", function () {
-
-                // 모달이 완전히 사라진 후에 배경색 변경 및 스크롤 관련 처리
-                $("body").removeClass("modal-open");
-                $(".modal-backdrop").remove();
-
-                // 필요한 스크롤 관련 설정
-                $("body").css("overflow", "auto");
-                // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
-            });
+            //
+            // $("#selectDateForm").on("submit", function (e) {
+            //     e.preventDefault();
+            //     $.ajax({
+            //         url: "/personalwallet/selectDate",
+            //         type: "post",
+            //         dataType: "json",
+            //         success: function (result, status) {
+            //             // 화면에 갱신
+            //             var str = "";
+            //             $.each(result, function (i) {
+            //                 console.log(result[i].dateTime)
+            //                 var dateTime = new Date(result[i].dateTime);
+            //                 var detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
+            //                 // 날짜와 시간을 따로 추출
+            //                 var date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
+            //                 var time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
+            //                 console.log(date);
+            //                 console.log(time);
+            //
+            //                 str += '<TR class="searchDateResult" data-id="' + detailString + '">'
+            //                 // 날짜 시간 처리
+            //                 str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
+            //                 str += '<TD><h5 id="time" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
+            //                 // 입금액 출금액 처리
+            //                 if (result[i].type === '입금') {
+            //                     str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
+            //                 } else {
+            //                     str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
+            //                 }
+            //
+            //                 if (result[i].type === '환전' || result[i].type === '재환전') {
+            //                     str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
+            //                 } else {
+            //                     str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
+            //                 }
+            //
+            //                 str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
+            //
+            //                 str += '</TR>';
+            //             });
+            //             $("#dateSelectHistory").append(str);
+            //         },
+            //         error: function (result, status) {
+            //
+            //         },
+            //     })
+            // });
+            //
+            // // 모달 닫기 (조회기간 설정 버튼 누른 후)
+            // $("#submitButton").on("click", function () {
+            //     $("#basicModal").modal("hide");
+            // });
+            //
+            // // 모달 닫힌 후에 스크롤, 배경색 관련 처리
+            // $("#basicModal").on("hidden.bs.modal", function () {
+            //
+            //     // 모달이 완전히 사라진 후에 배경색 변경 및 스크롤 관련 처리
+            //     $("body").removeClass("modal-open");
+            //     $(".modal-backdrop").remove();
+            //
+            //     // 필요한 스크롤 관련 설정
+            //     $("body").css("overflow", "auto");
+            //     // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
+            // });
 
         });
 
+        // 모임지갑 연결 카드 부르기
         function cardList() {
             let memberId = ${loginMemberDto.memberId};
 
@@ -396,6 +431,7 @@
             });
         }
 
+        // 모임지갑 삭제
         let deleteWallet = (event) => {
 
             let countMember = ${countMember};
@@ -528,6 +564,9 @@
                 </a>
                 <a href="/group-wallet/${id}/withdraw" class="btn btn-primary" id="withdrawButton">
                     꺼내기
+                </a>
+                <a href="/group-wallet/${id}/settle" class="btn btn-primary" id="settlebutton">
+                    정산하기
                 </a>
             </div>
 

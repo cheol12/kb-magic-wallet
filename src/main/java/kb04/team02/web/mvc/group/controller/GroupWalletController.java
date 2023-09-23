@@ -3,6 +3,7 @@ package kb04.team02.web.mvc.group.controller;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
+import kb04.team02.web.mvc.common.entity.SettleType;
 import kb04.team02.web.mvc.exchange.dto.ExchangeCalDto;
 import kb04.team02.web.mvc.exchange.dto.ExchangeRateDto;
 import kb04.team02.web.mvc.exchange.service.ExchangeService;
@@ -17,6 +18,7 @@ import kb04.team02.web.mvc.group.exception.WalletDeleteException;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
 import kb04.team02.web.mvc.mypage.service.CardIssuanceService;
 import kb04.team02.web.mvc.personal.service.PersonalWalletService;
+import kb04.team02.web.mvc.saving.dto.SavingInstallmentDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -61,8 +63,8 @@ public class GroupWalletController {
      */
     @PostMapping("/new")
     public String groupWalletCreate(GroupWallet gWallet, Model model, HttpSession session, @RequestParam String nickname) {
-	    // 모임장의 회원 식별번호 불러오기,
-	    // 뷰에서 입력한 별칭 필요
+        // 모임장의 회원 식별번호 불러오기,
+        // 뷰에서 입력한 별칭 필요
 
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
 
@@ -81,7 +83,7 @@ public class GroupWalletController {
 //    @ResponseBody
     @GetMapping("/{id}")
     public String getGroupWalletDetail(@PathVariable Long id, ModelAndView mv, Model model, HttpSession session) {
-	// id = 내 모임지갑의 id중 하나임.
+        // id = 내 모임지갑의 id중 하나임.
 
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
         model.addAttribute("loginMemberDto", loginMemberDto);
@@ -104,8 +106,8 @@ public class GroupWalletController {
 
         // 모임지갑 내에서 내 권한 확인
         GroupMemberDto groupMemberDto = null;
-        for(GroupMemberDto dto : groupMemberDtoList){
-            if(dto.getMemberId() == loginMemberDto.getMemberId()){
+        for (GroupMemberDto dto : groupMemberDtoList) {
+            if (dto.getMemberId() == loginMemberDto.getMemberId()) {
                 groupMemberDto = dto;
                 break;
             }
@@ -149,7 +151,6 @@ public class GroupWalletController {
     }
 
 
-
     @ResponseBody
     @PostMapping("{id}/history")
     public List<WalletHistoryDto> getHistory(@PathVariable Long id, HttpSession session, Model model) {
@@ -167,13 +168,26 @@ public class GroupWalletController {
         return groupMemberDtoList;
     }
 
+    @ResponseBody
+    @GetMapping("/{id}/saving-check")
+    public InstallmentDto getGroupWalletInstallmentDto(@PathVariable Long id, HttpSession session){
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+
+        try{
+            InstallmentDto installmentDto = groupWalletTabService.getSavingById(groupWallet);
+            return installmentDto;
+        }
+        catch (NullPointerException e){
+            return null;
+        }
+    }
     /**
      * @author 김철
      * 모임지갑에서 모임장이 모임원을 강퇴한다.
-     * */
+     */
     @ResponseBody
     @PostMapping("{id}/out")
-    public int groupWalletMemberKick(@PathVariable Long id, @RequestParam Long memberId){
+    public int groupWalletMemberKick(@PathVariable Long id, @RequestParam Long memberId) {
         int result = groupWalletService.groupWalletMemberOut(id, memberId);
 
         return result;
@@ -185,12 +199,12 @@ public class GroupWalletController {
      *
      * @param id 삭제할 모임지갑 id
      */
-    @DeleteMapping("/{id}") // 매핑값이 /{id} 가 맞는지?
+    @DeleteMapping("/{id}")
     @ResponseBody
     public String groupWalletDelete(@PathVariable Long id) throws WalletDeleteException {
-	    groupWalletService.deleteGroupWallet(id);
+        groupWalletService.deleteGroupWallet(id);
 
-	    return "success";
+        return "success";
     }
 
     /**
@@ -203,7 +217,7 @@ public class GroupWalletController {
     public String groupWalletInviteForm(@PathVariable Long id, Model model) {
         GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
         model.addAttribute("groupWallet", groupWallet);
-	    return "groupwallet/groupWalletInviteForm";
+        return "groupwallet/groupWalletInviteForm";
     }
 
     /**
@@ -215,25 +229,25 @@ public class GroupWalletController {
     @ResponseBody
     @PostMapping("/{id}/invite-request")
     public int groupWalletCreateInviteLink(@PathVariable Long id, @RequestParam String phone) {
-	    int value = groupWalletService.inviteMember(phone, id);
-	    if(value != 1){
-	        return 0;
+        int value = groupWalletService.inviteMember(phone, id);
+        if (value != 1) {
+            return 0;
         }
         return 1;
     }
 
     /**
      * 나를 초대한 모임지갑들 부르기
-     * */
+     */
     @ResponseBody
     @PostMapping("/invited-list")
-    public List<InvitedDto> groupWalletInvitedList( HttpSession session) {
+    public List<InvitedDto> groupWalletInvitedList(HttpSession session) {
 
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
-        try{
+        try {
             List<InvitedDto> invitedDtoList = groupWalletService.getGroupListInvitedMe(loginMemberDto.getMemberId());
             return invitedDtoList;
-        }catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             return null;
         }
     }
@@ -253,10 +267,10 @@ public class GroupWalletController {
 
     /**
      * 모임지갑 초대 거절
-     * */
+     */
     @ResponseBody
     @PostMapping("/{id}/invite-refuse")
-    public int groupWalletInviteRefuse(@PathVariable Long id, HttpSession session){
+    public int groupWalletInviteRefuse(@PathVariable Long id, HttpSession session) {
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
         return groupWalletService.invitedRefuse(id, loginMemberDto.getMemberId());
     }
@@ -272,9 +286,9 @@ public class GroupWalletController {
         // 모임지갑 id
 //	    Member member = (Member) session.getAttribute("member_id");
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
-	    // id=모임지갑에서 memberId=내가 탈퇴한다.
-	    groupWalletService.groupWalletMemberOut(id, loginMemberDto.getMemberId());
-	    return "redirect:/group-wallet/";
+        // id=모임지갑에서 memberId=내가 탈퇴한다.
+        groupWalletService.groupWalletMemberOut(id, loginMemberDto.getMemberId());
+        return "redirect:/group-wallet/";
     }
 
 
@@ -294,8 +308,7 @@ public class GroupWalletController {
         try {
             groupWalletService.groupWalletWithdraw(transferDto);
             return "redirect:/group-wallet/" + id;
-        }
-        catch (NotEnoughBalanceException e){
+        } catch (NotEnoughBalanceException e) {
             return null;
         }
 
@@ -308,10 +321,18 @@ public class GroupWalletController {
      * @param id 정산을 진행할 모임지갑 id
      */
     @PostMapping("/{id}/settle")
-    public String groupWalletSettle(@PathVariable Long id, int amount) {
-	// {id} 로 현재 모임지갑 부르고, 폼 입력값을 amount로 부른다.
-//	groupWalletService.settle(id, amount);
-	return "redirect:/group-wallet/" + id;
+    public String groupWalletSettle(@PathVariable Long id) throws NotEnoughBalanceException {
+        // {id} 로 현재 모임지갑 부르고, 폼 입력값을 amount로 부른다.
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+        SettleDto settleDto = SettleDto.builder()
+                .groupWalletId(id)
+                .settleType(SettleType.NBBANG)
+                .currencyCode(CurrencyCode.KRW)
+                .totalAmout(groupWallet.getBalance()).build();
+
+	    groupWalletService.settle(settleDto);
+
+        return "redirect:/group-wallet/" + id;
     }
 
     /**
@@ -327,11 +348,10 @@ public class GroupWalletController {
         transferDto.setMemberId(loginMemberDto.getMemberId());
         transferDto.setGroupWalletId(id);
         transferDto.setAmount(amount);
-        try{
+        try {
             groupWalletService.groupWalletDeposit(transferDto);
             return "redirect:/group-wallet/" + id;
-        }
-        catch (NotEnoughBalanceException e){
+        } catch (NotEnoughBalanceException e) {
             return null;
         }
 

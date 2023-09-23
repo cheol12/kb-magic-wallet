@@ -1,4 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: 김진형
@@ -11,6 +14,7 @@
 <head>
     <title>모임 적금 조회</title>
 
+    <script src="../../../../assets/js/common.js"></script>
 </head>
 <body>
 <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
