@@ -18,6 +18,7 @@ import kb04.team02.web.mvc.group.exception.WalletDeleteException;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
 import kb04.team02.web.mvc.mypage.service.CardIssuanceService;
 import kb04.team02.web.mvc.personal.service.PersonalWalletService;
+import kb04.team02.web.mvc.saving.dto.SavingInstallmentDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -167,6 +168,19 @@ public class GroupWalletController {
         return groupMemberDtoList;
     }
 
+    @ResponseBody
+    @GetMapping("/{id}/saving-check")
+    public InstallmentDto getGroupWalletInstallmentDto(@PathVariable Long id, HttpSession session){
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+
+        try{
+            InstallmentDto installmentDto = groupWalletTabService.getSavingById(groupWallet);
+            return installmentDto;
+        }
+        catch (NullPointerException e){
+            return null;
+        }
+    }
     /**
      * @author 김철
      * 모임지갑에서 모임장이 모임원을 강퇴한다.
@@ -185,7 +199,7 @@ public class GroupWalletController {
      *
      * @param id 삭제할 모임지갑 id
      */
-    @DeleteMapping("/{id}") // 매핑값이 /{id} 가 맞는지?
+    @DeleteMapping("/{id}")
     @ResponseBody
     public String groupWalletDelete(@PathVariable Long id) throws WalletDeleteException {
         groupWalletService.deleteGroupWallet(id);
