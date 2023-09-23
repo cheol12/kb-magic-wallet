@@ -653,7 +653,6 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         Long memberId = loginMemberDto.getMemberId();
         List<Role> roles = new ArrayList<Role>();
         roles.add(Role.CHAIRMAN);
-        roles.add(Role.CO_CHAIRMAN);
         ParticipationState participationState = ParticipationState.PARTICIPATED;
 
         List<Participation> chairmanList = participationRep.findByMemberIdAndRoleInAndParticipationState(memberId, roles, participationState);
@@ -669,7 +668,6 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         Long memberId = loginMemberDto.getMemberId();
         List<Role> roles = new ArrayList<Role>();
         roles.add(Role.CHAIRMAN);
-        roles.add(Role.CO_CHAIRMAN);
         ParticipationState participationState = ParticipationState.PARTICIPATED;
 
         List<Participation> chairmanList = participationRep.findByMemberIdAndRoleInAndParticipationState(memberId, roles, participationState);

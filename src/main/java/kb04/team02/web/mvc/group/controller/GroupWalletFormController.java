@@ -1,11 +1,14 @@
 package kb04.team02.web.mvc.group.controller;
 
+import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/group-wallet")
@@ -31,7 +34,11 @@ public class GroupWalletFormController {
      * @param id 모임지갑에서 꺼내기 할 모임지갑 id
      */
     @GetMapping("/{id}/withdraw")
-    public String groupWalletWithdrawForm(@PathVariable Long id) {
+    public String groupWalletWithdrawForm(@PathVariable Long id, HttpSession session, Model model) {
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+        model.addAttribute("groupWallet", groupWallet);
+
         return "groupwallet/groupWalletWithdrawForm";
     }
 
@@ -53,7 +60,10 @@ public class GroupWalletFormController {
      * @param id 입금할 모임지갑 id
      */
     @GetMapping("/{id}/deposit")
-    public String groupWalletDepositForm(@PathVariable Long id) {
+    public String groupWalletDepositForm(@PathVariable Long id, HttpSession session, Model model) {
+        LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+        model.addAttribute("groupWallet", groupWallet);
         return "groupwallet/depositForm";
     }
 

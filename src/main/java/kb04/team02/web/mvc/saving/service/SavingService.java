@@ -45,4 +45,9 @@ public interface SavingService {
      */
     boolean isInstallmentSaving(SavingInstallmentDto installmentDto);
 
+    /**
+     * 가입한 적금상품의 모임지갑id 구해오기
+     */
+    Long selectGroupWalletIdFromSavingInstallment(SavingInstallmentDto installmentDto);
+
 }
