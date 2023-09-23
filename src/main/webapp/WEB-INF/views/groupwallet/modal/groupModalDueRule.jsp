@@ -24,12 +24,12 @@
                     url: contextPath + `/group-wallet/${id}/rule/create`,
                     data: {
                         dueDate: dueDate,
-                        due: due
+                        due: due * 10000
                     },
                     success: function (data, response) {
                         // 서버로부터의 응답을 처리
                         // $("#resultMessage").text(response);
-                        alert("이제부터 모임원들이 매월 " + dueDate + "일에 " + due + "원을 낼 거예요!");
+                        alert("이제부터 모임원들이 매 월 " + dueDate + "일에 " + due + "만 원을 낼 거예요!");
                         let redirectUrl = contextPath + '/group-wallet/' + data;
                         console.log(redirectUrl)
                         window.location.href = redirectUrl;
@@ -40,6 +40,11 @@
                 });
             });
             //== 회비 규칙 END ==//
+            //
+            // document.getElementById('dueRuleFormModalInputDue').addEventListener('input', function () {
+            //     let input = formatNumberWithCommas(this.value);
+            //     this.value = input;
+            // });
         });
     </script>
 </head>
@@ -70,10 +75,10 @@
                     <label for="dueRuleFormModalInputDue" class="form-label">얼마를</label>
                     <div class="input-group input-group-merge">
                         <span class="input-group-text">₩</span>
-                        <input type="number" class="form-control" placeholder="10000"
+                        <input type="number" class="form-control text-end" placeholder="1"
                                id="dueRuleFormModalInputDue"
                                aria-label="Amount (to the nearest dollar)"/>
-                        <span class="input-group-text">원</span>
+                        <span class="input-group-text">만원</span>
                     </div>
                 </div>
             </div>
