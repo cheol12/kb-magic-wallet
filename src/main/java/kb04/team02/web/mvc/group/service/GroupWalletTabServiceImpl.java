@@ -17,6 +17,7 @@ import kb04.team02.web.mvc.common.entity.WalletType;
 import kb04.team02.web.mvc.mypage.repository.CardIssuanceRepository;
 import kb04.team02.web.mvc.member.repository.MemberRepository;
 import kb04.team02.web.mvc.saving.entity.SavingHistory;
+import kb04.team02.web.mvc.saving.entity.TransactionType;
 import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
 import kb04.team02.web.mvc.saving.repository.SavingHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -214,6 +215,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
                         .amount(installmentSaving.getTotalAmount())
                         .accumulatedAmount(groupWallet.getBalance())
                         .installmentSaving(installmentSaving)
+                        .transactionType(TransactionType.DEPOSIT)
                         .build();
                 savingHistoryRepository.save(savingHistory);
 
@@ -248,6 +250,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
                         .amount(installmentSaving.getTotalAmount())
                         .accumulatedAmount((long) savingsBalance)
                         .installmentSaving(installmentSaving)
+                        .transactionType(TransactionType.DEPOSIT)
                         .build();
                 savingHistoryRepository.save(savingHistory);
             }

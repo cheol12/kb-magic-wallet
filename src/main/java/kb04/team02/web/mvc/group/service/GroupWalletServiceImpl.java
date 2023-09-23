@@ -27,6 +27,7 @@ import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
 import kb04.team02.web.mvc.saving.entity.Saving;
 import kb04.team02.web.mvc.saving.entity.SavingHistory;
+import kb04.team02.web.mvc.saving.entity.TransactionType;
 import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
 import kb04.team02.web.mvc.saving.repository.SavingHistoryRepository;
 import kb04.team02.web.mvc.saving.repository.SavingRepository;
@@ -236,15 +237,24 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         for (SavingHistory savingHistory : allSavingHistoryList) {
             WalletHistoryDto walletHistoryDto = new WalletHistoryDto();
+            String savingType;
+            String savingSetDetail;
+            if (savingHistory.getTransactionType() == TransactionType.DEPOSIT) {
+                savingType = "적금 입금";
+                savingSetDetail = "적금 해지로 인한 입금";
+            } else {
+                savingType = "적금 출금";
+                savingSetDetail = "적금 내역";
+            }
 
             walletHistoryDto.setDateTime(savingHistory.getInsertDate());
             walletHistoryDto.setType("적금");
+            walletHistoryDto.setType(savingType);
             walletHistoryDto.setCurrencyCode(CurrencyCode.KRW);
             walletHistoryDto.setDetail("적금 내역");
+            walletHistoryDto.setDetail(savingSetDetail);
             walletHistoryDto.setAmount(savingHistory.getAmount().toString());
             walletHistoryDto.setBalance(savingHistory.getAccumulatedAmount().toString());
-
-            dto.getList().add(walletHistoryDto);
         }
 
         dto.getList().sort(new Comparator<WalletHistoryDto>() {
