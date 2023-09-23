@@ -11,9 +11,8 @@
 <head>
     <title>Title</title>
         <script type="text/javascript">
-        $(document).ready(function () {
 
-            function initTest(urlPath, data) {
+            /*function initTest(urlPath, data) {
                 $.ajax({
                     url: urlPath,
                     type: "get",
@@ -49,6 +48,7 @@
                     },
                 });
             }
+            */
 
             //initTest() end
 
@@ -61,9 +61,7 @@
             // 연결 가능 선택 시 연결 가능을 알려주는 모달 창 출력
             $(document).on("click", "#can-connect-card", function () {
                 var memberId = $(this).closest("tr").data("id");
-                if (${sessionScope.member.memberId} == memberId
-            )
-                {
+                if (${sessionScope.member.memberId} == memberId) {
                     $("input[name='connect-memberId']").val(memberId);
                     $("#changeWallet").modal('show');
                 }
@@ -77,7 +75,7 @@
                 var memberId = $("input[name='connect-memberId']").val();
                 initTest("${pageContext.request.contextPath}/group-wallet/change-card-connection", memberId);
             });
-        });
+
     </script>
 </head>
 <body>
@@ -87,11 +85,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="changeWalletLabel">모달 제목</h5>
+                <h5 class="modal-title" id="changeWalletLabel">카드 변경</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="changeWalletBody">
-                변경?
+                카드 연결을 변경하시겠습니까?
             </div>
             <div class="modal-footer">
                 <input type="hidden" name="connect-memberId">

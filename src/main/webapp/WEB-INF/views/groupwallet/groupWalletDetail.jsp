@@ -181,6 +181,7 @@
             memberCall();
             historyCall();
             displayMemberList();
+            initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");
 
             // $(document).on("click", , function(){ }) 형식을 쓰는 이유
             // = 동적 요소에 대한 이벤트 처리: 이 방식을 사용하면 페이지가 로드된 이후에
@@ -203,6 +204,7 @@
                                 // 강퇴 성공 시 필요한 작업 수행
                                 alert(memberName + "님을 강퇴했어요")
                                 memberCall();
+                                initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");
                             } else {
                                 alert("강퇴를 실패했어요");
                             }
@@ -460,6 +462,46 @@
 
         }
 
+
+
+        // 카드 연결상태 확인
+        function initTest(urlPath, data) {
+            $.ajax({
+                url: urlPath,
+                type: "get",
+                dataType: "json",
+                data: "id="+${groupWalletId},
+
+                success: function (result, status) {
+                    $("#table").empty();
+                    // 화면에 갱신
+                    var str = "";
+                    $.each(result, function (i) {
+                        str += '<tr data-id=' + result[i].memberId + '>';
+                        str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].name + '</h5></TD>';
+                        if (result[i].roleToString == '모임장' || result[i].roleToString == '공동모임장') {
+                            str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' +  result[i].roleToString + '👑' + '</h5></TD>';
+                        } else {
+                            str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].roleToString + '</TD>';
+                        }
+                        if (result[i].cardIsConnect) {
+                            str += '<td class="open-modal text-center"><h5 class="text-break" style="margin-bottom: 0">연결 중&nbsp&nbsp&nbsp&nbsp<i class="material-icons" style="color: green">credit_card</i></h5></td>';
+                        } else {
+                            if (result[i].role == "GENERAL") {
+                                str += '<td id="cant-connect-card" class="open-modal text-center"><h5 class="text-break text-center" style="margin-bottom: 0"> 연결 불가 <i class="material-icons" style="color:red;">credit_card</i></h5></td>';
+                            } else {
+                                str += `<td id="can-connect-card" class="open-modal text-center"><h5 class="text-break text-center" style="margin-bottom: 0"> 연결 가능 <i class="material-icons">credit_card</i></h5></td>`
+                            }
+                        }
+                        str += '</TR>';
+                    });
+                    $("#table").append(str);
+                },
+                error: function (result, status) {
+                },
+            });
+        }
+
         // 꺼내기 클릭 시 권한 판단
         document.getElementById("withdrawButton").addEventListener("click", function (event) {
             // 여기서 groupMemberDto.roleToString 값을 자바스크립트로 가져와서 사용합니다.
@@ -475,6 +517,7 @@
                 event.preventDefault();
             }
         });
+
     </script>
 
 </head>
