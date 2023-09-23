@@ -26,7 +26,9 @@ import kb04.team02.web.mvc.personal.repository.PersonalWalletTransferRepository;
 import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
 import kb04.team02.web.mvc.saving.entity.Saving;
+import kb04.team02.web.mvc.saving.entity.SavingHistory;
 import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
+import kb04.team02.web.mvc.saving.repository.SavingHistoryRepository;
 import kb04.team02.web.mvc.saving.repository.SavingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +55,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     private final MemberRepository memberRep;
     private final PersonalWalletTransferRepository personalTransferRep;
     private final InstallmentSavingRepository installmentSavingRep;
-    private final SavingRepository savingRep;
+    private final SavingHistoryRepository savingHistoryRep;
     private final CardIssuanceRepository cardIssuanceRep;
 
 
@@ -148,6 +150,9 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         List<GroupWalletTransfer> transferList = groupTransferRep.searchAllByGroupWallet(groupWallet);
 
+        List<InstallmentSaving> installmentSavingList = installmentSavingRep.findAllByGroupWallet(groupWallet);
+        List<SavingHistory> allSavingHistoryList = new ArrayList<>();
+
         dto.setBalance(new HashMap<>());
 
 
@@ -192,7 +197,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 walletHistoryDto.setType("취소");
             }
 
-            String detail = payment.getAmount() + payment.getCurrencyCode().name();
+            String detail = payment.getPaymentPlace();
 
             walletHistoryDto.setCurrencyCode(payment.getCurrencyCode());
             walletHistoryDto.setDetail(detail);
@@ -213,7 +218,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             }
             else{
                 walletHistoryDto.setType("출금");
-                detail = "모임지갑 : " + groupWallet.getNickname() + " ➜ " + transfer.getDest();
+                detail = groupWallet.getNickname() + " ➜ " + transfer.getDest();
             }
             walletHistoryDto.setCurrencyCode(CurrencyCode.KRW);
             walletHistoryDto.setDetail(detail);
@@ -222,6 +227,26 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
             dto.getList().add(walletHistoryDto);
         }
+
+        // 적금 내역 설정
+        for (InstallmentSaving installmentSaving : installmentSavingList) {
+            List<SavingHistory> savingHistoryList = savingHistoryRep.findSavingHistoriesByInstallmentSaving(installmentSaving);
+            allSavingHistoryList.addAll(savingHistoryList);
+        }
+
+        for (SavingHistory savingHistory : allSavingHistoryList) {
+            WalletHistoryDto walletHistoryDto = new WalletHistoryDto();
+
+            walletHistoryDto.setDateTime(savingHistory.getInsertDate());
+            walletHistoryDto.setType("적금");
+            walletHistoryDto.setCurrencyCode(CurrencyCode.KRW);
+            walletHistoryDto.setDetail("적금 내역");
+            walletHistoryDto.setAmount(savingHistory.getAmount().toString());
+            walletHistoryDto.setBalance(savingHistory.getAccumulatedAmount().toString());
+
+            dto.getList().add(walletHistoryDto);
+        }
+
         dto.getList().sort(new Comparator<WalletHistoryDto>() {
             @Override
             public int compare(WalletHistoryDto o1, WalletHistoryDto o2) {
@@ -494,11 +519,11 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 groupTransferRep.save(GroupWalletTransfer.builder()
                         .currencyCode(code)
                         .groupWallet(groupWallet)
-                        .src(member.getName())
-                        .transferType(TransferType.DEPOSIT)
+                        .src(groupWallet.getNickname())
+                        .transferType(TransferType.WITHDRAW)
                         .fromType(TargetType.GROUP_WALLET)
                         .toType(TargetType.PERSONAL_WALLET)
-                        .dest(groupWallet.getNickname())
+                        .dest(member.getName())
                         .afterBalance(groupWallet.getBalance())
                         .amount(amount)
                         .build());

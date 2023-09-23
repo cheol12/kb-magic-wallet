@@ -5,11 +5,14 @@ import kb04.team02.web.mvc.group.entity.GroupWallet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface InstallmentSavingRepository extends JpaRepository<InstallmentSaving, Long> {
 
 
     // 모임지갑으로 적금 가입 내용 조회
+    List<InstallmentSaving> findAllByGroupWallet(GroupWallet groupWallet);
     InstallmentSaving findByGroupWalletAndDone(GroupWallet groupWallet, boolean done);
     InstallmentSaving findByGroupWalletAndTotalAmountIsGreaterThanAndDone(GroupWallet groupWallet, Long totalAmount, boolean done);
 

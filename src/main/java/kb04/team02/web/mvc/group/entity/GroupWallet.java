@@ -27,7 +27,7 @@ public class GroupWallet {
     @Column(name = "group_wallet_id")
     private Long groupWalletId;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 255)
     private String nickname;
 
     @CreationTimestamp
