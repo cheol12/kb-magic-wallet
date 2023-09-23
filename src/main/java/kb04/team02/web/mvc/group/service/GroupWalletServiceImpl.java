@@ -268,6 +268,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     }
 
     @Override
+    @Transactional
     public int deleteGroupWallet(Long groupWalletId) throws WalletDeleteException {
         GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElseThrow(()-> new NoSuchElementException("모임 지갑 조회 실패"));
         Member member = groupWallet.getMember();
@@ -284,6 +285,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         }
 
         // 삭제
+
         groupWalletRep.deleteGroupWalletByGroupWalletId(groupWalletId);
 
 
