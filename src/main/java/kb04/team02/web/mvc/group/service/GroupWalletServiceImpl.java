@@ -192,7 +192,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 walletHistoryDto.setType("취소");
             }
 
-            String detail = payment.getAmount() + payment.getCurrencyCode().name();
+            String detail = payment.getPaymentPlace();
 
             walletHistoryDto.setCurrencyCode(payment.getCurrencyCode());
             walletHistoryDto.setDetail(detail);
@@ -213,7 +213,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             }
             else{
                 walletHistoryDto.setType("출금");
-                detail = "모임지갑 : " + groupWallet.getNickname() + " ➜ " + transfer.getDest();
+                detail = groupWallet.getNickname() + " ➜ " + transfer.getDest();
             }
             walletHistoryDto.setCurrencyCode(CurrencyCode.KRW);
             walletHistoryDto.setDetail(detail);
@@ -494,11 +494,11 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 groupTransferRep.save(GroupWalletTransfer.builder()
                         .currencyCode(code)
                         .groupWallet(groupWallet)
-                        .src(member.getName())
-                        .transferType(TransferType.DEPOSIT)
+                        .src(groupWallet.getNickname())
+                        .transferType(TransferType.WITHDRAW)
                         .fromType(TargetType.GROUP_WALLET)
                         .toType(TargetType.PERSONAL_WALLET)
-                        .dest(groupWallet.getNickname())
+                        .dest(member.getName())
                         .afterBalance(groupWallet.getBalance())
                         .amount(amount)
                         .build());

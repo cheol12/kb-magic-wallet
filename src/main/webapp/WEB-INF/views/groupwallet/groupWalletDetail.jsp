@@ -108,7 +108,8 @@
                         let date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
                         let time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
 
-                        str += '<TR class="searchDateResult"' + detailString + '">';
+                        console.log(detailString);
+                        str += '<TR class="searchDateResult" data-id="' + detailString + '">';
                         // 날짜 시간 처리
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
@@ -156,6 +157,7 @@
                 }
                 $("#detail-type").text(row.find("td:eq(4)").text());
                 $("#detail-content").text(id);
+                console.log(id);
                 $("#detail-balance").text(row.find("td:eq(5)").text());
 
             });
@@ -277,71 +279,71 @@
                 }
 
             });
-
-            $("#selectDateForm").on("submit", function (e) {
-                e.preventDefault();
-                $.ajax({
-                    url: "/personalwallet/selectDate",
-                    type: "post",
-                    dataType: "json",
-                    success: function (result, status) {
-                        // 화면에 갱신
-                        var str = "";
-                        $.each(result, function (i) {
-                            console.log(result[i].dateTime)
-                            var dateTime = new Date(result[i].dateTime);
-                            var detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
-                            // 날짜와 시간을 따로 추출
-                            var date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
-                            var time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
-                            console.log(date);
-                            console.log(time);
-
-                            str += '<TR class="searchDateResult" data-id="' + detailString + '">'
-                            // 날짜 시간 처리
-                            str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
-                            str += '<TD><h5 id="time" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
-                            // 입금액 출금액 처리
-                            if (result[i].type === '입금') {
-                                str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
-                            } else {
-                                str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
-                            }
-
-                            if (result[i].type === '환전' || result[i].type === '재환전') {
-                                str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
-                            } else {
-                                str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
-                            }
-
-                            str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
-
-                            str += '</TR>';
-                        });
-                        $("#dateSelectHistory").append(str);
-                    },
-                    error: function (result, status) {
-
-                    },
-                })
-            });
-
-            // 모달 닫기 (조회기간 설정 버튼 누른 후)
-            $("#submitButton").on("click", function () {
-                $("#basicModal").modal("hide");
-            });
-
-            // 모달 닫힌 후에 스크롤, 배경색 관련 처리
-            $("#basicModal").on("hidden.bs.modal", function () {
-
-                // 모달이 완전히 사라진 후에 배경색 변경 및 스크롤 관련 처리
-                $("body").removeClass("modal-open");
-                $(".modal-backdrop").remove();
-
-                // 필요한 스크롤 관련 설정
-                $("body").css("overflow", "auto");
-                // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
-            });
+            //
+            // $("#selectDateForm").on("submit", function (e) {
+            //     e.preventDefault();
+            //     $.ajax({
+            //         url: "/personalwallet/selectDate",
+            //         type: "post",
+            //         dataType: "json",
+            //         success: function (result, status) {
+            //             // 화면에 갱신
+            //             var str = "";
+            //             $.each(result, function (i) {
+            //                 console.log(result[i].dateTime)
+            //                 var dateTime = new Date(result[i].dateTime);
+            //                 var detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
+            //                 // 날짜와 시간을 따로 추출
+            //                 var date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
+            //                 var time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
+            //                 console.log(date);
+            //                 console.log(time);
+            //
+            //                 str += '<TR class="searchDateResult" data-id="' + detailString + '">'
+            //                 // 날짜 시간 처리
+            //                 str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
+            //                 str += '<TD><h5 id="time" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
+            //                 // 입금액 출금액 처리
+            //                 if (result[i].type === '입금') {
+            //                     str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
+            //                 } else {
+            //                     str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
+            //                 }
+            //
+            //                 if (result[i].type === '환전' || result[i].type === '재환전') {
+            //                     str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
+            //                 } else {
+            //                     str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
+            //                 }
+            //
+            //                 str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
+            //
+            //                 str += '</TR>';
+            //             });
+            //             $("#dateSelectHistory").append(str);
+            //         },
+            //         error: function (result, status) {
+            //
+            //         },
+            //     })
+            // });
+            //
+            // // 모달 닫기 (조회기간 설정 버튼 누른 후)
+            // $("#submitButton").on("click", function () {
+            //     $("#basicModal").modal("hide");
+            // });
+            //
+            // // 모달 닫힌 후에 스크롤, 배경색 관련 처리
+            // $("#basicModal").on("hidden.bs.modal", function () {
+            //
+            //     // 모달이 완전히 사라진 후에 배경색 변경 및 스크롤 관련 처리
+            //     $("body").removeClass("modal-open");
+            //     $(".modal-backdrop").remove();
+            //
+            //     // 필요한 스크롤 관련 설정
+            //     $("body").css("overflow", "auto");
+            //     // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
+            // });
 
         });
 
