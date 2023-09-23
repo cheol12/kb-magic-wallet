@@ -16,7 +16,9 @@ import kb04.team02.web.mvc.common.entity.TransferType;
 import kb04.team02.web.mvc.common.entity.WalletType;
 import kb04.team02.web.mvc.mypage.repository.CardIssuanceRepository;
 import kb04.team02.web.mvc.member.repository.MemberRepository;
+import kb04.team02.web.mvc.saving.entity.SavingHistory;
 import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
+import kb04.team02.web.mvc.saving.repository.SavingHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -54,6 +56,7 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
     private final GroupWalletExchangeRepository exchangeRepository;
     private final GroupWalletPaymentRepository paymentRepository;
     private final DuePaymentRepository duePaymentRepository;
+    private final SavingHistoryRepository savingHistoryRepository;
 
     @Override
 
@@ -205,6 +208,15 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
             if (installmentSaving != null) {
                 installmentSaving.setDone(true);
                 groupWallet.setBalance(groupWallet.getBalance() + installmentSaving.getTotalAmount());
+                // 적금 해지 내역
+                SavingHistory savingHistory = SavingHistory.builder()
+                        .insertDate(LocalDateTime.now())
+                        .amount(installmentSaving.getTotalAmount())
+                        .accumulatedAmount(groupWallet.getBalance())
+                        .installmentSaving(installmentSaving)
+                        .build();
+                savingHistoryRepository.save(savingHistory);
+
                 // 적금이 만료되었지만 아직 정산이 되지 않은 경우 이자율도 챙겨줘야 함
             } else {
                 // 이자율 계산
@@ -229,6 +241,15 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
                 System.out.println("총 이자: " + totalInterest);
 
                 groupWallet.setBalance((long) savingsBalance);
+
+                // 적금 해지 내역
+                SavingHistory savingHistory = SavingHistory.builder()
+                        .insertDate(LocalDateTime.now())
+                        .amount(installmentSaving.getTotalAmount())
+                        .accumulatedAmount((long) savingsBalance)
+                        .installmentSaving(installmentSaving)
+                        .build();
+                savingHistoryRepository.save(savingHistory);
             }
         }
         return true;
