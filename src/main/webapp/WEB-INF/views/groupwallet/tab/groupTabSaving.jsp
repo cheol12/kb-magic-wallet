@@ -1,4 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: 김진형
@@ -11,6 +14,7 @@
 <head>
     <title>모임 적금 조회</title>
 
+    <script src="../../../../assets/js/common.js"></script>
 </head>
 <body>
 <div class="tab-pane fade" id="navs-top-save" role="tabpanel">
@@ -49,32 +53,38 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">금리</h5></th>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.interestRate}%</h5></td>
+                                <th scope="row">
+                                    <i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                    <h5 class="text-break text-center" style="margin-bottom: 0">금리</h5>
+                                </th>
+                                <td id="interestRate">
+                                    <i class="fab fa-angular fa-lg text-danger me-3"></i>
+                                    <h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.interestRate}%</h5>
+                                </td>
                             </tr>
                             <tr>
                                 <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">기간</h5></th>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.period}개월</h5></td>
+                                <td id="period"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.period}개월</h5></td>
                             </tr>
                             <tr>
                                 <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">가입일</h5></th>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.insertDate}</h5></td>
+                                <td id="insertDate"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.insertDate}</h5></td>
                             </tr>
                             <tr>
                                 <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">만기일</h5></th>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.maturityDate}</h5></td>
+                                <td id="maturityDate"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.maturityDate}</h5></td>
                             </tr>
                             <tr>
                                 <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">현재까지</h5></th>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.totalAmount}원</h5></td>
+                                <td id="totalAmount"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.totalAmount}원</h5></td>
                             </tr>
                             <tr>
                                 <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">납입일</h5></th>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">매월 ${installmentDto.savingDate}일</h5></td>
+                                <td id="savingDate"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">매월 ${installmentDto.savingDate}일</h5></td>
                             </tr>
                             <tr>
                                 <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">납입금</h5></th>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.savingAmount}원</h5></td>
+                                <td id="savingAmount"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.savingAmount}원</h5></td>
                             </tr>
                             </tbody>
                         </table>
