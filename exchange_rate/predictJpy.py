@@ -7,10 +7,10 @@ SEQ_LEN = 9
 PREDICT_DAYS = 7
 
 # 모델 불러오기
-model = load_model('jpy_model.h5')
+model = load_model('exchange_rate\\jpy_model.h5')
 
 # 데이터 불러오기 및 전처리
-data = pd.read_excel('jpy.xlsx')
+data = pd.read_excel('exchange_rate\\jpy.xlsx')
 scaler = MinMaxScaler()
 scaled_data = scaler.fit_transform(data['jpy'].values.reshape(-1, 1))
 
@@ -21,7 +21,7 @@ predictions = []
 
 for _ in range(PREDICT_DAYS):
     # 예측 수행
-    predicted_value = model.predict(last_seq)
+    predicted_value = model.predict(last_seq, verbose=0)
 
     # 예측 값을 predictions 리스트에 추가
     predictions.append(predicted_value[0][0])

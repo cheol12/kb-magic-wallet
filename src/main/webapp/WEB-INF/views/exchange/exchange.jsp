@@ -27,12 +27,12 @@
                 data: {
                     labels: ['8일전', '7일전', '6일전', '5일전', '4일전', '3일전', '2일전', '1일전', '금일', '1일후', '2일후', '3일후', '4일후', '5일후', '6일후', '7일후'],
                     datasets: [{
-                        data: [282, 350, 411, 502, 635, 809, 947, 1402, 3700],
+                        data: [1334.4, 1332.4, 1326.1, 1327.8, 1326.1, 1327.6, 1326, 1323.7, 1329.3],
                         label: "USD",
                         borderColor: "#808080",
                         fill: true
                     }, {
-                        data: [, , , , , , , , 3700, 350, 411, 502, 635, 809, 947, 1000],
+                        data: [, , , , , , , , 1329.3, ${predict.get(0)}, ${predict.get(1)}, ${predict.get(2)}, ${predict.get(3)}, ${predict.get(4)}, ${predict.get(5)}, ${predict.get(6)}],
                         label: "USD Predict",
                         borderColor: "#FF0000",
                         fill: true
@@ -64,12 +64,12 @@
                 data: {
                     labels: ['8일전', '7일전', '6일전', '5일전', '4일전', '3일전', '2일전', '1일전', '금일', '1일후', '2일후', '3일후', '4일후', '5일후', '6일후', '7일후'],
                     datasets: [{
-                        data: [282, 350, 411, 502, 635, 809, 947, 1402, 3700],
+                        data: [905.75, 909.08, 901.59, 901.18, 899.08, 897.91, 898.34, 896.18, 896.45],
                         label: "JPY",
                         borderColor: "#808080",
                         fill: true
                     }, {
-                        data: [, , , , , , , , 3700, 350, 411, 502, 635, 809, 947, 1000],
+                        data: [, , , , , , , , 896.45, ${predictJPY.get(0)}, ${predictJPY.get(1)}, ${predictJPY.get(2)}, ${predictJPY.get(3)}, ${predictJPY.get(4)}, ${predictJPY.get(5)}, ${predictJPY.get(6)}],
                         label: "JPY Predict",
                         borderColor: "#FF0000",
                         fill: true

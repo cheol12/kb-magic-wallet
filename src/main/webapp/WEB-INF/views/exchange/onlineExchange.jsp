@@ -19,80 +19,6 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            new Chart(document.getElementById("line-chart-USD"), {
-                type: 'line',
-                data: {
-                    labels: ['8일전', '7일전', '6일전', '5일전', '4일전', '3일전', '2일전', '1일전', '금일', '1일후', '2일후', '3일후', '4일후', '5일후', '6일후', '7일후'],
-                    datasets: [{
-                        data: [282, 350, 411, 502, 635, 809, 947, 1402, 3700],
-                        label: "USD",
-                        borderColor: "#808080",
-                        fill: true
-                    }, {
-                        data: [, , , , , , , , 3700, 350, 411, 502, 635, 809, 947, 1000],
-                        label: "USD Predict",
-                        borderColor: "#FF0000",
-                        fill: true
-                    },
-                    ]
-                },
-                options: {
-                    title: {
-                        display: true,
-                        text: 'USD 환율'
-                    },
-                    responsive: false, // 반응형 크기 조절 비활성화
-                    maintainAspectRatio: false, // 종횡비 유지 비활성화
-
-                    scales: {
-                        xAxes: [{
-                            gridLines: {
-                                display: true,
-                                drawBorder: true,
-                                drawOnChartArea: false, // 차트 영역 안에 그리지 않음
-                            },
-
-                        }]
-                    }
-                }
-            });
-            new Chart(document.getElementById("line-chart-JPY"), {
-                type: 'line',
-                data: {
-                    labels: ['8일전', '7일전', '6일전', '5일전', '4일전', '3일전', '2일전', '1일전', '금일', '1일후', '2일후', '3일후', '4일후', '5일후', '6일후', '7일후'],
-                    datasets: [{
-                        data: [282, 350, 411, 502, 635, 809, 947, 1402, 3700],
-                        label: "JPY",
-                        borderColor: "#808080",
-                        fill: true
-                    }, {
-                        data: [, , , , , , , , 3700, 350, 411, 502, 635, 809, 947, 1000],
-                        label: "JPY Predict",
-                        borderColor: "#FF0000",
-                        fill: true
-                    },
-                    ]
-                },
-                options: {
-                    title: {
-                        display: true,
-                        text: 'JPY 환율'
-                    },
-                    responsive: false, // 반응형 크기 조절 비활성화
-                    maintainAspectRatio: false, // 종횡비 유지 비활성화
-
-                    scales: {
-                        xAxes: [{
-                            gridLines: {
-                                display: true,
-                                drawBorder: true,
-                                drawOnChartArea: false, // 차트 영역 안에 그리지 않음
-                            },
-
-                        }]
-                    }
-                }
-            });
         });
 
     </script>
@@ -128,22 +54,7 @@
                 </div>
             </div>
 
-            <div class="card mb-2 ">
-                <div class="card-header">
-                    <h3>USD 환율 및 예측</h3>
-                </div>
-                <div class="card-body">
-                    <canvas id="line-chart-USD" width="1100" height="400" class="center"></canvas>
-                </div>
-            </div>
-            <div class="card mb-2">
-                <div class="card-header">
-                    <h3>JPY 환율 및 예측</h3>
-                </div>
-                <div class="card-body">
-                    <canvas id="line-chart-JPY" width="1100" height="400" class="center"></canvas>
-                </div>
-            </div>
+
         </div>
     </div>
 
