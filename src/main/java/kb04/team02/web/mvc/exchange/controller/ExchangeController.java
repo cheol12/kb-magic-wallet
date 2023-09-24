@@ -41,14 +41,16 @@ public class ExchangeController {
         ModelAndView modelAndView = new ModelAndView();
         List<String> usdRate = exchangeService.selectExchangeRateByCurrencyCode(CurrencyCode.USD);
         List<String> jpyRate = exchangeService.selectExchangeRateByCurrencyCode(CurrencyCode.JPY);
-
+        List<Double> predictedExchangeRates = exchangeService.getPredictedExchangeRates();
+        List<Double> predictedExchangeRatesJPY = exchangeService.getPredictedExchangeRatesJPY();
         modelAndView.setViewName("exchange/exchange");
         //request.setAttribute("usdRate", usdRate);
         // request.setAttribute("jpyRate", jpyRate);
 
         modelAndView.addObject("usdRate", usdRate);
         modelAndView.addObject("jpyRate", jpyRate);
-
+        modelAndView.addObject("predict", predictedExchangeRates);
+        modelAndView.addObject("predictJPY", predictedExchangeRatesJPY);
         return modelAndView;
     }
 

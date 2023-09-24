@@ -12,12 +12,13 @@ PREDICT_DAYS = 7
 
 # 모델 불러오기
 # model = load_model('usd_model.h5')
-model = load_model('D:\\kb_final\\kb-magic-wallet\\exchange_rate\\usdModel.h5')
+
+model = load_model('exchange_rate\\usdModel.h5')
 
 
 # 데이터 불러오기 및 전처리
 # data = pd.read_excel('usd.xlsx')
-data = pd.read_excel('D:\\kb_final\\kb-magic-wallet\\exchange_rate\\usd.xlsx')
+data = pd.read_excel('exchange_rate\\usd.xlsx')
 
 scaler = MinMaxScaler()
 scaled_data = scaler.fit_transform(data['usd'].values.reshape(-1, 1))

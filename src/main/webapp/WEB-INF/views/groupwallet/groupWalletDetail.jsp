@@ -135,6 +135,7 @@
             })
         }
 
+
         <%--// ajax 로 적금 표시 + 포맷 형식 지정--%>
         <%--function savingCall() {--%>
         <%--    $.ajax({--%>
@@ -163,6 +164,7 @@
         <%--        }--%>
         <%--    });--%>
         <%--}--%>
+
 
         // AJAX READY
 
@@ -194,7 +196,7 @@
             memberCall();
             historyCall();
             displayMemberList();
-            savingCall();
+            //savingCall();
             initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");
 
             // $(document).on("click", , function(){ }) 형식을 쓰는 이유
@@ -502,7 +504,6 @@
                 type: "get",
                 dataType: "json",
                 data: "id=" +${groupWalletId},
-
                 success: function (result, status) {
                     $("#table").empty();
                     // 화면에 갱신
@@ -529,6 +530,7 @@
                     $("#table").append(str);
                 },
                 error: function (result, status) {
+                    alert(11);
                 },
             });
         }
