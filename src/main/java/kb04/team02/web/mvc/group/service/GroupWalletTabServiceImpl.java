@@ -223,13 +223,13 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
             } else {
                 // 이자율 계산
                 installmentSaving = installmentRepository.findByGroupWalletAndTotalAmountIsGreaterThanAndDone(groupWallet, 0L, true);
-                installmentSaving.setTotalAmount(0L);
+//                installmentSaving.setTotalAmount(0L);
 
                 double monthlyInterestRate = installmentSaving.getSaving().getInterestRate() / 1200; // 월 이자율
                 int numberOfMonths = installmentSaving.getSaving().getPeriod(); // 총 월 수
                 double monthlyDeposit = installmentSaving.getSavingAmount(); // 월별 납입 금액
                 double totalInterest = 0.0; // 총 이자
-                double savingsBalance = groupWallet.getBalance(); // 적금 잔액
+                double savingsBalance = installmentSaving.getTotalAmount(); // 적금 잔액
 
                 for (int month = 1; month <= numberOfMonths; month++) {
                     // 해당 월의 이자 계산
@@ -237,22 +237,23 @@ public class GroupWalletTabServiceImpl implements GroupWalletTabService {
                     // 총 이자에 월별 이자 추가
                     totalInterest += monthlyInterest;
                     // 적금 잔액 업데이트
-                    savingsBalance = savingsBalance + monthlyDeposit + monthlyInterest;
+                    savingsBalance = savingsBalance + totalInterest;
                 }
 
                 System.out.println("총 이자: " + totalInterest);
 
-                groupWallet.setBalance((long) savingsBalance);
+                groupWallet.setBalance(groupWallet.getBalance() + (long)savingsBalance);
 
                 // 적금 해지 내역
                 SavingHistory savingHistory = SavingHistory.builder()
                         .insertDate(LocalDateTime.now())
-                        .amount(installmentSaving.getTotalAmount())
+                        .amount(installmentSaving.getSavingAmount())
                         .accumulatedAmount((long) savingsBalance)
                         .installmentSaving(installmentSaving)
                         .transactionType(TransactionType.DEPOSIT)
                         .build();
                 savingHistoryRepository.save(savingHistory);
+                installmentSaving.setTotalAmount(0L);
             }
         }
         return true;
