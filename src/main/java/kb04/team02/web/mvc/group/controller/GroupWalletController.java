@@ -368,21 +368,14 @@ public class GroupWalletController {
 
     }
 
-    //    @ResponseBody
+    @ResponseBody
     @PostMapping("/{id}/rule/create")
-    public ModelAndView groupWalletRuleCreate(@PathVariable Long id, @RequestParam int dueDate, @RequestParam Long due, Model model, ModelAndView mv) {
+    public Long groupWalletRuleCreate(@PathVariable Long id, @RequestParam int dueDate, @RequestParam Long due, Model model, ModelAndView mv){
         GroupWallet groupWallet = groupWalletService.setGroupWalletDueRule(id, dueDate, due);
 
-        log.info("groupWallet result = " + groupWallet);
-        model.addAttribute("groupWallet", groupWallet);
-        mv.setViewName("redirect:/group-wallet/" + id);
-        mv.addObject("groupWallet", groupWallet);
-//        if(result > 0){
-//            return "redirect:/group-wallet/" + id;
-//        }
-
-//        return "redirect:/group-wallet/" + id;
-        return mv;
+        log.info("groupWallet result = " + groupWallet.getGroupWalletId());
+        
+        return groupWallet.getGroupWalletId();
     }
 
 

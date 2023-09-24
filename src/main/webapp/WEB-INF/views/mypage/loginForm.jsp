@@ -50,7 +50,7 @@
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="register_id">아이디</label>
                             <div class="col-sm-10">
-                                <input name="id" type="text" class="form-control" id="register_id" placeholder="gildong1234" />
+                                <input name="id" type="text" class="form-control" id="register_id" placeholder="id" />
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -61,6 +61,7 @@
                                         type="password"
                                         class="form-control"
                                         id="basic-default-company"
+                                        placeholder="password"
                                 />
                             </div>
                         </div>

@@ -6,6 +6,7 @@ import kb04.team02.web.mvc.group.entity.GroupWallet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
@@ -50,6 +51,7 @@ public interface GroupWalletRespository extends JpaRepository<GroupWallet, Long>
      * 모임지갑 삭제
      * 선택한 나의 모임지갑을 삭제한다. (모임장만 가능)
      * */
+    @Transactional
     int deleteGroupWalletByGroupWalletId(Long groupWalletId);
 
 

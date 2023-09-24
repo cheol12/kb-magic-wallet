@@ -126,9 +126,9 @@
                         }
                         str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
                         if (result[i].type === '환전' || result[i].type === '재환전') {
-                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance)+'</TD>';
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
                         } else {
-                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance)+'</TD>';
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
                         }
                         str += '</TR>';
                     });
@@ -139,6 +139,7 @@
                 },
             })
         }
+
 
         <%--// ajax 로 적금 표시 + 포맷 형식 지정--%>
         <%--function savingCall() {--%>
@@ -151,10 +152,8 @@
         <%--            var maturityDate = new Date(data.maturityDate); // 날짜를 원하는 형식으로 포맷팅--%>
         <%--            var totalAmount = new Date(data.totalAmount);--%>
 
-        <%--            var insertDateFormatted = insertDate.toLocaleDateString(); // 날짜 형식으로 변환--%>
-        <%--            var maturityDateFormatted = maturityDate.toLocaleDateString(); // 날짜 형식으로 변환--%>
-        <%--            var totalAmountFormatted = formatNumberWithCommas(totalAmount);--%>
-        <%--            var savingAmountFormatted = formatNumberWithCommas(savingAmount);--%>
+                    // var insertDateFormatted = insertDate.toLocaleDateString(); // 날짜 형식으로 변환
+                    // var maturityDateFormatted = maturityDate.toLocaleDateString(); // 날짜 형식으로 변환
 
         <%--            // 데이터를 가져와서 화면에 표시합니다.--%>
         <%--            $("#interestRate").text(data.interestRate + "%");--%>
@@ -170,6 +169,7 @@
         <%--        }--%>
         <%--    });--%>
         <%--}--%>
+
 
         // AJAX READY
 
@@ -201,7 +201,9 @@
             memberCall();
             historyCall();
             displayMemberList();
-            // savingCall();
+
+            //savingCall();
+
             initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");
 
             // $(document).on("click", , function(){ }) 형식을 쓰는 이유
@@ -382,6 +384,23 @@
             //     // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
             // });
 
+
+            // 꺼내기 할 때 모임원은 안되게 권한 판단하기
+            // 서버에서 권한 정보를 JavaScript 변수로 전달합니다.
+            var userRole = "${groupMemberDto.roleToString}";
+
+            // 버튼 클릭 이벤트 핸들러
+            $("#withdrawButton").click(function (event) {
+                // 권한이 ADMIN인 경우에만 꺼내기 동작
+                if (userRole === '모임장' || userRole === '공동모임장') {
+                    // 꺼내기 동작 구현
+                } else {
+                    // 권한이 없는 경우 alert 메시지 표시
+                    alert("꺼내기는 모임장이나 공동모임장이 할 수 있어요!");
+                    // 이벤트 기본 동작 취소
+                    event.preventDefault();
+                }
+            });
         });
 
         // 모임지갑 연결 카드 부르기
@@ -491,8 +510,7 @@
                 url: urlPath,
                 type: "get",
                 dataType: "json",
-                data: "id="+${groupWalletId},
-
+                data: "id=" +${groupWalletId},
                 success: function (result, status) {
                     $("#table").empty();
                     // 화면에 갱신
@@ -501,7 +519,7 @@
                         str += '<tr data-id=' + result[i].memberId + '>';
                         str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].name + '</h5></TD>';
                         if (result[i].roleToString == '모임장' || result[i].roleToString == '공동모임장') {
-                            str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' +  result[i].roleToString + '👑' + '</h5></TD>';
+                            str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].roleToString + '👑' + '</h5></TD>';
                         } else {
                             str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].roleToString + '</TD>';
                         }
@@ -519,25 +537,10 @@
                     $("#table").append(str);
                 },
                 error: function (result, status) {
+                    alert(11);
                 },
             });
         }
-
-        // 꺼내기 클릭 시 권한 판단
-        document.getElementById("withdrawButton").addEventListener("click", function (event) {
-            // 여기서 groupMemberDto.roleToString 값을 자바스크립트로 가져와서 사용합니다.
-            var role = "${groupMemberDto.roleToString}";
-
-            // 권한이 ADMIN인 경우에만 꺼내기 동작
-            if (role === '모임장' || role === '공동모임장') {
-                // 꺼내기 동작 구현
-            } else {
-                // 권한이 없는 경우 alert 메시지 표시
-                alert("꺼내기는 모임장이나 공동모임장이 할 수 있어요!");
-                // 이벤트 기본 동작 취소
-                event.preventDefault();
-            }
-        });
 
     </script>
 
@@ -567,7 +570,7 @@
                 <a href="/group-wallet/${id}/deposit" class="btn btn-primary">
                     채우기
                 </a>
-                <a href="/group-wallet/${id}/withdraw" class="btn btn-primary" id="withdrawButton">
+                <a href="/group-wallet/${id}/withdraw" class="btn btn-primary" id="withdrawButton" name="withdrawButton">
                     꺼내기
                 </a>
                 <a href="/group-wallet/${id}/settle" class="btn btn-primary" id="settlebutton">
@@ -584,7 +587,7 @@
                 </h6>
                 <div class="card h-20" style="margin-bottom: 10px">
                     <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                        <jsp:include page="groupWalletMemberAndCard.jsp"/>
+                    <jsp:include page="groupWalletMemberAndCard.jsp"/>
                 </div>
             </div>
             <!-- 차트->멤버 목록 변경 완료
@@ -612,14 +615,14 @@
                             </h4>
                         </button>
                         <!-- Button trigger modal -->
-<%--                        <button--%>
-<%--                                type="button"--%>
-<%--                                class="btn btn-primary"--%>
-<%--                                data-bs-toggle="modal"--%>
-<%--                                data-bs-target="#basicModal"--%>
-<%--                        >--%>
-<%--                            조회 기간 설정--%>
-<%--                        </button>--%>
+                        <%--                        <button--%>
+                        <%--                                type="button"--%>
+                        <%--                                class="btn btn-primary"--%>
+                        <%--                                data-bs-toggle="modal"--%>
+                        <%--                                data-bs-target="#basicModal"--%>
+                        <%--                        >--%>
+                        <%--                            조회 기간 설정--%>
+                        <%--                        </button>--%>
                     </li>
                     <li class="nav-item" style="padding: 0px">
                         <button
@@ -653,22 +656,7 @@
                             </h4>
                         </button>
                     </li>
-                    <li class="nav-item">
-                        <button
-                                type="button"
-                                class="nav-link"
-                                role="tab"
-                                data-bs-toggle="tab"
-                                data-bs-target="#navs-top-card"
-                                aria-controls="navs-top-card"
-                                aria-selected="false"
-                        >
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                            <h4 class="text-break" style="margin: 0px; padding: 0px">
-                                모임 연결 카드
-                            </h4>
-                        </button>
-                    </li>
+                    <%-- 모임 카드 탭 삭제 --%>
                     <li class="nav-item" id="hiddenNavItem" style="display: none;">
                         <button
                                 type="button"
@@ -702,9 +690,7 @@
                     <jsp:include page="tab/groupTabSaving.jsp"/>
                     <!-- 모임적금 조회 END -->
 
-                    <!-- 모임 연결 카드 START -->
-                    <jsp:include page="tab/groupTabCard.jsp"/>
-                    <!-- 모임 연결 카드 END -->
+                    <!-- 모임 카드 탭 삭제 -->
 
                     <!--모임 멤버조회 START-->
                     <jsp:include page="tab/groupTabMemberList.jsp"/>

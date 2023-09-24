@@ -21,70 +21,96 @@
     <div class="card" style="margin-top: 0px; padding-top: 0px">
         <c:choose>
             <c:when test="${installmentDto == null}">
-                <c:choose>
-                    <c:when test="${isChairman}">
-                        <p><strong><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                            <h5 class="text-break text-center" style="margin-bottom: 0">
-                            적금을 가입하지 않으셨습니다.</h5></strong></p>
-                        <a href="${pageContext.request.contextPath}/saving/"
-                           class="btn btn-primary">적금 보러가기</a>
-                    </c:when>
-                    <c:otherwise>
-                        <p><strong><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                            <h5 class="text-break text-center" style="margin-bottom: 0">
-                                가입된 적금이 없습니다. 모임장에게 적금 가입을 추천하는건 어떨까요?</h5></strong></p>
-                    </c:otherwise>
-                </c:choose>
+                <div class="card-body">
+                    <c:choose>
+                        <c:when test="${isChairman}">
+                            <div class="card-body">
+                                <h4 class="text-break text-center" style="margin-bottom: 0">
+                                    <p>가입한 적금이 없습니다. 적금을 가입하고 여행을 준비해보세요! </p>
+                                    <a href="${pageContext.request.contextPath}/saving/">
+                                        <button type="button" class="btn btn-primary">적금 보러가기</button>
+                                    </a>
+                                </h4>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="card-body">
+                                <h4 class="text-break text-center" style="margin-bottom: 0">
+                                    <p>가입된 적금이 없습니다. 모임장에게 적금 가입을 추천하는건 어떨까요? </p>
+                                </h4>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
             </c:when>
             <c:otherwise>
                 <div class="card">
                     <div class="card-header">
-                    <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                    <h4 class="text-break text-center" style="margin-bottom: 0">
-                        적금명 : ${installmentDto.savingName}</h4>
+                        <i class="fab fa-angular fa-lg text-danger me-3"></i>
+                        <h4 id="savingName" class="text-break text-center" style="margin-bottom: 0">
+                            적금명 : ${installmentDto.savingName}</h4>
                     </div>
                     <div class="table-responsive text-nowrap">
                         <table class="table table">
                             <thead>
                             <tr class="text-nowrap">
-                                <th style="border-right-width: 1px;"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">정보</h5></th>
-                                <th style="border-left-width: 0.7px"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">내용</h5></th>
+                                <th style="border-right-width: 1px;"><i
+                                        class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center" style="margin-bottom: 0">정보</h5></th>
+                                <th style="border-left-width: 0.7px"><i
+                                        class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center" style="margin-bottom: 0">내용</h5></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
-                                <th scope="row">
-                                    <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                    <h5 class="text-break text-center" style="margin-bottom: 0">금리</h5>
-                                </th>
-                                <td id="interestRate">
-                                    <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                                    <h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.interestRate}%</h5>
+                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center" style="margin-bottom: 0">금리</h5></th>
+                                <td id="interestRate"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center"
+                                        style="margin-bottom: 0"></h5></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center" style="margin-bottom: 0">기간</h5></th>
+                                <td id="period"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center" style="margin-bottom: 0">${installmentDto.period}개월</h5>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">기간</h5></th>
-                                <td id="period"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.period}개월</h5></td>
+                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center" style="margin-bottom: 0">가입일</h5></th>
+                                <td id="insertDate"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center"
+                                        style="margin-bottom: 0">${installmentDto.insertDate}</h5></td>
                             </tr>
                             <tr>
-                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">가입일</h5></th>
-                                <td id="insertDate"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.insertDate}</h5></td>
+                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center" style="margin-bottom: 0">만기일</h5></th>
+                                <td id="maturityDate"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center"
+                                        style="margin-bottom: 0">${installmentDto.maturityDate}</h5></td>
                             </tr>
                             <tr>
-                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">만기일</h5></th>
-                                <td id="maturityDate"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.maturityDate}</h5></td>
+                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center" style="margin-bottom: 0">현재까지</h5></th>
+                                <td id="totalAmount"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center"
+                                        style="margin-bottom: 0">${installmentDto.totalAmount}원</h5></td>
                             </tr>
                             <tr>
-                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">현재까지</h5></th>
-                                <td id="totalAmount"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.totalAmount}원</h5></td>
+                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center" style="margin-bottom: 0">납입일</h5></th>
+                                <td id="savingDate"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center" style="margin-bottom: 0">
+                                    매월 ${installmentDto.savingDate}일</h5></td>
                             </tr>
                             <tr>
-                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">납입일</h5></th>
-                                <td id="savingDate"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">매월 ${installmentDto.savingDate}일</h5></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">납입금</h5></th>
-                                <td id="savingAmount"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">${installmentDto.savingAmount}원</h5></td>
+                                <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center" style="margin-bottom: 0">납입금</h5></th>
+                                <td id="savingAmount"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
+                                        class="text-break text-center"
+                                        style="margin-bottom: 0">${installmentDto.savingAmount}원</h5></td>
                             </tr>
                             </tbody>
                         </table>
@@ -98,7 +124,7 @@
                                     </button>
                                     <script>
                                         // 적금 해지 버튼 클릭 시 알림창 띄우기
-                                        document.getElementById("cancelSaving").addEventListener("click", function(event) {
+                                        document.getElementById("cancelSaving").addEventListener("click", function (event) {
                                             event.preventDefault();
 
                                             var confirmation = confirm("적금을 해지하시겠습니까? 해지시 이자도 함께 소멸됩니다.");
@@ -108,7 +134,7 @@
                                                 var groupWalletId = "${groupWallet.groupWalletId}"; // 그룹 월렛 아이디 변수로 설정
                                                 var xhr = new XMLHttpRequest();
                                                 xhr.open("DELETE", "${pageContext.request.contextPath}/group-wallet/" + groupWalletId + "/saving", true);
-                                                xhr.onreadystatechange = function() {
+                                                xhr.onreadystatechange = function () {
                                                     if (xhr.readyState === 4) {
                                                         if (xhr.status === 200) {
                                                             // 적금 해지가 성공적으로 처리되었을 때 알림 메시지 띄우기

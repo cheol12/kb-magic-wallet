@@ -449,7 +449,39 @@ public class ExchangeServiceImpl implements ExchangeService {
         List<Double> predictions = new ArrayList<>();
 
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("D:\\kb_final\\kb-magic-wallet\\exchange_rate\\venv\\Scripts\\python.exe", "D:\\kb_final\\kb-magic-wallet\\exchange_rate\\predictUsd.py");
+        processBuilder.command("exchange_rate\\venv\\Scripts\\python.exe", "exchange_rate\\predictUsd.py");
+
+        try {
+            Process process = processBuilder.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = reader.readLine(); // 예측값들을 한 줄로 읽어옴
+            System.out.println("line = " + line);
+            if(line != null) {
+                for(String value : line.split(",")) {
+                    predictions.add(Double.parseDouble(value.trim()));
+                }
+            }
+
+
+            // Wait for the process to exit
+            int exitCode = process.waitFor();
+            System.out.println("\nExited with error code : " + exitCode);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(predictions);
+        return predictions;
+    }
+
+    @Override
+    public List<Double> getPredictedExchangeRatesJPY() {
+        List<Double> predictions = new ArrayList<>();
+
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command("exchange_rate\\venv\\Scripts\\python.exe", "exchange_rate\\predictJpy.py");
 
         try {
             Process process = processBuilder.start();

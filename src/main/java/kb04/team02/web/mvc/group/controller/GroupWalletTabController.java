@@ -268,14 +268,15 @@ public class GroupWalletTabController {
      * @param id 회비 규칙을 삭제할 모임지갑 id
      */
 
+    @ResponseBody
     @DeleteMapping("/{id}/rule")
     public String groupWalletDeleteRule(@PathVariable String id) {
         boolean isRuleDeleted = groupWalletTabService.deleteRule(Long.parseLong(id));
 
         if (isRuleDeleted) {
-            return "redirect:/group-wallet/{id}/rule";
+            return id;
         } else {
-            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
+            return null;
         }
     }
 
