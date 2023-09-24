@@ -253,8 +253,10 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             walletHistoryDto.setCurrencyCode(CurrencyCode.KRW);
             walletHistoryDto.setDetail("적금 내역");
             walletHistoryDto.setDetail(savingSetDetail);
-            walletHistoryDto.setAmount(savingHistory.getAmount().toString());
-            walletHistoryDto.setBalance(savingHistory.getAccumulatedAmount().toString());
+            walletHistoryDto.setAmount(savingHistory.getAccumulatedAmount().toString());
+            System.out.println("groupwalletService = " + savingHistory.getAmount().toString());
+//            System.out.println("savingHistory.getAccumulatedAmount().toString()"  + savingHistory.getAccumulatedAmount().toString());
+            walletHistoryDto.setBalance(groupWallet.getBalance().toString());
             dto.getList().add(walletHistoryDto);
         }
 

@@ -817,7 +817,7 @@ public class DataLoader {
         InstallmentSaving installmentSaving1 = InstallmentSaving.builder()
                 .maturityDate(LocalDateTime.of(2023, 9, 10, 0, 5))
                 .done(true)
-                .totalAmount(100_0000L) // Example: Set a fixed total amount
+                .totalAmount(100_000L) // Example: Set a fixed total amount
                 .savingDate(10) // Example: Set a fixed saving date
                 .savingAmount(100_000L) // Example: Set a fixed saving amount
                 .saving(save4)

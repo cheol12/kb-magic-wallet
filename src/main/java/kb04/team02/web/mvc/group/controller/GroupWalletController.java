@@ -168,19 +168,19 @@ public class GroupWalletController {
         return groupMemberDtoList;
     }
 
-    @ResponseBody
-    @GetMapping("/{id}/saving-check")
-    public InstallmentDto getGroupWalletInstallmentDto(@PathVariable Long id, HttpSession session){
-        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
-
-        try{
-            InstallmentDto installmentDto = groupWalletTabService.getSavingById(groupWallet);
-            return installmentDto;
-        }
-        catch (NullPointerException e){
-            return null;
-        }
-    }
+//    @ResponseBody
+//    @GetMapping("/{id}/saving-check")
+//    public InstallmentDto getGroupWalletInstallmentDto(@PathVariable Long id, HttpSession session){
+//        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+//
+//        try{
+//            InstallmentDto installmentDto = groupWalletTabService.getSavingById(groupWallet);
+//            return installmentDto;
+//        }
+//        catch (NullPointerException e){
+//            return null;
+//        }
+//    }
     /**
      * @author 김철
      * 모임지갑에서 모임장이 모임원을 강퇴한다.
