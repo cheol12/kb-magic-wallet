@@ -42,15 +42,16 @@
 <jsp:include page="common/navbar.jsp"/>
 
 <div>
-    <div class="pageWrap">
+    <div class="pageWrap" style="margin-top: 0">
         <div class="banner-container">
             <div class="above-container">
                 <div id="first-box" class="box">
                     <div class="first-contents">
-                        <h1>KB<p id="first-text">MAGIC WALLET</p>
-                            <p id="second-text">깨비의 요술지갑</p></h1>
-                        <p>다같이 해외여행엔 매직월렛! 지갑 하나로 달러, 엔화 환전하기!
-                        </p>
+                        <h1 style="margin-top: 48px;">KB
+                            <p id="first-text">MAGIC WALLET</p>
+                            <p id="second-text">깨비의 요술지갑</p>
+                        </h1>
+                        <p>다같이 해외여행엔 매직월렛! 지갑 하나로 달러, 엔화 환전하기!</p>
                     </div>
                 </div>
                 <div id="second-box" class="box">
