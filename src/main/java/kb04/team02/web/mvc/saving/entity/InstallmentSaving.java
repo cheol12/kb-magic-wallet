@@ -39,7 +39,7 @@ public class InstallmentSaving {
     @JoinColumn(name = "saving_id")
     private Saving saving;
 
-    @OneToMany(mappedBy = "installmentSaving")
+    @OneToMany(mappedBy = "installmentSaving", cascade = CascadeType.REMOVE)
     private List<SavingHistory> savingHistories = new ArrayList<>();
 
     @ManyToOne

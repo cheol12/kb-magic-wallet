@@ -141,4 +141,6 @@ public interface ExchangeService {
      * 환율 정보 예측
      */
     public List<Double> getPredictedExchangeRates();
+
+    public List<Double> getPredictedExchangeRatesJPY();
 }

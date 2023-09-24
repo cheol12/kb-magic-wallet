@@ -67,10 +67,10 @@
             </ul>
             <form class="d-flex" onsubmit="return false" method="get">
                 <c:if test="${empty sessionScope.member}">
+                    <button class="btn rounded-pill btn-outline-primary button-spacing" type="submit"
+                            onclick="location.href='${pageContext.request.contextPath}/register'" style="font-size: 20px">회원가입</button>
                 <button class="btn rounded-pill btn-primary button-spacing" type="submit"
                         onclick="location.href='${pageContext.request.contextPath}/login'" style="font-size: 20px">로그인</button>
-                <button class="btn rounded-pill btn-outline-primary" type="submit"
-                        onclick="location.href='${pageContext.request.contextPath}/register'" style="font-size: 20px">회원가입</button>
                 </c:if>
                 <c:if test="${not empty sessionScope.member}">
                     <button class="btn rounded-pill btn-primary" type="submit"

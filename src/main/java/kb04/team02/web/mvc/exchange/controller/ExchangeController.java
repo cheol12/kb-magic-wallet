@@ -1,5 +1,9 @@
 package kb04.team02.web.mvc.exchange.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
@@ -22,6 +26,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/exchange")
 @RequiredArgsConstructor
+@Api(tags = {"환전 API"})
 public class ExchangeController {
 
     private final ExchangeService exchangeService;
@@ -31,18 +36,21 @@ public class ExchangeController {
      * API 명세서 ROWNUM:41
      */
     @GetMapping("/")
+    @ApiOperation(value = "환전 메인 페이지", notes="환전 메인 페이지입니다.")
     public ModelAndView exchangeIndex() {
         ModelAndView modelAndView = new ModelAndView();
         List<String> usdRate = exchangeService.selectExchangeRateByCurrencyCode(CurrencyCode.USD);
         List<String> jpyRate = exchangeService.selectExchangeRateByCurrencyCode(CurrencyCode.JPY);
-
+        List<Double> predictedExchangeRates = exchangeService.getPredictedExchangeRates();
+        List<Double> predictedExchangeRatesJPY = exchangeService.getPredictedExchangeRatesJPY();
         modelAndView.setViewName("exchange/exchange");
         //request.setAttribute("usdRate", usdRate);
         // request.setAttribute("jpyRate", jpyRate);
 
         modelAndView.addObject("usdRate", usdRate);
         modelAndView.addObject("jpyRate", jpyRate);
-
+        modelAndView.addObject("predict", predictedExchangeRates);
+        modelAndView.addObject("predictJPY", predictedExchangeRatesJPY);
         return modelAndView;
     }
 
@@ -51,6 +59,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:42
      */
     @GetMapping("/offline")
+    @ApiOperation(value = "오프라인 환전 메인 페이지")
     public String exchangeOfflineIndex(HttpSession session, Model model) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         Map<Long, Role> map = loggedIn.getGroupWalletIdList();
@@ -65,6 +74,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:43
      */
     @GetMapping("/offline/form")
+    @ApiOperation(value = "오프라인 환전 폼")
     public String exchangeOfflineForm(HttpSession session, Model model) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         Long memberId = loggedIn.getMemberId();
@@ -81,6 +91,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:44
      */
     @PostMapping("/offline/form")
+    @ApiOperation(value = "오프라인 환전 요청")
     public String exchangeOffline(OfflineReceiptRequestDto offlineReceiptRequestDto) {
         System.out.println("ExchangeController.exchangeOffline");
         int result = exchangeService.requestOfflineReceipt(offlineReceiptRequestDto);
@@ -93,6 +104,7 @@ public class ExchangeController {
      */
     @DeleteMapping("/offline/form")
     @ResponseBody
+    @ApiOperation(value = "오프라인 환전 취소 요청")
     public String exchangeOfflineCancel(@RequestParam String offlineReceiptId) {
         int res = exchangeService.cancelOfflineReceipt(Long.parseLong(offlineReceiptId));
         return "success";
@@ -103,6 +115,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:46
      */
     @GetMapping("/onlineExchange")
+    @ApiOperation(value = "온라인 환전 메인 페이지")
     public ModelAndView exchangeOnlineIndex() {
 
         ModelAndView modelAndView = new ModelAndView();
@@ -124,6 +137,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:47
      */
     @GetMapping("/online/form")
+    @ApiOperation(value = "온라인 환전 폼")
     public String exchangeOnlineForm(HttpSession session, Model model) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         Long memberId = loggedIn.getMemberId();
@@ -137,6 +151,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:48
      */
     @PostMapping("/online/form")
+    @ApiOperation(value = "온라인 환전 요청")
     public String exchangeOnline(ExchangeDto exchangeDto) {
         exchangeService.requestExchangeOnline(exchangeDto);
         WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
@@ -152,6 +167,7 @@ public class ExchangeController {
      */
     @ResponseBody
     @PostMapping("/walletBalance")
+    @ApiOperation(value = "선택한 지갑의 원화 잔액 요청")
     public Long selectedWalletBalance(@RequestBody HashMap<String, Integer> param){
         Long walletId = Long.valueOf(param.get("walletId"));
         WalletType walletType = WalletType.findByValue(param.get("walletType"));
@@ -164,6 +180,7 @@ public class ExchangeController {
      */
     @ResponseBody
     @PostMapping("/expectedAmount")
+    @ApiOperation(value = "선택한 통화와 입력 금액에 대한 환전 예상 금액 요청")
     public ExchangeCalDto expectedAmount(@RequestBody HashMap<String, Integer> param){
         Long amount = Long.valueOf(param.get("amount"));
         CurrencyCode foundCurrency = CurrencyCode.findByValue(param.get("code"));
@@ -173,6 +190,7 @@ public class ExchangeController {
 
     //== 예외 처리 ==/
     @ExceptionHandler({ExchangeException.class, InsertException.class, NoSuchElementException.class})
+    @ApiOperation(value = "예외", hidden = true)
     public String exchangeException(Exception e) {
         System.out.println(e.getMessage());
         return "error";
@@ -183,6 +201,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:47
      */
     @GetMapping("/online/re-form")
+    @ApiOperation(value = "온라인 재환전 폼")
     public String reExchangeOnlineForm(HttpSession session, Model model) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         Long memberId = loggedIn.getMemberId();
@@ -196,6 +215,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:48
      */
     @PostMapping("/online/re-form")
+    @ApiOperation(value = "온라인 재환전 요청")
     public String reExchangeOnline(ExchangeDto exchangeDto) {
         exchangeService.requestReExchangeOnline(exchangeDto);
         WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
@@ -211,6 +231,7 @@ public class ExchangeController {
      */
     @ResponseBody
     @PostMapping("/walletFCBalance")
+    @ApiOperation(value = "선택한 지갑의 외화 잔액 목록 요청")
     public WalletDetailDto selectedWalletFCBalance(@RequestBody HashMap<String, Integer> param){
         Long walletId = Long.valueOf(param.get("walletId"));
         WalletType walletType = WalletType.findByValue(param.get("walletType"));
@@ -222,11 +243,13 @@ public class ExchangeController {
     // 환율 예측 테스트
 
     @GetMapping("/exchangePrediction")
+    @ApiOperation(value = "환율 예측 페이지")
     public String showPredictionPage() {
         return "exchange/exchangePredict"; // JSP 파일 이름
     }
 
     @PostMapping("/exchangePrediction")
+    @ApiOperation(value = "환율 예측 요청")
     public String runPrediction(Model model) {
         List<Double> predictions = exchangeService.getPredictedExchangeRates();
         model.addAttribute("predictions", predictions);

@@ -34,3 +34,4 @@ build/
 
 ### custom ###
 /src/main/resources/naver.properties
+/exchange_rate/venv

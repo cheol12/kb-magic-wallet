@@ -269,6 +269,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     }
 
     @Override
+    @Transactional
     public int deleteGroupWallet(Long groupWalletId) throws WalletDeleteException {
         GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElseThrow(()-> new NoSuchElementException("모임 지갑 조회 실패"));
         Member member = groupWallet.getMember();
@@ -285,6 +286,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         }
 
         // 삭제
+
         groupWalletRep.deleteGroupWalletByGroupWalletId(groupWalletId);
 
 
@@ -381,8 +383,23 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 .currencyCode(CurrencyCode.KRW)
                 .build();
         groupWallet.setBalance(afterBalance);
-        personalWallet.setBalance(personalWallet.getBalance() + amount);
         groupTransferRep.save(withdraw);
+
+        personalWallet.setBalance(personalWallet.getBalance() + amount);
+
+        PersonalWalletTransfer personalWalletTransfer = PersonalWalletTransfer.builder()
+                .personalWallet(personalWallet)
+                .transferType(TransferType.DEPOSIT)
+                .fromType(TargetType.GROUP_WALLET)
+                .toType(TargetType.PERSONAL_WALLET)
+                .src(groupWallet.getNickname())
+                .dest(member.getName())
+                .amount(amount)
+                .afterBalance(personalWallet.getBalance() + amount)
+                .currencyCode(CurrencyCode.KRW)
+                .build();
+
+        personalTransferRep.save(personalWalletTransfer);
     }
 
     @Transactional
@@ -483,8 +500,22 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 .currencyCode(CurrencyCode.KRW)
                 .build();
         groupWallet.setBalance(afterBalance);
-        personalWallet.setBalance(personalWallet.getBalance() - amount);
         groupTransferRep.save(groupWalletTransfer);
+        personalWallet.setBalance(personalWallet.getBalance() - amount);
+
+        PersonalWalletTransfer personalWalletTransfer = PersonalWalletTransfer.builder()
+                .personalWallet(personalWallet)
+                .transferType(TransferType.WITHDRAW)
+                .fromType(TargetType.PERSONAL_WALLET)
+                .toType(TargetType.GROUP_WALLET)
+                .src(member.getName())
+                .dest(groupWallet.getNickname())
+                .amount(amount)
+                .afterBalance(personalWallet.getBalance() - amount)
+                .currencyCode(CurrencyCode.KRW)
+                .build();
+
+        personalTransferRep.save(personalWalletTransfer);
     }
 
     @Transactional
