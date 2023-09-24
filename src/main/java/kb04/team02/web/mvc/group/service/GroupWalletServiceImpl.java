@@ -255,6 +255,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             walletHistoryDto.setDetail(savingSetDetail);
             walletHistoryDto.setAmount(savingHistory.getAmount().toString());
             walletHistoryDto.setBalance(savingHistory.getAccumulatedAmount().toString());
+            dto.getList().add(walletHistoryDto);
         }
 
         dto.getList().sort(new Comparator<WalletHistoryDto>() {
