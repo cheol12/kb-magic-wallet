@@ -145,7 +145,6 @@
                     var insertDate = new Date(data.insertDate);
                     var maturityDate = new Date(data.maturityDate); // 날짜를 원하는 형식으로 포맷팅
 
-
                     var insertDateFormatted = insertDate.toLocaleDateString(); // 날짜 형식으로 변환
                     var maturityDateFormatted = maturityDate.toLocaleDateString(); // 날짜 형식으로 변환
 
@@ -375,6 +374,23 @@
             //     // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
             // });
 
+
+            // 꺼내기 할 때 모임원은 안되게 권한 판단하기
+            // 서버에서 권한 정보를 JavaScript 변수로 전달합니다.
+            var userRole = "${groupMemberDto.roleToString}";
+
+            // 버튼 클릭 이벤트 핸들러
+            $("#withdrawButton").click(function (event) {
+                // 권한이 ADMIN인 경우에만 꺼내기 동작
+                if (userRole === '모임장' || userRole === '공동모임장') {
+                    // 꺼내기 동작 구현
+                } else {
+                    // 권한이 없는 경우 alert 메시지 표시
+                    alert("꺼내기는 모임장이나 공동모임장이 할 수 있어요!");
+                    // 이벤트 기본 동작 취소
+                    event.preventDefault();
+                }
+            });
         });
 
         // 모임지갑 연결 카드 부르기
@@ -516,22 +532,6 @@
             });
         }
 
-        // 꺼내기 클릭 시 권한 판단
-        document.getElementById("withdrawButton").addEventListener("click", function (event) {
-            // 여기서 groupMemberDto.roleToString 값을 자바스크립트로 가져와서 사용합니다.
-            var role = "${groupMemberDto.roleToString}";
-
-            // 권한이 ADMIN인 경우에만 꺼내기 동작
-            if (role === '모임장' || role === '공동모임장') {
-                // 꺼내기 동작 구현
-            } else {
-                // 권한이 없는 경우 alert 메시지 표시
-                alert("꺼내기는 모임장이나 공동모임장이 할 수 있어요!");
-                // 이벤트 기본 동작 취소
-                event.preventDefault();
-            }
-        });
-
     </script>
 
 </head>
@@ -560,7 +560,7 @@
                 <a href="/group-wallet/${id}/deposit" class="btn btn-primary">
                     채우기
                 </a>
-                <a href="/group-wallet/${id}/withdraw" class="btn btn-primary" id="withdrawButton">
+                <a href="/group-wallet/${id}/withdraw" class="btn btn-primary" id="withdrawButton" name="withdrawButton">
                     꺼내기
                 </a>
                 <a href="/group-wallet/${id}/settle" class="btn btn-primary" id="settlebutton">
