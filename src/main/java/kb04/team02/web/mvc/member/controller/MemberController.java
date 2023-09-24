@@ -27,7 +27,7 @@ public class MemberController {
      * 로그인
      */
     @PostMapping("/login")
-    @ApiOperation(value = "로그인 요청", notes="로그인을 요청하는 api입니다.")
+    @ApiOperation(value = "로그인", notes="아이디와 비밀번호를 입력받아 로그인합니다.")
     public String login(MemberLoginDto memberLoginDto, HttpSession session) {
 //    public String login(MemberLoginDto memberLoginDto, HttpServletRequest request) {
         try {
@@ -45,7 +45,7 @@ public class MemberController {
     }
 
     @GetMapping("/login")
-    @ApiOperation(value = "로그인 페이지", notes="로그인 페이지입니다.")
+    @ApiOperation(value = "로그인 페이지", notes="로그인 페이지로 이동합니다.")
     public String login(){
         return "mypage/loginForm";
     }
@@ -54,7 +54,7 @@ public class MemberController {
      * 로그아웃
      */
     @PostMapping("/logout")
-    @ApiOperation(value = "로그아웃 요청", notes="로그아웃 요청입니다.")
+    @ApiOperation(value = "로그아웃", notes="로그아웃입니다.")
     public String logout(HttpSession session) {
         //모든 세션의 정보를 삭제한다.
         session.invalidate();
@@ -65,7 +65,7 @@ public class MemberController {
      * 회원가입 폼
      */
     @GetMapping("/register")
-    @ApiOperation(value = "회원가입 페이지", notes="회원가입 페이지입니다.")
+    @ApiOperation(value = "회원가입 페이지", notes="회원가입 페이지로 이동합니다.")
     public String registerForm() {
         return "member/register";
     }
@@ -76,7 +76,7 @@ public class MemberController {
      * @return /로 이동
      */
     @PostMapping("/register")
-    @ApiOperation(value = "회원가입 요청", notes="회원가입 요청입니다.")
+    @ApiOperation(value = "회원가입", notes="MemberRegisterDto를 입력받아 회원가입을 진행합니다.")
 //    public String register(@RequestBody MemberRegisterDto memberRegisterDto) {
     public String register(MemberRegisterDto memberRegisterDto) {
         System.out.println("memberRegisterDto = " + memberRegisterDto);
@@ -91,7 +91,7 @@ public class MemberController {
 
     @ResponseBody
     @PostMapping("/verification")
-    @ApiOperation(value = "결제 비밀번호 확인 요청", notes="결제 비밀번호 확인 요청입니다.")
+    @ApiOperation(value = "결제 비밀번호 확인", notes="결제 비밀번호를 입력받아 확인합니다.")
     public ResponseEntity<?> PayPasswordVerification(String payPassword, HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         try {

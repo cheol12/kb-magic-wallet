@@ -55,7 +55,7 @@ public class MyPageController {
      * API 명세서 ROWNUM:50
      */
     @GetMapping("/cardForm")
-    @ApiOperation(value = "카드 신청 폼", notes="카드 신청 폼입니다.")
+    @ApiOperation(value = "카드 신청 폼", notes="카드 신청 폼으로 이동합니다.")
     public void cardForm() {
     }
 
@@ -101,7 +101,7 @@ public class MyPageController {
      * API 명세서 ROWNUM:54
      */
     @PostMapping("/bank")
-    @ApiOperation(value = "은행 계좌 연결 요청", notes="은행 계좌 연결을 요청합니다.")
+    @ApiOperation(value = "은행 계좌 연결 요청", notes="은행 계좌를 연결합니다.")
     public String bankLink(@RequestParam("account") String account, HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.linkAccount(loggedIn, account);
@@ -113,7 +113,7 @@ public class MyPageController {
      * TODO API 명세서 추가
      */
     @GetMapping("/card/stop")
-    @ApiOperation(value = "카드 일시정지 요청", notes="카드 일시정지를 요청합니다.")
+    @ApiOperation(value = "카드 일시정지 요청", notes="카드를 일시정지합니다.")
     public String cardPause(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.pauseCard(loggedIn);
@@ -127,7 +127,7 @@ public class MyPageController {
      * TODO API 명세서 추가
      */
     @GetMapping("/card/restart")
-    @ApiOperation(value = "카드 재시작", notes="카드 재시작을 요청합니다.")
+    @ApiOperation(value = "카드 재시작", notes="일시정지된 카드를 재시작합니다.")
     public String cardResume(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.resumeCard(loggedIn);
@@ -142,7 +142,7 @@ public class MyPageController {
      */
     @GetMapping("/mycard")
     @ResponseBody
-    @ApiOperation(value = "카드 번호 요청", notes="카드 번호를 요청합니다.")
+    @ApiOperation(value = "카드 번호 요청", notes="카드 번호를 반환합니다.")
     public ModelAndView cardNumber(HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         CardNumberDto cardNumber = myPageService.getCardNumber(member);
@@ -162,7 +162,7 @@ public class MyPageController {
      */
     @GetMapping("/mybank")
     @ResponseBody
-    @ApiOperation(value = "은행 계좌 조회 요청", notes="은행 계좌 조회를 요청합니다.")
+    @ApiOperation(value = "은행 계좌 조회 요청", notes="은행 계좌 조회합니다.")
     public String bankAccount(HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         return myPageService.getBankAccount(member);
