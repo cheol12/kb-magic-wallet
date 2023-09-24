@@ -815,9 +815,9 @@ public class DataLoader {
                 .amountLimit(1_000_000L) // Example: Increment amount limit for each saving
                 .build());
         InstallmentSaving installmentSaving1 = InstallmentSaving.builder()
-                .maturityDate(LocalDateTime.of(2023, 12, 7, 0, 5))
-                .done(false)
-                .totalAmount(600_000L) // Example: Set a fixed total amount
+                .maturityDate(LocalDateTime.of(2023, 9, 10, 0, 5))
+                .done(true)
+                .totalAmount(100_0000L) // Example: Set a fixed total amount
                 .savingDate(10) // Example: Set a fixed saving date
                 .savingAmount(100_000L) // Example: Set a fixed saving amount
                 .saving(save4)
@@ -827,11 +827,10 @@ public class DataLoader {
 
         SavingHistory savingHistory1 = SavingHistory.builder()
                 .installmentSaving(installmentSaving1)
-                .insertDate(LocalDateTime.of(2023, 9, 10, 0, 5))
+                .insertDate(LocalDateTime.of(2023, 8, 10, 0, 5))
                 .amount(100_000L)
                 .accumulatedAmount(100_000L)
                 .installmentSaving(installmentSaving1)
-                .transactionType(TransactionType.WITHDRAWAL)
                 .build();
         savingHistoryRepository.save(savingHistory1);
 
