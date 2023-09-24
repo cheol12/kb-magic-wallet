@@ -135,36 +135,34 @@
             })
         }
 
-        <%--// ajax 로 적금 표시 + 포맷 형식 지정--%>
-        <%--function savingCall() {--%>
-        <%--    $.ajax({--%>
-        <%--        url: "${pageContext.request.contextPath}/group-wallet/${id}/saving-check", // 컨트롤러에서 데이터를 반환하는 엔드포인트를 지정하세요.--%>
-        <%--        type: "get", // HTTP GET 요청을 사용합니다.--%>
-        <%--        dataType: "json",--%>
-        <%--        success: function (data) {--%>
-        <%--            var insertDate = new Date(data.insertDate);--%>
-        <%--            var maturityDate = new Date(data.maturityDate); // 날짜를 원하는 형식으로 포맷팅--%>
-        <%--            var totalAmount = new Date(data.totalAmount);--%>
+        // ajax 로 적금 표시 + 포맷 형식 지정
+        function savingCall() {
+            $.ajax({
+                url: "${pageContext.request.contextPath}/group-wallet/${id}/saving-check", // 컨트롤러에서 데이터를 반환하는 엔드포인트를 지정하세요.
+                type: "get", // HTTP GET 요청을 사용합니다.
+                dataType: "json",
+                success: function (data) {
+                    var insertDate = new Date(data.insertDate);
+                    var maturityDate = new Date(data.maturityDate); // 날짜를 원하는 형식으로 포맷팅
 
-        <%--            var insertDateFormatted = insertDate.toLocaleDateString(); // 날짜 형식으로 변환--%>
-        <%--            var maturityDateFormatted = maturityDate.toLocaleDateString(); // 날짜 형식으로 변환--%>
-        <%--            var totalAmountFormatted = formatNumberWithCommas(totalAmount);--%>
-        <%--            var savingAmountFormatted = formatNumberWithCommas(savingAmount);--%>
 
-        <%--            // 데이터를 가져와서 화면에 표시합니다.--%>
-        <%--            $("#interestRate").text(data.interestRate + "%");--%>
-        <%--            $("#period").text(data.period + "개월");--%>
-        <%--            $("#insertDate").text(insertDateFormatted);--%>
-        <%--            $("#maturityDate").text(maturityDateFormatted);--%>
-        <%--            $("#totalAmount").text(formatNumberWithCommas(data.totalAmount) + "원");--%>
-        <%--            $("#savingDate").text("매월 " + data.savingDate + "일");--%>
-        <%--            $("#savingAmount").text(formatNumberWithCommas(data.savingAmount) + "원");--%>
-        <%--        },--%>
-        <%--        error: function (xhr, status, error) {--%>
-        <%--            console.error("데이터를 가져오는 중 오류 발생: " + error);--%>
-        <%--        }--%>
-        <%--    });--%>
-        <%--}--%>
+                    var insertDateFormatted = insertDate.toLocaleDateString(); // 날짜 형식으로 변환
+                    var maturityDateFormatted = maturityDate.toLocaleDateString(); // 날짜 형식으로 변환
+
+                    // 데이터를 가져와서 화면에 표시합니다.
+                    $("#interestRate").text(data.interestRate + "%");
+                    $("#period").text(data.period + "개월");
+                    $("#insertDate").text(insertDateFormatted);
+                    $("#maturityDate").text(maturityDateFormatted);
+                    $("#totalAmount").text(formatNumberWithCommas(data.totalAmount) + "원");
+                    $("#savingDate").text("매월 " + data.savingDate + "일");
+                    $("#savingAmount").text(formatNumberWithCommas(data.savingAmount) + "원");
+                },
+                error: function (xhr, status, error) {
+                    console.error("데이터를 가져오는 중 오류 발생: " + error);
+                }
+            });
+        }
 
         // AJAX READY
 
@@ -552,9 +550,9 @@
         <br>
 
         <div class="row">
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100" style="text-align: center">
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <h6 class="text-break">
+                <h6 class="text-break" style="margin-bottom: 0">
                     지갑 정보
                 </h6>
                 <!--지갑 통화 현황 차트-->
@@ -574,7 +572,7 @@
                  수정자: 김진형 -->
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <h6 class="text-break">
+                <h6 class="text-break" style="margin-bottom: 0">
                     ${groupWallet.nickname}의 카드 현황
                 </h6>
                 <div class="card h-20" style="margin-bottom: 10px">
