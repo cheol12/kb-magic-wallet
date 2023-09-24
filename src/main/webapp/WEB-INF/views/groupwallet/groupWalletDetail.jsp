@@ -143,34 +143,32 @@
             })
         }
 
-        <%--// ajax 로 적금 표시 + 포맷 형식 지정--%>
-        <%--function savingCall() {--%>
-        <%--    $.ajax({--%>
-        <%--        url: "${pageContext.request.contextPath}/group-wallet/${id}/saving-check", // 컨트롤러에서 데이터를 반환하는 엔드포인트를 지정하세요.--%>
-        <%--        type: "get", // HTTP GET 요청을 사용합니다.--%>
-        <%--        dataType: "json",--%>
-        <%--        success: function (data) {--%>
-        <%--            var insertDate = new Date(data.insertDate);--%>
-        <%--            var maturityDate = new Date(data.maturityDate); // 날짜를 원하는 형식으로 포맷팅--%>
-        <%--            var totalAmount = new Date(data.totalAmount);--%>
+        // ajax 로 적금 표시 + 포맷 형식 지정
+        function savingCall() {
+            $.ajax({
+                url: "${pageContext.request.contextPath}/group-wallet/${id}/saving-check", // 컨트롤러에서 데이터를 반환하는 엔드포인트를 지정하세요.
+                type: "get", // HTTP GET 요청을 사용합니다.
+                dataType: "json",
+                success: function (data) {
+                    var insertDate = new Date(data.insertDate);
+                    var maturityDate = new Date(data.maturityDate); // 날짜를 원하는 형식으로 포맷팅
+                    var insertDateFormatted = insertDate.toLocaleDateString(); // 날짜 형식으로 변환
+                    var maturityDateFormatted = maturityDate.toLocaleDateString(); // 날짜 형식으로 변환
 
-                    // var insertDateFormatted = insertDate.toLocaleDateString(); // 날짜 형식으로 변환
-                    // var maturityDateFormatted = maturityDate.toLocaleDateString(); // 날짜 형식으로 변환
-
-        <%--            // 데이터를 가져와서 화면에 표시합니다.--%>
-        <%--            $("#interestRate").text(data.interestRate + "%");--%>
-        <%--            $("#period").text(data.period + "개월");--%>
-        <%--            $("#insertDate").text(insertDateFormatted);--%>
-        <%--            $("#maturityDate").text(maturityDateFormatted);--%>
-        <%--            $("#totalAmount").text(formatNumberWithCommas(data.totalAmount) + "원");--%>
-        <%--            $("#savingDate").text("매월 " + data.savingDate + "일");--%>
-        <%--            $("#savingAmount").text(formatNumberWithCommas(data.savingAmount) + "원");--%>
-        <%--        },--%>
-        <%--        error: function (xhr, status, error) {--%>
-        <%--            console.error("데이터를 가져오는 중 오류 발생: " + error);--%>
-        <%--        }--%>
-        <%--    });--%>
-        <%--}--%>
+                    // 데이터를 가져와서 화면에 표시합니다.
+                    $("#interestRate").text(data.interestRate + "%");
+                    $("#period").text(data.period + "개월");
+                    $("#insertDate").text(insertDateFormatted);
+                    $("#maturityDate").text(maturityDateFormatted);
+                    $("#totalAmount").text(formatNumberWithCommas(data.totalAmount) + "원");
+                    $("#savingDate").text("매월 " + data.savingDate + "일");
+                    $("#savingAmount").text(formatNumberWithCommas(data.savingAmount) + "원");
+                },
+                error: function (xhr, status, error) {
+                    console.error("데이터를 가져오는 중 오류 발생: " + error);
+                }
+            });
+        }
 
         // AJAX READY
 
@@ -638,7 +636,7 @@
                             </h4>
                         </button>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="">
                         <button
                                 type="button"
                                 class="nav-link"

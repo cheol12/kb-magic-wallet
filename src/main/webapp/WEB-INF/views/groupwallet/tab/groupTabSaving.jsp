@@ -68,13 +68,13 @@
                                         class="text-break text-center" style="margin-bottom: 0">금리</h5></th>
                                 <td id="interestRate"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
                                         class="text-break text-center"
-                                        style="margin-bottom: 0">${installmentDto.interestRate}</h5></td>
+                                        style="margin-bottom: 0"></h5></td>
                             </tr>
                             <tr>
                                 <th scope="row"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
                                         class="text-break text-center" style="margin-bottom: 0">기간</h5></th>
                                 <td id="period"><i class="fab fa-angular fa-lg text-danger me-3"></i><h5
-                                        class="text-break text-center" style="margin-bottom: 0">${installmentDto.period}개월</h5>
+                                        class="text-break text-center" style="margin-bottom: 0"></h5>
                                 </td>
                             </tr>
                             <tr>
