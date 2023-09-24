@@ -27,6 +27,7 @@ import kb04.team02.web.mvc.personal.service.PersonalWalletService;
 import kb04.team02.web.mvc.saving.entity.InstallmentSaving;
 import kb04.team02.web.mvc.saving.entity.Saving;
 import kb04.team02.web.mvc.saving.entity.SavingHistory;
+import kb04.team02.web.mvc.saving.entity.TransactionType;
 import kb04.team02.web.mvc.saving.repository.InstallmentSavingRepository;
 import kb04.team02.web.mvc.saving.repository.SavingHistoryRepository;
 import kb04.team02.web.mvc.saving.repository.SavingRepository;
@@ -236,15 +237,24 @@ public class GroupWalletServiceImpl implements GroupWalletService {
 
         for (SavingHistory savingHistory : allSavingHistoryList) {
             WalletHistoryDto walletHistoryDto = new WalletHistoryDto();
+            String savingType;
+            String savingSetDetail;
+            if (savingHistory.getTransactionType() == TransactionType.DEPOSIT) {
+                savingType = "적금 입금";
+                savingSetDetail = "적금 해지로 인한 입금";
+            } else {
+                savingType = "적금 출금";
+                savingSetDetail = "적금 내역";
+            }
 
             walletHistoryDto.setDateTime(savingHistory.getInsertDate());
             walletHistoryDto.setType("적금");
+            walletHistoryDto.setType(savingType);
             walletHistoryDto.setCurrencyCode(CurrencyCode.KRW);
             walletHistoryDto.setDetail("적금 내역");
+            walletHistoryDto.setDetail(savingSetDetail);
             walletHistoryDto.setAmount(savingHistory.getAmount().toString());
             walletHistoryDto.setBalance(savingHistory.getAccumulatedAmount().toString());
-
-            dto.getList().add(walletHistoryDto);
         }
 
         dto.getList().sort(new Comparator<WalletHistoryDto>() {
@@ -258,6 +268,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
     }
 
     @Override
+    @Transactional
     public int deleteGroupWallet(Long groupWalletId) throws WalletDeleteException {
         GroupWallet groupWallet = groupWalletRep.findById(groupWalletId).orElseThrow(()-> new NoSuchElementException("모임 지갑 조회 실패"));
         Member member = groupWallet.getMember();
@@ -274,6 +285,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
         }
 
         // 삭제
+
         groupWalletRep.deleteGroupWalletByGroupWalletId(groupWalletId);
 
 
@@ -370,8 +382,23 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 .currencyCode(CurrencyCode.KRW)
                 .build();
         groupWallet.setBalance(afterBalance);
-        personalWallet.setBalance(personalWallet.getBalance() + amount);
         groupTransferRep.save(withdraw);
+
+        personalWallet.setBalance(personalWallet.getBalance() + amount);
+
+        PersonalWalletTransfer personalWalletTransfer = PersonalWalletTransfer.builder()
+                .personalWallet(personalWallet)
+                .transferType(TransferType.DEPOSIT)
+                .fromType(TargetType.GROUP_WALLET)
+                .toType(TargetType.PERSONAL_WALLET)
+                .src(groupWallet.getNickname())
+                .dest(member.getName())
+                .amount(amount)
+                .afterBalance(personalWallet.getBalance() + amount)
+                .currencyCode(CurrencyCode.KRW)
+                .build();
+
+        personalTransferRep.save(personalWalletTransfer);
     }
 
     @Transactional
@@ -472,8 +499,22 @@ public class GroupWalletServiceImpl implements GroupWalletService {
                 .currencyCode(CurrencyCode.KRW)
                 .build();
         groupWallet.setBalance(afterBalance);
-        personalWallet.setBalance(personalWallet.getBalance() - amount);
         groupTransferRep.save(groupWalletTransfer);
+        personalWallet.setBalance(personalWallet.getBalance() - amount);
+
+        PersonalWalletTransfer personalWalletTransfer = PersonalWalletTransfer.builder()
+                .personalWallet(personalWallet)
+                .transferType(TransferType.WITHDRAW)
+                .fromType(TargetType.PERSONAL_WALLET)
+                .toType(TargetType.GROUP_WALLET)
+                .src(member.getName())
+                .dest(groupWallet.getNickname())
+                .amount(amount)
+                .afterBalance(personalWallet.getBalance() - amount)
+                .currencyCode(CurrencyCode.KRW)
+                .build();
+
+        personalTransferRep.save(personalWalletTransfer);
     }
 
     @Transactional

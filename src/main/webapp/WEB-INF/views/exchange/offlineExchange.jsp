@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: jiwon
@@ -41,7 +42,7 @@
 <body>
 <script>
 
-    // 취소 버튼 비활성화
+    /* 취소 버튼 비활성화 */
     window.onload = function() {
 
         var receiptStates = document.querySelectorAll('.badge.bg-label-primary');
@@ -64,8 +65,7 @@
         }
     };
 
-
-
+    /* 취소 이벤트 */
     let cancelEvent = (rowIndex) => {
 
         var receiptId = $("#receiptId" + rowIndex).val();
@@ -76,7 +76,6 @@
             data: {offlineReceiptId: receiptId},
             dataType: "text",
             success: function (response) {
-                alert("성공")
                 location.reload();
             },
             error: function (error) {
@@ -84,6 +83,9 @@
             }
         });
     }
+
+
+
 </script>
 <jsp:include page="../common/navbar.jsp"></jsp:include>
 <div class="pageWrap">
@@ -122,7 +124,13 @@
                             <tr>
                                 <td><h5 style="margin-bottom: 0" class="text-center">${receipt.bankName}</h5></td>
                                 <td><h5 style="margin-bottom: 0" class="text-center">${receipt.currencyCode} ${receipt.amount}</h5></td>
-                                <td><h5 style="margin-bottom: 0" class="text-center">${receipt.receiptDate}</h5></td>
+                                <td><h5 style="margin-bottom: 0" class="text-center">
+                                    <script>
+                                        var receiptDate = new Date("${receipt.receiptDate}");
+                                        var formattedDate = receiptDate.toISOString().slice(0, 10);
+                                        document.write(formattedDate);
+                                    </script>
+                                </h5></td>
                                 <td><span style="margin-bottom: 0" class="badge bg-label-primary me-1 receiptState" data-receipt-state="${receipt.receiptState}">${receipt.receiptState}</span></td>
                                 <td><button onclick="cancelEvent(${loop.index + 1});" id="cancelBtn${loop.index + 1}" class="btn btn-outline-secondary">취소하기</button></td>
                             </tr>

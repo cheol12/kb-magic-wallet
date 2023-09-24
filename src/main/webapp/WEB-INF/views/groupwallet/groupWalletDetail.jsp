@@ -114,16 +114,16 @@
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
                         // 입금액 출금액 처리
-                        if (result[i].type === '입금') {
+                        if (result[i].type === '입금' || result[i].type === '적금 입금') {
                             str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
                         } else {
                             str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
                         }
                         str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
                         if (result[i].type === '환전' || result[i].type === '재환전') {
-                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance)+'</TD>';
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
                         } else {
-                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance)+'</TD>';
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
                         }
                         str += '</TR>';
                     });
@@ -486,7 +486,7 @@
                 url: urlPath,
                 type: "get",
                 dataType: "json",
-                data: "id="+${groupWalletId},
+                data: "id=" +${groupWalletId},
 
                 success: function (result, status) {
                     $("#table").empty();
@@ -496,7 +496,7 @@
                         str += '<tr data-id=' + result[i].memberId + '>';
                         str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].name + '</h5></TD>';
                         if (result[i].roleToString == '모임장' || result[i].roleToString == '공동모임장') {
-                            str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' +  result[i].roleToString + '👑' + '</h5></TD>';
+                            str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].roleToString + '👑' + '</h5></TD>';
                         } else {
                             str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].roleToString + '</TD>';
                         }
@@ -552,9 +552,9 @@
         <br>
 
         <div class="row">
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100" style="text-align: center">
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <h6 class="text-break" style="margin-bottom: 0">
+                <h6 class="text-break">
                     지갑 정보
                 </h6>
                 <!--지갑 통화 현황 차트-->
@@ -574,12 +574,12 @@
                  수정자: 김진형 -->
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <h6 class="text-break" style="margin-bottom: 0">
+                <h6 class="text-break">
                     ${groupWallet.nickname}의 카드 현황
                 </h6>
                 <div class="card h-20" style="margin-bottom: 10px">
                     <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                        <jsp:include page="groupWalletMemberAndCard.jsp"/>
+                    <jsp:include page="groupWalletMemberAndCard.jsp"/>
                 </div>
             </div>
             <!-- 차트->멤버 목록 변경 완료
@@ -607,14 +607,14 @@
                             </h4>
                         </button>
                         <!-- Button trigger modal -->
-<%--                        <button--%>
-<%--                                type="button"--%>
-<%--                                class="btn btn-primary"--%>
-<%--                                data-bs-toggle="modal"--%>
-<%--                                data-bs-target="#basicModal"--%>
-<%--                        >--%>
-<%--                            조회 기간 설정--%>
-<%--                        </button>--%>
+                        <%--                        <button--%>
+                        <%--                                type="button"--%>
+                        <%--                                class="btn btn-primary"--%>
+                        <%--                                data-bs-toggle="modal"--%>
+                        <%--                                data-bs-target="#basicModal"--%>
+                        <%--                        >--%>
+                        <%--                            조회 기간 설정--%>
+                        <%--                        </button>--%>
                     </li>
                     <li class="nav-item" style="padding: 0px">
                         <button
@@ -648,22 +648,7 @@
                             </h4>
                         </button>
                     </li>
-                    <li class="nav-item">
-                        <button
-                                type="button"
-                                class="nav-link"
-                                role="tab"
-                                data-bs-toggle="tab"
-                                data-bs-target="#navs-top-card"
-                                aria-controls="navs-top-card"
-                                aria-selected="false"
-                        >
-                            <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                            <h4 class="text-break" style="margin: 0px; padding: 0px">
-                                모임 연결 카드
-                            </h4>
-                        </button>
-                    </li>
+                    <%-- 모임 카드 탭 삭제 --%>
                     <li class="nav-item" id="hiddenNavItem" style="display: none;">
                         <button
                                 type="button"
@@ -697,9 +682,7 @@
                     <jsp:include page="tab/groupTabSaving.jsp"/>
                     <!-- 모임적금 조회 END -->
 
-                    <!-- 모임 연결 카드 START -->
-                    <jsp:include page="tab/groupTabCard.jsp"/>
-                    <!-- 모임 연결 카드 END -->
+                    <!-- 모임 카드 탭 삭제 -->
 
                     <!--모임 멤버조회 START-->
                     <jsp:include page="tab/groupTabMemberList.jsp"/>

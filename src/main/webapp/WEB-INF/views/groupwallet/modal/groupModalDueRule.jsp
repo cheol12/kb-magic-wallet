@@ -1,41 +1,51 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>회비 규칙 생성 모달</title>
     <script type="text/javascript">
-        //== 회비 규칙 START ==//
-        let contextPath = "${pageContext.request.contextPath}"
-        $("#createRuleButton").click(function () {
-            console.log("규칙 생성 버튼 누름")
-            let dueDate = $("#dueRuleFormModalSelectDueDate").val();
-            let due = $("#dueRuleFormModalInputDue").val();
-            console.log(dueDate)
-            console.log(due)
+        $(document).ready(function () {
+            //== 회비 규칙 START ==//
+            $("#createRuleButton").click(function () {
+                let contextPath = "${pageContext.request.contextPath}"
+                console.log("규칙 생성 버튼 누름")
+                let dueDate = $("#dueRuleFormModalSelectDueDate").val();
+                let due = $("#dueRuleFormModalInputDue").val();
+                console.log(dueDate)
+                console.log(due)
 
-            if (!dueDate || !due) {
-                alert("납부일과 납부금을 모두 입력해야 합니다.");
-                return;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: contextPath + "/group-wallet/${id}/rule/create",
-                data: {
-                    dueDate: dueDate,
-                    due: due
-                },
-                success: function (data, response) {
-                    // 서버로부터의 응답을 처리
-                    $("#resultMessage").text(response);
-                    alert("이제부터 모임원들이 매월 " + dueDate + "일에 " + due + "원을 낼 거예요!");
-                    location.href(contextPath + "/group-wallet/${id}");
-                },
-                error: function () {
-                    alert("회비 규칙 생성에 실패했습니다.");
+                if (!dueDate || !due) {
+                    alert("납부일과 납부금을 모두 입력해야 합니다.");
+                    return;
                 }
+
+                $.ajax({
+                    type: "POST",
+                    url: contextPath + `/group-wallet/${id}/rule/create`,
+                    data: {
+                        dueDate: dueDate,
+                        due: due * 10000
+                    },
+                    success: function (data, response) {
+                        // 서버로부터의 응답을 처리
+                        // $("#resultMessage").text(response);
+                        alert("이제부터 모임원들이 매 월 " + dueDate + "일에 " + due + "만 원을 낼 거예요!");
+                        let redirectUrl = contextPath + '/group-wallet/' + data;
+                        console.log(redirectUrl)
+                        window.location.href = redirectUrl;
+                    },
+                    error: function () {
+                        alert("회비 규칙 생성에 실패했습니다.");
+                    }
+                });
             });
+            //== 회비 규칙 END ==//
+            //
+            // document.getElementById('dueRuleFormModalInputDue').addEventListener('input', function () {
+            //     let input = formatNumberWithCommas(this.value);
+            //     this.value = input;
+            // });
         });
-        //== 회비 규칙 END ==//
     </script>
 </head>
 <body>
@@ -65,16 +75,16 @@
                     <label for="dueRuleFormModalInputDue" class="form-label">얼마를</label>
                     <div class="input-group input-group-merge">
                         <span class="input-group-text">₩</span>
-                        <input type="number" class="form-control" placeholder="10000"
+                        <input type="number" class="form-control text-end" placeholder="1"
                                id="dueRuleFormModalInputDue"
                                aria-label="Amount (to the nearest dollar)"/>
-                        <span class="input-group-text">원</span>
+                        <span class="input-group-text">만원</span>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="createRuleButton">Save changes</button>
+                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="createRuleButton">회비 규칙 생성</button>
             </div>
         </div>
     </div>
