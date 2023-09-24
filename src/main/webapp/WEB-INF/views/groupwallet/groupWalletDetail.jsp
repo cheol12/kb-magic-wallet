@@ -114,16 +114,24 @@
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
                         // 입금액 출금액 처리
-                        if (result[i].type === '입금' || result[i].type === '적금 입금') {
-                            str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
-                        } else {
-                            str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
+                        if (result[i].type === '입금') {
+                            str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + ' </h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
+                        } else if(result[i].type === '적금 입금') {
+                            str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + ' KRW' +'</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
+                        } else if (result[i].type === '적금 출금') {
+                            str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + ' KRW'+ '</h5></TD>';
+                        }
+                        else {
+                            str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + ' </h5></TD>';
                         }
                         str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
                         if (result[i].type === '환전' || result[i].type === '재환전') {
-                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
-                        } else {
-                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) +  ' </TD>';
+                        } else if (result[i].type == "적금 입금" || result[i].type == "적금 출금") {
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + ' KRW' + '</TD>';
+                        }
+                        else {
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + ' </TD>';
                         }
                         str += '</TR>';
                     });
@@ -135,32 +143,34 @@
             })
         }
 
-        // ajax 로 적금 표시 + 포맷 형식 지정
-        function savingCall() {
-            $.ajax({
-                url: "${pageContext.request.contextPath}/group-wallet/${id}/saving-check", // 컨트롤러에서 데이터를 반환하는 엔드포인트를 지정하세요.
-                type: "get", // HTTP GET 요청을 사용합니다.
-                dataType: "json",
-                success: function (data) {
-                    var insertDate = new Date(data.insertDate);
-                    var maturityDate = new Date(data.maturityDate); // 날짜를 원하는 형식으로 포맷팅
-                    var insertDateFormatted = insertDate.toLocaleDateString(); // 날짜 형식으로 변환
-                    var maturityDateFormatted = maturityDate.toLocaleDateString(); // 날짜 형식으로 변환
+        <%--// ajax 로 적금 표시 + 포맷 형식 지정--%>
+        <%--function savingCall() {--%>
+        <%--    $.ajax({--%>
+        <%--        url: "${pageContext.request.contextPath}/group-wallet/${id}/saving-check", // 컨트롤러에서 데이터를 반환하는 엔드포인트를 지정하세요.--%>
+        <%--        type: "get", // HTTP GET 요청을 사용합니다.--%>
+        <%--        dataType: "json",--%>
+        <%--        success: function (data) {--%>
+        <%--            var insertDate = new Date(data.insertDate);--%>
+        <%--            var maturityDate = new Date(data.maturityDate); // 날짜를 원하는 형식으로 포맷팅--%>
+        <%--            var totalAmount = new Date(data.totalAmount);--%>
 
-                    // 데이터를 가져와서 화면에 표시합니다.
-                    $("#interestRate").text(data.interestRate + "%");
-                    $("#period").text(data.period + "개월");
-                    $("#insertDate").text(insertDateFormatted);
-                    $("#maturityDate").text(maturityDateFormatted);
-                    $("#totalAmount").text(formatNumberWithCommas(data.totalAmount) + "원");
-                    $("#savingDate").text("매월 " + data.savingDate + "일");
-                    $("#savingAmount").text(formatNumberWithCommas(data.savingAmount) + "원");
-                },
-                error: function (xhr, status, error) {
-                    console.error("데이터를 가져오는 중 오류 발생: " + error);
-                }
-            });
-        }
+                    // var insertDateFormatted = insertDate.toLocaleDateString(); // 날짜 형식으로 변환
+                    // var maturityDateFormatted = maturityDate.toLocaleDateString(); // 날짜 형식으로 변환
+
+        <%--            // 데이터를 가져와서 화면에 표시합니다.--%>
+        <%--            $("#interestRate").text(data.interestRate + "%");--%>
+        <%--            $("#period").text(data.period + "개월");--%>
+        <%--            $("#insertDate").text(insertDateFormatted);--%>
+        <%--            $("#maturityDate").text(maturityDateFormatted);--%>
+        <%--            $("#totalAmount").text(formatNumberWithCommas(data.totalAmount) + "원");--%>
+        <%--            $("#savingDate").text("매월 " + data.savingDate + "일");--%>
+        <%--            $("#savingAmount").text(formatNumberWithCommas(data.savingAmount) + "원");--%>
+        <%--        },--%>
+        <%--        error: function (xhr, status, error) {--%>
+        <%--            console.error("데이터를 가져오는 중 오류 발생: " + error);--%>
+        <%--        }--%>
+        <%--    });--%>
+        <%--}--%>
 
         // AJAX READY
 
@@ -500,7 +510,6 @@
                 type: "get",
                 dataType: "json",
                 data: "id=" +${groupWalletId},
-
                 success: function (result, status) {
                     $("#table").empty();
                     // 화면에 갱신
