@@ -114,9 +114,14 @@
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
                         str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
                         // 입금액 출금액 처리
-                        if (result[i].type === '입금' || result[i].type === '적금 입금') {
+                        if (result[i].type === '입금') {
                             str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
-                        } else {
+                        } else if(result[i].type === '적금 입금') {
+                            str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + ' KRW' +'</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
+                        } else if (result[i].type === '적금 출금') {
+                            str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + ' KRW'+ '</h5></TD>';
+                        }
+                        else {
                             str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
                         }
                         str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
@@ -196,7 +201,7 @@
             memberCall();
             historyCall();
             displayMemberList();
-            savingCall();
+            // savingCall();
             initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");
 
             // $(document).on("click", , function(){ }) 형식을 쓰는 이유
