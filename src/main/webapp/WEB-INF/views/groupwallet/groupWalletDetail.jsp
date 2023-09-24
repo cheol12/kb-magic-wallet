@@ -126,9 +126,12 @@
                         }
                         str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
                         if (result[i].type === '환전' || result[i].type === '재환전') {
-                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
-                        } else {
-                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) +  ' </TD>';
+                        } else if (result[i].type == "적금 입금" || result[i].type == "적금 출금") {
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + ' KRW' + '</TD>';
+                        }
+                        else {
+                            str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + ' </TD>';
                         }
                         str += '</TR>';
                     });
