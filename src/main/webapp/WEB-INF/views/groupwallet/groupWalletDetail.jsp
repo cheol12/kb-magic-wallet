@@ -315,72 +315,6 @@
                 }
 
             });
-            //
-            // $("#selectDateForm").on("submit", function (e) {
-            //     e.preventDefault();
-            //     $.ajax({
-            //         url: "/personalwallet/selectDate",
-            //         type: "post",
-            //         dataType: "json",
-            //         success: function (result, status) {
-            //             // 화면에 갱신
-            //             var str = "";
-            //             $.each(result, function (i) {
-            //                 console.log(result[i].dateTime)
-            //                 var dateTime = new Date(result[i].dateTime);
-            //                 var detailString = typeof result[i].detail === 'object' ? JSON.stringify(result[i].detail) : result[i].detail;
-            //                 // 날짜와 시간을 따로 추출
-            //                 var date = dateTime.toLocaleDateString(); // 날짜 형식으로 변환
-            //                 var time = dateTime.toLocaleTimeString(); // 시간 형식으로 변환
-            //                 console.log(date);
-            //                 console.log(time);
-            //
-            //                 str += '<TR class="searchDateResult" data-id="' + detailString + '">'
-            //                 // 날짜 시간 처리
-            //                 str += '<TD><h5 id="date" class="text-center" style="margin-bottom: 0">' + date + '</h5></TD>';
-            //                 str += '<TD><h5 id="time" class="text-center" style="margin-bottom: 0">' + time + '</h5></TD>';
-            //                 // 입금액 출금액 처리
-            //                 if (result[i].type === '입금') {
-            //                     str += '<TD><h5 id="depositAmount" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD><TD><h5 class="text-center" style="margin-bottom: 0">-</h5></TD>';
-            //                 } else {
-            //                     str += '<TD><h5 id="withdrawAmount" class="text-center" style="margin-bottom: 0">-</h5></TD>' + '<TD><h5 class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].amount) + '</h5></TD>';
-            //                 }
-            //
-            //                 if (result[i].type === '환전' || result[i].type === '재환전') {
-            //                     str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
-            //                 } else {
-            //                     str += '<TD><h5 id="afterBalance" class="text-center" style="margin-bottom: 0">' + formatNumberWithCommas(result[i].balance) + '</TD>';
-            //                 }
-            //
-            //                 str += '<TD><h5 id="type" class="text-center" style="margin-bottom: 0">' + result[i].type + '</TD>';
-            //
-            //                 str += '</TR>';
-            //             });
-            //             $("#dateSelectHistory").append(str);
-            //         },
-            //         error: function (result, status) {
-            //
-            //         },
-            //     })
-            // });
-            //
-            // // 모달 닫기 (조회기간 설정 버튼 누른 후)
-            // $("#submitButton").on("click", function () {
-            //     $("#basicModal").modal("hide");
-            // });
-            //
-            // // 모달 닫힌 후에 스크롤, 배경색 관련 처리
-            // $("#basicModal").on("hidden.bs.modal", function () {
-            //
-            //     // 모달이 완전히 사라진 후에 배경색 변경 및 스크롤 관련 처리
-            //     $("body").removeClass("modal-open");
-            //     $(".modal-backdrop").remove();
-            //
-            //     // 필요한 스크롤 관련 설정
-            //     $("body").css("overflow", "auto");
-            //     // 여기에서 스크롤을 허용하도록 설정하는 코드를 추가해야 합니다.
-            // });
-
 
             // 꺼내기 할 때 모임원은 안되게 권한 판단하기
             // 서버에서 권한 정보를 JavaScript 변수로 전달합니다.
@@ -556,38 +490,38 @@
         <br>
 
         <div class="row">
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100" style="text-align: center">
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <h6 class="text-break" style="margin-bottom: 0">
+                <h6 class="text-muted">
                     지갑 정보
                 </h6>
                 <!--지갑 통화 현황 차트-->
                 <jsp:include page="/WEB-INF/views/common/walletChart.jsp"/>
-                <a href="/group-wallet/${id}/deposit" class="btn btn-primary">
-                    채우기
-                </a>
-                <a href="/group-wallet/${id}/withdraw" class="btn btn-primary" id="withdrawButton" name="withdrawButton">
-                    꺼내기
-                </a>
-                <a href="/group-wallet/${id}/settle" class="btn btn-primary" id="settlebutton">
-                    정산하기
-                </a>
+
             </div>
 
             <!-- 차트->멤버 목록 변경 완료
                  수정자: 김진형 -->
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100">
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100" align="center">
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <h6 class="text-break" style="margin-bottom: 0">
+                <h6 class="text-muted">
                     ${groupWallet.nickname}의 카드 현황
                 </h6>
                 <div class="card h-20" style="margin-bottom: 10px">
                     <i class="fab fa-angular fa-lg text-danger me-3"></i>
                     <jsp:include page="groupWalletMemberAndCard.jsp"/>
                 </div>
+
+                <div class="card">
+                    <img src="../images/깨비비행기.jpg" height="240" style="border-radius: 10px">
+                </div>
+
             </div>
             <!-- 차트->멤버 목록 변경 완료
                  수정자: 김진형 -->
+
+
+
         </div>
 
 
@@ -734,11 +668,7 @@
                         <div class="col mb-3">
                             <h3 style="margin-bottom: 0">거래 날짜</h3>
                             <br>
-                            <h4 id="detail-date">
-                                아러나ㅣㅇ러ㅣㅏㄴ어라ㅣㄴㅇ러ㅣㅏㅇ너리ㅏㄴㅇ러ㅏㅣㄴㅇ
-                                <br>
-                                asd
-                            </h4>
+                            <h4 id="detail-date"></h4>
                         </div>
 
                         <div class="col mb-3">
