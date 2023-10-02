@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.group.controller;
 
+import io.swagger.annotations.Api;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/group-wallet")
 @RequiredArgsConstructor
+@Api(tags = {"모임 지갑 폼 API"})
 public class GroupWalletFormController {
 
     private final GroupWalletService groupWalletService;

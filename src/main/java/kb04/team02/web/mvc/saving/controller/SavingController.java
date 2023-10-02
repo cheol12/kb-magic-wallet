@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.saving.controller;
 
+import io.swagger.annotations.Api;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.exchange.dto.WalletDto;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
@@ -22,6 +23,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/saving")
 @RequiredArgsConstructor
+@Api(tags = {"적금 API"})
 public class SavingController {
 
     private final GroupWalletService groupWalletService;
