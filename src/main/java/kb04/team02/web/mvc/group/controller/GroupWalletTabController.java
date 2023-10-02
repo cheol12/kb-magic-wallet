@@ -428,48 +428,6 @@ public class GroupWalletTabController {
 
     //== 카드 탭 END ==//
 
-    //== 내역 탭 START ==//
-
-    /**
-     * 모임지갑 내역 조회
-     * API 명세서 ROWNUM:35
-     *
-     * @param id 내역 조회할 모임지갑 id
-     */
-//    @ResponseBody
-//    @GetMapping("/{id}/history")
-//    public HashMap<String, Object> groupWalletHistoryList(@PathVariable String id, @RequestParam(defaultValue = "1") int nowPage) {
-//        HashMap<String, Object> historyMap = createHistoryMap(nowPage, id);
-//        return historyMap;
-//
-//
-//    }
-
-
-    /**
-     * 모임지갑 상세 내역 조회
-     * API 명세서 ROWNUM:36
-     *
-     * @param id        상세 내역 조회할 모임지갑 id
-     * @param historyid 상세 내역 조회할 내역 id
-     */
-//    @ResponseBody
-//    @GetMapping("/{id}/{historyid}")
-//    // 카드 상세내역 객체를 History.java라고 가정, 이체내역, 환전내역, 결제내역 중 어느 것을 의미?
-//    // 3개 다 합친 것? 대응되는 개념?
-//    public WalletHistoryDto groupWalletHistoryDetail(@PathVariable String id, @PathVariable String historyid, Model model) {
-//        WalletHistoryDto historyDetail = groupWalletTabService.getHistory(Long.parseLong(id), Long.parseLong(historyid), (String) model.getAttribute("type"));
-//
-//        if (historyDetail != null) {
-//            return historyDetail;
-//        } else {
-//            return null;
-////            return "redirect:/error/error-message"; // 에러페이지 만들면 좋을 것 같음
-//        }
-//    }
-
-    //== 내역 탭 END ==//
-
 
     /**
      * 모임지갑 권한 부여
