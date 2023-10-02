@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.group.controller;
 
+import io.swagger.annotations.Api;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
@@ -31,6 +32,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/group-wallet")
 @RequiredArgsConstructor
+@Api(tags = {"모임 지갑 탭 API"})
 public class GroupWalletTabController {
 
     private final GroupWalletTabService groupWalletTabService;

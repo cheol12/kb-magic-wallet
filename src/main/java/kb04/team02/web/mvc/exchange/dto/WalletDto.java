@@ -1,5 +1,6 @@
 package kb04.team02.web.mvc.exchange.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import kb04.team02.web.mvc.member.entity.Role;
 import kb04.team02.web.mvc.common.entity.WalletType;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
@@ -18,9 +19,13 @@ public class WalletDto {
      *  - 지갑 이름
      *  - 지갑 구분?
      */
+    @ApiModelProperty(example = "지갑 id")
     private Long walletId;
+    @ApiModelProperty(example = "지갑 별칭")
     private String nickname;
+    @ApiModelProperty(example = "권한")
     private Role role;
+    @ApiModelProperty(example = "지갑 타입")
     private WalletType walletType;
 
     public static WalletDto toPersoanlDto(PersonalWallet personalWallet){
