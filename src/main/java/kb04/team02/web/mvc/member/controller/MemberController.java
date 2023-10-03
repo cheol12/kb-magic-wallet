@@ -27,21 +27,19 @@ public class MemberController {
      * 로그인
      */
     @PostMapping("/login")
+    @ResponseBody
     @ApiOperation(value = "로그인", notes="아이디와 비밀번호를 입력받아 로그인합니다.")
     public String login(MemberLoginDto memberLoginDto, HttpSession session) {
-//    public String login(MemberLoginDto memberLoginDto, HttpServletRequest request) {
+        System.out.println("memberLoginDto.getId() = " + memberLoginDto.getId());
+        System.out.println("memberLoginDto.getPassword() = " + memberLoginDto.getPassword());
         try {
-//            System.out.println("로그인 전 session = " + session);
             LoginMemberDto loggedIn = memberService.login(memberLoginDto);
-//            HttpSession session = request.getSession();
             session.setAttribute("member", loggedIn);
-//            System.out.println("로그인 후 session = " + session);
-//            System.out.println("session.getAttribute(\"member\") = " + session.getAttribute("member"));
         } catch (LoginException e) {
-            return "forward:/";
+            return "fail";
         }
 
-        return "/index";
+        return "success";
     }
 
     @GetMapping("/login")
