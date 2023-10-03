@@ -11,36 +11,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>깨비의 요술 지갑 - 메인</title>
-    <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
-    <link rel="stylesheet" type="text/css" href="../../css/index.css"/>
 
+    <!--사용자 설정 css-->
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/index.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css"/>
+
+    <!--폰트 css-->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/fonts/boxicons.css"/>
-
     <!-- Core CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/core.css"
           class="template-customizer-core-css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/vendor/css/theme-default.css"
           class="template-customizer-theme-css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/demo.css"/>
-
     <!-- Vendors CSS -->
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"/>
-
     <!-- Page CSS -->
-
     <!-- Helpers -->
     <script src="${pageContext.request.contextPath}/assets/vendor/js/helpers.js"></script>
-
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="${pageContext.request.contextPath}/assets/js/config.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
 
+    <!-- 모달, 드롭다운, 탭, 슬라이드 등 부트스트랩 구성 요소를 활성화하는 데 사용-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //==로그인 모달 띄우기==//
+            $(document).on("click", "#loginModalOpen", function () {
+                $('#loginModal').modal('show');
+            });
+
+            //== 로그인 START ==//
+            $("#loginButton").click(function () {
+                let contextPath = "${pageContext.request.contextPath}"
+                console.log("로그인 버튼 누름")
+                let id = $("#login_id").val();
+                let pw = $("#login_pw").val();
+                console.log(id)
+                console.log(pw)
+
+                if (!id || !pw) {
+                    alert("올바른 아이디와 비밀번호를 입력하세요");
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: contextPath + `/login`,
+                    data: {
+                        id: id,
+                        password: pw
+                    },
+                    success: function (data, response) {
+                        // 서버로부터의 응답을 처리
+                        if(data==='success'){
+                            window.location.href="${pageContext.request.contextPath}/"
+                        }else {
+                            $('#loginFail').modal('show');
+                        }
+                    },
+                    error: function () {
+                        console.log(data);
+                        alert("에러발생");
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <!--네비게이션 바-->
 <jsp:include page="common/navbar.jsp"/>
-
 <div>
     <div class="pageWrap" style="margin-top: 0">
         <div class="banner-container">
@@ -57,7 +103,6 @@
                 <div id="second-box" class="box">
                     <img src="${pageContext.request.contextPath}/assets/img/icons/4.png">
                 </div>
-
             </div>
         </div>
 
@@ -116,10 +161,8 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 </div>
-
+<jsp:include page="login-modal.jsp"/>
 </body>
 </html>
