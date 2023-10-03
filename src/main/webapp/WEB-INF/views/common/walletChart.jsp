@@ -119,8 +119,16 @@
                     </h5>
                 </div>
             </li>
-            <%--                <a href="/personalwallet/depositForm" class="btn btn-primary">채우기</a>--%>
-            <%--                <a href="/personalwallet/withdrawForm" class="btn btn-primary">꺼내기</a>--%>
+
+            <a href="/group-wallet/${id}/deposit" class="btn btn-primary">
+                채우기
+            </a>
+            <a href="/group-wallet/${id}/withdraw" class="btn btn-primary" id="withdrawButton" name="withdrawButton">
+                꺼내기
+            </a>
+            <a href="/group-wallet/${id}/settle" class="btn btn-primary" id="settlebutton">
+                정산하기
+            </a>
         </ul>
     </div>
 </div>

@@ -1,5 +1,7 @@
 package kb04.team02.web.mvc.group.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
@@ -34,6 +36,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/group-wallet")
 @RequiredArgsConstructor
+@Api(tags = {"모임 지갑 API"})
 public class GroupWalletController {
 
     private final GroupWalletService groupWalletService;
@@ -48,6 +51,7 @@ public class GroupWalletController {
      * API 명세서 ROWNUM:10
      */
     @GetMapping("/")
+    @ApiOperation(value = "모임지갑 메인 페이지", notes="모임지갑 메인페이지로 모임 지갑의 거래 내역, 잔액 등 전반적인 정보를 반환합니다.")
     public String groupWalletIndex(Model model, HttpSession session) {
 
         LoginMemberDto loginMemberDto = (LoginMemberDto) session.getAttribute("member");
@@ -62,6 +66,7 @@ public class GroupWalletController {
      * API 명세서 ROWNUM:12
      */
     @PostMapping("/new")
+    @ApiOperation(value = "모임지갑 생성", notes="별칭을 입력하여 모임지갑을 생성합니다.")
     public String groupWalletCreate(GroupWallet gWallet, Model model, HttpSession session, @RequestParam String nickname) {
         // 모임장의 회원 식별번호 불러오기,
         // 뷰에서 입력한 별칭 필요
@@ -168,19 +173,19 @@ public class GroupWalletController {
         return groupMemberDtoList;
     }
 
-//    @ResponseBody
-//    @GetMapping("/{id}/saving-check")
-//    public InstallmentDto getGroupWalletInstallmentDto(@PathVariable Long id, HttpSession session){
-//        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
-//
-//        try{
-//            InstallmentDto installmentDto = groupWalletTabService.getSavingById(groupWallet);
-//            return installmentDto;
-//        }
-//        catch (NullPointerException e){
-//            return null;
-//        }
-//    }
+    @ResponseBody
+    @GetMapping("/{id}/saving-check")
+    public InstallmentDto getGroupWalletInstallmentDto(@PathVariable Long id, HttpSession session){
+        GroupWallet groupWallet = groupWalletService.getGroupWallet(id);
+
+        try{
+            InstallmentDto installmentDto = groupWalletTabService.getSavingById(groupWallet);
+            return installmentDto;
+        }
+        catch (NullPointerException e){
+            return null;
+        }
+    }
     /**
      * @author 김철
      * 모임지갑에서 모임장이 모임원을 강퇴한다.

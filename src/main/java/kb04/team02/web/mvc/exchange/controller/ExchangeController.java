@@ -36,7 +36,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:41
      */
     @GetMapping("/")
-    @ApiOperation(value = "환전 메인 페이지", notes="환전 메인 페이지입니다.")
+    @ApiOperation(value = "환전 메인 페이지", notes="환전 메인 페이지이며 환율 정보를 반환합니다.")
     public ModelAndView exchangeIndex() {
         ModelAndView modelAndView = new ModelAndView();
         List<String> usdRate = exchangeService.selectExchangeRateByCurrencyCode(CurrencyCode.USD);
@@ -59,7 +59,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:42
      */
     @GetMapping("/offline")
-    @ApiOperation(value = "오프라인 환전 메인 페이지")
+    @ApiOperation(value = "오프라인 환전 메인 페이지", notes="오프라인 환전 메인 페이지로 이동하며 오프라인 환전 내역을 함께 반환합니다.")
     public String exchangeOfflineIndex(HttpSession session, Model model) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         Map<Long, Role> map = loggedIn.getGroupWalletIdList();
@@ -74,7 +74,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:43
      */
     @GetMapping("/offline/form")
-    @ApiOperation(value = "오프라인 환전 폼")
+    @ApiOperation(value = "오프라인 환전 폼", notes="오프라인 환전 폼으로 이동합니다.")
     public String exchangeOfflineForm(HttpSession session, Model model) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         Long memberId = loggedIn.getMemberId();
@@ -91,7 +91,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:44
      */
     @PostMapping("/offline/form")
-    @ApiOperation(value = "오프라인 환전 요청")
+    @ApiOperation(value = "오프라인 환전", notes="오프라인 환전을 신청하여 신청 내역에 반영됩니다.")
     public String exchangeOffline(OfflineReceiptRequestDto offlineReceiptRequestDto) {
         System.out.println("ExchangeController.exchangeOffline");
         int result = exchangeService.requestOfflineReceipt(offlineReceiptRequestDto);
@@ -104,7 +104,7 @@ public class ExchangeController {
      */
     @DeleteMapping("/offline/form")
     @ResponseBody
-    @ApiOperation(value = "오프라인 환전 취소 요청")
+    @ApiOperation(value = "오프라인 환전 취소", notes="오프라인 환전을 취소합니다.")
     public String exchangeOfflineCancel(@RequestParam String offlineReceiptId) {
         int res = exchangeService.cancelOfflineReceipt(Long.parseLong(offlineReceiptId));
         return "success";
@@ -115,7 +115,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:46
      */
     @GetMapping("/onlineExchange")
-    @ApiOperation(value = "온라인 환전 메인 페이지")
+    @ApiOperation(value = "온라인 환전 메인 페이지", notes="온라인 환전 메인페이지입니다.")
     public ModelAndView exchangeOnlineIndex() {
 
         ModelAndView modelAndView = new ModelAndView();
@@ -137,7 +137,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:47
      */
     @GetMapping("/online/form")
-    @ApiOperation(value = "온라인 환전 폼")
+    @ApiOperation(value = "온라인 환전 폼", notes="온라인 환전 폼으로 이동합니다.")
     public String exchangeOnlineForm(HttpSession session, Model model) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         Long memberId = loggedIn.getMemberId();
@@ -151,7 +151,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:48
      */
     @PostMapping("/online/form")
-    @ApiOperation(value = "온라인 환전 요청")
+    @ApiOperation(value = "온라인 환전", notes="온라인 환전을 요청하면 원화로 외화를 구매합니다.")
     public String exchangeOnline(ExchangeDto exchangeDto) {
         exchangeService.requestExchangeOnline(exchangeDto);
         WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
@@ -167,7 +167,7 @@ public class ExchangeController {
      */
     @ResponseBody
     @PostMapping("/walletBalance")
-    @ApiOperation(value = "선택한 지갑의 원화 잔액 요청")
+    @ApiOperation(value = "선택한 지갑의 원화 잔액 조회", notes="사용자가 선택한 지갑의 원화 잔액을 반환합니다.")
     public Long selectedWalletBalance(@RequestBody HashMap<String, Integer> param){
         Long walletId = Long.valueOf(param.get("walletId"));
         WalletType walletType = WalletType.findByValue(param.get("walletType"));
@@ -180,7 +180,7 @@ public class ExchangeController {
      */
     @ResponseBody
     @PostMapping("/expectedAmount")
-    @ApiOperation(value = "선택한 통화와 입력 금액에 대한 환전 예상 금액 요청")
+    @ApiOperation(value = "선택한 통화와 입력 금액에 대한 환전 예상 금액 조회", notes="현재 적용 환율에 따라 입력한 통화와 금액을 계산하여 반환합니다.")
     public ExchangeCalDto expectedAmount(@RequestBody HashMap<String, Integer> param){
         Long amount = Long.valueOf(param.get("amount"));
         CurrencyCode foundCurrency = CurrencyCode.findByValue(param.get("code"));
@@ -201,7 +201,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:47
      */
     @GetMapping("/online/re-form")
-    @ApiOperation(value = "온라인 재환전 폼")
+    @ApiOperation(value = "온라인 재환전 폼", notes="온라인 재환전 폼으로 이동합니다.")
     public String reExchangeOnlineForm(HttpSession session, Model model) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         Long memberId = loggedIn.getMemberId();
@@ -215,7 +215,7 @@ public class ExchangeController {
      * API 명세서 ROWNUM:48
      */
     @PostMapping("/online/re-form")
-    @ApiOperation(value = "온라인 재환전 요청")
+    @ApiOperation(value = "온라인 재환전", notes="온라인 재환전을 요청하면 외화로 원화를 구매할 수 있습니다.")
     public String reExchangeOnline(ExchangeDto exchangeDto) {
         exchangeService.requestReExchangeOnline(exchangeDto);
         WalletType type = WalletType.findByValue(exchangeDto.getWalletType());
@@ -231,7 +231,7 @@ public class ExchangeController {
      */
     @ResponseBody
     @PostMapping("/walletFCBalance")
-    @ApiOperation(value = "선택한 지갑의 외화 잔액 목록 요청")
+    @ApiOperation(value = "선택한 지갑의 외화 잔액 목록 조회", notes="선택한 지갑의 외화 잔액 목록을 통화별로 묶어서 반환합니다.")
     public WalletDetailDto selectedWalletFCBalance(@RequestBody HashMap<String, Integer> param){
         Long walletId = Long.valueOf(param.get("walletId"));
         WalletType walletType = WalletType.findByValue(param.get("walletType"));
@@ -243,13 +243,13 @@ public class ExchangeController {
     // 환율 예측 테스트
 
     @GetMapping("/exchangePrediction")
-    @ApiOperation(value = "환율 예측 페이지")
+    @ApiOperation(value = "환율 예측 페이지", hidden = true)
     public String showPredictionPage() {
         return "exchange/exchangePredict"; // JSP 파일 이름
     }
 
     @PostMapping("/exchangePrediction")
-    @ApiOperation(value = "환율 예측 요청")
+    @ApiOperation(value = "환율 예측", notes="지난 환율에 따라 환율 예측치를 반환합니다.")
     public String runPrediction(Model model) {
         List<Double> predictions = exchangeService.getPredictedExchangeRates();
         model.addAttribute("predictions", predictions);

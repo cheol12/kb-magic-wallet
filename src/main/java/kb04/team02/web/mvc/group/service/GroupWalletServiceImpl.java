@@ -224,7 +224,7 @@ public class GroupWalletServiceImpl implements GroupWalletService {
             walletHistoryDto.setCurrencyCode(CurrencyCode.KRW);
             walletHistoryDto.setDetail(detail);
             walletHistoryDto.setAmount(transfer.getAmount().toString() + transfer.getCurrencyCode().name());
-            walletHistoryDto.setBalance(transfer.getAfterBalance().toString() + transfer.getCurrencyCode().name());
+            walletHistoryDto.setBalance(transfer.getAfterBalance().toString() + " " + transfer.getCurrencyCode().name());
 
             dto.getList().add(walletHistoryDto);
         }

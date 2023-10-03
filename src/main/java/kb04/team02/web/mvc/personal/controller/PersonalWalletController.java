@@ -1,5 +1,7 @@
 package kb04.team02.web.mvc.personal.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import kb04.team02.web.mvc.common.dto.LoginMemberDto;
 import kb04.team02.web.mvc.common.dto.WalletHistoryDto;
 import kb04.team02.web.mvc.common.entity.CurrencyCode;
@@ -27,6 +29,7 @@ import java.util.NoSuchElementException;
 @Controller
 @RequestMapping("/personalwallet")
 @RequiredArgsConstructor
+@Api(tags = {"개인지갑 API"})
 public class PersonalWalletController {
 
     private final PersonalWalletService personalWalletService;
@@ -40,6 +43,7 @@ public class PersonalWalletController {
      * API 명세서 ROWNUM:5
      */
     @GetMapping("/main")
+    @ApiOperation(value = "개인지갑 메인페이지", notes="개인지갑 메인페이지입니다.")
     public ModelAndView personalwalletIndex(HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         WalletDetailDto walletDetailDto = personalWalletService.personalWallet(member);
@@ -69,6 +73,7 @@ public class PersonalWalletController {
      * API 명세서 ROWNUM:6
      */
     @GetMapping("/depositForm")
+    @ApiOperation(value = "개인지갑 충전 폼", notes="개인지갑 충전 폼으로 이동합니다.")
     public void personalwalletDepositForm() {
     }
 
@@ -77,6 +82,7 @@ public class PersonalWalletController {
      * API 명세서 ROWNUM:7
      */
     @PostMapping("/deposit")
+    @ApiOperation(value = "개인지갑 충전", notes="연결된 계좌에서 개인지갑으로 충전합니다.")
     public String personalwalletDeposit(PersonalWalletTransferDto transferDto, HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         transferDto.setMemberId(member.getMemberId());
@@ -95,6 +101,7 @@ public class PersonalWalletController {
      * API 명세서 ROWNUM:8
      */
     @GetMapping("/withdrawForm")
+    @ApiOperation(value = "개인지갑 환불 폼", notes="개인지갑 환불 폼으로 이동합니다.")
     public void personalwalletWithdrawForm(Model model, HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         WalletDetailDto walletDetailDto = personalWalletService.personalWallet(member);
@@ -107,6 +114,7 @@ public class PersonalWalletController {
      * API 명세서 ROWNUM:9
      */
     @PostMapping("/withdraw")
+    @ApiOperation(value = "개인지갑 환불", notes="개인지갑의 충전된 원화를 연결된 계좌로 환불합니다.")
     public String personalwalletWithdraw(PersonalWalletTransferDto transferDto, HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         transferDto.setMemberId(member.getMemberId());
@@ -122,6 +130,7 @@ public class PersonalWalletController {
 
     @ResponseBody
     @PostMapping("/selectDate")
+    @ApiOperation(value = "개인지갑 거래 내역", notes="개인지갑 거래 내역을 반환합니다.")
     public List<WalletHistoryDto> selectDate(HttpSession session, Model model) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         WalletDetailDto walletDetailDto = personalWalletService.personalWallet(member);
@@ -134,6 +143,7 @@ public class PersonalWalletController {
 
     @ResponseBody
     @GetMapping("/cardStatusUpdate")
+    @ApiOperation(value = "개인지갑 카드 상태 변경", notes="개인지갑에 연결된 카드의 연결 여부를 변경합니다.")
     public boolean changeCardConnection(Model model, HttpSession session) {
         System.out.println("qqqqqqqqqqqqqqqqqqqqqqqq");
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");

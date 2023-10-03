@@ -1,5 +1,7 @@
 package kb04.team02.web.mvc.mypage.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import kb04.team02.web.mvc.common.dto.WalletDetailDto;
 import kb04.team02.web.mvc.group.entity.GroupWallet;
 import kb04.team02.web.mvc.group.service.GroupWalletService;
@@ -18,6 +20,7 @@ import java.util.List;
 @Controller
 @RequestMapping("mypage")
 @RequiredArgsConstructor
+@Api(tags = {"마이페이지 API"})
 public class MyPageController {
 
     private final MyPageService myPageService;
@@ -32,6 +35,7 @@ public class MyPageController {
      * API 명세서 ROWNUM:49
      */
     @GetMapping("/main")
+    @ApiOperation(value = "마이페이지", notes="마이페이지입니다.")
     public ModelAndView mypageIndex(HttpSession session) {
 
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
@@ -51,6 +55,7 @@ public class MyPageController {
      * API 명세서 ROWNUM:50
      */
     @GetMapping("/cardForm")
+    @ApiOperation(value = "카드 신청 폼", notes="카드 신청 폼으로 이동합니다.")
     public void cardForm() {
     }
 
@@ -59,6 +64,7 @@ public class MyPageController {
      * API 명세서 ROWNUM:51
      */
     @GetMapping("/card/new")
+    @ApiOperation(value = "카드 신청", notes="카드를 신청합니다.")
     public String cardCreate(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.createCard(loggedIn);
@@ -72,6 +78,7 @@ public class MyPageController {
      * API 명세서 ROWNUM:52
      */
     @GetMapping("/card/delete")
+    @ApiOperation(value = "카드 정지 요청", notes="카드를 정지합니다.")
     public String cardInvalidate(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.invalidateCard(loggedIn);
@@ -85,6 +92,7 @@ public class MyPageController {
      * API 명세서 ROWNUM:53
      */
     @GetMapping("/bankForm")
+    @ApiOperation(value = "은행 계좌 연결 폼", notes="은행 계좌 연결 폼으로 이동합니다.")
     public void bankLinkForm() {
     }
 
@@ -93,6 +101,7 @@ public class MyPageController {
      * API 명세서 ROWNUM:54
      */
     @PostMapping("/bank")
+    @ApiOperation(value = "은행 계좌 연결 요청", notes="은행 계좌를 연결합니다.")
     public String bankLink(@RequestParam("account") String account, HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.linkAccount(loggedIn, account);
@@ -104,6 +113,7 @@ public class MyPageController {
      * TODO API 명세서 추가
      */
     @GetMapping("/card/stop")
+    @ApiOperation(value = "카드 일시정지 요청", notes="카드를 일시정지합니다.")
     public String cardPause(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.pauseCard(loggedIn);
@@ -117,6 +127,7 @@ public class MyPageController {
      * TODO API 명세서 추가
      */
     @GetMapping("/card/restart")
+    @ApiOperation(value = "카드 재시작", notes="일시정지된 카드를 재시작합니다.")
     public String cardResume(HttpSession session) {
         LoginMemberDto loggedIn = (LoginMemberDto) session.getAttribute("member");
         myPageService.resumeCard(loggedIn);
@@ -131,6 +142,7 @@ public class MyPageController {
      */
     @GetMapping("/mycard")
     @ResponseBody
+    @ApiOperation(value = "카드 번호 요청", notes="카드 번호를 반환합니다.")
     public ModelAndView cardNumber(HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         CardNumberDto cardNumber = myPageService.getCardNumber(member);
@@ -150,6 +162,7 @@ public class MyPageController {
      */
     @GetMapping("/mybank")
     @ResponseBody
+    @ApiOperation(value = "은행 계좌 조회 요청", notes="은행 계좌 조회합니다.")
     public String bankAccount(HttpSession session) {
         LoginMemberDto member = (LoginMemberDto) session.getAttribute("member");
         return myPageService.getBankAccount(member);
