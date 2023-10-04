@@ -10,28 +10,27 @@
 <html>
 <head>
     <title>Title</title>
-        <script type="text/javascript">
-            // 연결 불가 선택 시 연결 불가를 알려주는 모달 창 출력
-            $(document).on("click", "#cant-connect-card", function () {
-                $("#cantConnectCard").modal('show');
-            })
-            // 연결 가능 선택 시 연결 가능을 알려주는 모달 창 출력
-            $(document).on("click", "#can-connect-card", function () {
-                var memberId = $(this).closest("tr").data("id");
-                if (${sessionScope.member.memberId} == memberId) {
-                    $("input[name='connect-memberId']").val(memberId);
-                    $("#changeWallet").modal('show');
-                }
-            else
-                {
-                    $("#cantConnectCardByLogin").modal('show');
-                }
-            });
-            // 변경 버튼을 누릴 시 컨트롤러로의 전송
-            $(document).on("click", "#change-confirm-button", function () {
-                var memberId = $("input[name='connect-memberId']").val();
-                initTest("${pageContext.request.contextPath}/group-wallet/change-card-connection", memberId);
-            });
+    <script type="text/javascript">
+        // 연결 불가 선택 시 연결 불가를 알려주는 모달 창 출력
+        $(document).on("click", "#cant-connect-card", function () {
+            $("#cantConnectCard").modal('show');
+        })
+        // 연결 가능 선택 시 연결 가능을 알려주는 모달 창 출력
+        $(document).on("click", "#can-connect-card", function () {
+            var memberId = $(this).closest("tr").data("id");
+            if (${sessionScope.member.memberId} == memberId) {
+                $("input[name='connect-memberId']").val(memberId);
+                $("#changeWallet").modal('show');
+            }
+            else{
+                $("#cantConnectCardByLogin").modal('show');
+            }
+        });
+        // 변경 버튼을 누릴 시 컨트롤러로의 전송
+        $(document).on("click", "#change-confirm-button", function () {
+            var memberId = $("input[name='connect-memberId']").val();
+            initTest("${pageContext.request.contextPath}/group-wallet/change-card-connection", memberId);
+        });
 
     </script>
 </head>

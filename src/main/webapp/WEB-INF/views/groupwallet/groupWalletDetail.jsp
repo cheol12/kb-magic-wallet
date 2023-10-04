@@ -520,7 +520,7 @@
 
             <!-- 차트->멤버 목록 변경 완료
                  수정자: 김진형 -->
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100" align="center">
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 h-100" align="left">
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
                 <h6 class="text-muted">
                     ${groupWallet.nickname}의 카드 현황

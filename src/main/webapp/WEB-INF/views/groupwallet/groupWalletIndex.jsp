@@ -70,8 +70,8 @@
 
                         $.each(data, function (index, item) {
                             str += '<tr id="searchGroupWalletList">'
-                            str += '<td>' + item.nickname + '</td>';
-                            str += '<td>' + item.chairmanName + '</td>';
+                            str += '<td><h5 style="margin-bottom: 0px">' + item.nickname + '</h5></td>';
+                            str += '<td><h5 style="margin-bottom: 0px">' + item.chairmanName + '</h5></td>';
                             str += '<td><button class="alert-warning" data-group-id="' + item.groupWalletId + '" data-nickname="' + item.nickname + '">초대 응답</button>';
                             str += '</tr>';
                         });
@@ -204,20 +204,19 @@
             <div id="invitedMeListContainer" style="display:none; margin-top: 5px">
                 <h2 class="card-title text-break"> 잠깐! 모임지갑으로부터 초대가 왔어요!</h2>
                 <div class="table-responsive text-nowrap">
-
                     <table class="table table">
                         <thead>
                         <tr>
-                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>모임지갑명</th>
-                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i>모임장</th>
+                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i><h4>모임지갑명</h4></th>
+                            <th><i class="fab fa-angular fa-lg text-danger me-3"></i><h4>모임장</h4></th>
                         </tr>
                         </thead>
                         <tbody class="table-border-bottom-0" id="invitedMeList">
 
                         </tbody>
                     </table>
-
-
+                    <br>
+                    <br>
                 </div>
             </div>
 
