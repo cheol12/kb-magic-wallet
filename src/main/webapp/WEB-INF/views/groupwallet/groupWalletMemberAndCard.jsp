@@ -11,49 +11,6 @@
 <head>
     <title>Title</title>
         <script type="text/javascript">
-
-            /*function initTest(urlPath, data) {
-                $.ajax({
-                    url: urlPath,
-                    type: "get",
-                    dataType: "json",
-                    data: "id="+${groupWalletId},
-
-                    success: function (result, status) {
-                        $("#table").empty();
-                        // 화면에 갱신
-                        var str = "";
-                        $.each(result, function (i) {
-                            str += '<tr data-id=' + result[i].memberId + '>';
-                            str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].name + '</h5></TD>';
-                            if (result[i].roleToString == '모임장' || result[i].roleToString == '공동모임장') {
-                                str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' +  result[i].roleToString + '👑' + '</h5></TD>';
-                            } else {
-                                str += '<TD><i class="fab fa-angular fa-lg text-danger me-3"></i><h5 class="text-break text-center" style="margin-bottom: 0">' + result[i].roleToString + '</TD>';
-                            }
-                            if (result[i].cardIsConnect) {
-                                str += '<td class="open-modal text-center"><h5 class="text-break" style="margin-bottom: 0">연결 중&nbsp&nbsp&nbsp&nbsp<i class="material-icons" style="color: green">credit_card</i></h5></td>';
-                            } else {
-                                if (result[i].role == "GENERAL") {
-                                    str += '<td id="cant-connect-card" class="open-modal text-center"><h5 class="text-break text-center" style="margin-bottom: 0"> 연결 불가 <i class="material-icons" style="color:red;">credit_card</i></h5></td>';
-                                } else {
-                                    str += `<td id="can-connect-card" class="open-modal text-center"><h5 class="text-break text-center" style="margin-bottom: 0"> 연결 가능 <i class="material-icons">credit_card</i></h5></td>`
-                                }
-                            }
-                            str += '</TR>';
-                        });
-                        $("#table").append(str);
-                    },
-                    error: function (result, status) {
-                    },
-                });
-            }
-            */
-
-            //initTest() end
-
-            <%--initTest("${pageContext.request.contextPath}/group-wallet/load-card-data");--%>
-
             // 연결 불가 선택 시 연결 불가를 알려주는 모달 창 출력
             $(document).on("click", "#cant-connect-card", function () {
                 $("#cantConnectCard").modal('show');
