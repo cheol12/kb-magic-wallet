@@ -110,27 +110,6 @@ public class ExchangeController {
         return "success";
     }
 
-    /**
-     * 온라인 환전 메인 페이지
-     * API 명세서 ROWNUM:46
-     */
-    @GetMapping("/onlineExchange")
-    @ApiOperation(value = "온라인 환전 메인 페이지", notes="온라인 환전 메인페이지입니다.")
-    public ModelAndView exchangeOnlineIndex() {
-
-        ModelAndView modelAndView = new ModelAndView();
-        List<String> usdRate = exchangeService.selectExchangeRateByCurrencyCode(CurrencyCode.USD);
-        List<String> jpyRate = exchangeService.selectExchangeRateByCurrencyCode(CurrencyCode.JPY);
-
-        modelAndView.setViewName("exchange/onlineExchange");
-        //request.setAttribute("usdRate", usdRate);
-        // request.setAttribute("jpyRate", jpyRate);
-
-        modelAndView.addObject("usdRate", usdRate);
-        modelAndView.addObject("jpyRate", jpyRate);
-
-        return modelAndView;
-    }
 
     /**
      * 온라인 환전 폼
