@@ -20,7 +20,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
-    <script type="text/javascript">
+<%--    <script type="text/javascript">
         $(document).ready(function () {
             new Chart(document.getElementById("line-chart-USD"), {
                 type: 'line',
@@ -98,7 +98,7 @@
             });
         });
 
-    </script>
+    </script>--%>
 </head>
 <body>
 <header>
