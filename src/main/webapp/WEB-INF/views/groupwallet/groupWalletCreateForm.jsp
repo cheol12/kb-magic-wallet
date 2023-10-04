@@ -58,13 +58,39 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <script>
-        function showMessage() {
-            // 입력한 닉네임을 가져옵니다.
-            var nickname = document.getElementById('nickname').value;
 
-            // alert() 함수를 사용하여 메시지를 표시합니다.
-            alert(nickname + ' 모임지갑을 생성했어요!');
-        }
+        <!-- jQuery를 사용하여 폼 제출 처리 -->
+        $(document).ready(function () {
+            $("#createForm").submit(function (event) {
+                let nickname = $("#nickname").val();
+                var redirectUrl = "${pageContext.request.contextPath}/group-wallet/";
+                event.preventDefault(); // 기본 제출 동작을 막음
+
+                // 폼 데이터를 비동기로 서버로 전송
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr("action"),
+                    data: {nickname: nickname},
+                    // data: $(this).serialize(), // 폼 데이터 직렬화
+                    success: function (data) {
+                        if (data != null) {
+                            // 성공 시 처리 (data에 서버에서의 응답이 포함됨)
+                            // alert("폼 데이터 전송 성공!");
+                            alert(nickname + " 모임지갑을 생성했어요!");
+                            location.href = redirectUrl;
+
+                        } else {
+                            alert("실패");
+                        }
+                        // 여기에서 성공 페이지로 이동하거나 추가 작업을 수행할 수 있습니다.
+                    },
+                    error: function () {
+                        // 실패 시 처리
+                        alert("폼 데이터 전송 실패. 에러 메시지를 표시할 수 있습니다.");
+                    }
+                });
+            });
+        });
     </script>
 
 </head>
@@ -81,15 +107,12 @@
                 <%-- 닉네임 받고 전송하도록 form --%>
                 <form id="createForm" method="post" action="${pageContext.request.contextPath}/group-wallet/new">
                     <input type="text" name="nickname" id="nickname">
-                    <button type="submit" value="생성" class="btn btn-primary" onclick="showMessage()">생성</button>
+                    <button type="submit" value="생성" class="btn btn-primary">생성</button>
                     <h5>모임지갑을 생성해요!</h5>
                 </form>
 
-
             </div>
-
         </div>
-
     </div>
 </main>
 
@@ -97,36 +120,6 @@
 <footer>
 
 </footer>
-<!-- jQuery를 사용하여 폼 제출 처리 -->
-<script>
-    $(document).ready(function () {
-        $("#createForm").submit(function (event) {
-            let nickname = $("#nickname").val();
-            event.preventDefault(); // 기본 제출 동작을 막음
 
-            // 폼 데이터를 비동기로 서버로 전송
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr("action"),
-                data:{nickname : nickname},
-                // data: $(this).serialize(), // 폼 데이터 직렬화
-                success: function (data) {
-                    if(data != null){
-                        // 성공 시 처리 (data에 서버에서의 응답이 포함됨)
-                        // alert("폼 데이터 전송 성공!");
-                    }
-                    else{
-                        alert("실패");
-                    }
-                    // 여기에서 성공 페이지로 이동하거나 추가 작업을 수행할 수 있습니다.
-                },
-                error: function () {
-                    // 실패 시 처리
-                    alert("폼 데이터 전송 실패. 에러 메시지를 표시할 수 있습니다.");
-                }
-            });
-        });
-    });
-</script>
 </body>
 </html>
