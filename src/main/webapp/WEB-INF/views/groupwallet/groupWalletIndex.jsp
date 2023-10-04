@@ -221,37 +221,55 @@
                 </div>
             </div>
 
-            <div>
+            <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
 
                 <c:forEach var="list" varStatus="status" items="${gWalletList}">
-
-
                     <div style="margin-top: 5px">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3>
-                                    ${list.getNickname()}
-                                </h3>
-                            </div>
-                            <div class="card-body">
-                                <h4 class="card-title">원화 잔액 :
-                                    <fmt:formatNumber value="${list.getBalance()}" pattern="#,###" />
-                                </h4>
-                                <a href="${pageContext.request.contextPath}/group-wallet/${list.getGroupWalletId()}" class="btn btn-primary">상세보기</a>
+                        <div class="col">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h2 class="card-title text-dark"><strong>${list.getNickname()}</strong></h2>
+                                    <hr>
+                                    <h5 class="card-title">
+                                        <img src="${pageContext.request.contextPath}/images/saving/amountLimit.svg">
+                                        원화 잔액 : <span id="balance-${status.index}"></span> 원
+                                    </h5>
+                                    <script>
+                                        // list.getBalance()의 결과값 가져오기
+                                        var balanceValue = ${list.getBalance()};
+
+                                        // 3자리마다 쉼표 추가하는 함수
+                                        function addCommas(num) {
+                                            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                        }
+
+                                        // 결과값을 쉼표로 구분된 형식으로 변환하여 출력
+                                        document.getElementById("balance-" + ${status.index}).innerText = addCommas(balanceValue);
+                                    </script>
+                                    <br>
+                                    <div class="d-grid gap-1 col-lg-4 mx-auto">
+                                        <a href="${pageContext.request.contextPath}/group-wallet/${list.getGroupWalletId()}" class="btn btn-primary">상세보기</a>
+                                        <br>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 </c:forEach>
                 <section>
-                    <div style="margin-top: 5px">
-                        <div class="card">
-                            <div class="card-header">
-                                새로운 모임 지갑 생성
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title"></h5>
-                                <a href="${pageContext.request.contextPath}/group-wallet/new" class="btn btn-primary">생성하기</a>
+                    <div style="...">
+                        <div class="col">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h2 class="card-title text-dark"><strong>새로운 모임 지갑 생성</strong></h2>
+                                </div>
+                                <div class="d-grid gap-1 col-lg-4 mx-auto">
+                                    <div class="svg-container">
+                                        <img src="${pageContext.request.contextPath}/images/groupwallet/wallet-solid.svg">
+                                    </div>
+                                    <a href="${pageContext.request.contextPath}/group-wallet/new" class="btn btn-primary">생성하기</a>
+                                    <br>
+                                </div>
                             </div>
                         </div>
                     </div>

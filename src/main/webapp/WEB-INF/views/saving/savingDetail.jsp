@@ -229,13 +229,19 @@
 
                             <dl class="img1">
                                 <dt>기간</dt>
-                                <dd>${saving.getPeriod()}개월</dd>
+                                <dd>${saving.getPeriod()} 개월</dd>
                             </dl>
 
                             <dl class="img2">
                                 <dt>최대한도</dt>
-                                <dd>${saving.getAmountLimit()}만원</dd>
+                                <dd><span id="amountLimit"></span> 만원</dd>
                             </dl>
+                            <script>
+                                var amountLimitValue = ${saving.getAmountLimit()};
+                                var amountLimitInTenThousand = (amountLimitValue * 0.0001);
+
+                                document.getElementById("amountLimit").innerText = amountLimitInTenThousand;
+                            </script>
 
                             <dl class="img3 t1">
                                 <dt>최고금리</dt>
