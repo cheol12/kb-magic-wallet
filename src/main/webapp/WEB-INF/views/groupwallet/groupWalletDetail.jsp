@@ -531,7 +531,7 @@
                 </div>
 
                 <div class="card">
-                    <img src="../images/깨비비행기.jpg" height="240" style="border-radius: 10px">
+<%--                    <img src="../images/깨비비행기.jpg" height="240" style="border-radius: 10px">--%>
                 </div>
 
             </div>
