@@ -7,6 +7,11 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html lang="ko">
+<head>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css"/>
+</head>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="font-family: NanumSquareNeo-Variable,serif">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03"
