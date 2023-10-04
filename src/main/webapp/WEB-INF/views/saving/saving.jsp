@@ -52,9 +52,7 @@
                 <c:forEach var="saving" items="${savingList}" varStatus="status">
                     <div class="col">
                         <div class="card h-100">
-
                             <div class="card-body">
-
                                 <h2 class="card-title text-dark"><strong>${saving.getName()}</strong></h2>
                                 <hr>
                                 <p class="card-text text-dark">${saving.getSavingComment()}</p>
@@ -64,8 +62,14 @@
                                 </h5>
                                 <h5 class="card-title">
                                     <img src="${pageContext.request.contextPath}/images/saving/amountLimit.svg">
-                                    최대 한도 : ${saving.getAmountLimit()} 원
+                                    최대 한도 : <span id="amountLimit-${status.index}"></span> 만원
                                 </h5>
+                                <script>
+                                    var amountLimitValue = ${saving.getAmountLimit()};
+                                    var amountLimitInTenThousand = (amountLimitValue * 0.0001);
+
+                                    document.getElementById("amountLimit-" + ${status.index}).innerText = amountLimitInTenThousand;
+                                </script>
                                 <h5 class="card-title">
                                     <img src="${pageContext.request.contextPath}/images/saving/period.svg">
                                     가입 기한 : ${saving.getPeriod()} 개월
@@ -78,6 +82,7 @@
                         </div>
                     </div>
                 </c:forEach>
+
             </div>
 
 
