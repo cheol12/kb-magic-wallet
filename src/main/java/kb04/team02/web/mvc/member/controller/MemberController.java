@@ -51,7 +51,7 @@ public class MemberController {
     /**
      * 로그아웃
      */
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     @ApiOperation(value = "로그아웃", notes="로그아웃입니다.")
     public String logout(HttpSession session) {
         //모든 세션의 정보를 삭제한다.

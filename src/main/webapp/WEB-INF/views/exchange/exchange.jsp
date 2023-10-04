@@ -20,7 +20,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
-    <script type="text/javascript">
+<%--    <script type="text/javascript">
         $(document).ready(function () {
             new Chart(document.getElementById("line-chart-USD"), {
                 type: 'line',
@@ -98,7 +98,7 @@
             });
         });
 
-    </script>
+    </script>--%>
 </head>
 <body>
 <header>
@@ -116,9 +116,9 @@
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                            <h3 class="card-title">온라인 환전</h3>
-                            <p class="card-text">내 개인지갑으로 간편하게 온라인 환전!</p>
-                            <a href="/exchange/onlineExchange" class="btn btn-primary">환전하러 가기</a>
+                            <h3 class="card-title">환전</h3>
+                            <p class="card-text">내 개인지갑으로 간편하게 원화에서 외화로!</p>
+                            <a href="/exchange/online/form" class="btn btn-primary">환전하러 가기</a>
                         </div>
                     </div>
                 </div>
@@ -131,6 +131,17 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">재환전</h3>
+                            <p class="card-text">내 개인지갑으로 간편하게 원화에서 외화로!</p>
+                            <a href="/exchange/online/re-form" class="btn btn-primary">환전하러 가기</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="card mb-2 ">
                 <div class="card-header">
