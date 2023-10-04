@@ -184,17 +184,35 @@
 
                 var deposit = row.find("td:eq(2)").text();
                 var withdrawal = row.find("td:eq(3)").text();
+                var type = row.find("td:eq(4)").text();
+                $("#detail-type").text(row.find("td:eq(4)").text());
 
                 if (deposit === "-") {
-                    $("#detail-amount").text(withdrawal);
+                    if (type === '환전') {
+                        var amount = row.find("td:eq(3)").text();
+                        var amountList = amount.split(' ➜ ');
+                        var amountResult = amountList[0] + '<br>↓   <br>' + amountList[1];
+                        $("#detail-amount").html(amountResult);
+                    } else {
+                        $("#detail-amount").text(withdrawal);
+                    }
                 } else {
                     $("#detail-amount").text(deposit);
                 }
-                $("#detail-type").text(row.find("td:eq(4)").text());
+
+
+
+                if (type === '환전') {
+                    var balance = row.find("td:eq(5)").text();
+                    var list = balance.split(' / ');
+                    var result = list[0] + ' <br><br> ' + list[1];
+                    $("#detail-balance").html(result);
+                } else {
+                    $("#detail-balance").text(row.find("td:eq(5)").text());
+                }
+
                 $("#detail-content").text(id);
                 console.log(id);
-                $("#detail-balance").text(row.find("td:eq(5)").text());
-
             });
 
             memberCall();
@@ -655,14 +673,15 @@
 </div>
 
 
-<!-- Modal -->
+<!-- 상세내역 Modal -->
 <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" style="text-align: center; margin: 0 auto;">
                 <h2 class="modal-title" id="exampleModalLabel11">거래상세내역</h2>
             </div>
-            <div class="modal-body" style="margin: 20px">
+            <hr>
+            <div class="modal-body" style="text-align: center; margin: 0 auto;">
                 <div class="row">
                     <div class="row g-2" style="margin-bottom: 20px">
                         <div class="col mb-3">
@@ -711,9 +730,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
+            <hr>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
                     확인
